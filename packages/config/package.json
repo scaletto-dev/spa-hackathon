@@ -1,0 +1,10 @@
+{
+  "name": "@spa-hackathon/config",
+  "version": "0.1.0",
+  "description": "Shared ESLint, Prettier, and TypeScript configurations",
+  "private": true,
+  "scripts": {
+    "lint": "echo \"No linting configured yet\"",
+    "test": "echo \"No tests configured yet\""
+  }
+}

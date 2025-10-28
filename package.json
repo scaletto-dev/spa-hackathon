@@ -1,0 +1,28 @@
+{
+  "name": "spa-hackathon",
+  "version": "0.1.0",
+  "description": "Beauty Clinic Care Website - Spa booking platform with React frontend and Node.js backend",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w @spa-hackathon/frontend\" \"npm run dev -w @spa-hackathon/backend\"",
+    "build": "npm run build -w @spa-hackathon/frontend && npm run build -w @spa-hackathon/backend",
+    "test": "npm run test -ws",
+    "lint": "npm run lint -ws",
+    "format": "npm run format -ws"
+  },
+  "keywords": [
+    "spa",
+    "booking",
+    "beauty-clinic",
+    "monorepo"
+  ],
+  "author": "Spa Hackathon Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
