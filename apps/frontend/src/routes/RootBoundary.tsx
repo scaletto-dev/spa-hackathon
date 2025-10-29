@@ -6,11 +6,7 @@ import { Component, ReactNode } from 'react';
  */
 export function Pending() {
     return (
-        <div
-            role='status'
-            aria-busy='true'
-            className='flex items-center justify-center min-h-screen'
-        >
+        <div role='status' aria-busy='true' className='flex items-center justify-center min-h-screen'>
             <div className='text-center'>
                 <div className='inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500'></div>
                 <p className='mt-4 text-gray-600'>Loading...</p>
@@ -27,10 +23,7 @@ interface ErrorBoundaryState {
     error?: Error | undefined;
 }
 
-export class RootErrorBoundary extends Component<
-    { children?: ReactNode },
-    ErrorBoundaryState
-> {
+export class RootErrorBoundary extends Component<{ children?: ReactNode }, ErrorBoundaryState> {
     state: ErrorBoundaryState = { error: undefined };
 
     static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -50,18 +43,11 @@ export class RootErrorBoundary extends Component<
     render() {
         if (this.state.error) {
             return (
-                <div
-                    role='alert'
-                    className='flex items-center justify-center min-h-screen bg-gray-50'
-                >
+                <div role='alert' className='flex items-center justify-center min-h-screen bg-gray-50'>
                     <div className='text-center max-w-md p-8 bg-white rounded-lg shadow-lg'>
                         <div className='text-6xl mb-4'>⚠️</div>
-                        <h1 className='text-2xl font-bold text-gray-800 mb-2'>
-                            Something went wrong
-                        </h1>
-                        <p className='text-gray-600 mb-4'>
-                            We're sorry for the inconvenience. Please try again.
-                        </p>
+                        <h1 className='text-2xl font-bold text-gray-800 mb-2'>Something went wrong</h1>
+                        <p className='text-gray-600 mb-4'>We're sorry for the inconvenience. Please try again.</p>
                         <details className='mb-4 text-left'>
                             <summary className='cursor-pointer text-sm text-gray-500 hover:text-gray-700'>
                                 Error details
