@@ -1,4 +1,4 @@
-import { BookingStatus } from "@prisma/client";
+import { BookingStatus } from '@prisma/client';
 
 /**
  * Booking DTOs and Types

@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { ValidationError } from "../../utils/errors";
-import { BookingStatus } from "@prisma/client";
+import { Request, Response, NextFunction } from 'express';
+import { ValidationError } from '../../utils/errors';
+import { BookingStatus } from '@prisma/client';
 
 /**
  * Booking Request Validators

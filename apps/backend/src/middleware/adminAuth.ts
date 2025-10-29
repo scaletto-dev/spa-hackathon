@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { UnauthorizedError } from "../utils/errors";
+import { Request, Response, NextFunction } from 'express';
+import { UnauthorizedError } from '../utils/errors';
 
 /**
  * Admin Authentication Middleware (Placeholder)

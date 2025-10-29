@@ -1,10 +1,10 @@
-import { Express } from "express";
-import healthRoutes from "./health.routes";
-import servicesRoutes from "./services.routes";
-import branchesRoutes from "./branches.routes";
-import authRoutes from "./auth.routes";
-import bookingsRoutes from "./bookings.routes";
-import bookingsAdminRoutes from "./admin/bookingsAdmin.routes";
+import { Express } from 'express';
+import healthRoutes from './health.routes';
+import servicesRoutes from './services.routes';
+import branchesRoutes from './branches.routes';
+import authRoutes from './auth.routes';
+import bookingsRoutes from './bookings.routes';
+import bookingsAdminRoutes from './admin/bookingsAdmin.routes';
 
 /**
  * Configure all application routes
@@ -21,14 +21,14 @@ import bookingsAdminRoutes from "./admin/bookingsAdmin.routes";
  */
 export function configureRoutes(app: Express): void {
    // Health check (no /v1 prefix)
-   app.use("/api/health", healthRoutes);
+   app.use('/api/health', healthRoutes);
 
    // API v1 routes
-   app.use("/api/v1/services", servicesRoutes);
-   app.use("/api/v1/branches", branchesRoutes);
-   app.use("/api/v1/auth", authRoutes);
-   app.use("/api/v1/bookings", bookingsRoutes);
+   app.use('/api/v1/services', servicesRoutes);
+   app.use('/api/v1/branches', branchesRoutes);
+   app.use('/api/v1/auth', authRoutes);
+   app.use('/api/v1/bookings', bookingsRoutes);
 
    // Admin routes (protected)
-   app.use("/api/v1/admin/bookings", bookingsAdminRoutes);
+   app.use('/api/v1/admin/bookings', bookingsAdminRoutes);
 }
