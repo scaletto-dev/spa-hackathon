@@ -201,6 +201,45 @@
         "more": "Thêm",
         "less": "Ít hơn"
     },
+    "contact": {
+        "title": "Liên hệ & Hỗ trợ",
+        "subtitle": "Liên hệ với đội ngũ của chúng tôi để được tư vấn, hỗ trợ hoặc đặt lịch tư vấn",
+        "sendMessage": "Gửi tin nhắn cho chúng tôi",
+        "messageSentSuccess": "Gửi tin nhắn thành công!",
+        "messageSentDescription": "Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi trong vòng 24 giờ.",
+        "sendAnother": "Gửi tin nhắn khác",
+        "yourName": "Họ và tên",
+        "emailAddress": "Địa chỉ Email",
+        "phoneNumber": "Số điện thoại",
+        "phoneFormat": "Định dạng: 0912 345 678",
+        "serviceInterest": "Dịch vụ quan tâm",
+        "selectService": "Chọn dịch vụ quan tâm...",
+        "messageContent": "Nội dung tin nhắn",
+        "messagePlaceholder": "Chúng tôi có thể giúp gì cho bạn?",
+        "requiredFields": "* Trường bắt buộc",
+        "sending": "Đang gửi...",
+        "sendMessageBtn": "Gửi tin nhắn",
+        "nameRequired": "Vui lòng nhập họ tên",
+        "emailRequired": "Vui lòng nhập email",
+        "emailInvalid": "Email không hợp lệ",
+        "messageRequired": "Vui lòng nhập nội dung",
+        "fillRequired": "Vui lòng điền đầy đủ thông tin bắt buộc",
+        "successToast": "Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi trong 24h.",
+        "services": {
+            "facial": "Chăm sóc da mặt",
+            "laser": "Công nghệ Laser",
+            "body": "Điều trị Body",
+            "consultation": "Tư vấn chung"
+        },
+        "features": {
+            "securePayments": "Thanh toán an toàn",
+            "securePaymentsDesc": "Thông tin thanh toán của bạn được mã hóa và bảo mật",
+            "privacyGuarantee": "Cam kết bảo mật",
+            "privacyGuaranteeDesc": "Chúng tôi tôn trọng quyền riêng tư và bảo vệ dữ liệu cá nhân của bạn",
+            "professionalSupport": "Hỗ trợ chuyên nghiệp",
+            "professionalSupportDesc": "Dịch vụ khách hàng 24/7 hỗ trợ mọi thắc mắc của bạn"
+        }
+    },
     "nav": {
         "home": "Trang chủ",
         "services": "Dịch vụ",
