@@ -10,8 +10,13 @@ import {
     MessageSquareIcon,
     FileTextIcon,
     SettingsIcon,
+    XIcon,
 } from 'lucide-react';
 import { toast } from '../../../utils/toast';
+
+interface SidebarProps {
+    onClose?: () => void;
+}
 
 const navItems = [
     {
@@ -65,10 +70,11 @@ const navItems = [
         label: 'Settings',
     },
 ];
-export function Sidebar() {
+export function Sidebar({ onClose }: SidebarProps) {
     return (
         <aside className='w-64 bg-white/60 backdrop-blur-xl border-r border-pink-100 flex flex-col shadow-lg'>
-            <div className='h-16 flex items-center justify-center border-b border-pink-100'>
+            {/* Header with close button for mobile */}
+            <div className='h-16 flex items-center justify-between px-4 border-b border-pink-100'>
                 <div className='flex items-center gap-2'>
                     <div className='w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center'>
                         <SparklesIcon className='w-6 h-6 text-white' />
@@ -80,6 +86,16 @@ export function Sidebar() {
                         <p className='text-xs text-gray-500'>Admin Portal</p>
                     </div>
                 </div>
+                {/* Close button - only visible on mobile */}
+                {onClose && (
+                    <button
+                        onClick={onClose}
+                        className='lg:hidden p-2 rounded-lg hover:bg-pink-50 transition-colors'
+                        aria-label='Close menu'
+                    >
+                        <XIcon className='w-5 h-5 text-gray-600' />
+                    </button>
+                )}
             </div>
             <nav className='flex-1 overflow-y-auto py-6 px-3'>
                 <div className='space-y-1'>
@@ -88,6 +104,7 @@ export function Sidebar() {
                             key={item.path}
                             to={item.path}
                             end={item.path === '/admin'}
+                            onClick={() => onClose?.()}
                             className={({ isActive }: { isActive: boolean }) =>
                                 `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                                     isActive
