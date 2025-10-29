@@ -724,7 +724,7 @@ so that the application has content to display during development and testing.
 9. Seed script runs successfully and populates database with all data
 10. Verification query confirms data exists and relationships are correct
 
-### Story 1.8: Initialize React App with Routing and Layout
+### Story 1.8: Initialize React App with Routing and Layout // ko implement
 
 As a frontend developer,
 I want to set up React Router and create the base application layout,
@@ -742,7 +742,7 @@ so that I can navigate between pages and maintain consistent UI structure.
 9. Navigation links properly highlight active route
 10. Layout renders correctly on mobile (320px), tablet (768px), and desktop (1280px) breakpoints
 
-### Story 1.9: Build Homepage with Hero Section and Featured Services
+### Story 1.9: Build Homepage with Hero Section and Featured Services // ko implement
 
 As a potential customer,
 I want to see an attractive homepage with hero banner and featured services,

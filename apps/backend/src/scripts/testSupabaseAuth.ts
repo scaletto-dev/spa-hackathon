@@ -16,12 +16,6 @@ async function testSupabaseAuth() {
   console.log(`  IMPORTANT: Update TEST_EMAIL in this script to your email before running!\n`);
   console.log(`Current test email: ${TEST_EMAIL}\n`);
 
-  if (TEST_EMAIL === 'your-email@example.com') {
-    console.log(' Please update TEST_EMAIL in apps/backend/src/scripts/testSupabaseAuth.ts');
-    console.log('   with a real email address you can access.\n');
-    process.exit(1);
-  }
-
   try {
     // Test 1: Send OTP to email
     console.log('Test 1: Send OTP code to email');
