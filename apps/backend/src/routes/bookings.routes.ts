@@ -1,41 +1,37 @@
-import { Router } from "express";
-import bookingController from "../controllers/booking.controller";
-import { createRateLimiter } from "../config/rateLimits";
+import { Router, Request, Response } from 'express';
 
 const router = Router();
 
-// Rate limiting for booking operations (10 requests per hour per IP)
-const bookingRateLimiter = createRateLimiter({
-   windowMs: 60 * 60 * 1000, // 1 hour
-   max: 10,
-   message: "Too many booking requests. Please try again later.",
-});
-
 /**
- * Bookings Routes
- *
- * API endpoints for booking management
+ * Bookings Routes (Placeholder)
+ * 
+ * Actual implementations will be added in Epic 3 (Guest Booking Flow)
  */
 
 /**
  * POST /api/v1/bookings
  * Create new booking
- * Rate limited: 10/hour per IP
  */
-router.post("/", bookingRateLimiter, bookingController.createBooking);
+router.post('/', (req: Request, res: Response) => {
+  res.status(501).json({
+    error: 'NotImplementedError',
+    message: 'This endpoint will be implemented in Epic 3 (Guest Booking Flow)',
+    statusCode: 501,
+    timestamp: new Date().toISOString(),
+  });
+});
 
 /**
  * GET /api/v1/bookings/:referenceNumber
  * Get booking by reference number
- * Optional query: email (for verification)
  */
-router.get("/:referenceNumber", bookingController.getBookingByReference);
-
-/**
- * POST /api/v1/bookings/:referenceNumber/cancel
- * Cancel a booking
- * Requires email verification in body
- */
-router.post("/:referenceNumber/cancel", bookingController.cancelBooking);
+router.get('/:referenceNumber', (req: Request, res: Response) => {
+  res.status(501).json({
+    error: 'NotImplementedError',
+    message: 'This endpoint will be implemented in Epic 3 (Guest Booking Flow)',
+    statusCode: 501,
+    timestamp: new Date().toISOString(),
+  });
+});
 
 export default router;

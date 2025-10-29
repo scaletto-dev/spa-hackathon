@@ -1,38 +1,37 @@
-import { Router } from 'express';
-import serviceController from '../controllers/service.controller';
+import { Router, Request, Response } from 'express';
 
 const router = Router();
 
 /**
- * Services Routes
- *
- * RESTful API endpoints for service management
+ * Services Routes (Placeholder)
+ * 
+ * Actual implementations will be added in Story 1.6
  */
 
 /**
  * GET /api/v1/services
- * Get all services with pagination and filtering
- * Query params: page, limit, categoryId, featured
+ * Get all services
  */
-router.get('/', serviceController.getAllServices);
-
-/**
- * GET /api/v1/services/featured
- * Get featured services for homepage display
- */
-router.get('/featured', serviceController.getFeaturedServices);
-
-/**
- * GET /api/v1/services/categories
- * Get all service categories
- */
-router.get('/categories', serviceController.getServiceCategories);
+router.get('/', (req: Request, res: Response) => {
+  res.status(501).json({
+    error: 'NotImplementedError',
+    message: 'This endpoint will be implemented in Story 1.6',
+    statusCode: 501,
+    timestamp: new Date().toISOString(),
+  });
+});
 
 /**
  * GET /api/v1/services/:id
- * Get a single service by ID
- * Note: This must be last to avoid conflicts with other routes
+ * Get service by ID
  */
-router.get('/:id', serviceController.getServiceById);
+router.get('/:id', (req: Request, res: Response) => {
+  res.status(501).json({
+    error: 'NotImplementedError',
+    message: 'This endpoint will be implemented in Story 1.6',
+    statusCode: 501,
+    timestamp: new Date().toISOString(),
+  });
+});
 
 export default router;

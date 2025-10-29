@@ -67,7 +67,6 @@ export function errorHandler(
 
   // Construct error response
   const errorResponse: ErrorResponse = {
-    success: false,
     error: errorName,
     message,
     statusCode,
