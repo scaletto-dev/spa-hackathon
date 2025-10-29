@@ -27,6 +27,7 @@ const AdminLoginPage = lazy(() => import('../admin/pages/AdminLoginPage'));
 // Member dashboard pages (Protected)
 const MemberDashboard = lazy(() => import('../client/pages/dashboard/MemberDashboard'));
 const BookingHistory = lazy(() => import('../client/pages/dashboard/BookingHistory'));
+const ProfileManagement = lazy(() => import('../client/pages/dashboard/ProfileManagement'));
 
 // Lazy load admin pages
 const Dashboard = lazy(() => import('../admin/pages/Dashboard'));
@@ -203,7 +204,14 @@ export const routes: RouteObject[] = [
                     </Suspense>
                 ),
             },
-            // TODO: Add /dashboard/profile route (Phase 1-A3)
+            {
+                path: 'profile',
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <ProfileManagement />
+                    </Suspense>
+                ),
+            },
         ],
     },
 

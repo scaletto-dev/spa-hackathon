@@ -2526,13 +2526,15 @@ GET /api/v1/members/profile
         "fullName": "string",
         "phone": "string",
         "language": "vi|ja|en|zh",
-        "createdAt": "string (ISO 8601)"
+        "createdAt": "string (ISO 8601)",
+        "updatedAt": "string (ISO 8601)"
     }
 }
 ```
 
-**FE Usage:** TBD (Phase 1-A3)  
-**Status:** Not yet wired
+**FE Usage:** `apps/frontend/src/client/pages/dashboard/ProfileManagement.tsx:26`  
+**FE Adapter:** `apps/frontend/src/api/adapters/member.ts:getMemberProfile()`  
+**Status:** ✅ Mock adapter implemented (Phase 1-A3 COMPLETE)
 
 ---
 
@@ -2568,8 +2570,16 @@ PUT /api/v1/members/profile
 }
 ```
 
-**FE Usage:** TBD (Phase 1-A3)  
-**Status:** Not yet wired
+**FE Usage:** `apps/frontend/src/client/pages/dashboard/ProfileManagement.tsx:43`  
+**FE Adapter:** `apps/frontend/src/api/adapters/member.ts:updateMemberProfile()`  
+**Status:** ✅ Mock adapter implemented (Phase 1-A3 COMPLETE)
+
+**Notes:**
+
+-   Email field is read-only (requires separate change-email flow with verification)
+-   Language options: 🇻🇳 Tiếng Việt (vi), 🇬🇧 English (en), 🇯🇵 日本語 (ja), 🇨🇳 中文 (zh)
+-   Frontend validates required fields (fullName, phone) before submit
+-   Success toast shown for 3 seconds after update
 
 ---
 

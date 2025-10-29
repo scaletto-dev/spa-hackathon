@@ -1773,3 +1773,125 @@ Authorization: Bearer <access_token>
 - [ ] Rebook/reschedule actions for past bookings
 
 ---
+
+---
+
+## Screen: Profile Management (`/dashboard/profile`)
+
+**Component:** `apps/frontend/src/client/pages/dashboard/ProfileManagement.tsx`  
+**Protected:** Yes (Client role required)
+
+### Endpoints Used
+
+#### 1. GET /api/v1/members/profile
+
+**Purpose:** Fetch member profile information on page load
+
+**Request:**
+```http
+GET /api/v1/members/profile
+Authorization: Bearer {token}
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": "string (UUID)",
+    "email": "string",
+    "fullName": "string",
+    "phone": "string",
+    "language": "vi|ja|en|zh",
+    "createdAt": "string (ISO 8601)",
+    "updatedAt": "string (ISO 8601)"
+  }
+}
+```
+
+**Frontend Usage:**
+- File: `ProfileManagement.tsx:26`
+- Adapter: `apps/frontend/src/api/adapters/member.ts:getMemberProfile()`
+- Hook: `useEffect()` on mount
+
+---
+
+#### 2. PUT /api/v1/members/profile
+
+**Purpose:** Update member profile information
+
+**Request:**
+```http
+PUT /api/v1/members/profile
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "fullName": "string",
+  "phone": "string",
+  "language": "vi|ja|en|zh" (optional)
+}
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": "string (UUID)",
+    "email": "string (read-only)",
+    "fullName": "string",
+    "phone": "string",
+    "language": "vi|ja|en|zh",
+    "updatedAt": "string (ISO 8601)"
+  }
+}
+```
+
+**Frontend Usage:**
+- File: `ProfileManagement.tsx:43`
+- Adapter: `apps/frontend/src/api/adapters/member.ts:updateMemberProfile()`
+- Trigger: Form submit event
+
+---
+
+### Features Implemented
+
+- ✅ Read-only email field with note "Contact support to change email"
+- ✅ Editable full name field (required)
+- ✅ Editable phone field (required)
+- ✅ Language selector (vi/ja/en/zh with flag emojis)
+- ✅ Save button with loading state
+- ✅ Success toast notification (3 seconds auto-hide)
+- ✅ Error handling with validation messages
+- ✅ "Member since" display with createdAt date
+- ✅ "Last updated" display with updatedAt date
+- ✅ Cancel button to return to dashboard
+- ✅ Back navigation link to dashboard
+- ✅ Loading spinner during data fetch
+- ✅ Error state with retry button
+
+---
+
+### TODO / Backend Notes
+
+1. **Email Change Flow:**
+   - Frontend shows read-only email with support message
+   - Backend should provide separate endpoint for email change (requires re-authentication)
+   - Consider: `POST /api/v1/members/profile/change-email` with verification flow
+
+2. **Validation Rules:**
+   - `fullName`: Min 2 chars, max 100 chars, UTF-8 support (Vietnamese, Japanese, Chinese names)
+   - `phone`: Support international formats, consider regex validation
+   - `language`: Enum only (vi|ja|en|zh), reject invalid values
+
+3. **Security:**
+   - Verify JWT token before allowing profile updates
+   - Rate limit PUT endpoint (e.g., max 5 updates per hour per user)
+   - Log profile changes for audit trail
+
+4. **Future Enhancement:**
+   - Profile picture upload
+   - Email/SMS preferences
+   - Password change form
+   - Delete account option
+
+---

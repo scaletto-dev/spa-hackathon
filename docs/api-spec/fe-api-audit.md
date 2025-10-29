@@ -292,3 +292,117 @@
 2. **Frontend Team**: Continue Phase 1-A3 (Profile Management page)
 3. **QA**: Test booking history filters, pagination, empty states
 
+
+---
+
+## âœ… Phase 1-A3: Profile Management (Oct 29, 2025)
+
+**Completed:** Member Profile Management page (`/dashboard/profile`)
+
+### Files Created/Modified
+
+1. **Component:** `apps/frontend/src/client/pages/dashboard/ProfileManagement.tsx` (NEW - 260+ lines)
+2. **Adapter:** `apps/frontend/src/api/adapters/member.ts` (Extended with profile functions)
+3. **Routes:** `apps/frontend/src/routes/route-map.tsx` (Added /dashboard/profile route)
+4. **Dashboard:** `apps/frontend/src/client/pages/dashboard/MemberDashboard.tsx` (Re-enabled "Edit Profile" button)
+
+### API Endpoints Implemented (Mock)
+
+#### GET /api/v1/members/profile
+- Returns member profile with id, email, fullName, phone, language, timestamps
+- Frontend: `ProfileManagement.tsx:26` (useEffect on mount)
+- Mock data includes UUID, Vietnamese name example, vi language default
+
+#### PUT /api/v1/members/profile  
+- Updates fullName, phone, language (email read-only)
+- Frontend: `ProfileManagement.tsx:43` (form submit)
+- Validates required fields before API call
+- Returns updated profile with new updatedAt timestamp
+
+### Features Implemented
+
+1. **Form Fields:**
+   - Email (read-only with support note)
+   - Full Name (text input, required)
+   - Phone (tel input, required)
+   - Language (select dropdown with flag emojis: í·»í·³í·¬í·§í·¯í·µí·¨í·³)
+
+2. **UI/UX:**
+   - Loading state with spinner on page load
+   - Save button with loading animation during submit
+   - Success toast (green, auto-hide 3s) with CheckCircle icon
+   - Error messages (red banner) with validation feedback
+   - Cancel button returns to /dashboard
+   - Back navigation link with ChevronLeft icon
+   - "Member since" display with formatted createdAt date
+   - "Last updated" display with formatted updatedAt timestamp
+
+3. **Validation:**
+   - Client-side: Required field checks (fullName, phone)
+   - Trim whitespace before submit
+   - Error state prevents duplicate submissions
+
+4. **Routing:**
+   - Route: `/dashboard/profile`
+   - Protected: RequireRole('client')
+   - Lazy loaded with Suspense
+
+### Mock Adapter Functions
+
+```typescript
+getMemberProfile(): Promise<MemberProfile>
+// Returns: { id, email, fullName, phone, language, createdAt, updatedAt }
+// Delay: 500ms
+
+updateMemberProfile(params: UpdateProfileParams): Promise<MemberProfile>  
+// Accepts: { fullName, phone, language? }
+// Returns: Updated profile with new updatedAt
+// Delay: 700ms
+// Mutates MOCK_MEMBER_PROFILE in-memory
+```
+
+### Coverage Update
+
+**Mock/Pending Real API:** 4 âœ… (Phase 1-A1, A2, A3 = 4 endpoints)  
+- GET /api/v1/members/dashboard
+- GET /api/v1/members/bookings
+- GET /api/v1/members/profile
+- PUT /api/v1/members/profile
+
+**Real API Wired:** 63/67 endpoints (94.0%)
+
+### Backend Integration Notes
+
+1. **Email Change:** Frontend deliberately blocks email edit. Backend should create separate flow:
+   - POST /api/v1/members/profile/change-email
+   - Requires: Current password verification + Email verification link
+   - Consider: 2FA if enabled
+
+2. **Phone Validation:** Backend should validate international phone formats (E.164 recommended)
+
+3. **Language Persistence:** Should sync with i18n system when implemented (Phase 2-B)
+
+4. **Audit Log:** Log all profile updates (user_id, changed_fields, old_values, timestamp)
+
+5. **Rate Limiting:** PUT endpoint should limit to 5 updates/hour to prevent abuse
+
+### Next Steps
+
+1. **Frontend Team**: Continue Phase 2 implementation
+   - Phase 2-A: Service Detail Page (/services/:id)
+   - Phase 2-B: Multilingual Support (i18n with language switcher)
+   - Phase 2-C: Reviews & Ratings enhancement
+
+2. **Backend Team**: Implement member profile endpoints
+   - Verify JWT authentication
+   - Add validation rules (min/max lengths, phone regex)
+   - Implement rate limiting
+   - Set up audit logging
+
+3. **QA Team**: Test profile management flow
+   - Valid/invalid input scenarios
+   - Success/error states
+   - Toast notification timing
+   - Navigation flows
+
+---

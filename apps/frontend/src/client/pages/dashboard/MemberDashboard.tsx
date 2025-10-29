@@ -149,14 +149,12 @@ export default function MemberDashboard() {
                                 >
                                     Book New Appointment
                                 </Link>
-                                <button
-                                    disabled
-                                    title='Coming in Phase 1-A3'
-                                    className='block w-full px-4 py-3 bg-gray-100 text-gray-400 rounded-xl font-semibold text-center cursor-not-allowed'
+                                <Link
+                                    to='/dashboard/profile'
+                                    className='block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors'
                                 >
                                     Edit Profile
-                                    <span className='text-xs block mt-1 font-normal'>(Coming Soon)</span>
-                                </button>
+                                </Link>
                                 <Link
                                     to='/dashboard/bookings'
                                     className='block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors'
