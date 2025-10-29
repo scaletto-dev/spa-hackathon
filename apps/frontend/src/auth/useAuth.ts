@@ -42,13 +42,19 @@ export function useAuth(): AuthState {
     });
 
     useEffect(() => {
-        // TODO: Replace with real auth check (e.g., validate token, check session)
-        // For now, check localStorage for demo purposes
+        // Check auth from localStorage (auth_token + user_data)
         const checkAuth = () => {
             try {
-                const userStr = localStorage.getItem('user');
-                if (userStr) {
-                    const user = JSON.parse(userStr) as User;
+                const token = localStorage.getItem('accessToken');
+                const userStr = localStorage.getItem('user_data');
+                if (token && userStr) {
+                    const userData = JSON.parse(userStr);
+                    const user: User = {
+                        id: userData.id,
+                        name: userData.fullName,
+                        email: userData.email,
+                        role: userData.role === 'ADMIN' ? 'admin' : 'client',
+                    };
                     setAuthState({
                         isAuthenticated: true,
                         isLoading: false,
@@ -148,7 +154,10 @@ export function useAuth(): AuthState {
      * TODO: Replace with real API call (POST /api/auth/logout)
      */
     const logout = () => {
-        localStorage.removeItem('user');
+        // Clear all auth-related data from localStorage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user_data');
+        localStorage.removeItem('refresh_token');
         localStorage.removeItem('auth/googleCredential');
         localStorage.removeItem('auth/provider');
         setAuthState({

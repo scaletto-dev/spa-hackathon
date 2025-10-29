@@ -17,21 +17,30 @@ import { ValidationError } from '../utils/errors';
 class AuthController {
   /**
    * POST /api/v1/auth/register
-   * Register a new user with email OTP verification
+   * Register a new user with email, password and send OTP for verification
    */
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, fullName, phone } = req.body;
+      const { email, password, fullName, phone } = req.body;
 
       // Validation
-      if (!email || !fullName) {
-        throw new ValidationError('Missing required fields: email and fullName are required');
+      if (!email || !password || !fullName) {
+        throw new ValidationError('Missing required fields: email, password, and fullName are required');
       }
 
       // Email format validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         throw new ValidationError('Invalid email format');
+      }
+
+      // Password validation
+      if (password.length < 8) {
+        throw new ValidationError('Password must be at least 8 characters');
+      }
+
+      if (password.length > 100) {
+        throw new ValidationError('Password must not exceed 100 characters');
       }
 
       // Full name validation
@@ -57,6 +66,7 @@ class AuthController {
 
       const registrationData: RegisterRequest = {
         email: email.toLowerCase().trim(),
+        password,
         fullName: fullName.trim(),
         phone: phone ? phone.trim() : undefined,
       };
@@ -119,15 +129,15 @@ class AuthController {
 
   /**
    * POST /api/v1/auth/login
-   * Send login OTP to user's email
+   * Login with email and password
    */
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email } = req.body;
+      const { email, password } = req.body;
 
       // Validation
-      if (!email) {
-        throw new ValidationError('Email is required');
+      if (!email || !password) {
+        throw new ValidationError('Email and password are required');
       }
 
       // Email format validation
@@ -138,13 +148,15 @@ class AuthController {
 
       const loginData: LoginRequest = {
         email: email.toLowerCase().trim(),
+        password,
       };
 
-      await authService.login(loginData.email);
+      const result = await authService.login(loginData);
 
       const response: LoginResponse = {
         success: true,
-        message: 'Please check your email for login code',
+        user: result.user,
+        session: result.session,
       };
 
       res.status(200).json(response);

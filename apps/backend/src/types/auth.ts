@@ -4,16 +4,17 @@
  */
 
 /**
- * Registration request body
+ * Registration request body (with password)
  */
 export interface RegisterRequest {
   email: string;
+  password: string;
   fullName: string;
   phone?: string; // Optional phone number
 }
 
 /**
- * Registration response
+ * Registration response (OTP sent)
  */
 export interface RegisterResponse {
   success: boolean;
@@ -51,7 +52,7 @@ export interface AuthSession {
 }
 
 /**
- * OTP verification response
+ * OTP verification response (after registration)
  */
 export interface VerifyOtpResponse {
   success: boolean;
@@ -60,10 +61,11 @@ export interface VerifyOtpResponse {
 }
 
 /**
- * Login request body (passwordless)
+ * Login request body (with password)
  */
 export interface LoginRequest {
   email: string;
+  password: string;
 }
 
 /**
@@ -71,5 +73,6 @@ export interface LoginRequest {
  */
 export interface LoginResponse {
   success: boolean;
-  message: string;
+  user: AuthUserData;
+  session: AuthSession;
 }

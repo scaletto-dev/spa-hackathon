@@ -7,6 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 
 export interface RegisterRequest {
   email: string;
+  password: string;
   fullName: string;
   phone?: string;
 }
@@ -45,11 +46,13 @@ export interface VerifyOtpResponse {
 
 export interface LoginRequest {
   email: string;
+  password: string;
 }
 
 export interface LoginResponse {
   success: boolean;
-  message: string;
+  user: AuthUser;
+  session: AuthSession;
 }
 
 /**
@@ -93,7 +96,7 @@ export async function verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpRespon
 }
 
 /**
- * Send login OTP to user's email
+ * Login with email and password
  */
 export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {

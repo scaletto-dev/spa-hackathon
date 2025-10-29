@@ -1,7 +1,7 @@
 import { supabase } from '../config/supabase';
 import { PrismaClient, UserRole } from '@prisma/client';
-import { RegisterRequest, AuthUserData, AuthSession } from '../types/auth';
-import { ValidationError, ConflictError } from '../utils/errors';
+import { RegisterRequest, AuthUserData, AuthSession, LoginRequest } from '../types/auth';
+import { ValidationError, ConflictError, UnauthorizedError } from '../utils/errors';
 import logger from '../config/logger';
 
 const prisma = new PrismaClient();
@@ -12,8 +12,8 @@ const prisma = new PrismaClient();
  */
 class AuthService {
   /**
-   * Register a new user with email OTP verification
-   * @param data - Registration data (email, fullName, phone)
+   * Register a new user with email, password, and send OTP for verification
+   * @param data - Registration data (email, password, fullName, phone)
    * @returns Promise<void>
    * @throws ValidationError if data is invalid
    * @throws ConflictError if email already exists
@@ -23,7 +23,7 @@ class AuthService {
       throw new Error('Supabase client not configured');
     }
 
-    const { email, fullName, phone } = data;
+    const { email, password, fullName, phone } = data;
 
     // Check if user already exists in our database
     const existingUser = await prisma.user.findUnique({
@@ -34,9 +34,10 @@ class AuthService {
       throw new ConflictError('Email already registered');
     }
 
-    // Create user in Supabase Auth with OTP (passwordless)
-    const { data: authData, error: authError } = await supabase.auth.signInWithOtp({
+    // Create user in Supabase Auth with password and request email verification
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
+      password,
       options: {
         data: {
           full_name: fullName,
@@ -53,11 +54,30 @@ class AuthService {
       throw new Error(`Registration failed: ${authError.message}`);
     }
 
-    // Store pending registration data (will be finalized on OTP verification)
-    // We don't create the User record yet - it will be created after email verification
-    logger.info('Registration OTP sent', {
+    if (!authData.user) {
+      throw new Error('Registration failed: No user data returned');
+    }
+
+    // Send OTP for email verification
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false, // User already created
+      },
+    });
+
+    if (otpError) {
+      logger.error('Failed to send verification OTP', {
+        error: otpError.message,
+        email,
+      });
+      // Don't fail registration if OTP send fails, user can request resend
+    }
+
+    logger.info('Registration initiated, OTP sent', {
       email,
       fullName,
+      userId: authData.user.id,
     });
   }
 
@@ -153,39 +173,77 @@ class AuthService {
   }
 
   /**
-   * Send login OTP to user's email
-   * @param email - User's email
-   * @returns Promise<void>
-   * @throws ValidationError if email not found
+   * Login with email and password
+   * @param data - Login credentials (email, password)
+   * @returns User data and session tokens
+   * @throws UnauthorizedError if credentials are invalid
    */
-  async login(email: string): Promise<void> {
+  async login(data: LoginRequest): Promise<{ user: AuthUserData; session: AuthSession }> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
 
-    // Check if user exists in our database
-    const user = await prisma.user.findUnique({
+    const { email, password } = data;
+
+    // Authenticate with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError || !authData.user || !authData.session) {
+      logger.error('Login failed', {
+        error: authError?.message,
+        email,
+      });
+      throw new UnauthorizedError('Invalid email or password');
+    }
+
+    const supabaseUser = authData.user;
+    const session = authData.session;
+
+    // Get or create user in our database
+    let user = await prisma.user.findUnique({
       where: { email },
     });
 
+    // If user doesn't exist in our DB (shouldn't happen for login), create them
     if (!user) {
-      throw new ValidationError('No account found with this email address');
+      user = await prisma.user.create({
+        data: {
+          email: supabaseUser.email!,
+          fullName: supabaseUser.user_metadata?.full_name || 'User',
+          phone: supabaseUser.user_metadata?.phone || '',
+          role: UserRole.MEMBER,
+          emailVerified: supabaseUser.email_confirmed_at != null,
+          supabaseAuthId: supabaseUser.id,
+        },
+      });
     }
 
-    // Send OTP via Supabase Auth
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
+    // Map to response format
+    const userData: AuthUserData = {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      phone: user.phone,
+      role: user.role,
+      emailVerified: user.emailVerified,
+    };
+
+    const sessionData: AuthSession = {
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token,
+      expiresIn: session.expires_in || 3600,
+      expiresAt: session.expires_at || Date.now() / 1000 + 3600,
+    };
+
+    logger.info('User logged in successfully', {
+      userId: user.id,
+      email: user.email,
     });
 
-    if (error) {
-      logger.error('Login OTP send failed', {
-        error: error.message,
-        email,
-      });
-      throw new Error(`Login failed: ${error.message}`);
-    }
-
-    logger.info('Login OTP sent', { email });
+    return { user: userData, session: sessionData };
   }
 }
 

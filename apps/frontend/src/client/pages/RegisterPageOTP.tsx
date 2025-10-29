@@ -1,14 +1,14 @@
 /**
  * RegisterPageOTP Component
  * 
- * Story 4.3: Member Registration with Email OTP Flow
- * Two-step registration: 1) Email + Full Name, 2) OTP Verification
+ * Story 4.3: Member Registration with Email + Password + OTP Flow
+ * Three-step registration: 1) Email + Password + Full Name, 2) OTP Verification, 3) Success
  */
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { UserIcon, MailIcon, CheckCircleIcon, ArrowLeftIcon } from 'lucide-react';
+import { UserIcon, MailIcon, CheckCircleIcon, ArrowLeftIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
 import { register, verifyOtp } from '../../services/authApi';
 import { toast } from '../../utils/toast';
 
@@ -22,7 +22,13 @@ export function RegisterPageOTP() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    password: '',
+    confirmPassword: '',
   });
+  
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   // OTP state
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -33,6 +39,8 @@ export function RegisterPageOTP() {
   const [errors, setErrors] = useState<{
     fullName?: string;
     email?: string;
+    password?: string;
+    confirmPassword?: string;
     otp?: string;
   }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,6 +96,18 @@ export function RegisterPageOTP() {
       newErrors.email = 'Please enter a valid email address';
     }
 
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -98,6 +118,7 @@ export function RegisterPageOTP() {
     try {
       await register({
         email: formData.email.trim(),
+        password: formData.password,
         fullName: formData.fullName.trim(),
       });
 
@@ -198,6 +219,7 @@ export function RegisterPageOTP() {
     try {
       await register({
         email: formData.email,
+        password: formData.password,
         fullName: formData.fullName,
       });
 
@@ -283,6 +305,72 @@ export function RegisterPageOTP() {
                   </div>
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Password <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <UserIcon className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleFormChange}
+                      className={`block w-full pl-10 pr-12 py-3 border ${
+                        errors.password ? 'border-red-300' : 'border-pink-100'
+                      } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
+                      placeholder="Min. 8 characters"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  )}
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm Password <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <CheckCircleIcon className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleFormChange}
+                      className={`block w-full pl-10 pr-12 py-3 border ${
+                        errors.confirmPassword ? 'border-red-300' : 'border-pink-100'
+                      } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
+                      placeholder="Re-enter password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      {showConfirmPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
                   )}
                 </div>
 
