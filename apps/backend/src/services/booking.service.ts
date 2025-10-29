@@ -4,8 +4,10 @@ import {
    CreateBookingRequest,
    BookingWithDetailsDTO,
    CancelBookingRequest,
+   BookingDTO,
 } from "../types/booking";
 import ReferenceNumberGenerator from "../utils/referenceNumberGenerator";
+import availabilityService from "./availability.service";
 
 /**
  * Booking Service
@@ -64,6 +66,7 @@ export class BookingService {
             name: true,
             address: true,
             phone: true,
+            operatingHours: true,
          },
       });
 
@@ -76,6 +79,17 @@ export class BookingService {
       // Use transaction to prevent double booking
       const booking = await prisma.$transaction(async (tx) => {
          // Check for conflicts
+      // Validate time slot is within operating hours and available
+      await this.validateTimeSlot(
+         bookingData.serviceId,
+         bookingData.branchId,
+         bookingData.appointmentDate,
+         bookingData.appointmentTime
+      );
+
+      // Use transaction to prevent double booking
+      const booking = await prisma.$transaction(async (tx) => {
+         // Double-check availability within transaction
          const conflictingBookings = await tx.booking.findMany({
             where: {
                branchId: bookingData.branchId,
@@ -84,7 +98,7 @@ export class BookingService {
                ),
                appointmentTime: bookingData.appointmentTime,
                status: {
-                  in: ["CONFIRMED"],
+                  in: ["PENDING", "CONFIRMED"],
                },
             },
          });

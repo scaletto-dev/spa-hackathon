@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import contactService from '../services/contact.service';
+import emailService from '../services/email.service';
 import { CreateContactSubmissionRequest, ContactSubmissionResponse } from '../types/contact';
 import { ValidationError } from '../utils/errors';
 
@@ -59,6 +60,13 @@ class ContactController {
       };
 
       const submission = await contactService.createContactSubmission(contactData);
+
+      // Send email notification asynchronously (don't wait for it)
+      emailService.sendContactFormNotification(submission)
+        .catch((error) => {
+          console.error('Failed to send contact form notification email:', error);
+          // Don't throw error - email failure shouldn't block the response
+        });
 
       const response: ContactSubmissionResponse = {
         success: true,
