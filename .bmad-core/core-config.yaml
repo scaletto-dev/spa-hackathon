@@ -16,9 +16,7 @@ customTechnicalDocuments: null
 devLoadAlwaysFiles:
   - docs/architecture/high-level-architecture.md
   - docs/architecture/tech-stack.md
-  - docs/architecture/api-specification.md
-  - docs/project-management/git-workflow.md
-  - docs/project-management/pr-checklist.md
+  - docs/architecture/coding-convention-be.md
 devDebugLog: .ai/debug-log.md
 devStoryLocation: docs/stories
 slashPrefix: BMad

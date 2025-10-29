@@ -4,6 +4,7 @@ import servicesRoutes from './services.routes';
 import branchesRoutes from './branches.routes';
 import authRoutes from './auth.routes';
 import bookingsRoutes from './bookings.routes';
+import categoriesRoutes from './categories.routes';
 
 /**
  * Configure all application routes
@@ -11,6 +12,7 @@ import bookingsRoutes from './bookings.routes';
  * Mounts route handlers at their respective paths:
  * - /api/health - Health check endpoint (no /v1 prefix)
  * - /api/v1/services - Service catalog routes
+ * - /api/v1/categories - Service category routes
  * - /api/v1/branches - Branch location routes
  * - /api/v1/auth - Authentication routes (with rate limiting)
  * - /api/v1/bookings - Booking management routes
@@ -23,6 +25,7 @@ export function configureRoutes(app: Express): void {
 
   // API v1 routes
   app.use('/api/v1/services', servicesRoutes);
+  app.use('/api/v1/categories', categoriesRoutes);
   app.use('/api/v1/branches', branchesRoutes);
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/bookings', bookingsRoutes);

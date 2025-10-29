@@ -11,6 +11,7 @@ import { ErrorResponse } from '../types/api';
  */
 export function notFoundHandler(req: Request, res: Response): void {
   const errorResponse: ErrorResponse = {
+    success: false,
     error: 'NotFoundError',
     message: 'Route not found',
     statusCode: 404,
