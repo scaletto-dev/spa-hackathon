@@ -12,6 +12,7 @@ const AdminLayout = lazy(() => import('./layouts/AdminLayoutWrapper'));
 const Home = lazy(() => import('../client/pages/Home'));
 const ServicesPage = lazy(() => import('../client/pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('../client/pages/ServiceDetailPage'));
+const ReviewsPage = lazy(() => import('../client/pages/ReviewsPage'));
 const BookingPage = lazy(() => import('../client/pages/BookingPage'));
 const BranchesPage = lazy(() => import('../client/pages/BranchesPage'));
 const BlogPage = lazy(() => import('../client/pages/BlogPage'));
@@ -89,6 +90,14 @@ export const routes: RouteObject[] = [
                 element: (
                     <Suspense fallback={<Pending />}>
                         <ServiceDetailPage />
+                    </Suspense>
+                ),
+            },
+            {
+                path: 'reviews',
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <ReviewsPage />
                     </Suspense>
                 ),
             },

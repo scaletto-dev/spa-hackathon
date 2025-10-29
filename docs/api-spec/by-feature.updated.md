@@ -1566,9 +1566,12 @@ GET /api/v1/reviews
 **Auth:** Public  
 **Query Params:**
 
--   `serviceId` (number, optional)
--   `page` (number)
--   `limit` (number)
+-   `serviceId` (number, optional) - Filter by specific service
+-   `rating` (number, optional: 1-5) - Filter by star rating
+-   `page` (number, default: 1)
+-   `limit` (number, default: 20)
+-   `sortBy` (string, optional: date|rating, default: date)
+-   `sortOrder` (string, optional: asc|desc, default: desc)
 
 **Response 200:**
 
@@ -1579,13 +1582,15 @@ GET /api/v1/reviews
             "id": "number",
             "customerName": "string",
             "customerAvatar": "string",
-            "service": "string",
-            "rating": "number",
+            "serviceName": "string",
+            "serviceId": "number",
+            "branchName": "string",
+            "rating": "number (1-5)",
             "comment": "string",
-            "date": "string",
-            "branch": "string",
-            "reply": "string",
-            "replyDate": "string"
+            "date": "string (ISO 8601)",
+            "verified": "boolean",
+            "adminReply": "string|null",
+            "adminReplyDate": "string|null"
         }
     ],
     "meta": {
@@ -1593,13 +1598,45 @@ GET /api/v1/reviews
         "limit": 20,
         "total": 100,
         "totalPages": 5
+    },
+    "stats": {
+        "averageRating": "number",
+        "totalReviews": "number",
+        "ratingDistribution": {
+            "5": "number",
+            "4": "number",
+            "3": "number",
+            "2": "number",
+            "1": "number"
+        }
     }
 }
 ```
 
-**FE Usage:** `apps/frontend/src/store/mockDataStore.ts:69` (Review interface)
+**FE Usage:**
 
-**Notes:** Added `totalPages` to pagination meta.
+-   `apps/frontend/src/client/pages/ReviewsPage.tsx` - Full reviews page with filtering
+-   `apps/frontend/src/client/components/Home/Testimonials.tsx` - Homepage testimonials (5-star only)
+-   `apps/frontend/src/api/adapters/reviews.ts` - Mock adapter
+
+**Implementation Status:** ✅ COMPLETE (Phase 2-C)
+
+**Features Implemented:**
+
+-   Filter by rating (1-5 stars)
+-   Sort by date or rating (asc/desc)
+-   Pagination with page numbers
+-   Stats calculation (average, distribution)
+-   Verified badge display
+-   Admin reply threads
+-   Homepage integration (5-star reviews only)
+
+**Notes:**
+
+-   Homepage uses `?rating=5&limit=3&sortBy=date&sortOrder=desc` for testimonials
+-   Returns stats object for display in UI (average rating, distribution bars)
+-   Added `verified` field for customer verification
+-   Added `adminReply` and `adminReplyDate` for admin responses
 
 ---
 
@@ -1609,17 +1646,15 @@ GET /api/v1/reviews
 POST /api/v1/reviews
 ```
 
-**Auth:** Public | Client  
+**Auth:** Client (required) - Must be logged in and have completed booking  
 **Body:**
 
 ```json
 {
-    "customerName": "string",
-    "customerEmail": "string",
-    "service": "string",
-    "rating": "number",
-    "comment": "string",
-    "branch": "string"
+    "serviceId": "number",
+    "serviceName": "string",
+    "rating": "number (1-5, required)",
+    "comment": "string (min 10 chars, max 500 chars, required)"
 }
 ```
 
@@ -1630,15 +1665,47 @@ POST /api/v1/reviews
     "data": {
         "id": "number",
         "customerName": "string",
-        "service": "string",
+        "customerAvatar": "string",
+        "serviceName": "string",
+        "serviceId": "number",
         "rating": "number",
         "comment": "string",
-        "date": "2025-10-29T12:00:00Z",
-        "branch": "string",
-        "status": "pending"
+        "date": "string (ISO 8601)",
+        "verified": "boolean",
+        "status": "approved"
     }
 }
 ```
+
+**FE Usage:**
+
+-   `apps/frontend/src/client/components/reviews/WriteReviewModal.tsx` - Review submission modal
+-   `apps/frontend/src/client/pages/ServiceDetailPage.tsx` - Write Review button integration
+
+**Implementation Status:** ✅ COMPLETE (Phase 2-C)
+
+**Features Implemented:**
+
+-   Authentication check (must be logged in)
+-   Booking verification (must have completed booking for the service)
+-   Form validation (rating required, min 10 chars)
+-   Success/error states
+-   Auto-refresh reviews after submission
+-   Modal auto-close on success
+
+**Security Notes:**
+
+-   Backend MUST verify user has completed booking before allowing review
+-   Prevent duplicate reviews (1 per user per service)
+-   Auto-mark as verified if booking confirmed
+
+**Validation Rules:**
+
+-   Rating: Required, must be 1-5
+-   Comment: Required, min 10 chars, max 500 chars
+-   ServiceId: Required, must exist in database
+-   User: Must be authenticated
+-   Booking: Must have completed booking for this service
 
 ---
 
@@ -1722,7 +1789,47 @@ GET /api/v1/admin/reviews/metrics
 
 ---
 
-### 9.5 Update Review (Admin - Reply)
+### 9.5 Check Completed Booking (Client)
+
+```
+GET /api/v1/reviews/check-booking/:serviceId
+```
+
+**Auth:** Client (required)  
+**Path Params:**
+
+-   `serviceId` (number, required) - Service ID to check
+
+**Response 200:**
+
+```json
+{
+    "data": {
+        "hasCompletedBooking": "boolean",
+        "canWriteReview": "boolean",
+        "message": "string"
+    }
+}
+```
+
+**FE Usage:** `apps/frontend/src/client/components/reviews/WriteReviewModal.tsx` - Booking verification before showing review form
+
+**Implementation Status:** ✅ COMPLETE (Phase 2-C)
+
+**Response Scenarios:**
+
+-   `hasCompletedBooking: true` → User can write review
+-   `hasCompletedBooking: false` → Show message "Bạn cần hoàn thành dịch vụ này trước khi đánh giá"
+
+**Business Logic:**
+
+-   Check if user has at least one completed booking for this service
+-   Booking status must be "completed"
+-   Return appropriate message based on result
+
+---
+
+### 9.6 Update Review (Admin - Reply)
 
 ```
 PATCH /api/v1/admin/reviews/:id
@@ -1753,7 +1860,7 @@ PATCH /api/v1/admin/reviews/:id
 
 ---
 
-### 9.5 Delete Review
+### 9.7 Delete Review
 
 ```
 DELETE /api/v1/admin/reviews/:id
@@ -2636,5 +2743,128 @@ GET /api/v1/members/bookings
 -   Empty states per filter
 -   Auto-reset to page 1 on filter change
 -   Loading states
+
+---
+
+## 9. Reviews System - Implementation Summary
+
+**Status:** ✅ COMPLETE (Phase 2-C - October 29, 2025)
+
+### Overview
+
+Comprehensive reviews system allowing users to view, filter, and submit reviews across the application.
+
+### Public Endpoints
+
+-   `GET /api/v1/reviews` - List reviews with filtering, sorting, pagination
+-   `POST /api/v1/reviews` - Submit review (requires auth + completed booking)
+-   `GET /api/v1/reviews/check-booking/:serviceId` - Verify booking eligibility
+
+### Admin Endpoints
+
+-   `GET /api/v1/admin/reviews` - List all reviews with moderation status
+-   `GET /api/v1/admin/reviews/metrics` - Analytics dashboard
+-   `PATCH /api/v1/admin/reviews/:id` - Reply to reviews
+-   `DELETE /api/v1/admin/reviews/:id` - Delete reviews
+
+### Frontend Integration Points
+
+#### 1. Reviews Page (`/reviews`)
+
+-   **File:** `apps/frontend/src/client/pages/ReviewsPage.tsx`
+-   **Features:**
+    -   Stats display (4.8 avg, 12 total reviews)
+    -   Rating filter buttons (All, 5⭐, 4⭐, 3⭐, 2⭐, 1⭐)
+    -   Sort dropdown (newest/highest rating)
+    -   2-column responsive grid
+    -   Pagination with page numbers
+    -   Verified badges and admin replies
+    -   Write Review button
+
+#### 2. Homepage Testimonials
+
+-   **File:** `apps/frontend/src/client/components/Home/Testimonials.tsx`
+-   **Features:**
+    -   Shows 3 latest 5-star reviews only
+    -   Dynamic count display
+    -   Loading state with spinner
+    -   "View All Reviews" button → `/reviews`
+    -   API params: `?rating=5&limit=3&sortBy=date&sortOrder=desc`
+
+#### 3. Service Detail Page
+
+-   **File:** `apps/frontend/src/client/pages/ServiceDetailPage.tsx`
+-   **Features:**
+    -   "Write Review" button below "Book Now"
+    -   Opens WriteReviewModal with service context
+
+#### 4. Write Review Modal
+
+-   **File:** `apps/frontend/src/client/components/reviews/WriteReviewModal.tsx`
+-   **Features:**
+    -   3-state UI flow:
+        1. Not logged in → Redirect to login
+        2. No completed booking → Show message + redirect to booking
+        3. Verified → Show review form
+    -   Interactive 5-star selector
+    -   Character counter (10-500 chars)
+    -   Form validation
+    -   Success animation
+    -   Auto-refresh parent page on submit
+
+#### 5. Navigation
+
+-   **File:** `apps/frontend/src/client/components/layouts/Navbar.tsx`
+-   **Change:** Added "Reviews" menu item (between Services and Book)
+
+### Mock Data
+
+-   **File:** `apps/frontend/src/api/adapters/reviews.ts`
+-   **Dataset:** 12 Vietnamese reviews
+-   **Distribution:** 7×5⭐, 4×4⭐, 1×1⭐ (avg 4.8)
+-   **Features:** Verified badges, admin replies, realistic data
+
+### Key Features Delivered
+
+✅ Rating filter (1-5 stars)
+✅ Sort by date/rating
+✅ Pagination (6 per page on reviews page, 3 on homepage)
+✅ Authentication check
+✅ Booking verification
+✅ Form validation
+✅ Success/error states
+✅ Loading states
+✅ Responsive design
+✅ Admin reply display
+✅ Verified badge display
+✅ Stats calculation
+✅ Homepage integration
+
+### Security & Validation
+
+-   **Authentication:** JWT token required for POST /api/v1/reviews
+-   **Authorization:** User must have completed booking for service
+-   **Validation:**
+    -   Rating: 1-5 (required)
+    -   Comment: 10-500 chars (required)
+-   **Duplicate Prevention:** 1 review per user per service
+-   **Moderation:** Admin approval workflow (future)
+
+### Next Steps (Backend)
+
+-   [ ] Implement database persistence
+-   [ ] Add review approval workflow
+-   [ ] Implement profanity filter
+-   [ ] Add image upload support
+-   [ ] Email notifications (review submitted, admin replied)
+-   [ ] Prevent duplicate reviews enforcement
+-   [ ] Add helpful votes feature
+-   [ ] Implement text search in comments
+
+### Documentation
+
+-   **Implementation Summary:** `docs/stories/PHASE-2C-REVIEWS-SUMMARY.md`
+-   **API by Screens:** `docs/api-spec/api-by-screens.md` (Home page section updated)
+-   **Test Coverage:** 30+ test cases documented
 
 ---

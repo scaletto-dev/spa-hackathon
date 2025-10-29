@@ -20,6 +20,10 @@ export function Navbar() {
             path: '/services',
         },
         {
+            name: 'Reviews',
+            path: '/reviews',
+        },
+        {
             name: 'Book',
             path: '/booking',
         },
@@ -79,12 +83,12 @@ export function Navbar() {
                     </span>
                 </Link>
                 {/* Desktop Navigation */}
-                <nav className='hidden md:flex items-center gap-8'>
+                <nav className='hidden lg:flex items-center gap-6'>
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
                             to={link.path}
-                            className={`relative font-medium ${
+                            className={`relative font-medium text-sm ${
                                 location.pathname === link.path
                                     ? 'text-pink-600'
                                     : 'text-gray-700 hover:text-pink-600 transition-colors'
@@ -110,18 +114,18 @@ export function Navbar() {
                     ))}
                 </nav>
                 {/* Auth Section - Desktop */}
-                <div className='hidden md:flex items-center gap-3'>
+                <div className='hidden lg:flex items-center gap-3'>
                     {!isAuthenticated ? (
                         <>
                             <Link
                                 to='/login'
-                                className='px-5 py-2 text-gray-700 hover:text-pink-600 font-medium transition-colors'
+                                className='px-4 py-2 text-gray-700 hover:text-pink-600 font-medium transition-colors text-sm'
                             >
                                 Sign In
                             </Link>
                             <Link
                                 to='/register'
-                                className='px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow'
+                                className='px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow text-sm'
                             >
                                 Sign Up
                             </Link>
@@ -179,7 +183,7 @@ export function Navbar() {
                     )}
                 </div>
                 {/* Mobile Menu Button */}
-                <button className='md:hidden text-gray-700' onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                <button className='lg:hidden text-gray-700' onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                     {isMobileMenuOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
                 </button>
                 {/* Mobile Menu */}
@@ -197,7 +201,7 @@ export function Navbar() {
                             opacity: 0,
                             y: -20,
                         }}
-                        className='absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg shadow-lg py-6 px-6 flex flex-col gap-4 md:hidden'
+                        className='absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg shadow-lg py-6 px-6 flex flex-col gap-4 lg:hidden'
                     >
                         {navLinks.map((link) => (
                             <Link
