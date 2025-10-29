@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
+import path from 'path';
 import { corsOptions } from './config/cors';
 import { requestLogger } from './middleware/requestLogger';
 import { notFoundHandler } from './middleware/notFoundHandler';
@@ -9,8 +10,8 @@ import { errorHandler } from './middleware/errorHandler';
 import { configureRoutes } from './routes';
 import logger from './config/logger';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from root .env file
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 // Create Express app
 const app = express();
