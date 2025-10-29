@@ -1,12 +1,11 @@
 import { useState, FormEvent } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { EyeIcon, EyeOffIcon, MailIcon, LockIcon, ShieldCheckIcon } from 'lucide-react';
 import { useAuth } from '../../auth/useAuth';
 import { toast } from '../../utils/toast';
 
 export function AdminLoginPage() {
-    const navigate = useNavigate();
     const location = useLocation();
     const { loginAdmin, loginWithGoogleAdmin } = useAuth();
 
@@ -58,8 +57,11 @@ export function AdminLoginPage() {
             
             toast.success('Welcome back, Admin!');
             
-            // Redirect to original admin destination
-            navigate(from, { replace: true });
+            console.log('âœ… Admin logged in, redirecting to:', from);
+            
+            // Use window.location to force full page reload
+            // This ensures RequireRole guard sees the updated localStorage
+            window.location.href = from;
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Invalid admin credentials');
         } finally {
@@ -103,7 +105,8 @@ export function AdminLoginPage() {
                             try {
                                 await loginWithGoogleAdmin();
                                 toast.success('Admin signed in with Google!');
-                                navigate(from, { replace: true });
+                                console.log('âœ… Google Admin logged in, redirecting to:', from);
+                                window.location.href = from;
                             } catch (error) {
                                 const message = error instanceof Error ? error.message : 'Google Sign-In failed';
                                 toast.error(message);
@@ -269,7 +272,7 @@ export function AdminLoginPage() {
                     {/* Security Notice */}
                     <div className='mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl'>
                         <p className='text-xs text-blue-300 text-center'>
-                            í´’ Admin access is restricted and monitored. Unauthorized access attempts will be logged.
+                            ï¿½ï¿½ï¿½ Admin access is restricted and monitored. Unauthorized access attempts will be logged.
                         </p>
                     </div>
                 </div>

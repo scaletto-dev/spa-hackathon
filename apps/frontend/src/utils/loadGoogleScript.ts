@@ -1,10 +1,10 @@
 /**
  * Google Identity Services Script Loader
- * 
+ *
  * Loads the GIS script idempotently (safe to call multiple times).
  * Ensures only one script tag is added and all concurrent calls
  * wait for the same loading promise.
- * 
+ *
  * @returns Promise that resolves when script is loaded
  */
 

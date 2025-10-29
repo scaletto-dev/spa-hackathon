@@ -56,9 +56,9 @@ export function LoginPage() {
         try {
             // TODO: Replace with real API call
             await login({ email: formData.email, password: formData.password });
-            
+
             toast.success('Welcome back!');
-            
+
             // Redirect to original destination or home
             navigate(from, { replace: true });
         } catch (error) {

@@ -172,7 +172,7 @@ export function useAuth(): AuthState {
                 atob(base64)
                     .split('')
                     .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                    .join('')
+                    .join(''),
             );
             return JSON.parse(jsonPayload) as GoogleJWTPayload;
         } catch (error) {
@@ -254,19 +254,27 @@ export function useAuth(): AuthState {
                     if (notification.isNotDisplayed()) {
                         const reason = notification.getNotDisplayedReason();
                         console.error('Google Sign-In not displayed. Reason:', reason);
-                        console.error('Check: 1) Authorized JavaScript origins in Google Console, 2) Client ID is correct, 3) Origin matches exactly');
-                        
+                        console.error(
+                            'Check: 1) Authorized JavaScript origins in Google Console, 2) Client ID is correct, 3) Origin matches exactly',
+                        );
+
                         if (reason === 'invalid_client' || reason === 'missing_client_id') {
                             reject(new Error('Invalid Google Client ID. Check VITE_GOOGLE_CLIENT_ID in .env.local'));
                         } else if (reason === 'unregistered_origin') {
-                            reject(new Error(`Origin not authorized. Add http://localhost:5174 to Google Console > Credentials > Authorized JavaScript origins`));
+                            reject(
+                                new Error(
+                                    `Origin not authorized. Add http://localhost:5173 to Google Console > Credentials > Authorized JavaScript origins`,
+                                ),
+                            );
                         } else {
-                            reject(new Error(`Google Sign-In unavailable: ${reason}. Check browser console for details.`));
+                            reject(
+                                new Error(`Google Sign-In unavailable: ${reason}. Check browser console for details.`),
+                            );
                         }
                     } else if (notification.isSkippedMoment()) {
                         const reason = notification.getSkippedReason();
                         console.warn('Google Sign-In skipped. Reason:', reason);
-                        
+
                         if (reason === 'user_cancel' || reason === 'tap_outside') {
                             reject(new Error('Sign-in cancelled by user'));
                         } else {
@@ -335,7 +343,7 @@ export function useAuth(): AuthState {
 
             // Get allowed domains for admin (comma-separated)
             const allowedDomainsStr = import.meta.env.VITE_GOOGLE_ALLOWED_DOMAINS as string | undefined;
-            const allowedDomains = allowedDomainsStr ? allowedDomainsStr.split(',').map(d => d.trim()) : [];
+            const allowedDomains = allowedDomainsStr ? allowedDomainsStr.split(',').map((d) => d.trim()) : [];
 
             if (allowedDomains.length === 0) {
                 console.warn('VITE_GOOGLE_ALLOWED_DOMAINS not configured. All domains allowed for demo.');
@@ -359,7 +367,11 @@ export function useAuth(): AuthState {
                             // Check domain whitelist
                             const emailDomain = payload.email.split('@')[1];
                             if (allowedDomains.length > 0 && emailDomain && !allowedDomains.includes(emailDomain)) {
-                                reject(new Error(`Admin access requires authorized email domain. Allowed: ${allowedDomains.join(', ')}`));
+                                reject(
+                                    new Error(
+                                        `Admin access requires authorized email domain. Allowed: ${allowedDomains.join(', ')}`,
+                                    ),
+                                );
                                 return;
                             }
 
@@ -397,7 +409,7 @@ export function useAuth(): AuthState {
                     if (notification.isNotDisplayed()) {
                         const reason = notification.getNotDisplayedReason();
                         console.error('Google Admin Sign-In not displayed. Reason:', reason);
-                        
+
                         if (reason === 'invalid_client' || reason === 'missing_client_id') {
                             reject(new Error('Invalid Google Client ID. Check VITE_GOOGLE_CLIENT_ID in .env.local'));
                         } else if (reason === 'unregistered_origin') {
@@ -407,7 +419,7 @@ export function useAuth(): AuthState {
                         }
                     } else if (notification.isSkippedMoment()) {
                         const reason = notification.getSkippedReason();
-                        
+
                         if (reason === 'user_cancel' || reason === 'tap_outside') {
                             reject(new Error('Admin sign-in cancelled'));
                         } else {
@@ -436,6 +448,10 @@ export function useAuth(): AuthState {
 /**
  * Legacy mock login function for testing guards
  * TODO: Remove after real auth is implemented
+ * 
+ * Usage in browser console:
+ * - Admin: window.mockLogin('admin')
+ * - Client: window.mockLogin('client')
  */
 export function mockLogin(role: 'admin' | 'client' = 'client') {
     const user: User = {
@@ -444,7 +460,18 @@ export function mockLogin(role: 'admin' | 'client' = 'client') {
         email: role === 'admin' ? 'admin@example.com' : 'client@example.com',
         role,
     };
+    
+    // Mock token expires in 30 minutes
+    const expiresAt = Date.now() + 30 * 60 * 1000;
+    
     localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('auth/token', 'mock-jwt-token-' + Math.random().toString(36).substr(2, 9));
+    localStorage.setItem('auth/expiresAt', expiresAt.toString());
+    localStorage.setItem('auth/provider', 'mock');
+    
+    console.log(`✅ Mock login as ${role}:`, user);
+    console.log(`🕐 Token expires at: ${new Date(expiresAt).toLocaleTimeString()}`);
+    
     window.location.reload();
 }
 
@@ -454,5 +481,17 @@ export function mockLogin(role: 'admin' | 'client' = 'client') {
  */
 export function mockLogout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('auth/token');
+    localStorage.removeItem('auth/expiresAt');
+    localStorage.removeItem('auth/provider');
+    localStorage.removeItem('auth/googleCredential');
+    
+    console.log('✅ Logged out');
     window.location.reload();
+}
+
+// Expose to window for easy console access
+if (typeof window !== 'undefined') {
+    (window as unknown as { mockLogin: typeof mockLogin; mockLogout: typeof mockLogout }).mockLogin = mockLogin;
+    (window as unknown as { mockLogin: typeof mockLogin; mockLogout: typeof mockLogout }).mockLogout = mockLogout;
 }

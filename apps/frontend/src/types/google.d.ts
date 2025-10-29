@@ -34,7 +34,15 @@ interface GoogleInitializeConfig {
 
 interface GoogleCredentialResponse {
     credential: string; // JWT token
-    select_by: 'auto' | 'user' | 'user_1tap' | 'user_2tap' | 'btn' | 'btn_confirm' | 'brn_add_session' | 'btn_confirm_add_session';
+    select_by:
+        | 'auto'
+        | 'user'
+        | 'user_1tap'
+        | 'user_2tap'
+        | 'btn'
+        | 'btn_confirm'
+        | 'brn_add_session'
+        | 'btn_confirm_add_session';
     clientId?: string;
 }
 
@@ -53,7 +61,15 @@ interface PromptMomentNotification {
     isDisplayMoment: () => boolean;
     isDisplayed: () => boolean;
     isNotDisplayed: () => boolean;
-    getNotDisplayedReason: () => 'browser_not_supported' | 'invalid_client' | 'missing_client_id' | 'opt_out_or_no_session' | 'secure_http_required' | 'suppressed_by_user' | 'unregistered_origin' | 'unknown_reason';
+    getNotDisplayedReason: () =>
+        | 'browser_not_supported'
+        | 'invalid_client'
+        | 'missing_client_id'
+        | 'opt_out_or_no_session'
+        | 'secure_http_required'
+        | 'suppressed_by_user'
+        | 'unregistered_origin'
+        | 'unknown_reason';
     isSkippedMoment: () => boolean;
     getSkippedReason: () => 'auto_cancel' | 'user_cancel' | 'tap_outside' | 'issuing_failed';
     isDismissedMoment: () => boolean;

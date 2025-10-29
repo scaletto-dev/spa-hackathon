@@ -39,13 +39,13 @@ const Settings = lazy(() => import('../admin/pages/Settings'));
 /**
  * Route Configuration
  * Using React Router v6 with createBrowserRouter
- * 
+ *
  * Features:
  * - Lazy loading with Suspense for code splitting
  * - Error boundaries for graceful error handling
  * - RBAC guards (RequireRole) for admin routes
  * - All paths preserved from original routing
- * 
+ *
  * TODO: Add ProtectedRoute guards when auth system is implemented
  * TODO: Add login page when available
  */
