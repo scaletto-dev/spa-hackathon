@@ -9,12 +9,14 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MailIcon, CheckCircleIcon, EyeIcon, EyeOffIcon, UserIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { login } from '../../services/authApi';
 import { toast } from '../../utils/toast';
 
 type LoginStep = 'form' | 'success';
 
 export function LoginPageOTP() {
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnUrl = searchParams.get('returnUrl') || '/dashboard';
@@ -61,13 +63,13 @@ export function LoginPageOTP() {
     const newErrors: typeof errors = {};
     
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('auth.emailRequired');
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('auth.validEmail');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('auth.passwordRequired');
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -88,7 +90,7 @@ export function LoginPageOTP() {
       localStorage.setItem('refresh_token', response.session.refreshToken);
       localStorage.setItem('user_data', JSON.stringify(response.user));
 
-      toast.show('Login successful!', 'success');
+      toast.show(t('auth.loginSuccessful'), 'success');
       // setStep('success');
       
       // Redirect after showing success
@@ -96,7 +98,7 @@ export function LoginPageOTP() {
         navigate(returnUrl, { replace: true });
       }, 500);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      const errorMessage = error instanceof Error ? error.message : t('common.error');
       toast.show(errorMessage, 'error');
       setErrors({ email: errorMessage });
     } finally {
@@ -119,16 +121,16 @@ export function LoginPageOTP() {
             <>
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                  Welcome Back
+                  {t('auth.welcomeBack')}
                 </h1>
-                <p className="text-gray-600 mt-2">Sign in to continue your journey</p>
+                <p className="text-gray-600 mt-2">{t('auth.signInToContinue')}</p>
               </div>
 
               <form onSubmit={handleFormSubmit} className="space-y-5">
                 {/* Email */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address <span className="text-red-500">*</span>
+                    {t('auth.emailAddress')} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -154,7 +156,7 @@ export function LoginPageOTP() {
                 {/* Password */}
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password <span className="text-red-500">*</span>
+                    {t('auth.password')} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -169,7 +171,7 @@ export function LoginPageOTP() {
                       className={`block w-full pl-10 pr-12 py-3 border ${
                         errors.password ? 'border-red-300' : 'border-pink-100'
                       } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
-                      placeholder="Enter your password"
+                      placeholder={t('auth.enterPassword')}
                     />
                     <button
                       type="button"
@@ -190,15 +192,15 @@ export function LoginPageOTP() {
                   disabled={isSubmitting}
                   className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Signing in...' : 'Sign In'}
+                  {isSubmitting ? t('auth.signingIn') : t('auth.signIn')}
                 </button>
               </form>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
+                  {t('auth.dontHaveAccount')}{' '}
                   <Link to="/register" className="text-pink-600 hover:text-pink-700 font-semibold">
-                    Create Account
+                    {t('auth.createAccount')}
                   </Link>
                 </p>
               </div>
@@ -215,8 +217,8 @@ export function LoginPageOTP() {
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mb-4">
                 <CheckCircleIcon className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Login Successful!</h2>
-              <p className="text-gray-600">Redirecting to your dashboard...</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('auth.loginSuccessful')}</h2>
+              <p className="text-gray-600">{t('auth.redirecting')}</p>
             </motion.div>
           )}
         </div>

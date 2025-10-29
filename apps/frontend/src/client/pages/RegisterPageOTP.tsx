@@ -9,12 +9,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserIcon, MailIcon, CheckCircleIcon, ArrowLeftIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { register, verifyOtp } from '../../services/authApi';
 import { toast } from '../../utils/toast';
 
 type RegistrationStep = 'form' | 'otp' | 'success';
 
 export function RegisterPageOTP() {
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   
   // Form state
@@ -85,27 +87,27 @@ export function RegisterPageOTP() {
     const newErrors: typeof errors = {};
     
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      newErrors.fullName = t('auth.fullNameRequired');
     } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = 'Name must be at least 2 characters';
+      newErrors.fullName = t('auth.fullNameRequired');
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('auth.emailRequired');
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('auth.validEmail');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('auth.passwordRequired');
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = t('auth.passwordRequired');
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = t('auth.passwordRequired');
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('auth.passwordMismatch');
     }
 
     if (Object.keys(newErrors).length > 0) {

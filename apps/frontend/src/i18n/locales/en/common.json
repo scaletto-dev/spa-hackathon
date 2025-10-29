@@ -83,7 +83,32 @@
         "enterOTP": "Enter OTP",
         "sendOTP": "Send OTP",
         "verifyOTP": "Verify OTP",
-        "resendOTP": "Resend OTP"
+        "resendOTP": "Resend OTP",
+        "welcomeBack": "Welcome Back",
+        "signInToContinue": "Sign in to continue your journey",
+        "emailAddress": "Email Address",
+        "enterPassword": "Enter your password",
+        "signingIn": "Signing in...",
+        "loginSuccessful": "Login Successful!",
+        "redirecting": "Redirecting to your dashboard...",
+        "createAccount": "Create Account",
+        "emailRequired": "Email is required",
+        "validEmail": "Please enter a valid email address",
+        "passwordRequired": "Password is required",
+        "fullName": "Full Name",
+        "fullNameRequired": "Full name is required",
+        "phoneNumber": "Phone Number",
+        "phoneRequired": "Phone number is required",
+        "confirmPassword": "Confirm Password",
+        "passwordMismatch": "Passwords do not match",
+        "agreeToTerms": "I agree to the",
+        "termsAndConditions": "Terms and Conditions",
+        "privacyPolicy": "Privacy Policy",
+        "and": "and",
+        "creating": "Creating account...",
+        "registerSuccess": "Registration Successful!",
+        "accountCreated": "Your account has been created",
+        "startJourney": "Start your beauty journey"
     },
     "common": {
         "loading": "Loading...",
@@ -113,53 +138,53 @@
         "more": "More",
         "less": "Less"
     },
-  "nav": {
-    "home": "Home",
-    "services": "Services",
-    "reviews": "Reviews",
-    "book": "Book",
-    "locations": "Locations",
-    "blog": "Blog",
-    "contact": "Contact",
-    "dashboard": "Dashboard",
-    "myBookings": "My Bookings",
-    "myProfile": "My Profile"
-  },
-  "admin": {
-    "portal": "Admin Portal",
     "nav": {
-      "dashboard": "Dashboard",
-      "appointments": "Appointments",
-      "services": "Services",
-      "branches": "Branches",
-      "customers": "Customers",
-      "staff": "Staff",
-      "payments": "Payments",
-      "reviews": "Reviews",
-      "blog": "Blog",
-      "settings": "Settings"
+        "home": "Home",
+        "services": "Services",
+        "reviews": "Reviews",
+        "book": "Book",
+        "locations": "Locations",
+        "blog": "Blog",
+        "contact": "Contact",
+        "dashboard": "Dashboard",
+        "myBookings": "My Bookings",
+        "myProfile": "My Profile"
     },
-    "dashboard": {
-      "title": "Dashboard",
-      "welcome": "Welcome back! Here is your clinic overview",
-      "totalBookingsToday": "Total Bookings Today",
-      "activeMembers": "Active Members",
-      "revenue": "Revenue",
-      "satisfaction": "Satisfaction",
-      "recentBookings": "Recent Bookings",
-      "topServices": "Top Services",
-      "viewAll": "View All",
-      "pending": "Pending",
-      "confirmed": "Confirmed",
-      "completed": "Completed"
-    },
-    "quickActions": {
-      "title": "Quick Actions",
-      "newBooking": "New Booking",
-      "addService": "Add Service",
-      "viewReports": "View Reports"
-    },
-    "logout": "Logout",
-    "backToWebsite": "Back to Website"
-  }
+    "admin": {
+        "portal": "Admin Portal",
+        "nav": {
+            "dashboard": "Dashboard",
+            "appointments": "Appointments",
+            "services": "Services",
+            "branches": "Branches",
+            "customers": "Customers",
+            "staff": "Staff",
+            "payments": "Payments",
+            "reviews": "Reviews",
+            "blog": "Blog",
+            "settings": "Settings"
+        },
+        "dashboard": {
+            "title": "Dashboard",
+            "welcome": "Welcome back! Here is your clinic overview",
+            "totalBookingsToday": "Total Bookings Today",
+            "activeMembers": "Active Members",
+            "revenue": "Revenue",
+            "satisfaction": "Satisfaction",
+            "recentBookings": "Recent Bookings",
+            "topServices": "Top Services",
+            "viewAll": "View All",
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "completed": "Completed"
+        },
+        "quickActions": {
+            "title": "Quick Actions",
+            "newBooking": "New Booking",
+            "addService": "Add Service",
+            "viewReports": "View Reports"
+        },
+        "logout": "Logout",
+        "backToWebsite": "Back to Website"
+    }
 }

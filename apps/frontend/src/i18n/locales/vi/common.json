@@ -83,7 +83,32 @@
         "enterOTP": "Nhập mã OTP",
         "sendOTP": "Gửi mã OTP",
         "verifyOTP": "Xác thực OTP",
-        "resendOTP": "Gửi lại mã"
+        "resendOTP": "Gửi lại mã",
+        "welcomeBack": "Chào mừng trở lại",
+        "signInToContinue": "Đăng nhập để tiếp tục hành trình của bạn",
+        "emailAddress": "Địa chỉ email",
+        "enterPassword": "Nhập mật khẩu của bạn",
+        "signingIn": "Đang đăng nhập...",
+        "loginSuccessful": "Đăng nhập thành công!",
+        "redirecting": "Đang chuyển hướng đến bảng điều khiển...",
+        "createAccount": "Tạo tài khoản",
+        "emailRequired": "Vui lòng nhập email",
+        "validEmail": "Vui lòng nhập địa chỉ email hợp lệ",
+        "passwordRequired": "Vui lòng nhập mật khẩu",
+        "fullName": "Họ và tên",
+        "fullNameRequired": "Vui lòng nhập họ tên",
+        "phoneNumber": "Số điện thoại",
+        "phoneRequired": "Vui lòng nhập số điện thoại",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "passwordMismatch": "Mật khẩu không khớp",
+        "agreeToTerms": "Tôi đồng ý với",
+        "termsAndConditions": "Điều khoản và Điều kiện",
+        "privacyPolicy": "Chính sách Bảo mật",
+        "and": "và",
+        "creating": "Đang tạo tài khoản...",
+        "registerSuccess": "Đăng ký thành công!",
+        "accountCreated": "Tài khoản của bạn đã được tạo",
+        "startJourney": "Bắt đầu hành trình làm đẹp của bạn"
     },
     "common": {
         "loading": "Đang tải...",
@@ -113,53 +138,53 @@
         "more": "Thêm",
         "less": "Ít hơn"
     },
-  "nav": {
-    "home": "Trang chủ",
-    "services": "Dịch vụ",
-    "reviews": "Đánh giá",
-    "book": "Đặt lịch",
-    "locations": "Chi nhánh",
-    "blog": "Blog",
-    "contact": "Liên hệ",
-    "dashboard": "Bảng điều khiển",
-    "myBookings": "Lịch hẹn",
-    "myProfile": "Hồ sơ"
-  },
-  "admin": {
-    "portal": "Cổng quản trị",
     "nav": {
-      "dashboard": "Bảng điều khiển",
-      "appointments": "Lịch hẹn",
-      "services": "Dịch vụ",
-      "branches": "Chi nhánh",
-      "customers": "Khách hàng",
-      "staff": "Nhân viên",
-      "payments": "Thanh toán",
-      "reviews": "Đánh giá",
-      "blog": "Blog",
-      "settings": "Cài đặt"
+        "home": "Trang chủ",
+        "services": "Dịch vụ",
+        "reviews": "Đánh giá",
+        "book": "Đặt lịch",
+        "locations": "Chi nhánh",
+        "blog": "Blog",
+        "contact": "Liên hệ",
+        "dashboard": "Bảng điều khiển",
+        "myBookings": "Lịch hẹn",
+        "myProfile": "Hồ sơ"
     },
-    "dashboard": {
-      "title": "Bảng điều khiển",
-      "welcome": "Chào mừng trở lại! Đây là tổng quan phòng khám của bạn",
-      "totalBookingsToday": "Tổng lịch hẹn hôm nay",
-      "activeMembers": "Thành viên hoạt động",
-      "revenue": "Doanh thu",
-      "satisfaction": "Độ hài lòng",
-      "recentBookings": "Lịch hẹn gần đây",
-      "topServices": "Dịch vụ hàng đầu",
-      "viewAll": "Xem tất cả",
-      "pending": "Chờ xử lý",
-      "confirmed": "Đã xác nhận",
-      "completed": "Hoàn thành"
-    },
-    "quickActions": {
-      "title": "Hành động nhanh",
-      "newBooking": "Lịch hẹn mới",
-      "addService": "Thêm dịch vụ",
-      "viewReports": "Xem báo cáo"
-    },
-    "logout": "Đăng xuất",
-    "backToWebsite": "Quay lại trang web"
-  }
+    "admin": {
+        "portal": "Cổng quản trị",
+        "nav": {
+            "dashboard": "Bảng điều khiển",
+            "appointments": "Lịch hẹn",
+            "services": "Dịch vụ",
+            "branches": "Chi nhánh",
+            "customers": "Khách hàng",
+            "staff": "Nhân viên",
+            "payments": "Thanh toán",
+            "reviews": "Đánh giá",
+            "blog": "Blog",
+            "settings": "Cài đặt"
+        },
+        "dashboard": {
+            "title": "Bảng điều khiển",
+            "welcome": "Chào mừng trở lại! Đây là tổng quan phòng khám của bạn",
+            "totalBookingsToday": "Tổng lịch hẹn hôm nay",
+            "activeMembers": "Thành viên hoạt động",
+            "revenue": "Doanh thu",
+            "satisfaction": "Độ hài lòng",
+            "recentBookings": "Lịch hẹn gần đây",
+            "topServices": "Dịch vụ hàng đầu",
+            "viewAll": "Xem tất cả",
+            "pending": "Chờ xử lý",
+            "confirmed": "Đã xác nhận",
+            "completed": "Hoàn thành"
+        },
+        "quickActions": {
+            "title": "Hành động nhanh",
+            "newBooking": "Lịch hẹn mới",
+            "addService": "Thêm dịch vụ",
+            "viewReports": "Xem báo cáo"
+        },
+        "logout": "Đăng xuất",
+        "backToWebsite": "Quay lại trang web"
+    }
 }
