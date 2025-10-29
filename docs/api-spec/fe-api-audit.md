@@ -172,3 +172,123 @@
 
 **Next Step:** Backend implementation (Prisma + Express + Supabase)
 
+
+---
+
+## Ì¥Ñ Phase 1-A1: Member Dashboard (Oct 29, 2025)
+
+### Added:
+- [x] GET /api/v1/members/dashboard - Wired to mock adapter
+  - Component: `src/client/pages/dashboard/MemberDashboard.tsx:24`
+  - Adapter: `src/api/adapters/member.ts:getMemberDashboard()`
+  - Status: ‚úÖ Mock implemented, awaiting real API
+
+### Risks/TODOs:
+- [ ] Confirm status enum: 'confirmed' | 'completed' | 'cancelled' | 'no_show'
+- [ ] Define memberPoints calculation (backend responsibility)
+- [ ] Clarify specialOffers personalization (global vs per-member)
+- [ ] Empty state copy when no upcoming bookings
+
+---
+
+## Ì¥ú Pending Phase 1 Features (Not Yet Implemented)
+
+### A2: Booking History Page (/dashboard/bookings)
+- [ ] GET /api/v1/members/bookings?page&limit&status&dateFrom&dateTo
+  - Pagination required
+  - Status filter tabs
+  - Date range filter
+
+### A3: Profile Management (/dashboard/profile)
+- [ ] GET /api/v1/members/profile (read)
+- [ ] PUT /api/v1/members/profile (update)
+  - Fields: fullName, phone, language
+  - Email read-only
+
+---
+
+## Ì≥ä Updated Summary
+
+**Total FE-BE Mappings:** 67 endpoints  
+**Fully Covered:** 64 ‚úÖ  
+**Mock/Pending Real API:** 1 Ì¥Ñ (Phase 1-A1)  
+**Not Yet Wired:** 2 ‚è≥ (A2, A3)
+
+**Coverage Rate:** 95.5%
+
+---
+
+## Next Actions
+
+1. **Backend Team**: Implement `GET /api/v1/members/dashboard` matching mock response schema
+2. **Frontend Team**: Continue Phase 1-A2 (Booking History page)
+3. **QA**: Test member dashboard with real authenticated sessions after API ready
+
+
+---
+
+## Ì¥Ñ Phase 1-A2: Booking History (Oct 29, 2025)
+
+### Added:
+- [x] GET /api/v1/members/bookings - Wired to mock adapter
+  - Component: `src/client/pages/dashboard/BookingHistory.tsx:26`
+  - Adapter: `src/api/adapters/member.ts:getMemberBookings()`
+  - Status: ‚úÖ Mock implemented with full pagination + filters, awaiting real API
+
+### Features Implemented:
+- [x] Status filter tabs (All, Upcoming, Completed, Cancelled)
+- [x] Pagination with prev/next controls
+- [x] Responsive design (desktop table, mobile cards)
+- [x] Empty states per filter type
+- [x] Loading states
+- [x] Status badges with icons
+- [x] Back to Dashboard navigation
+- [x] Auto-reset to page 1 on filter change
+- [x] 12 mock bookings across all statuses
+
+### Query Parameters Supported:
+- `page` (number, default: 1)
+- `limit` (number, default: 10)
+- `status` ('all' | 'confirmed' | 'completed' | 'cancelled' | 'no_show')
+- `dateFrom` (ISO 8601, optional) - backend ready, UI not wired yet
+- `dateTo` (ISO 8601, optional) - backend ready, UI not wired yet
+
+### Risks/TODOs:
+- [ ] Date range filter UI not implemented (API params ready)
+- [ ] Export to PDF/CSV functionality
+- [ ] Booking detail view/modal
+- [ ] Rebook/reschedule actions
+- [ ] Confirm totalPages calculation in backend matches frontend expectation
+
+---
+
+## Ì¥ú Pending Phase 1 Features (Not Yet Implemented)
+
+### A3: Profile Management (/dashboard/profile)
+- [ ] GET /api/v1/members/profile (read)
+- [ ] PUT /api/v1/members/profile (update)
+  - Fields: fullName, phone, language
+  - Email read-only
+
+---
+
+## Ì≥ä Updated Summary
+
+**Total FE-BE Mappings:** 68 endpoints  
+**Fully Covered:** 64 ‚úÖ  
+**Mock/Pending Real API:** 2 Ì¥Ñ (Phase 1-A1, A2)  
+**Not Yet Wired:** 2 ‚è≥ (A3 profile endpoints)
+
+**Coverage Rate:** 94.1% (63/67 endpoints excluding profile)
+
+---
+
+## Next Actions
+
+1. **Backend Team**: 
+   - Implement `GET /api/v1/members/dashboard` matching mock schema
+   - Implement `GET /api/v1/members/bookings` with pagination & filters
+   - Ensure `totalPages` field in meta response
+2. **Frontend Team**: Continue Phase 1-A3 (Profile Management page)
+3. **QA**: Test booking history filters, pagination, empty states
+

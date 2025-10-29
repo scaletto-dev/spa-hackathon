@@ -59,8 +59,7 @@ export function Navbar() {
         if (user?.role === 'admin') {
             navigate('/admin');
         } else {
-            // TODO: Navigate to member dashboard when implemented
-            navigate('/');
+            navigate('/dashboard');
         }
     };
     return (

@@ -10,9 +10,9 @@
 
 All endpoints include **Auth** field with one of:
 
-- **Public** - No authentication required
-- **Client** - Requires client user authentication (JWT token)
-- **Admin** - Requires admin role (JWT token + admin privileges)
+-   **Public** - No authentication required
+-   **Client** - Requires client user authentication (JWT token)
+-   **Admin** - Requires admin role (JWT token + admin privileges)
 
 **Migration Note:** Previous versions used ambiguous "required" - now explicit about client vs admin.
 
@@ -330,10 +330,10 @@ GET /api/v1/services
 **Auth:** Public  
 **Query Params:**
 
-- `page` (number, default: 1)
-- `limit` (number, default: 20)
-- `category` (string, optional: Facial|Massage|Hair|Nails|Body)
-- `active` (boolean, optional, default: true)
+-   `page` (number, default: 1)
+-   `limit` (number, default: 20)
+-   `category` (string, optional: Facial|Massage|Hair|Nails|Body)
+-   `active` (boolean, optional, default: true)
 
 **Response 200:**
 
@@ -362,9 +362,9 @@ GET /api/v1/services
 
 **FE Usage:**
 
-- `apps/frontend/src/store/mockDataStore.ts:116` (Service interface)
-- `apps/frontend/src/client/components/booking/BookingServiceSelect.tsx`
-- `apps/frontend/src/client/pages/ServicesPage.tsx:94` (category filter)
+-   `apps/frontend/src/store/mockDataStore.ts:116` (Service interface)
+-   `apps/frontend/src/client/components/booking/BookingServiceSelect.tsx`
+-   `apps/frontend/src/client/pages/ServicesPage.tsx:94` (category filter)
 
 **Notes:** Category values: Facial|Massage|Hair|Nails|Body (explicit enum). Added `totalPages` to meta.
 
@@ -430,9 +430,9 @@ GET /api/v1/branches
 
 **FE Usage:**
 
-- `apps/frontend/src/store/mockDataStore.ts:18` (Branch interface)
-- `apps/frontend/src/client/components/booking/BookingBranchSelect.tsx`
-  **Notes:** Location structure confirmed as `{lat, lng}` object, NOT flat fields
+-   `apps/frontend/src/store/mockDataStore.ts:18` (Branch interface)
+-   `apps/frontend/src/client/components/booking/BookingBranchSelect.tsx`
+    **Notes:** Location structure confirmed as `{lat, lng}` object, NOT flat fields
 
 ---
 
@@ -445,9 +445,9 @@ GET /api/v1/branches/nearby
 **Auth:** Public  
 **Query Params:**
 
-- `lat` (number, required)
-- `lng` (number, required)
-- `radius` (number, optional, default: 10km)
+-   `lat` (number, required)
+-   `lng` (number, required)
+-   `radius` (number, optional, default: 10km)
 
 **Response 200:**
 
@@ -489,10 +489,10 @@ GET /api/v1/bookings/availability
 **Auth:** Public  
 **Query Params:**
 
-- `serviceId` (number, required)
-- `branchId` (number, required)
-- `date` (string, required, format: YYYY-MM-DD)
-- `therapistId` (number, optional)
+-   `serviceId` (number, required)
+-   `branchId` (number, required)
+-   `date` (string, required, format: YYYY-MM-DD)
+-   `therapistId` (number, optional)
 
 **Response 200:**
 
@@ -572,9 +572,9 @@ POST /api/v1/bookings
 **FE Fields:** name, email, phone, notes (from BookingUserInfo)  
 **Date/Time Format:**
 
-- `date`: Date-only string in YYYY-MM-DD format (e.g., "2025-10-30")
-- `time`: Time-only string in HH:mm 24-hour format (e.g., "14:30")
-- `createdAt`, `updatedAt`: Full ISO 8601 timestamp with timezone
+-   `date`: Date-only string in YYYY-MM-DD format (e.g., "2025-10-30")
+-   `time`: Time-only string in HH:mm 24-hour format (e.g., "14:30")
+-   `createdAt`, `updatedAt`: Full ISO 8601 timestamp with timezone
 
 ---
 
@@ -623,9 +623,9 @@ GET /api/v1/profile/bookings
 **Auth:** Required (client)  
 **Query Params:**
 
-- `status` (string, optional: completed|upcoming|cancelled)
-- `page` (number, default: 1)
-- `limit` (number, default: 10)
+-   `status` (string, optional: completed|upcoming|cancelled)
+-   `page` (number, default: 1)
+-   `limit` (number, default: 10)
 
 **Response 200:**
 
@@ -668,11 +668,11 @@ GET /api/v1/admin/appointments
 **Auth:** Admin  
 **Query Params:**
 
-- `page` (number)
-- `limit` (number)
-- `branch` (string, optional)
-- `status` (string, optional: confirmed|pending|completed|cancelled)
-- `q` (string, optional - search by customer name or service)
+-   `page` (number)
+-   `limit` (number)
+-   `branch` (string, optional)
+-   `status` (string, optional: confirmed|pending|completed|cancelled)
+-   `q` (string, optional - search by customer name or service)
 
 **Response 200:**
 
@@ -708,9 +708,9 @@ GET /api/v1/admin/appointments
 
 **FE Usage:**
 
-- `apps/frontend/src/admin/pages/Appointments.tsx:9` (useAppointments hook)
-- `apps/frontend/src/store/mockDataStore.ts:52` (Appointment interface)
-- `apps/frontend/src/admin/pages/Appointments.tsx:11` (search feature)
+-   `apps/frontend/src/admin/pages/Appointments.tsx:9` (useAppointments hook)
+-   `apps/frontend/src/store/mockDataStore.ts:52` (Appointment interface)
+-   `apps/frontend/src/admin/pages/Appointments.tsx:11` (search feature)
 
 **Notes:** Status values are lowercase. Added `q` param for search, `totalPages` to meta.
 
@@ -842,9 +842,9 @@ GET /api/v1/admin/customers
 **Auth:** Admin  
 **Query Params:**
 
-- `page` (number)
-- `limit` (number)
-- `q` (string, optional - search by name, email, or phone)
+-   `page` (number)
+-   `limit` (number)
+-   `q` (string, optional - search by name, email, or phone)
 
 **Response 200:**
 
@@ -876,8 +876,8 @@ GET /api/v1/admin/customers
 
 **FE Usage:**
 
-- `apps/frontend/src/store/mockDataStore.ts:40` (Customer interface)
-- `apps/frontend/src/admin/pages/Customers.tsx:148` (search feature)
+-   `apps/frontend/src/store/mockDataStore.ts:40` (Customer interface)
+-   `apps/frontend/src/admin/pages/Customers.tsx:148` (search feature)
 
 **⚠️ BREAKING:** `membershipTier` changed from `New|Silver|Gold|VIP` to lowercase `new|silver|gold|vip`. Frontend can map to title case for display.
 
@@ -1052,10 +1052,10 @@ GET /api/v1/staff/available
 **Auth:** Public  
 **Query Params:**
 
-- `branchId` (number, optional)
-- `serviceId` (number, optional)
-- `date` (string, optional, format: YYYY-MM-DD)
-- `time` (string, optional, format: HH:mm)
+-   `branchId` (number, optional)
+-   `serviceId` (number, optional)
+-   `date` (string, optional, format: YYYY-MM-DD)
+-   `time` (string, optional, format: HH:mm)
 
 **Response 200:**
 
@@ -1076,8 +1076,8 @@ GET /api/v1/staff/available
 
 **FE Usage:**
 
-- `apps/frontend/src/client/components/booking/TherapistSelector.tsx`
-- `apps/frontend/src/client/components/booking/QuickBooking.tsx:249`
+-   `apps/frontend/src/client/components/booking/TherapistSelector.tsx`
+-   `apps/frontend/src/client/components/booking/QuickBooking.tsx:249`
 
 **Notes:** Public endpoint with limited fields (id, name, image, rating, specialties only). No contact info exposed.
 
@@ -1120,9 +1120,9 @@ GET /api/v1/admin/staff
 **Auth:** Admin  
 **Query Params:**
 
-- `page` (number, optional)
-- `limit` (number, optional)
-- `q` (string, optional - search by name, email, or role)
+-   `page` (number, optional)
+-   `limit` (number, optional)
+-   `q` (string, optional - search by name, email, or role)
 
 **Response 200:**
 
@@ -1167,8 +1167,8 @@ GET /api/v1/admin/staff/:id/schedule
 **Auth:** Admin  
 **Query Params:**
 
-- `dateFrom` (string, required, format: YYYY-MM-DD)
-- `dateTo` (string, required, format: YYYY-MM-DD)
+-   `dateFrom` (string, required, format: YYYY-MM-DD)
+-   `dateTo` (string, required, format: YYYY-MM-DD)
 
 **Response 200:**
 
@@ -1321,10 +1321,10 @@ GET /api/v1/admin/services
 **Auth:** Admin  
 **Query Params:**
 
-- `page` (number)
-- `limit` (number)
-- `active` (boolean, optional)
-- `q` (string, optional - search by name or category)
+-   `page` (number)
+-   `limit` (number)
+-   `active` (boolean, optional)
+-   `q` (string, optional - search by name or category)
 
 **Response:**
 
@@ -1438,9 +1438,9 @@ GET /api/v1/admin/branches
 **Auth:** Admin  
 **Query Params:**
 
-- `page` (number, optional)
-- `limit` (number, optional)
-- `q` (string, optional - search by name or address)
+-   `page` (number, optional)
+-   `limit` (number, optional)
+-   `q` (string, optional - search by name or address)
 
 **Response:**
 
@@ -1566,9 +1566,9 @@ GET /api/v1/reviews
 **Auth:** Public  
 **Query Params:**
 
-- `serviceId` (number, optional)
-- `page` (number)
-- `limit` (number)
+-   `serviceId` (number, optional)
+-   `page` (number)
+-   `limit` (number)
 
 **Response 200:**
 
@@ -1651,10 +1651,10 @@ GET /api/v1/admin/reviews
 **Auth:** Admin  
 **Query Params:**
 
-- `status` (string: pending|approved|rejected)
-- `page` (number)
-- `limit` (number)
-- `q` (string, search)
+-   `status` (string: pending|approved|rejected)
+-   `page` (number)
+-   `limit` (number)
+-   `q` (string, search)
 
 **Response 200:**
 
@@ -1783,13 +1783,13 @@ GET /api/v1/blog/posts
 **Auth:** Public  
 **Query Params:**
 
-- `q` (string, optional - search in title/content)
-- `category` (string, optional)
-- `tags` (string, optional - comma-separated)
-- `sort` (string, optional: views|date, default: date)
-- `published` (boolean, default: true)
-- `page` (number, default: 1)
-- `limit` (number, default: 20)
+-   `q` (string, optional - search in title/content)
+-   `category` (string, optional)
+-   `tags` (string, optional - comma-separated)
+-   `sort` (string, optional: views|date, default: date)
+-   `published` (boolean, default: true)
+-   `page` (number, default: 1)
+-   `limit` (number, default: 20)
 
 **Response 200:**
 
@@ -2022,12 +2022,12 @@ GET /api/v1/admin/payments
 **Auth:** Admin  
 **Query Params:**
 
-- `status` (string: completed|pending|refunded|failed)
-- `dateFrom` (string, ISO date)
-- `dateTo` (string, ISO date)
-- `page` (number)
-- `limit` (number)
-- `q` (string, optional - search by customer name or transaction ID)
+-   `status` (string: completed|pending|refunded|failed)
+-   `dateFrom` (string, ISO date)
+-   `dateTo` (string, ISO date)
+-   `page` (number)
+-   `limit` (number)
+-   `q` (string, optional - search by customer name or transaction ID)
 
 **Response 200:**
 
@@ -2134,15 +2134,15 @@ GET /api/v1/admin/payments/export
 **Auth:** Admin  
 **Query Params:**
 
-- `format` (string, required: csv|excel)
-- `dateFrom` (string, optional, format: YYYY-MM-DD)
-- `dateTo` (string, optional, format: YYYY-MM-DD)
-- `status` (string, optional: completed|pending|refunded|failed)
+-   `format` (string, required: csv|excel)
+-   `dateFrom` (string, optional, format: YYYY-MM-DD)
+-   `dateTo` (string, optional, format: YYYY-MM-DD)
+-   `status` (string, optional: completed|pending|refunded|failed)
 
 **Response 200:**
 
-- Content-Type: `text/csv` or `application/vnd.ms-excel`
-- File download
+-   Content-Type: `text/csv` or `application/vnd.ms-excel`
+-   File download
 
 **FE Usage:** `apps/frontend/src/admin/pages/Payments.tsx:112-116` (handleExportReport)  
 **Notes:** File generation required. Returns CSV or Excel file with payment data.
@@ -2158,7 +2158,7 @@ GET /api/v1/admin/payments/revenue-trend
 **Auth:** Admin  
 **Query Params:**
 
-- `period` (string, optional: 7d|30d|90d, default: 30d)
+-   `period` (string, optional: 7d|30d|90d, default: 30d)
 
 **Response 200:**
 
@@ -2244,7 +2244,7 @@ GET /api/v1/admin/dashboard/revenue-chart
 **Auth:** Admin  
 **Query Params:**
 
-- `period` (string, optional: 7d|30d|90d, default: 7d)
+-   `period` (string, optional: 7d|30d|90d, default: 7d)
 
 **Response 200:**
 
@@ -2272,7 +2272,7 @@ GET /api/v1/admin/dashboard/service-distribution
 **Auth:** Admin  
 **Query Params:**
 
-- `period` (string, optional: 7d|30d|90d, default: 30d)
+-   `period` (string, optional: 7d|30d|90d, default: 30d)
 
 **Response 200:**
 
@@ -2343,11 +2343,11 @@ POST /api/v1/admin/uploads/:folder
 **Content-Type:** multipart/form-data  
 **Path Params:**
 
-- `folder` (string, required: services|branches|blog|profile|staff)
+-   `folder` (string, required: services|branches|blog|profile|staff)
 
 **Body:**
 
-- `file` (File, required)
+-   `file` (File, required)
 
 **Response 201:**
 
@@ -2368,10 +2368,10 @@ POST /api/v1/admin/uploads/:folder
 **FE Usage:** Image uploads in admin modals (services, branches, blog, staff, profile)  
 **Notes:**
 
-- Folder routing organizes uploads by resource type
-- URL must be absolute (full https:// path) for FE display
-- Supports images only (jpg, png, webp)
-- Max file size: 5MB
+-   Folder routing organizes uploads by resource type
+-   URL must be absolute (full https:// path) for FE display
+-   Supports images only (jpg, png, webp)
+-   Max file size: 5MB
 
 ---
 
@@ -2406,31 +2406,35 @@ POST /api/v1/admin/uploads/:folder
 
 ## Field Standards
 
-- **IDs**: All IDs are numbers (frontend uses `number` type)
-- **Dates**: ISO 8601 strings (`"2025-10-29T12:00:00Z"`)
-- **Money**: Numbers (price, amount, totalSpent)
-- **Booleans**: `true|false` (active, published)
-- **Enums**: Lowercase strings with pipe (status: "confirmed|pending|completed|cancelled")
-- **Arrays**: Camel case (`services`, `specialties`, `tags`)
+-   **IDs**: All IDs are numbers (frontend uses `number` type)
+-   **Dates**: ISO 8601 strings (`"2025-10-29T12:00:00Z"`)
+-   **Money**: Numbers (price, amount, totalSpent)
+-   **Booleans**: `true|false` (active, published)
+-   **Enums**: Lowercase strings with pipe (status: "confirmed|pending|completed|cancelled")
+-   **Arrays**: Camel case (`services`, `specialties`, `tags`)
 
 ---
 
 ## Missing / TODO Endpoints
 
 1. **Availability Check**
+
     - `GET /api/v1/bookings/availability` - Check time slots
     - FE needs: service, branch, date → returns available time slots
 
 2. **Contact Form**
+
     - `POST /api/v1/contact` - Submit contact form
     - FE likely has form but not visible in current scan
 
 3. **Profile Management (Client)**
+
     - `GET /api/v1/profile` - Get client profile
     - `PATCH /api/v1/profile` - Update client profile
     - `GET /api/v1/profile/bookings` - Get client's bookings
 
 4. **Therapist Selection**
+
     - FE has `TherapistSelector.tsx` component
     - Needs: `GET /api/v1/staff/available` - Filter by branch/service
 
@@ -2441,3 +2445,186 @@ POST /api/v1/admin/uploads/:folder
 ---
 
 **End of API Specification**
+
+---
+
+## 8. Member Profile & Dashboard
+
+### 8.1 Get Member Dashboard Overview (NEW)
+
+```
+GET /api/v1/members/dashboard
+```
+
+**Auth:** Client  
+**Description:** Fetch member dashboard data including stats, upcoming bookings, and special offers
+
+**Response 200:**
+
+```json
+{
+    "data": {
+        "stats": {
+            "totalBookings": "number",
+            "upcomingBookings": "number",
+            "completedBookings": "number",
+            "memberPoints": "number"
+        },
+        "upcomingBookings": [
+            {
+                "id": "string",
+                "referenceNumber": "string",
+                "serviceName": "string",
+                "branchName": "string",
+                "appointmentDate": "string (ISO 8601)",
+                "appointmentTime": "string (HH:MM)",
+                "status": "confirmed|completed|cancelled|no_show",
+                "serviceImage": "string (optional)"
+            }
+        ],
+        "specialOffers": [
+            {
+                "id": "string",
+                "title": "string",
+                "description": "string",
+                "discountPercent": "number",
+                "validUntil": "string (ISO 8601)",
+                "imageUrl": "string (optional)"
+            }
+        ]
+    }
+}
+```
+
+**FE Usage:** `apps/frontend/src/client/pages/dashboard/MemberDashboard.tsx:24`  
+**FE Adapter:** `apps/frontend/src/api/adapters/member.ts:getMemberDashboard()`  
+**Status:** Mock adapter implemented (Phase 1-A1)
+
+**TODO:**
+
+-   [ ] Define memberPoints calculation logic
+-   [ ] Clarify if specialOffers are personalized or global
+-   [ ] Limit upcomingBookings to next 3 appointments
+-   [ ] Add memberSince field to stats
+
+---
+
+### 8.2 Get Member Profile
+
+```
+GET /api/v1/members/profile
+```
+
+**Auth:** Client  
+**Response 200:**
+
+```json
+{
+    "data": {
+        "id": "string (UUID)",
+        "email": "string",
+        "fullName": "string",
+        "phone": "string",
+        "language": "vi|ja|en|zh",
+        "createdAt": "string (ISO 8601)"
+    }
+}
+```
+
+**FE Usage:** TBD (Phase 1-A3)  
+**Status:** Not yet wired
+
+---
+
+### 8.3 Update Member Profile
+
+```
+PUT /api/v1/members/profile
+```
+
+**Auth:** Client  
+**Body:**
+
+```json
+{
+    "fullName": "string",
+    "phone": "string",
+    "language": "vi|ja|en|zh (optional)"
+}
+```
+
+**Response 200:**
+
+```json
+{
+    "data": {
+        "id": "string (UUID)",
+        "email": "string (read-only)",
+        "fullName": "string",
+        "phone": "string",
+        "language": "vi|ja|en|zh",
+        "updatedAt": "string (ISO 8601)"
+    }
+}
+```
+
+**FE Usage:** TBD (Phase 1-A3)  
+**Status:** Not yet wired
+
+---
+
+### 8.4 Get Member Booking History
+
+```
+GET /api/v1/members/bookings
+```
+
+**Auth:** Client  
+**Query Params:**
+
+-   `page` (number, default: 1)
+-   `limit` (number, default: 10)
+-   `status` (string, optional): `confirmed|completed|cancelled|no_show`
+-   `dateFrom` (ISO 8601, optional)
+-   `dateTo` (ISO 8601, optional)
+
+**Response 200:**
+
+```json
+{
+    "data": [
+        {
+            "id": "string",
+            "referenceNumber": "string",
+            "serviceName": "string",
+            "branchName": "string",
+            "appointmentDate": "string (ISO 8601)",
+            "appointmentTime": "string (HH:MM)",
+            "status": "confirmed|completed|cancelled|no_show",
+            "serviceImage": "string (optional)",
+            "createdAt": "string (ISO 8601)"
+        }
+    ],
+    "meta": {
+        "page": 1,
+        "limit": 10,
+        "total": 42,
+        "totalPages": 5
+    }
+}
+```
+
+**FE Usage:** `apps/frontend/src/client/pages/dashboard/BookingHistory.tsx:26`  
+**FE Adapter:** `apps/frontend/src/api/adapters/member.ts:getMemberBookings()`  
+**Status:** ✅ Mock adapter implemented (Phase 1-A2 COMPLETE)
+
+**Features Implemented**:
+
+-   Status filter tabs (all, confirmed, completed, cancelled)
+-   Pagination controls with prev/next buttons
+-   Responsive design (table on desktop, cards on mobile)
+-   Empty states per filter
+-   Auto-reset to page 1 on filter change
+-   Loading states
+
+---

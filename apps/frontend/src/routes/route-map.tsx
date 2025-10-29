@@ -24,6 +24,10 @@ const LoginPageOTP = lazy(() => import('../client/pages/LoginPageOTP'));
 const RegisterPageOTP = lazy(() => import('../client/pages/RegisterPageOTP'));
 const AdminLoginPage = lazy(() => import('../admin/pages/AdminLoginPage'));
 
+// Member dashboard pages (Protected)
+const MemberDashboard = lazy(() => import('../client/pages/dashboard/MemberDashboard'));
+const BookingHistory = lazy(() => import('../client/pages/dashboard/BookingHistory'));
+
 // Lazy load admin pages
 const Dashboard = lazy(() => import('../admin/pages/Dashboard'));
 const Appointments = lazy(() => import('../admin/pages/Appointments'));
@@ -167,6 +171,40 @@ export const routes: RouteObject[] = [
                 </Suspense>
             </RootErrorBoundary>
         ),
+    },
+
+    // Member Dashboard Routes (Protected - Requires Client Role)
+    {
+        path: '/dashboard',
+        element: (
+            <RootErrorBoundary>
+                <Suspense fallback={<Pending />}>
+                    <RequireRole role='client'>
+                        <ScrollToTop />
+                        <ClientLayout />
+                    </RequireRole>
+                </Suspense>
+            </RootErrorBoundary>
+        ),
+        children: [
+            {
+                index: true,
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <MemberDashboard />
+                    </Suspense>
+                ),
+            },
+            {
+                path: 'bookings',
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <BookingHistory />
+                    </Suspense>
+                ),
+            },
+            // TODO: Add /dashboard/profile route (Phase 1-A3)
+        ],
     },
 
     // Admin Routes (Protected - Requires Admin Role)

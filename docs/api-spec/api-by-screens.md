@@ -1688,3 +1688,88 @@ Response: {
 
 **Last Updated:** October 29, 2025  
 **Status:** ✅ Complete - Ready for backend implementation
+
+---
+
+## Screen: `/dashboard/bookings` (Booking History)
+
+**Auth**: Required (Bearer token, member role)
+
+**Component**: `src/client/pages/dashboard/BookingHistory.tsx`
+
+**Adapter**: `src/api/adapters/member.ts:getMemberBookings()`
+
+#### Endpoints Required:
+
+##### GET `/api/v1/members/bookings`
+
+**Description**: Fetch paginated member booking history with status filters
+
+**Request**:
+```http
+GET /api/v1/members/bookings?page=1&limit=10&status=all HTTP/1.1
+Authorization: Bearer <access_token>
+```
+
+**Query Parameters**:
+- `page` (number, optional, default: 1): Page number for pagination
+- `limit` (number, optional, default: 10): Items per page
+- `status` (string, optional, default: 'all'): Filter by status
+  - Values: 'all' | 'confirmed' | 'completed' | 'cancelled' | 'no_show'
+- `dateFrom` (ISO 8601, optional): Filter bookings from this date
+- `dateTo` (ISO 8601, optional): Filter bookings until this date
+
+**Response**: `200 OK`
+```json
+{
+  "data": [
+    {
+      "id": "1",
+      "referenceNumber": "BCW-2025-000123",
+      "serviceName": "AI Skin Analysis Facial",
+      "branchName": "Chi nhánh Trung tâm",
+      "appointmentDate": "2025-11-05T10:00:00Z",
+      "appointmentTime": "10:00",
+      "status": "confirmed",
+      "serviceImage": "https://..."
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 12,
+    "totalPages": 2
+  }
+}
+```
+
+**Error Responses**:
+- `401 Unauthorized`: Invalid/expired token
+- `403 Forbidden`: Not a member account
+- `400 Bad Request`: Invalid query parameters
+
+**Frontend Usage**:
+- File: `src/client/pages/dashboard/BookingHistory.tsx:26`
+- Hook: `useEffect` on page load and filter/page change
+- Loading state: Yes
+- Error handling: Console log + fallback UI
+- Pagination: Client-side controls (prev/next buttons)
+- Filters: Status tabs (All, Upcoming, Completed, Cancelled)
+
+**Features**:
+- ✅ Status filter tabs
+- ✅ Pagination with page controls
+- ✅ Responsive table (desktop) and cards (mobile)
+- ✅ Empty state with "Book First Appointment" CTA
+- ✅ Status badges with icons
+- ✅ Back to Dashboard link
+- ✅ Loading spinner
+- ✅ Auto-reset to page 1 when filter changes
+
+**TODO/Notes**:
+- [ ] Date range filter UI (dateFrom/dateTo params supported but not wired)
+- [ ] Export to PDF/CSV functionality
+- [ ] Booking detail modal/page
+- [ ] Rebook/reschedule actions for past bookings
+
+---
