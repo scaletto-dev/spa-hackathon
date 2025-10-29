@@ -54,3 +54,53 @@ export const generalRateLimiter = rateLimit({
     });
   },
 });
+
+/**
+ * Contact Form Rate Limiter
+ * 
+ * Applied to contact form submission endpoint (/api/v1/contact)
+ * Limit: 3 requests per hour per IP
+ * 
+ * Prevents spam and abuse of contact form while allowing legitimate inquiries.
+ */
+export const contactFormRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // Limit each IP to 3 requests per hour
+  message: 'Too many contact form submissions from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: 'TooManyRequestsError',
+      message: 'Too many contact form submissions. Please try again in an hour.',
+      statusCode: 429,
+      timestamp: new Date().toISOString(),
+    });
+  },
+});
+
+/**
+ * Upload Image Rate Limiter
+ * 
+ * Applied to image upload endpoint (/api/v1/upload/image)
+ * Limit: 10 requests per hour per IP
+ * 
+ * Prevents abuse of storage resources while allowing normal image uploads.
+ */
+export const uploadImageRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 uploads per hour
+  message: 'Too many image uploads from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: 'TooManyRequestsError',
+      message: 'Too many image uploads. Please try again in an hour.',
+      statusCode: 429,
+      timestamp: new Date().toISOString(),
+    });
+  },
+});
