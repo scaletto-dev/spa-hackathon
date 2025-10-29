@@ -7,6 +7,7 @@ import bookingsRoutes from "./bookings.routes";
 import categoriesRoutes from "./categories.routes";
 import contactRoutes from "./contact.routes";
 import availabilityRoutes from "./availability.routes";
+import uploadRoutes from "./upload.routes";
 
 /**
  * Configure all application routes
@@ -21,12 +22,13 @@ import availabilityRoutes from "./availability.routes";
  * - /api/v1/availability - Availability check routes
  * - /api/v1/contact - Contact form submission routes (with rate limiting)
  *
+ * - /api/v1/upload - Image upload routes (with rate limiting)
+ * 
  * @param app - Express application instance
  */
 export function configureRoutes(app: Express): void {
    // Health check (no /v1 prefix)
    app.use("/api/health", healthRoutes);
-
    // API v1 routes
    app.use("/api/v1/services", servicesRoutes);
    app.use("/api/v1/categories", categoriesRoutes);
@@ -35,4 +37,5 @@ export function configureRoutes(app: Express): void {
    app.use("/api/v1/bookings", bookingsRoutes);
    app.use("/api/v1/availability", availabilityRoutes);
    app.use("/api/v1/contact", contactRoutes);
+   app.use('/api/v1/upload', uploadRoutes);
 }
