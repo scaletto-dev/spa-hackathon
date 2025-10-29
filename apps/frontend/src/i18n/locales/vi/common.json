@@ -256,6 +256,15 @@
         "service": "Dịch vụ",
         "response": "Phản hồi từ phòng khám"
     },
+    "branches": {
+        "title": "Địa điểm của chúng tôi",
+        "subtitle": "Tìm phòng khám BeautyAI gần bạn nhất và trải nghiệm liệu trình làm đẹp cao cấp được hỗ trợ bởi công nghệ tiên tiến",
+        "availableServices": "Dịch vụ có sẵn",
+        "getDirections": "Chỉ đường",
+        "readyToSchedule": "Sẵn sàng đặt lịch?",
+        "readyToScheduleDescription": "Đặt lịch hẹn ngay bây giờ và trải nghiệm sự kết hợp hoàn hảo giữa sang trọng và công nghệ tại phòng khám BeautyAI gần bạn nhất.",
+        "bookYourVisit": "Đặt lịch ngay"
+    },
     "nav": {
         "home": "Trang chủ",
         "services": "Dịch vụ",

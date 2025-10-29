@@ -256,6 +256,15 @@
         "service": "Service",
         "response": "Response from clinic"
     },
+    "branches": {
+        "title": "Our Locations",
+        "subtitle": "Find your nearest BeautyAI Clinic and experience premium beauty treatments powered by cutting-edge technology",
+        "availableServices": "Available Services",
+        "getDirections": "Get Directions",
+        "readyToSchedule": "Ready to Schedule Your Visit?",
+        "readyToScheduleDescription": "Book your appointment now and experience the perfect blend of luxury and technology at your nearest BeautyAI clinic.",
+        "bookYourVisit": "Book Your Visit Now"
+    },
     "nav": {
         "home": "Home",
         "services": "Services",

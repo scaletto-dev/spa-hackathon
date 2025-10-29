@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPinIcon, PhoneIcon, ClockIcon, ArrowRightIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BranchMap } from '../components/branches/BranchMap';
 const branches = [
     {
@@ -61,6 +62,7 @@ const branches = [
     },
 ];
 export function BranchesPage() {
+    const { t } = useTranslation('common');
     const [selectedBranch, setSelectedBranch] = useState<(typeof branches)[0] | null>(branches[0] ?? null);
 
     if (!selectedBranch) {
@@ -86,12 +88,11 @@ export function BranchesPage() {
                 >
                     <h1 className='text-4xl md:text-5xl font-bold mb-4'>
                         <span className='bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
-                            Our Locations
+                            {t('branches.title')}
                         </span>
                     </h1>
                     <p className='text-xl text-gray-600 max-w-2xl mx-auto'>
-                        Find your nearest BeautyAI Clinic and experience premium beauty treatments powered by
-                        cutting-edge technology
+                        {t('branches.subtitle')}
                     </p>
                 </motion.div>
                 <div className='grid lg:grid-cols-3 gap-8 mb-16'>
@@ -143,7 +144,7 @@ export function BranchesPage() {
                                     <div className='text-gray-700 whitespace-pre-line'>{selectedBranch.hours}</div>
                                 </div>
                                 <div className='border-t border-gray-200 pt-5'>
-                                    <h3 className='text-lg font-semibold text-gray-800 mb-2'>Available Services</h3>
+                                    <h3 className='text-lg font-semibold text-gray-800 mb-2'>{t('branches.availableServices')}</h3>
                                     <div className='flex flex-wrap gap-2'>
                                         {selectedBranch.services.map((service) => (
                                             <span
@@ -162,7 +163,7 @@ export function BranchesPage() {
                                         rel='noopener noreferrer'
                                         className='inline-flex items-center gap-2 text-pink-600 font-medium hover:text-pink-700 transition-colors'
                                     >
-                                        Get Directions
+                                        {t('branches.getDirections')}
                                         <ArrowRightIcon className='w-4 h-4' />
                                     </a>
                                 </div>
@@ -222,10 +223,9 @@ export function BranchesPage() {
                     className='bg-gradient-to-r from-pink-500 via-purple-500 to-rose-500 rounded-3xl p-1'
                 >
                     <div className='bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 text-center'>
-                        <h2 className='text-3xl font-bold text-gray-800 mb-4'>Ready to Schedule Your Visit?</h2>
+                        <h2 className='text-3xl font-bold text-gray-800 mb-4'>{t('branches.readyToSchedule')}</h2>
                         <p className='text-lg text-gray-600 mb-8 max-w-2xl mx-auto'>
-                            Book your appointment now and experience the perfect blend of luxury and technology at your
-                            nearest BeautyAI clinic.
+                            {t('branches.readyToScheduleDescription')}
                         </p>
                         <motion.a
                             href='/booking'
@@ -237,7 +237,7 @@ export function BranchesPage() {
                             }}
                             className='inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl'
                         >
-                            Book Your Visit Now
+                            {t('branches.bookYourVisit')}
                             <ArrowRightIcon className='w-5 h-5' />
                         </motion.a>
                     </div>
