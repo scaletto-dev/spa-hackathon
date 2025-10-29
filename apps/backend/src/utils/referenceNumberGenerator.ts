@@ -57,4 +57,3 @@ export class ReferenceNumberGenerator {
 }
 
 export default ReferenceNumberGenerator;
-

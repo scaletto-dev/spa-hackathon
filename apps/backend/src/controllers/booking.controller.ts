@@ -2,10 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import bookingService from "../services/booking.service";
 import { SuccessResponse } from "../types/api";
 import { ValidationError } from "../utils/errors";
-import {
-   CreateBookingRequest,
-   GetBookingQueryParams,
-} from "../types/booking";
+import { CreateBookingRequest, GetBookingQueryParams } from "../types/booking";
 
 /**
  * Booking Controller
@@ -96,4 +93,3 @@ export class BookingController {
 }
 
 export default new BookingController();
-

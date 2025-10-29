@@ -75,4 +75,3 @@ export interface ListBookingsQueryParams {
 export interface UpdateBookingStatusRequest {
    status: BookingStatus;
 }
-

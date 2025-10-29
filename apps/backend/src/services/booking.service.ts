@@ -1,9 +1,5 @@
 import prisma from "../lib/prisma";
-import {
-   NotFoundError,
-   ValidationError,
-   ConflictError,
-} from "../utils/errors";
+import { NotFoundError, ValidationError, ConflictError } from "../utils/errors";
 import {
    CreateBookingRequest,
    BookingDTO,
@@ -224,9 +220,7 @@ export class BookingService {
 
       // Optional email verification
       if (email && booking.guestEmail.toLowerCase() !== email.toLowerCase()) {
-         throw new ValidationError(
-            "Email does not match booking records"
-         );
+         throw new ValidationError("Email does not match booking records");
       }
 
       return this.mapToBookingWithDetailsDTO(booking);
@@ -350,4 +344,3 @@ export class BookingService {
 }
 
 export default new BookingService();
-
