@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SearchIcon, BellIcon, BotIcon, ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react';
 import { useAuth } from '../../../auth/useAuth';
 import { toast } from '../../../utils/toast';
 
 export function Header() {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const [showNotifications, setShowNotifications] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const notifRef = useRef<HTMLDivElement>(null);
@@ -64,7 +66,7 @@ export function Header() {
                     </button>
 
                     {showNotifications && (
-                        <div className='absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-pink-100 py-2 z-50'>
+                        <div className='absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-pink-100 py-2 z-[9999]'>
                             <div className='px-4 py-2 border-b border-pink-100'>
                                 <h3 className='font-semibold text-gray-800'>Notifications</h3>
                             </div>
@@ -102,7 +104,7 @@ export function Header() {
                     </div>
 
                     {showProfileMenu && (
-                        <div className='absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-pink-100 py-2 z-50'>
+                        <div className='absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-pink-100 py-2 z-[9999]'>
                             <div className='px-4 py-3 border-b border-pink-100'>
                                 <p className='text-sm font-semibold text-gray-800'>{user?.name || 'Admin'}</p>
                                 <p className='text-xs text-gray-500'>{user?.email || 'admin@company.com'}</p>
@@ -110,7 +112,7 @@ export function Header() {
                             <button
                                 onClick={() => {
                                     setShowProfileMenu(false);
-                                    toast.info('Profile settings coming soon!');
+                                    navigate('/admin/settings');
                                 }}
                                 className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-pink-50 flex items-center gap-2'
                             >
