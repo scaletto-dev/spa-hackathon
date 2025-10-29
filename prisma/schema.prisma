@@ -28,14 +28,15 @@ enum BookingStatus {
 }
 
 enum MessageType {
-  GENERAL
-  BOOKING_INQUIRY
-  COMPLAINT
+  GENERAL_INQUIRY
+  SERVICE_QUESTION
+  BOOKING_ASSISTANCE
   FEEDBACK
+  OTHER
 }
 
 enum ContactStatus {
-  NEW
+  PENDING
   IN_PROGRESS
   RESOLVED
 }
@@ -231,7 +232,7 @@ model ContactSubmission {
   phone       String?
   messageType MessageType
   message     String        @db.Text
-  status      ContactStatus @default(NEW)
+  status      ContactStatus @default(PENDING)
   adminNotes  String?       @db.Text // Internal admin notes
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
