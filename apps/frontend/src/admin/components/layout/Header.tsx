@@ -39,7 +39,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     };
 
     return (
-        <header className='h-16 bg-white/80 backdrop-blur-lg border-b border-pink-100 flex items-center justify-between px-4 md:px-6 shadow-sm'>
+        <header className='h-16 bg-white/80 backdrop-blur-lg border-b border-pink-100 flex items-center justify-between px-4 md:px-6 shadow-sm sticky top-0 z-[100]'>
             {/* Left: Menu + Search */}
             <div className='flex items-center gap-2 md:gap-4 flex-1 max-w-2xl'>
                 {/* Mobile Menu Button */}
@@ -126,7 +126,9 @@ export function Header({ onMenuClick }: HeaderProps) {
                             alt='Admin'
                             className='w-8 h-8 rounded-full border-2 border-pink-200'
                         />
-                        <span className='hidden sm:inline text-sm font-medium text-gray-700'>{user?.name || 'Admin'}</span>
+                        <span className='hidden sm:inline text-sm font-medium text-gray-700'>
+                            {user?.name || 'Admin'}
+                        </span>
                         <ChevronDownIcon className='w-4 h-4 text-gray-400' />
                     </div>
 

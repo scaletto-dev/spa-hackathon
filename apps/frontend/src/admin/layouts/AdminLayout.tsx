@@ -19,11 +19,11 @@ export function AdminLayout() {
                 <>
                     {/* Backdrop */}
                     <div
-                        className='fixed inset-0 bg-black/50 z-40 lg:hidden'
+                        className='fixed inset-0 bg-black/50 z-40 lg:hidden animate-in fade-in duration-200'
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
                     {/* Mobile Menu */}
-                    <div className='fixed inset-y-0 left-0 z-50 lg:hidden'>
+                    <div className='fixed inset-y-0 left-0 z-50 lg:hidden animate-in slide-in-from-left duration-300'>
                         <Sidebar onClose={() => setIsMobileMenuOpen(false)} />
                     </div>
                 </>
@@ -31,7 +31,7 @@ export function AdminLayout() {
 
             <div className='flex-1 flex flex-col overflow-hidden'>
                 <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
-                <main className='flex-1 overflow-y-auto p-4 md:p-6'>
+                <main className='flex-1 overflow-y-auto p-4 md:p-6 relative z-0'>
                     <Outlet />
                 </main>
             </div>
