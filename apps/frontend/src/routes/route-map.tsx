@@ -20,8 +20,8 @@ const FormShowcasePage = lazy(() => import('../client/pages/FormShowcasePage'));
 const ContactPage = lazy(() => import('../client/pages/ContactPage'));
 
 // Auth pages
-const LoginPage = lazy(() => import('../client/pages/LoginPage'));
-const RegisterPage = lazy(() => import('../client/pages/RegisterPage'));
+const LoginPageOTP = lazy(() => import('../client/pages/LoginPageOTP'));
+const RegisterPageOTP = lazy(() => import('../client/pages/RegisterPageOTP'));
 const AdminLoginPage = lazy(() => import('../admin/pages/AdminLoginPage'));
 
 // Lazy load admin pages
@@ -143,7 +143,7 @@ export const routes: RouteObject[] = [
         element: (
             <RootErrorBoundary>
                 <Suspense fallback={<Pending />}>
-                    <LoginPage />
+                    <LoginPageOTP />
                 </Suspense>
             </RootErrorBoundary>
         ),
@@ -153,7 +153,7 @@ export const routes: RouteObject[] = [
         element: (
             <RootErrorBoundary>
                 <Suspense fallback={<Pending />}>
-                    <RegisterPage />
+                    <RegisterPageOTP />
                 </Suspense>
             </RootErrorBoundary>
         ),

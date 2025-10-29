@@ -104,3 +104,28 @@ export const uploadImageRateLimiter = rateLimit({
     });
   },
 });
+
+/**
+ * Registration Rate Limiter
+ * 
+ * Applied to registration endpoint (/api/v1/auth/register)
+ * Limit: 3 requests per hour per IP
+ * 
+ * Prevents spam registration attempts while allowing legitimate sign-ups.
+ */
+export const registrationRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 3 registration attempts per hour
+  message: 'Too many registration attempts from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: 'TooManyRequestsError',
+      message: 'Too many registration attempts. Please try again in an hour.',
+      statusCode: 429,
+      timestamp: new Date().toISOString(),
+    });
+  },
+});

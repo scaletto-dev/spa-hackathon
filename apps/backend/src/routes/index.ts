@@ -5,6 +5,7 @@ import branchesRoutes from "./branches.routes";
 import categoriesRoutes from "./categories.routes";
 import contactRoutes from "./contact.routes";
 import uploadRoutes from "./upload.routes";
+import authRoutes from "./auth.routes";
 
 /**
  * Configure all application routes
@@ -32,4 +33,5 @@ export function configureRoutes(app: Express): void {
    app.use("/api/v1/branches", branchesRoutes);
    app.use("/api/v1/contact", contactRoutes);
    app.use('/api/v1/upload', uploadRoutes);
+   app.use('/api/v1/auth', authRoutes);
 }
