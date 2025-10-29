@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { UserIcon, PlusIcon, Edit3Icon, CalendarIcon, XCircleIcon, SparklesIcon } from 'lucide-react';
+import { useState } from 'react';
+import { PlusIcon, Edit3Icon, CalendarIcon, XCircleIcon, SparklesIcon } from 'lucide-react';
 import { StaffModal } from '../components/modals/StaffModal';
 import { Toast } from '../components/Toast';
 const staff = [

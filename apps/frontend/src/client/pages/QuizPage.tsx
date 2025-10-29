@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon, ArrowRightIcon, SparklesIcon } from 'lucide-react';
@@ -44,8 +44,18 @@ export default function QuizPage() {
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [showResults, setShowResults] = useState(false);
 
+    const currentQ = questions[currentQuestion];
+
+    if (!currentQ && !showResults) {
+        // Safety check - reset to first question if index is invalid
+        setCurrentQuestion(0);
+        return null;
+    }
+
     const handleAnswer = (option: string) => {
-        setAnswers({ ...answers, [questions[currentQuestion].id]: option });
+        if (!currentQ) return;
+
+        setAnswers({ ...answers, [currentQ.id]: option });
 
         if (currentQuestion < questions.length - 1) {
             setTimeout(() => setCurrentQuestion(currentQuestion + 1), 300);
@@ -171,10 +181,10 @@ export default function QuizPage() {
                     exit={{ opacity: 0, x: -20 }}
                     className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-12'
                 >
-                    <h2 className='text-3xl font-bold text-gray-800 mb-8'>{questions[currentQuestion].question}</h2>
+                    <h2 className='text-3xl font-bold text-gray-800 mb-8'>{currentQ?.question}</h2>
 
                     <div className='space-y-4'>
-                        {questions[currentQuestion].options.map((option, index) => (
+                        {currentQ?.options.map((option, index) => (
                             <motion.button
                                 key={option}
                                 onClick={() => handleAnswer(option)}
@@ -184,14 +194,14 @@ export default function QuizPage() {
                                 whileHover={{ scale: 1.02, x: 10 }}
                                 whileTap={{ scale: 0.98 }}
                                 className={`w-full text-left p-6 rounded-2xl border-2 transition-all ${
-                                    answers[questions[currentQuestion].id] === option
+                                    answers[currentQ?.id ?? 0] === option
                                         ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50'
                                         : 'border-gray-200 bg-white hover:border-pink-300'
                                 }`}
                             >
                                 <div className='flex items-center justify-between'>
                                     <span className='font-medium text-gray-800'>{option}</span>
-                                    {answers[questions[currentQuestion].id] === option && (
+                                    {answers[currentQ?.id ?? 0] === option && (
                                         <CheckCircleIcon className='w-6 h-6 text-pink-500' />
                                     )}
                                 </div>

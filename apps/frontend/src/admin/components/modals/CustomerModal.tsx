@@ -7,9 +7,10 @@ import { Input, Select, Textarea, FormField } from '../../../components/ui';
 interface CustomerModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
-export function CustomerModal({ isOpen, onClose }: CustomerModalProps) {
+export function CustomerModal({ isOpen, onClose, onSuccess }: CustomerModalProps) {
     const { addCustomer } = useCustomers();
     const [formData, setFormData] = useState({
         name: '',
@@ -43,8 +44,9 @@ export function CustomerModal({ isOpen, onClose }: CustomerModalProps) {
             email: formData.email,
             phone: formData.phone,
             membershipTier: formData.membershipTier as 'New' | 'Silver' | 'Gold' | 'VIP',
+            dateJoined: new Date().toISOString(),
+            totalVisits: 0,
             totalSpent: 0,
-            visits: 0,
             lastVisit: new Date().toISOString(),
             notes: formData.notes,
         });
@@ -59,6 +61,9 @@ export function CustomerModal({ isOpen, onClose }: CustomerModalProps) {
             membershipTier: 'New',
             notes: '',
         });
+
+        // Call success callback if provided
+        onSuccess?.();
 
         onClose();
     };

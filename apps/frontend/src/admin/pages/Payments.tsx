@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DollarSignIcon, TrendingUpIcon, AlertTriangleIcon, EyeIcon, DownloadIcon } from 'lucide-react';
 import {
     LineChart,
@@ -219,12 +219,14 @@ export function Payments() {
                                 cx='50%'
                                 cy='50%'
                                 labelLine={false}
-                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                label={({ name, percent }: { name: string; percent: number }) =>
+                                    `${name} ${(percent * 100).toFixed(0)}%`
+                                }
                                 outerRadius={100}
                                 fill='#8884d8'
                                 dataKey='value'
                             >
-                                {paymentMethodData.map((entry, index) => (
+                                {paymentMethodData.map((_entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
@@ -304,8 +306,8 @@ export function Payments() {
                                                 transaction.status === 'paid'
                                                     ? 'bg-green-100 text-green-700'
                                                     : transaction.status === 'pending'
-                                                    ? 'bg-yellow-100 text-yellow-700'
-                                                    : 'bg-red-100 text-red-700'
+                                                      ? 'bg-yellow-100 text-yellow-700'
+                                                      : 'bg-red-100 text-red-700'
                                             }`}
                                         >
                                             {transaction.status}

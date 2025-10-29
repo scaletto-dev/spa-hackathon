@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZapIcon, ListIcon } from 'lucide-react';
 import { BookingProgress } from '../components/booking/BookingProgress';
@@ -9,10 +9,12 @@ import { BookingUserInfo } from '../components/booking/BookingUserInfo';
 import { BookingPayment } from '../components/booking/BookingPayment';
 import { BookingConfirmation } from '../components/booking/BookingConfirmation';
 import { QuickBooking } from '../components/booking/QuickBooking';
+import { BookingData } from '../components/booking/types';
+
 export function BookingPage() {
     const [bookingMode, setBookingMode] = useState('quick'); // 'quick' or 'full'
     const [currentStep, setCurrentStep] = useState(1);
-    const [bookingData, setBookingData] = useState({
+    const [bookingData, setBookingData] = useState<BookingData>({
         service: null,
         branch: null,
         therapist: null,
@@ -39,7 +41,7 @@ export function BookingPage() {
             window.scrollTo(0, 0);
         }
     };
-    const updateBookingData = (data) => {
+    const updateBookingData = (data: Partial<BookingData>) => {
         setBookingData({
             ...bookingData,
             ...data,

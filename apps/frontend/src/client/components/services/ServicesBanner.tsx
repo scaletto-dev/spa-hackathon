@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, ScanIcon } from 'lucide-react';
 export function ServicesBanner() {

@@ -87,7 +87,7 @@ export function Sidebar() {
                             key={item.path}
                             to={item.path}
                             end={item.path === '/admin'}
-                            className={({ isActive }) =>
+                            className={({ isActive }: { isActive: boolean }) =>
                                 `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                                     isActive
                                         ? 'bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600 shadow-sm'
@@ -95,7 +95,7 @@ export function Sidebar() {
                                 }`
                             }
                         >
-                            {({ isActive }) => (
+                            {({ isActive }: { isActive: boolean }) => (
                                 <>
                                     <item.icon className={`w-5 h-5 ${isActive ? 'text-pink-500' : ''}`} />
                                     <span className='font-medium text-sm'>{item.label}</span>

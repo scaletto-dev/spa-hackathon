@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, ScanIcon, ZapIcon, HeartIcon, EyeIcon, SmileIcon } from 'lucide-react';
 const services = [{

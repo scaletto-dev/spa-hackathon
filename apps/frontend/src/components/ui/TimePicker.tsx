@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ClockIcon } from 'lucide-react';
 
@@ -60,8 +60,13 @@ export function TimePicker({
 
     const generateTimeSlots = (): TimeSlot[] => {
         const slots: TimeSlot[] = [];
-        const [startHour, startMinute] = startTime.split(':').map(Number);
-        const [endHour, endMinute] = endTime.split(':').map(Number);
+        const startParts = startTime.split(':').map(Number);
+        const endParts = endTime.split(':').map(Number);
+
+        const startHour = startParts[0] ?? 0;
+        const startMinute = startParts[1] ?? 0;
+        const endHour = endParts[0] ?? 23;
+        const endMinute = endParts[1] ?? 59;
 
         let currentHour = startHour;
         let currentMinute = startMinute;

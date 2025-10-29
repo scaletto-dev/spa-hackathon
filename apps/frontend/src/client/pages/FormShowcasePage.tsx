@@ -54,14 +54,6 @@ export default function FormShowcasePage() {
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     // Options data
-    const serviceOptions: SelectOption[] = [
-        { value: 'facial', label: 'Chăm sóc da mặt cơ bản' },
-        { value: 'hydrafacial', label: 'Hydrafacial Treatment' },
-        { value: 'laser', label: 'Laser Hair Removal' },
-        { value: 'botox', label: 'Botox & Fillers' },
-        { value: 'body', label: 'Body Contouring' },
-    ];
-
     const serviceGroups: SelectGroup[] = [
         {
             label: 'Dịch vụ da mặt',

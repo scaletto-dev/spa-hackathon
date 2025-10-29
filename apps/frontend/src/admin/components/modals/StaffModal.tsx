@@ -38,7 +38,8 @@ export function StaffModal({ isOpen, onClose, onSuccess }: StaffModalProps) {
                 formData.specialization || 'làm đẹp'
             } với portfolio ấn tượng. Từng đào tạo tại Hàn Quốc và Nhật Bản. Kỹ năng giao tiếp tốt, thấu hiểu nhu cầu khách hàng, mang đến dịch vụ đẳng cấp 5 sao.`,
         ];
-        const randomBio = bios[Math.floor(Math.random() * bios.length)];
+        const randomIndex = Math.floor(Math.random() * bios.length);
+        const randomBio = bios[randomIndex] ?? bios[0] ?? '';
         setFormData((prev) => ({ ...prev, bio: randomBio }));
         toast.info('Đã tạo tiểu sử bằng AI');
     };

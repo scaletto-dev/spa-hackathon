@@ -1,8 +1,29 @@
-import React, { useEffect, useRef, createElement } from 'react';
-export function BranchMap({ branches, selectedBranch, setSelectedBranch }) {
-    const mapRef = useRef(null);
-    const mapInstanceRef = useRef(null);
-    const markersRef = useRef([]);
+import { useEffect, useRef } from 'react';
+
+interface Branch {
+    id: number;
+    name: string;
+    image: string;
+    address: string;
+    phone: string;
+    email: string;
+    hours: string;
+    location: {
+        lat: number;
+        lng: number;
+    };
+    services: string[];
+}
+
+interface BranchMapProps {
+    branches: Branch[];
+    selectedBranch: Branch | null;
+    setSelectedBranch: (branch: Branch | null) => void;
+}
+
+export function BranchMap({ branches, selectedBranch, setSelectedBranch }: BranchMapProps) {
+    const mapRef = useRef<HTMLDivElement | null>(null);
+    const markersRef = useRef<HTMLDivElement[]>([]);
     useEffect(() => {
         // This is a placeholder for Google Maps integration
         // In a real implementation, you would use the Google Maps API

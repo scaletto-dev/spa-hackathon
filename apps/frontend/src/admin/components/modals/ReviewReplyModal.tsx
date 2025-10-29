@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { XIcon, SparklesIcon, SendIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
-import { Textarea, FormField } from '../../../components/ui';
+import { Textarea } from '../../../components/ui';
 
 interface ReviewReplyModalProps {
     isOpen: boolean;
@@ -21,7 +21,8 @@ export function ReviewReplyModal({ isOpen, onClose, reviewId, onSuccess }: Revie
             'Đánh giá của bạn thật ý nghĩa với chúng tôi! Sự hài lòng của bạn là động lực để team không ngừng cải thiện dịch vụ.',
             'Xin chân thành cảm ơn những lời nhận xét tích cực! Chúng tôi luôn nỗ lực mang đến trải nghiệm tốt nhất cho khách hàng.',
         ];
-        const randomReply = aiReplies[Math.floor(Math.random() * aiReplies.length)];
+        const randomIndex = Math.floor(Math.random() * aiReplies.length);
+        const randomReply = aiReplies[randomIndex] ?? aiReplies[0] ?? '';
         setReply(randomReply);
         toast.info('Đã tạo câu trả lời bằng AI');
     };

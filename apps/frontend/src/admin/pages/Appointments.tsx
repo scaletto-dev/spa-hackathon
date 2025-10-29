@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CalendarIcon, ClockIcon, UserIcon, MapPinIcon, CheckCircleIcon, XCircleIcon, Edit3Icon } from 'lucide-react';
 import { NewBookingModal } from '../components/modals/NewBookingModal';
 import { Toast } from '../components/Toast';
