@@ -68,7 +68,7 @@ export class ServiceService {
     });
 
     return {
-      data: services.map((service) => this.mapServiceToDTO(service)),
+      data: services.map((service: any) => this.mapServiceToDTO(service)),
       meta: {
         total,
         page,
@@ -107,7 +107,7 @@ export class ServiceService {
       take: limit,
     });
 
-    return services.map((service) => this.mapServiceToDTO(service));
+    return services.map((service: any) => this.mapServiceToDTO(service));
   }
 
   /**
@@ -182,8 +182,23 @@ export class ServiceService {
    * @param service - Prisma service object with category
    * @returns ServiceDTO
    */
-  private mapServiceToDTO(service: any): ServiceDTO {
-    return {
+  private mapServiceToDTO(service: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    excerpt: string;
+    duration: number;
+    price: any;
+    categoryId: string;
+    images: string[];
+    featured: boolean;
+    active: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    category?: { name: string };
+  }): ServiceDTO {
+    const dto: ServiceDTO = {
       id: service.id,
       name: service.name,
       slug: service.slug,
@@ -192,13 +207,16 @@ export class ServiceService {
       duration: service.duration,
       price: service.price.toString(),
       categoryId: service.categoryId,
-      categoryName: service.category?.name,
       images: service.images,
       featured: service.featured,
       active: service.active,
       createdAt: service.createdAt.toISOString(),
       updatedAt: service.updatedAt.toISOString(),
     };
+    if (service.category?.name) {
+      dto.categoryName = service.category.name;
+    }
+    return dto;
   }
 
   /**
@@ -207,7 +225,28 @@ export class ServiceService {
    * @param service - Prisma service object with category relation
    * @returns ServiceWithCategoryDTO
    */
-  private mapServiceWithCategoryToDTO(service: any): ServiceWithCategoryDTO {
+  private mapServiceWithCategoryToDTO(service: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    excerpt: string;
+    duration: number;
+    price: any;
+    categoryId: string;
+    images: string[];
+    featured: boolean;
+    active: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    category: {
+      id: string;
+      name: string;
+      slug: string;
+      description: string | null;
+      icon: string | null;
+    };
+  }): ServiceWithCategoryDTO {
     return {
       id: service.id,
       name: service.name,

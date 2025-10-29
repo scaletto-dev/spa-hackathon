@@ -79,3 +79,41 @@ export const contactFormRateLimiter = rateLimit({
     });
   },
 });
+
+/**
+ * Booking Creation Rate Limiter
+ * 
+ * Applied to booking creation and cancellation endpoints
+ * Limit: 10 requests per hour per IP
+ * 
+ * Prevents abuse while allowing legitimate booking operations.
+ */
+export const bookingCreationRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 requests per hour
+  message: 'Too many booking requests from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: 'TooManyRequestsError',
+      message: 'Too many booking requests. Please try again in an hour.',
+      statusCode: 429,
+      timestamp: new Date().toISOString(),
+    });
+  },
+});
+
+/**
+ * Rate Limiters Object Export
+ * 
+ * Provides a convenient way to access all rate limiters.
+ */
+export const rateLimiters = {
+  auth: authRateLimiter,
+  general: generalRateLimiter,
+  contactForm: contactFormRateLimiter,
+  bookingCreation: bookingCreationRateLimiter,
+  default: generalRateLimiter,
+};
