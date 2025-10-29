@@ -240,6 +240,22 @@
             "professionalSupportDesc": "24/7 customer service to assist with your inquiries"
         }
     },
+    "reviews": {
+        "title": "Customer Reviews",
+        "subtitle": "Real experiences from people who have used our services",
+        "writeReview": "Write Review",
+        "basedOn": "Based on",
+        "reviews": "reviews",
+        "latest": "Latest",
+        "highestRating": "Highest Rating",
+        "sortBy": "Sort by",
+        "loading": "Loading reviews...",
+        "noReviews": "No reviews found",
+        "viewAll": "View all reviews",
+        "verified": "Verified",
+        "service": "Service",
+        "response": "Response from clinic"
+    },
     "nav": {
         "home": "Home",
         "services": "Services",

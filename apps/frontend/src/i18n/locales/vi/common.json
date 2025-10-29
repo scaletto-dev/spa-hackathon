@@ -240,6 +240,22 @@
             "professionalSupportDesc": "Dịch vụ khách hàng 24/7 hỗ trợ mọi thắc mắc của bạn"
         }
     },
+    "reviews": {
+        "title": "Đánh giá từ khách hàng",
+        "subtitle": "Trải nghiệm thực tế từ những người đã sử dụng dịch vụ của chúng tôi",
+        "writeReview": "Viết đánh giá",
+        "basedOn": "Dựa trên",
+        "reviews": "đánh giá",
+        "latest": "Mới nhất",
+        "highestRating": "Xếp hạng cao nhất",
+        "sortBy": "Sắp xếp theo",
+        "loading": "Đang tải đánh giá...",
+        "noReviews": "Không tìm thấy đánh giá phù hợp",
+        "viewAll": "Xem tất cả đánh giá",
+        "verified": "Đã xác minh",
+        "service": "Dịch vụ",
+        "response": "Phản hồi từ phòng khám"
+    },
     "nav": {
         "home": "Trang chủ",
         "services": "Dịch vụ",
