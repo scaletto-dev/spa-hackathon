@@ -1,5 +1,5 @@
-import prisma from "../lib/prisma";
-import { NotFoundError, ValidationError, ConflictError } from "../utils/errors";
+import prisma from '../lib/prisma';
+import { NotFoundError, ValidationError, ConflictError } from '../utils/errors';
 import {
    CreateBookingRequest,
    BookingWithDetailsDTO,
@@ -7,9 +7,9 @@ import {
    ListBookingsQueryParams,
    UpdateBookingStatusRequest,
    BookingDTO,
-} from "../types/booking";
-import ReferenceNumberGenerator from "../utils/referenceNumberGenerator";
-import { BookingStatus } from "@prisma/client";
+} from '../types/booking';
+import ReferenceNumberGenerator from '../utils/referenceNumberGenerator';
+import { BookingStatus } from '@prisma/client';
 
 /**
  * Booking Service

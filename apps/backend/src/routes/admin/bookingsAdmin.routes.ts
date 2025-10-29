@@ -1,12 +1,12 @@
-import { Router } from "express";
-import bookingAdminController from "../../controllers/admin/bookingAdmin.controller";
-import { requireAdmin } from "../../middleware/adminAuth";
-import { rateLimiters } from "../../config/rateLimits";
+import { Router } from 'express';
+import bookingAdminController from '../../controllers/admin/bookingAdmin.controller';
+import { requireAdmin } from '../../middleware/adminAuth';
+import { rateLimiters } from '../../config/rateLimits';
 import {
    validateListBookingsQuery,
    validateUpdateBookingStatus,
    validateUUID,
-} from "../../middleware/validators/bookingValidators";
+} from '../../middleware/validators/bookingValidators';
 
 const router = Router();
 

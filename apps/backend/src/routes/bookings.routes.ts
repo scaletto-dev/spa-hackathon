@@ -1,11 +1,11 @@
-import { Router } from "express";
-import bookingController from "../controllers/booking.controller";
-import { rateLimiters } from "../config/rateLimits";
+import { Router } from 'express';
+import bookingController from '../controllers/booking.controller';
+import { rateLimiters } from '../config/rateLimits';
 import {
    validateCreateBooking,
    validateCancelBooking,
    validateReferenceNumber,
-} from "../middleware/validators/bookingValidators";
+} from '../middleware/validators/bookingValidators';
 
 const router = Router();
 
