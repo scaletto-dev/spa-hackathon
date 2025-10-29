@@ -1,9 +1,5 @@
 import prisma from "../lib/prisma";
-import {
-   NotFoundError,
-   ValidationError,
-   ConflictError,
-} from "../utils/errors";
+import { NotFoundError, ValidationError, ConflictError } from "../utils/errors";
 import {
    CreateBookingRequest,
    BookingWithDetailsDTO,
@@ -252,9 +248,7 @@ export class BookingService {
       }
 
       // Verify email matches
-      if (
-         booking.guestEmail.toLowerCase() !== cancelData.email.toLowerCase()
-      ) {
+      if (booking.guestEmail.toLowerCase() !== cancelData.email.toLowerCase()) {
          throw new ValidationError(
             "Email does not match booking records. Cannot cancel booking."
          );
@@ -273,7 +267,9 @@ export class BookingService {
 
       // Optional: Check cancellation policy (24 hours before appointment)
       const appointmentDateTime = new Date(
-         `${booking.appointmentDate.toISOString().split("T")[0]}T${booking.appointmentTime}:00`
+         `${booking.appointmentDate.toISOString().split("T")[0]}T${
+            booking.appointmentTime
+         }:00`
       );
       const now = new Date();
       const hoursUntilAppointment =
