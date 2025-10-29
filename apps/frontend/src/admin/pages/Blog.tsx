@@ -159,3 +159,5 @@ export function Blog() {
         </div>
     );
 }
+
+export { Blog as default };

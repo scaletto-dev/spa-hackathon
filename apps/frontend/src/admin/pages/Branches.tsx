@@ -88,3 +88,4 @@ export function Branches() {
       </div>
     </div>;
 }
+export { Branches as default };

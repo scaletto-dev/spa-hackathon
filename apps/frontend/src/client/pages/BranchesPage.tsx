@@ -246,3 +246,5 @@ export function BranchesPage() {
         </div>
     );
 }
+
+export default BranchesPage;

@@ -97,3 +97,4 @@ export function Services() {
       </div>
     </div>;
 }
+export { Services as default };

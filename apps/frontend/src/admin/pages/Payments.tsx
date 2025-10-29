@@ -346,3 +346,5 @@ export function Payments() {
         </div>
     );
 }
+
+export default Payments;
