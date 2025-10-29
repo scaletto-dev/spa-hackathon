@@ -2,8 +2,9 @@ import prisma from "../lib/prisma";
 import { NotFoundError, ValidationError, ConflictError } from "../utils/errors";
 import {
    CreateBookingRequest,
-   BookingDTO,
    BookingWithDetailsDTO,
+   CancelBookingRequest,
+   BookingDTO,
 } from "../types/booking";
 import ReferenceNumberGenerator from "../utils/referenceNumberGenerator";
 import availabilityService from "./availability.service";
@@ -12,7 +13,7 @@ import availabilityService from "./availability.service";
  * Booking Service
  *
  * Business logic for booking management.
- * Handles booking creation, retrieval, cancellation, and validation.
+ * Handles booking creation, retrieval, and cancellation.
  */
 
 export class BookingService {
@@ -75,6 +76,9 @@ export class BookingService {
          );
       }
 
+      // Use transaction to prevent double booking
+      const booking = await prisma.$transaction(async (tx) => {
+         // Check for conflicts
       // Validate time slot is within operating hours and available
       await this.validateTimeSlot(
          bookingData.serviceId,
@@ -106,7 +110,7 @@ export class BookingService {
          }
 
          // Generate unique reference number
-         let referenceNumber: string;
+         let referenceNumber: string = "";
          let isUnique = false;
          let attempts = 0;
          const maxAttempts = 10;
@@ -126,14 +130,14 @@ export class BookingService {
             attempts++;
          }
 
-         if (!isUnique) {
+         if (!isUnique || !referenceNumber) {
             throw new Error("Failed to generate unique reference number");
          }
 
          // Create booking
          const newBooking = await tx.booking.create({
             data: {
-               referenceNumber: referenceNumber!,
+               referenceNumber,
                serviceId: bookingData.serviceId,
                branchId: bookingData.branchId,
                appointmentDate: new Date(
@@ -170,7 +174,6 @@ export class BookingService {
          return newBooking;
       });
 
-      // Map to DTO
       return this.mapToBookingWithDetailsDTO(booking);
    }
 
@@ -185,7 +188,6 @@ export class BookingService {
       referenceNumber: string,
       email?: string
    ): Promise<BookingWithDetailsDTO> {
-      // Validate reference number format
       if (!ReferenceNumberGenerator.isValid(referenceNumber)) {
          throw new ValidationError("Invalid reference number format");
       }
@@ -218,7 +220,6 @@ export class BookingService {
          );
       }
 
-      // Optional email verification
       if (email && booking.guestEmail.toLowerCase() !== email.toLowerCase()) {
          throw new ValidationError("Email does not match booking records");
       }
@@ -227,24 +228,117 @@ export class BookingService {
    }
 
    /**
-    * Validate booking data
+    * Cancel a booking
     *
-    * @param data - Booking data to validate
+    * @param referenceNumber - Booking reference number
+    * @param cancelData - Cancellation data with email verification
+    * @returns Updated booking
+    */
+   async cancelBooking(
+      referenceNumber: string,
+      cancelData: CancelBookingRequest
+   ): Promise<BookingWithDetailsDTO> {
+      // Validate reference number
+      if (!ReferenceNumberGenerator.isValid(referenceNumber)) {
+         throw new ValidationError("Invalid reference number format");
+      }
+
+      // Email verification required
+      if (!cancelData.email) {
+         throw new ValidationError(
+            "Email verification is required to cancel booking"
+         );
+      }
+
+      // Find booking
+      const booking = await prisma.booking.findUnique({
+         where: { referenceNumber: referenceNumber.toUpperCase() },
+      });
+
+      if (!booking) {
+         throw new NotFoundError(
+            `Booking with reference number '${referenceNumber}' not found`
+         );
+      }
+
+      // Verify email matches
+      if (booking.guestEmail.toLowerCase() !== cancelData.email.toLowerCase()) {
+         throw new ValidationError(
+            "Email does not match booking records. Cannot cancel booking."
+         );
+      }
+
+      // Check if already cancelled or completed
+      if (booking.status === "CANCELLED") {
+         throw new ConflictError("This booking has already been cancelled");
+      }
+
+      if (booking.status === "COMPLETED") {
+         throw new ConflictError(
+            "Cannot cancel a completed booking. Please contact support."
+         );
+      }
+
+      // Optional: Check cancellation policy (24 hours before appointment)
+      const appointmentDateTime = new Date(
+         `${booking.appointmentDate.toISOString().split("T")[0]}T${
+            booking.appointmentTime
+         }:00`
+      );
+      const now = new Date();
+      const hoursUntilAppointment =
+         (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+      if (hoursUntilAppointment < 24) {
+         throw new ValidationError(
+            "Bookings cannot be cancelled within 24 hours of the appointment time. Please contact the branch directly."
+         );
+      }
+
+      // Update booking status
+      const updatedBooking = await prisma.booking.update({
+         where: { id: booking.id },
+         data: {
+            status: "CANCELLED",
+            cancellationReason: cancelData.reason || null,
+         },
+         include: {
+            service: {
+               select: {
+                  id: true,
+                  name: true,
+                  duration: true,
+                  price: true,
+               },
+            },
+            branch: {
+               select: {
+                  id: true,
+                  name: true,
+                  address: true,
+                  phone: true,
+               },
+            },
+         },
+      });
+
+      return this.mapToBookingWithDetailsDTO(updatedBooking);
+   }
+
+   /**
+    * Validate booking data
     */
    private validateBookingData(data: CreateBookingRequest): void {
-      // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(data.guestEmail)) {
          throw new ValidationError("Invalid email format");
       }
 
-      // Phone validation (basic)
       const phoneRegex = /^[\d\s\-\+\(\)]+$/;
       if (!phoneRegex.test(data.guestPhone) || data.guestPhone.length < 10) {
          throw new ValidationError("Invalid phone number format");
       }
 
-      // Date format validation
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!dateRegex.test(data.appointmentDate)) {
          throw new ValidationError(
@@ -252,13 +346,11 @@ export class BookingService {
          );
       }
 
-      // Time format validation
       const timeRegex = /^\d{2}:\d{2}$/;
       if (!timeRegex.test(data.appointmentTime)) {
          throw new ValidationError("Invalid time format. Use HH:MM format");
       }
 
-      // Notes length validation
       if (data.notes && data.notes.length > 500) {
          throw new ValidationError(
             "Special requests cannot exceed 500 characters"
@@ -267,49 +359,7 @@ export class BookingService {
    }
 
    /**
-    * Validate time slot availability and operating hours
-    *
-    * @param serviceId - Service ID
-    * @param branchId - Branch ID
-    * @param date - Date string
-    * @param time - Time string
-    */
-   private async validateTimeSlot(
-      serviceId: string,
-      branchId: string,
-      date: string,
-      time: string
-   ): Promise<void> {
-      // Get availability
-      const availability = await availabilityService.getAvailableSlots(
-         serviceId,
-         branchId,
-         date
-      );
-
-      // Check if requested time slot is available
-      const requestedSlot = availability.slots.find(
-         (slot) => slot.time === time
-      );
-
-      if (!requestedSlot) {
-         throw new ValidationError(
-            "The selected time is outside of operating hours"
-         );
-      }
-
-      if (!requestedSlot.available) {
-         throw new ConflictError(
-            "The selected time slot is not available. Please choose another time."
-         );
-      }
-   }
-
-   /**
-    * Map Prisma booking to BookingWithDetailsDTO
-    *
-    * @param booking - Prisma booking object
-    * @returns BookingWithDetailsDTO
+    * Map to DTO
     */
    private mapToBookingWithDetailsDTO(booking: any): BookingWithDetailsDTO {
       return {

@@ -2,13 +2,16 @@ import { Request, Response, NextFunction } from "express";
 import bookingService from "../services/booking.service";
 import { SuccessResponse } from "../types/api";
 import { ValidationError } from "../utils/errors";
-import { CreateBookingRequest, GetBookingQueryParams } from "../types/booking";
+import {
+   CreateBookingRequest,
+   GetBookingQueryParams,
+   CancelBookingRequest,
+} from "../types/booking";
 
 /**
  * Booking Controller
  *
  * Handles HTTP requests for booking endpoints.
- * Validates input, calls service layer, and formats responses.
  */
 
 export class BookingController {
@@ -82,6 +85,37 @@ export class BookingController {
          const response: SuccessResponse<typeof booking> = {
             success: true,
             data: booking,
+            timestamp: new Date().toISOString(),
+         };
+
+         res.status(200).json(response);
+      } catch (error) {
+         next(error);
+      }
+   }
+
+   /**
+    * POST /api/v1/bookings/:referenceNumber/cancel
+    * Cancel a booking
+    */
+   async cancelBooking(
+      req: Request<{ referenceNumber: string }, {}, CancelBookingRequest>,
+      res: Response,
+      next: NextFunction
+   ): Promise<void> {
+      try {
+         const { referenceNumber } = req.params;
+         const cancelData = req.body;
+
+         const booking = await bookingService.cancelBooking(
+            referenceNumber,
+            cancelData
+         );
+
+         const response: SuccessResponse<typeof booking> = {
+            success: true,
+            data: booking,
+            message: "Your booking has been cancelled successfully.",
             timestamp: new Date().toISOString(),
          };
 
