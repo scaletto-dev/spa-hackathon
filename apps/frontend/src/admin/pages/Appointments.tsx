@@ -217,3 +217,5 @@ export function Appointments() {
         </div>
     );
 }
+
+export default Appointments;

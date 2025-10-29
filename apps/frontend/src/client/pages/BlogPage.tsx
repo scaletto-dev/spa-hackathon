@@ -66,3 +66,5 @@ export function BlogPage() {
         </div>
     );
 }
+
+export default BlogPage;

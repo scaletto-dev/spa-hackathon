@@ -280,3 +280,5 @@ export function Customers() {
         </div>
     );
 }
+
+export default Customers;
