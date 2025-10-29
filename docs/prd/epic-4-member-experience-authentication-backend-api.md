@@ -1,6 +1,8 @@
-# Epic 4: Member Experience & Authentication
+# Epic 4: Member Experience & Authentication (Backend API)
 
-**Expanded Goal:** Build member registration, authentication, and personalized features to encourage customer loyalty and repeat bookings. Implement Supabase Auth with email OTP verification, member dashboard with booking history, profile management, and enhanced booking flow that auto-fills member information. Enable members to track their appointments, manage their profile, and access exclusive offers. This epic transforms one-time guest customers into loyal members with personalized experiences.
+**Expanded Goal:** Build comprehensive **backend API** for member registration, authentication, and profile management using Supabase Auth. Implement email OTP verification, JWT-based authentication, member booking history API, profile management endpoints, and enhanced member booking flow. Enable the foundation for personalized member experiences through robust authentication and data management APIs.
+
+**Phase 1 Focus:** Backend API ONLY - Authentication endpoints, user management, member booking APIs, profile APIs.
 
 ### Story 4.1: Integrate Supabase Auth with Email OTP Registration
 

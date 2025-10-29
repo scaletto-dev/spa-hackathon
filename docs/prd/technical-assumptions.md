@@ -1,33 +1,5 @@
 # Technical Assumptions
 
-### Existing Frontend Implementation
-
-**Critical Context:** The frontend application has been **fully implemented externally** and delivered as a complete, production-ready React application.
-
-**What's Pre-Built:**
-- ✅ Complete React 18.2+ application with TypeScript 5.3+
-- ✅ All UI components built with shadcn/ui and Tailwind CSS 3.4+
-- ✅ Full routing structure using React Router 6.20+
-- ✅ All pages: Homepage, Services, Branches, Booking, Member Dashboard, Admin Portal, Blog, Contact
-- ✅ Responsive design (mobile-first) with breakpoints for tablet and desktop
-- ✅ Component library with reusable UI elements
-- ✅ Static assets (images, icons, fonts)
-- ✅ Build configuration with Vite 5.0+
-
-**Integration Focus:**
-This project focuses on:
-1. **Backend API development** (primary deliverable)
-2. **Integrating existing UI with backend** via Axios HTTP client
-3. **State management** setup (React Context + Hooks)
-4. **i18n configuration** (i18next/react-i18next with 4 languages)
-5. **Authentication integration** (Supabase Auth)
-6. **Form validation** (React Hook Form + Zod)
-
-**NOT in scope:**
-- ❌ Building new UI components or pages
-- ❌ Major UI redesign or layout changes
-- ❌ Component development from scratch
-
 ### Repository Structure: Monorepo
 
 **Decision:** Use a **monorepo** structure to house frontend, backend, and shared code in a single repository.
@@ -36,41 +8,36 @@ This project focuses on:
 - **Simplified Dependency Management:** Shared types, utilities, and i18n translations used by both frontend and backend can be managed in a single location
 - **Atomic Changes:** Changes spanning frontend and backend (e.g., API contract updates) can be made in a single commit/PR
 - **Easier Development:** Developers can work across full stack without switching repositories
-- **Existing Frontend Integration:** Frontend code is integrated into monorepo for deployment and API connection
-- **Future Scalability:** Supports future addition of worker services or mobile apps
-- **Tooling:** npm workspaces for simple monorepo management
+- **Future Scalability:** Supports future addition of admin dashboard as separate app or worker services
+- **Tooling:** Turborepo or Nx optional for efficient build caching
 
 **Structure:**
 ```
 app/
-├── frontend/                    # EXISTING React + Vite application (pre-built)
+├── frontend/                    # React + Vite frontend application
 │   ├── src/
-│   │   ├── components/          # Pre-built UI components (shadcn/ui)
+│   │   ├── components/          # Reusable UI components
 │   │   │   ├── ui/              # Basic UI elements (Button, Input, etc.)
 │   │   │   ├── features/        # Business logic components
 │   │   │   └── common/          # Shared layout components
-│   │   ├── pages/               # Route-level components (all pre-built)
-│   │   ├── hooks/               # Custom React hooks (to be implemented)
-│   │   ├── services/            # API integration layer (to be implemented)
+│   │   ├── pages/               # Route-level components
+│   │   ├── hooks/               # Custom React hooks
+│   │   ├── services/            # API integration layer
 │   │   ├── utils/               # Helper functions and utilities
 │   │   ├── types/               # TypeScript type definitions
-│   │   ├── i18n/                # i18n configuration (to be implemented)
-│   │   └── styles/              # Global styles and Tailwind config (existing)
-│   └── public/                  # Static assets (existing)
-├── backend/                     # Node.js + Express backend API (TO BE BUILT)
+│   │   └── styles/              # Global styles and Tailwind config
+│   └── public/                  # Static assets
+├── backend/                     # Node.js + Express backend API
 │   ├── src/
 │   │   ├── controllers/         # Request/response handling
 │   │   ├── middleware/          # Request processing middleware
+│   │   ├── models/              # Database models and schemas
 │   │   ├── routes/              # API route definitions
 │   │   ├── services/            # Business logic layer
 │   │   ├── utils/               # Utility functions
 │   │   ├── config/              # Configuration files
 │   │   └── types/               # TypeScript type definitions
-│   ├── prisma/                  # Prisma schema and migrations
 │   └── logs/                    # Application logs (production)
-├── shared/                      # Shared code between FE and BE
-│   ├── types/                   # Shared TypeScript types
-│   └── constants/               # Shared constants
 └── package.json                 # Root package.json with workspace scripts
 ```
 
@@ -208,4 +175,4 @@ app/
 - **Setup Guide:** Step-by-step local setup instructions
 
 ---
-
+

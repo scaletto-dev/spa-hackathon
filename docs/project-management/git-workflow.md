@@ -42,23 +42,12 @@ main (or master)
 
 ### **Feature Branches**
 
-**Format:** `epic{N}/{story-id}-{short-description}`
+**Format:** `epic{N}/{epic-name}-{short-description}`
 
 **Examples:**
 ```
-epic1/1.1-monorepo-setup
-epic1/1.2-tailwind-shadcn
-epic1/1.3-prisma-schema
-epic1/1.4-supabase-integration
-epic1/1.5-express-api-foundation
-epic1/1.6-services-api
-epic1/1.7-database-seed
-epic1/1.8-react-router-layout
-epic1/1.9-homepage
-epic1/1.10-integration
-
-epic2/2.1-services-listing
-epic2/2.2-service-detail-page
+epic1/foundation-core-infrastructure
+epic2/service-discovery-information
 ...
 ```
 

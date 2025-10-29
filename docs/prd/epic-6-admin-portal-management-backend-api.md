@@ -1,6 +1,8 @@
-# Epic 6: Admin Portal & Management
+# Epic 6: Admin Portal & Management (Backend API)
 
-**Expanded Goal:** Build comprehensive administrative interfaces for clinic operations management. Provide admins with tools to manage services, branches, bookings, users, and view analytics. Enable efficient daily operations through booking management dashboard, service/branch CRUD operations, user management, and basic analytics reporting. This epic delivers operational independence - admins can manage the platform without developer assistance.
+**Expanded Goal:** Build comprehensive **backend API** for administrative operations management. Provide robust API endpoints for managing services, branches, bookings, users, blog content, reviews, and analytics. Enable efficient platform management through RESTful APIs with proper authentication, authorization, and role-based access control. This epic delivers the administrative backend - the foundation for future admin dashboard interfaces.
+
+**Phase 1 Focus:** Backend API ONLY - Admin endpoints, analytics APIs, CRUD operations, role-based access control.
 
 ### Story 6.1: Create Admin Dashboard with Key Metrics
 

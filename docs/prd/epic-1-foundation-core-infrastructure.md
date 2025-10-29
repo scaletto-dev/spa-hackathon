@@ -1,44 +1,28 @@
 # Epic 1: Foundation & Core Infrastructure
 
-**Expanded Goal:** Establish the complete technical foundation for the Beauty Clinic Care Website by setting up a monorepo with frontend (React + Tailwind + shadcn/ui) and backend (Node.js + Express + Prisma), integrating Supabase for database and authentication, and delivering a functional homepage displaying services. This epic proves the entire tech stack works end-to-end from database to UI, provides the deployment foundation for all future work, and delivers immediate user value with an attractive homepage showcasing the clinic's services.
+**Expanded Goal:** Establish the complete **backend technical foundation** for the Beauty Clinic Care Website by setting up the project structure with backend API (Node.js + Express + Prisma), integrating Supabase for database and authentication, implementing database schema, creating core API endpoints, and providing seed data. This epic proves the backend architecture works end-to-end from database to API, provides the foundation for all future API development, and delivers testable API endpoints for services data.
 
-### Story 1.1: Initialize Monorepo with Frontend and Backend Apps
+**Phase 1 Focus:** Backend API ONLY - No frontend UI work in this epic.
+
+### Story 1.1: Initialize Monorepo with Backend API Structure
 
 As a developer,
-I want to set up a monorepo structure with separate frontend and backend applications,
-so that I can develop and manage both codebases efficiently in a single repository.
+I want to set up a monorepo structure with backend application and project configuration,
+so that I can develop the API systematically with proper organization.
 
 #### Acceptance Criteria
-1. Repository created with monorepo structure using standard folder layout (apps/, packages/, prisma/, docs/)
-2. Frontend app initialized in `apps/web/` with Vite + React + TypeScript
-3. Backend app initialized in `apps/api/` with Node.js + Express + TypeScript
-4. Shared packages created: `packages/types/`, `packages/config/`, `packages/utils/`
-5. Package.json scripts configured for running both apps concurrently (e.g., `npm run dev`)
-6. TypeScript configured for both apps with strict mode enabled
-7. ESLint and Prettier configured with shared config in `packages/config/`
-8. .gitignore configured to exclude node_modules, .env, dist, build directories
-9. README.md created with project overview and setup instructions
-10. Both apps can start successfully (frontend on :5173, backend on :3000)
+1. Repository created with monorepo structure using standard folder layout (apps/backend, apps/frontend as placeholder)
+2. Backend app initialized in `apps/backend/` with Node.js + Express + TypeScript
+3. Frontend placeholder folder created in `apps/frontend/` (minimal setup, not implemented in Phase 1)
+4. Package.json scripts configured for running backend (`npm run dev:backend` or `npm run dev`)
+5. TypeScript configured for backend with strict mode enabled
+6. ESLint and Prettier configured for backend code
+7. .gitignore configured to exclude node_modules, .env, dist, build directories, logs
+8. README.md created with project overview, backend setup instructions, and API documentation structure
+9. Backend app can start successfully on port 3000
+10. Environment variables template (.env.example) created for backend configuration
 
-### Story 1.2: Configure Tailwind CSS and shadcn/ui Component System
-
-As a frontend developer,
-I want to set up Tailwind CSS and shadcn/ui with a customizable design system,
-so that I can build consistent, accessible UI components rapidly.
-
-#### Acceptance Criteria
-1. Tailwind CSS 3+ installed and configured in frontend app with PostCSS
-2. Tailwind config includes custom color palette (primary, secondary, accent, neutral scales)
-3. shadcn/ui CLI installed and initialized with default configuration
-4. At least 5 base components installed from shadcn/ui: Button, Card, Input, Label, Select
-5. Global CSS file configured with Tailwind directives and CSS variables for theming
-6. Typography plugin installed and configured for consistent text styling
-7. Responsive breakpoints configured matching requirements (mobile <768px, tablet 768-1024px, desktop >1024px)
-8. Test page created demonstrating all installed components rendering correctly
-9. Dark mode support configured (optional for MVP but architecture in place)
-10. Build process generates optimized CSS bundle <50KB gzipped
-
-### Story 1.3: Design and Implement Database Schema with Prisma
+### Story 1.2: Design and Implement Database Schema with Prisma
 
 As a backend developer,
 I want to design the complete database schema and set up Prisma ORM,
@@ -128,59 +112,24 @@ so that the application has content to display during development and testing.
 9. Seed script runs successfully and populates database with all data
 10. Verification query confirms data exists and relationships are correct
 
-### Story 1.8: Initialize React App with Routing and Layout
+### Story 1.8: Create API Testing Collection and Documentation
 
-As a frontend developer,
-I want to set up React Router and create the base application layout,
-so that I can navigate between pages and maintain consistent UI structure.
-
-#### Acceptance Criteria
-1. React Router v6 installed and configured in frontend app
-2. Main routes defined: `/` (Home), `/services`, `/services/:id`, `/branches`, `/branches/:id`, `/contact`, `/blog`, `/login`, `/register`
-3. Root layout component created with header (navigation + language switcher placeholder) and footer
-4. Header includes logo placeholder, main navigation menu, and "Book Now" CTA button
-5. Header responsive: full navigation on desktop, hamburger menu on mobile
-6. Footer includes contact information placeholders, social media links placeholders, copyright
-7. Layout applies to all routes using React Router Outlet pattern
-8. 404 Not Found page created for invalid routes
-9. Navigation links properly highlight active route
-10. Layout renders correctly on mobile (320px), tablet (768px), and desktop (1280px) breakpoints
-
-### Story 1.9: Build Homepage with Hero Section and Featured Services
-
-As a potential customer,
-I want to see an attractive homepage with hero banner and featured services,
-so that I can quickly understand the clinic's offerings and book an appointment.
+As a backend developer,
+I want to create comprehensive API testing collection and documentation,
+so that all endpoints can be tested manually and the API contract is clearly documented.
 
 #### Acceptance Criteria
-1. Homepage component created at `apps/web/src/pages/Home.tsx`
-2. Hero section includes: background image placeholder, headline text, subheadline, prominent "Book Now" button
-3. Hero section is full-viewport height on desktop, 60vh on mobile
-4. Featured services section displays services in grid layout (4 columns desktop, 2 tablet, 1 mobile)
-5. Service cards show: image, service name, brief description (truncated to 2 lines), duration, price
-6. Service cards include "Learn More" button linking to service detail page (placeholder)
-7. Homepage fetches featured services from API using Axios (`GET /api/v1/services/featured`)
-8. Loading state displayed while fetching services (skeleton cards or spinner)
-9. Error state displayed if API fetch fails with retry button
-10. Homepage is visually polished with proper spacing, typography hierarchy, and mobile responsiveness
-
-### Story 1.10: Connect Frontend to Backend and Deploy Locally
-
-As a developer,
-I want to connect the React frontend to the Express backend and verify end-to-end functionality,
-so that the complete application stack works locally and is ready for feature development.
-
-#### Acceptance Criteria
-1. Frontend environment variables configured: VITE_API_BASE_URL=http://localhost:3000
-2. Axios instance created in `apps/web/src/lib/api.ts` with base URL configuration
-3. API client includes error interceptor for handling 4xx and 5xx responses
-4. Frontend successfully fetches and displays data from backend API
-5. CORS configured correctly allowing frontend to make API requests
-6. Both frontend and backend can be started with single command (`npm run dev` from root)
-7. README.md updated with complete local setup instructions (prerequisites, installation, running)
-8. Environment variable template files created (.env.example) for both apps
-9. Verification checklist completed: homepage loads, featured services display, navigation works, API calls succeed
-10. Initial deployment successful with homepage fully functional showing real data from database
+1. Postman or Insomnia collection created with all implemented endpoints (health check, services, branches)
+2. Each endpoint includes example requests with proper headers, query parameters, and body data
+3. Each endpoint includes example successful responses with actual data structure
+4. Collection includes environment variables for base URL configuration (localhost:3000)
+4. API documentation created in `docs/api/` folder with endpoint specifications
+5. Documentation includes: HTTP method, endpoint path, request parameters, request body schema, response schema, error codes
+6. Documentation uses clear formatting (Markdown tables or OpenAPI/Swagger format)
+7. All endpoints tested manually via Postman/Insomnia and verified to return correct data
+8. README.md updated with instructions on importing and using the API collection
+9. Collection exported and committed to repository (e.g., `postman_collection.json`)
+10. Verification checklist: All API endpoints (GET /health, GET /services, GET /services/:id, GET /services/featured, GET /branches, GET /branches/:id) return expected responses
 
 ---
 
