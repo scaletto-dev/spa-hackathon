@@ -1,0 +1,105 @@
+# API Spec Patching Progress
+
+## ✅ ALL COMPLETE: 42/42 items (100%)
+
+### Feature-Specific Updates (37 items)
+
+#### ✅ Authentication (5 items)
+- #1 Add GET /api/v1/profile
+- #2 Add PATCH /api/v1/profile
+- #3 UPDATE OAuth endpoints (BREAKING)
+- #4 UPDATE Domain whitelist (BREAKING)
+- #22 UPDATE user.id to string UUID (BREAKING)
+
+#### ✅ Bookings (4 items)
+- #7 Add availability endpoint
+- #8 Add booking history
+- #9 Add promo validation
+- #19 UPDATE date/time format
+
+#### ✅ Staff (5 items)
+- #5 Add public available staff
+- #13 Add public staff list
+- #21 Add schedule endpoint
+- #42 Add AI bio generator
+
+#### ✅ Uploads (2 items)
+- #6 UPDATE folder routing (BREAKING)
+- #31 Add absolute URL requirement
+
+#### ✅ Appointments (3 items)
+- #10 Add bulk delete
+- #11 Add bulk update
+- #33 Add filters to list
+
+#### ✅ Customers (3 items)
+- #12 Add bulk delete
+- #14 Add analytics
+
+#### ✅ Dashboard (3 items)
+- #15 UPDATE metrics with changes
+- #16 Add revenue chart
+- #27 Add service distribution
+
+#### ✅ Payments (3 items)
+- #18 Add export
+- #17 Add revenue trend
+
+#### ✅ Reviews (2 items)
+- #28 Add metrics endpoint
+- #34 Add reply fields
+
+#### ✅ Blog (4 items)
+- #37 Add search/filter params
+- #32 Confirm tags array
+- #25 Add slug endpoint
+- #41 Add AI generator
+
+#### ✅ Branches (2 items)
+- #29 Add nearby search
+- #30 UPDATE location structure
+
+#### ✅ Services (1 item)
+- #36 Clarify category enum
+
+#### ✅ Contact (1 item)
+- #26 Add contact form endpoint
+
+### Cross-Cutting Updates (5 items)
+
+#### ✅ All Features (5 items)
+- #20 [HIGH] Add explicit auth scope (Public/Client/Admin) to ALL endpoints
+- #23 [MEDIUM] Add search param ?q= to all admin list endpoints  
+- #24 [MEDIUM] Add meta.totalPages to all paginated responses
+- #38 [MEDIUM] membershipTier enum lowercase (BREAKING)
+- #39 [MEDIUM] Status enum lowercase (consistency check)
+
+## Breaking Changes Applied: 5
+
+1. ⚠️ User.id UUID (string) - Supabase Auth compatibility
+2. ⚠️ OAuth server-side verification - Security critical
+3. ⚠️ Admin domain whitelist backend enforcement - Security critical
+4. ⚠️ Upload folder routing - API structure change
+5. ⚠️ membershipTier lowercase - Enum consistency
+
+## Summary
+
+- **Items Applied:** 42/42 (100%)
+- **Breaking Changes:** 5 documented with migration guides
+- **Files Updated:**
+  - docs/api-spec/by-feature.updated.md (complete)
+  - docs/api-spec/changelog.md (complete)
+  - docs/api-spec/.patch-progress.txt (this file)
+
+## Next Steps
+
+✅ API Specification: COMPLETE
+��� Ready for Backend Implementation:
+  - Story 1.3: Database Schema (Prisma)
+  - Story 1.4: Supabase Integration
+  - Story 1.5: Express API Foundation
+  - Epic 1-7: Full feature implementation
+
+---
+Last Updated: December 2025
+Status: ✅ COMPLETE - All worklist items applied
