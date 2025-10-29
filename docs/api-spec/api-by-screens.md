@@ -1895,3 +1895,137 @@ Content-Type: application/json
    - Delete account option
 
 ---
+
+---
+
+## Screen: Service Detail Page (`/services/:id`)
+
+**Component:** `apps/frontend/src/client/pages/ServiceDetailPage.tsx`  
+**Protected:** No (Public)
+
+### Endpoints Used
+
+#### 1. GET /api/v1/services/:id
+
+**Purpose:** Fetch detailed service information including description, images, benefits, FAQs
+
+**Request:**
+```http
+GET /api/v1/services/1
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "AI Skin Analysis Facial",
+    "category": "Facial",
+    "description": "Short description",
+    "longDescription": "Full multi-paragraph description",
+    "excerpt": "Brief summary",
+    "duration": "60 min",
+    "price": 150,
+    "image": "string (main image URL)",
+    "images": ["string (gallery URLs)"],
+    "beforeAfterPhotos": [
+      {
+        "before": "string (URL)",
+        "after": "string (URL)"
+      }
+    ],
+    "benefits": ["string (benefit list)"],
+    "faqs": [
+      {
+        "question": "string",
+        "answer": "string"
+      }
+    ],
+    "averageRating": 4.8,
+    "totalReviews": 127,
+    "active": true
+  }
+}
+```
+
+**Frontend Usage:**
+- File: `ServiceDetailPage.tsx:40`
+- Adapter: `apps/frontend/src/api/adapters/services.ts:getServiceDetail()`
+- Hook: `useEffect()` on mount and when `id` param changes
+
+---
+
+#### 2. GET /api/v1/services/:id/related
+
+**Purpose:** Fetch related services for recommendations
+
+**Request:**
+```http
+GET /api/v1/services/1/related
+```
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": 2,
+      "name": "Hydrafacial Treatment",
+      "category": "Facial",
+      "excerpt": "Short description",
+      "duration": "45 min",
+      "price": 180,
+      "image": "string (URL)"
+    }
+  ]
+}
+```
+
+**Frontend Usage:**
+- File: `ServiceDetailPage.tsx:41`
+- Adapter: `apps/frontend/src/api/adapters/services.ts:getRelatedServices()`
+- Display: Related services carousel at bottom
+
+---
+
+### Features Implemented
+
+- ✅ Image gallery with thumbnail navigation
+- ✅ Main service information (name, category, price, duration)
+- ✅ Star rating display with review count
+- ✅ "Book Now" CTA button (navigates to /booking with pre-filled service)
+- ✅ Long description section with proper formatting
+- ✅ Benefits list with checkmark icons
+- ✅ Before/After photo comparison (if available)
+- ✅ Expandable FAQ accordion
+- ✅ Related services carousel with click-to-navigate
+- ✅ Loading state with spinner
+- ✅ Error state with retry option
+- ✅ Back to services list link
+- ✅ Responsive design (mobile + desktop)
+- ✅ Smooth animations with Framer Motion
+
+---
+
+### TODO / Backend Notes
+
+1. **Image Optimization:**
+   - Serve multiple resolutions (thumbnail, medium, full)
+   - Consider CDN integration for faster loading
+   - Lazy load gallery images
+
+2. **Related Services Algorithm:**
+   - Current: Manual mapping per service
+   - Future: ML-based recommendations based on category, price range, user history
+
+3. **SEO:**
+   - Add meta tags (title, description, og:image)
+   - Structured data (Schema.org ServiceSchema)
+   - Canonical URLs
+
+4. **Analytics:**
+   - Track service detail views
+   - Track "Book Now" clicks
+   - A/B test different layouts
+
+---

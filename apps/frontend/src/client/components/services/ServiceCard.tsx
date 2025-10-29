@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { ClockIcon, DollarSignIcon, ArrowRightIcon } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ClockIcon, DollarSignIcon, ArrowRightIcon, Eye } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 
 interface Service {
@@ -79,21 +79,30 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
                             <span className='text-2xl font-bold text-gray-800'>{service.price.replace('$', '')}</span>
                         </div>
                     </div>
-                    {/* Book Now Button */}
-                    <motion.button
-                        onClick={handleBookNow}
-                        data-testid={`book-service-${service.id}`}
-                        whileHover={{
-                            scale: 1.02,
-                        }}
-                        whileTap={{
-                            scale: 0.98,
-                        }}
-                        className='w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-shadow group/btn'
-                    >
-                        Book Now
-                        <ArrowRightIcon className='w-5 h-5 group-hover/btn:translate-x-1 transition-transform' />
-                    </motion.button>
+                    {/* Action Buttons */}
+                    <div className='flex gap-3'>
+                        <Link
+                            to={`/services/${service.id}`}
+                            className='flex-1 flex items-center justify-center gap-2 py-3 bg-white border-2 border-pink-500 text-pink-600 rounded-2xl font-semibold hover:bg-pink-50 transition-colors'
+                        >
+                            <Eye className='w-5 h-5' />
+                            Chi tiết
+                        </Link>
+                        <motion.button
+                            onClick={handleBookNow}
+                            data-testid={`book-service-${service.id}`}
+                            whileHover={{
+                                scale: 1.02,
+                            }}
+                            whileTap={{
+                                scale: 0.98,
+                            }}
+                            className='flex-1 flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-shadow group/btn'
+                        >
+                            Đặt ngay
+                            <ArrowRightIcon className='w-5 h-5 group-hover/btn:translate-x-1 transition-transform' />
+                        </motion.button>
+                    </div>
                 </div>
             </div>
         </motion.div>

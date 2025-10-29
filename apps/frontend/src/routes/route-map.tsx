@@ -11,6 +11,7 @@ const AdminLayout = lazy(() => import('./layouts/AdminLayoutWrapper'));
 // Lazy load client pages
 const Home = lazy(() => import('../client/pages/Home'));
 const ServicesPage = lazy(() => import('../client/pages/ServicesPage'));
+const ServiceDetailPage = lazy(() => import('../client/pages/ServiceDetailPage'));
 const BookingPage = lazy(() => import('../client/pages/BookingPage'));
 const BranchesPage = lazy(() => import('../client/pages/BranchesPage'));
 const BlogPage = lazy(() => import('../client/pages/BlogPage'));
@@ -80,6 +81,14 @@ export const routes: RouteObject[] = [
                 element: (
                     <Suspense fallback={<Pending />}>
                         <ServicesPage />
+                    </Suspense>
+                ),
+            },
+            {
+                path: 'services/:id',
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <ServiceDetailPage />
                     </Suspense>
                 ),
             },
