@@ -2,14 +2,26 @@
   "dashboard": {
     "title": "Bảng điều khiển",
     "welcome": "Chào mừng trở lại",
-    "overview": "Tổng quan",
+    "overview": "Đây là tổng quan hành trình làm đẹp của bạn",
     "upcomingBookings": "Lịch hẹn sắp tới",
     "completedServices": "Dịch vụ đã hoàn thành",
     "totalSpent": "Tổng chi tiêu",
     "membershipPoints": "Điểm thành viên",
     "viewAll": "Xem tất cả",
     "noUpcomingBookings": "Không có lịch hẹn sắp tới",
-    "bookNow": "Đặt lịch ngay"
+    "bookNow": "Đặt lịch ngay",
+    "totalBookings": "Tổng số lịch hẹn",
+    "upcoming": "Sắp tới",
+    "completed": "Hoàn thành",
+    "memberPoints": "Điểm thành viên",
+    "upcomingAppointments": "Lịch hẹn sắp tới",
+    "noUpcomingAppointments": "Chưa có lịch hẹn nào",
+    "bookNewAppointment": "Đặt lịch hẹn mới",
+    "editProfile": "Chỉnh sửa hồ sơ",
+    "viewBookingHistory": "Xem lịch sử đặt lịch",
+    "quickActions": "Hành động nhanh",
+    "specialOffers": "Ưu đãi đặc biệt 🎁",
+    "validUntil": "Có hiệu lực đến"
   },
   "bookings": {
     "title": "Lịch sử đặt lịch",

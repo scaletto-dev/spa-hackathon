@@ -2,14 +2,26 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back",
-    "overview": "Overview",
+    "overview": "Here's your beauty journey overview",
     "upcomingBookings": "Upcoming Bookings",
     "completedServices": "Completed Services",
     "totalSpent": "Total Spent",
     "membershipPoints": "Membership Points",
     "viewAll": "View All",
     "noUpcomingBookings": "No upcoming bookings",
-    "bookNow": "Book Now"
+    "bookNow": "Book Now",
+    "totalBookings": "Total Bookings",
+    "upcoming": "Upcoming",
+    "completed": "Completed",
+    "memberPoints": "Member Points",
+    "upcomingAppointments": "Upcoming Appointments",
+    "noUpcomingAppointments": "No upcoming appointments",
+    "bookNewAppointment": "Book New Appointment",
+    "editProfile": "Edit Profile",
+    "viewBookingHistory": "View Booking History",
+    "quickActions": "Quick Actions",
+    "specialOffers": "Special Offers 🎁",
+    "validUntil": "Valid until"
   },
   "bookings": {
     "title": "Booking History",

@@ -13,10 +13,12 @@ import {
     ClockIcon as PendingIcon,
 } from 'lucide-react';
 import { getMemberBookings, type BookingHistoryParams, type BookingHistoryResponse } from '../../../api/adapters/member';
+import { useTranslation } from 'react-i18next';
 
 type StatusFilter = 'all' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
 
 export default function BookingHistory() {
+    const { t, i18n } = useTranslation('common');
     const [bookings, setBookings] = useState<BookingHistoryResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,19 +62,19 @@ export default function BookingHistory() {
                 bg: 'bg-blue-100',
                 text: 'text-blue-800',
                 icon: <PendingIcon className='w-3 h-3' />,
-                label: 'Confirmed',
+                label: t('bookings.status.confirmed'),
             },
             completed: {
                 bg: 'bg-green-100',
                 text: 'text-green-800',
                 icon: <CheckCircleIcon className='w-3 h-3' />,
-                label: 'Completed',
+                label: t('bookings.status.completed'),
             },
             cancelled: {
                 bg: 'bg-red-100',
                 text: 'text-red-800',
                 icon: <XCircleIcon className='w-3 h-3' />,
-                label: 'Cancelled',
+                label: t('bookings.status.cancelled'),
             },
             no_show: {
                 bg: 'bg-gray-100',
@@ -92,6 +94,15 @@ export default function BookingHistory() {
         );
     };
 
+    const formatDate = (isoDate: string) => {
+        const date = new Date(isoDate);
+        return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
+    };
+
     return (
         <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 px-4 pt-24'>
             <div className='max-w-7xl mx-auto'>
@@ -106,10 +117,10 @@ export default function BookingHistory() {
                         className='inline-flex items-center gap-2 text-pink-600 hover:text-pink-700 mb-4'
                     >
                         <ChevronLeftIcon className='w-5 h-5' />
-                        Back to Dashboard
+                        {t('common.back')}
                     </Link>
-                    <h1 className='text-4xl font-bold text-gray-900 mb-2'>Booking History</h1>
-                    <p className='text-gray-600'>View and manage all your appointments</p>
+                    <h1 className='text-4xl font-bold text-gray-900 mb-2'>{t('bookings.title')}</h1>
+                    <p className='text-gray-600'>{t('bookings.myBookings')}</p>
                 </motion.div>
 
                 {/* Filter Tabs */}
@@ -121,14 +132,14 @@ export default function BookingHistory() {
                 >
                     <div className='flex items-center gap-2 mb-4'>
                         <FilterIcon className='w-5 h-5 text-gray-600' />
-                        <h3 className='font-semibold text-gray-900'>Filter by Status</h3>
+                        <h3 className='font-semibold text-gray-900'>{t('bookings.filter')}</h3>
                     </div>
                     <div className='flex flex-wrap gap-2'>
                         {[
-                            { value: 'all', label: 'All Bookings' },
-                            { value: 'confirmed', label: 'Upcoming' },
-                            { value: 'completed', label: 'Completed' },
-                            { value: 'cancelled', label: 'Cancelled' },
+                            { value: 'all', label: t('bookings.status.all') },
+                            { value: 'confirmed', label: t('bookings.status.confirmed') },
+                            { value: 'completed', label: t('bookings.status.completed') },
+                            { value: 'cancelled', label: t('bookings.status.cancelled') },
                         ].map((filter) => (
                             <button
                                 key={filter.value}
@@ -156,23 +167,19 @@ export default function BookingHistory() {
                         <div className='flex items-center justify-center py-20'>
                             <div className='text-center'>
                                 <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto'></div>
-                                <p className='mt-4 text-gray-600'>Loading bookings...</p>
+                                <p className='mt-4 text-gray-600'>{t('common.loading')}</p>
                             </div>
                         </div>
                     ) : !bookings || bookings.data.length === 0 ? (
                         <div className='text-center py-20'>
                             <CalendarIcon className='w-16 h-16 text-gray-300 mx-auto mb-4' />
-                            <h3 className='text-xl font-semibold text-gray-900 mb-2'>No bookings found</h3>
-                            <p className='text-gray-600 mb-6'>
-                                {statusFilter === 'all'
-                                    ? "You haven't made any bookings yet"
-                                    : `No ${statusFilter} bookings found`}
-                            </p>
+                            <h3 className='text-xl font-semibold text-gray-900 mb-2'>{t('bookings.noBookings')}</h3>
+                            <p className='text-gray-600 mb-6'>{t('bookings.noBookings')}</p>
                             <Link
                                 to='/booking'
                                 className='inline-block px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold hover:shadow-lg transition-shadow'
                             >
-                                Book Your First Appointment
+                                {t('dashboard.bookNow')}
                             </Link>
                         </div>
                     ) : (
@@ -183,19 +190,19 @@ export default function BookingHistory() {
                                     <thead className='bg-gray-50 border-b border-gray-200'>
                                         <tr>
                                             <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                                Service
+                                                {t('bookings.service')}
                                             </th>
                                             <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                                Branch
+                                                {t('bookings.branch')}
                                             </th>
                                             <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                                Date & Time
+                                                {t('bookings.date')} & {t('bookings.time')}
                                             </th>
                                             <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                                Reference
+                                                {t('bookings.details')}
                                             </th>
                                             <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                                Status
+                                                {t('bookings.status.all')}
                                             </th>
                                         </tr>
                                     </thead>

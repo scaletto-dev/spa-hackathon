@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 import { CalendarIcon, SparklesIcon, TrendingUpIcon, ClockIcon, MapPinIcon, ArrowRightIcon } from 'lucide-react';
 import { getMemberDashboard, type MemberDashboardData } from '../../../api/adapters/member';
 import { useAuth } from '../../../auth/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export default function MemberDashboard() {
     const { user } = useAuth();
+    const { t } = useTranslation('common');
     const [dashboardData, setDashboardData] = useState<MemberDashboardData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -31,7 +33,7 @@ export default function MemberDashboard() {
             <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center pt-20'>
                 <div className='text-center'>
                     <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto'></div>
-                    <p className='mt-4 text-gray-600'>Loading your dashboard...</p>
+                    <p className='mt-4 text-gray-600'>{t('common.loading')}</p>
                 </div>
             </div>
         );
@@ -40,7 +42,7 @@ export default function MemberDashboard() {
     if (!dashboardData) {
         return (
             <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center pt-20'>
-                <p className='text-gray-600'>Failed to load dashboard data</p>
+                <p className='text-gray-600'>{t('common.error')}</p>
             </div>
         );
     }
@@ -53,37 +55,37 @@ export default function MemberDashboard() {
                 {/* Welcome Header */}
                 <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className='mb-8'>
                     <h1 className='text-4xl font-bold text-gray-900 mb-2'>
-                        Welcome back, {user?.name || 'Member'}! 👋
+                        {t('dashboard.welcome')}, {user?.name || 'Member'}! 👋
                     </h1>
-                    <p className='text-gray-600'>Here&apos;s your beauty journey overview</p>
+                    <p className='text-gray-600'>{t('dashboard.overview')}</p>
                 </motion.div>
 
                 {/* Stats Cards */}
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10'>
                     <StatsCard
                         icon={<CalendarIcon className='w-6 h-6' />}
-                        label='Total Bookings'
+                        label={t('dashboard.totalBookings')}
                         value={stats.totalBookings}
                         color='pink'
                         delay={0}
                     />
                     <StatsCard
                         icon={<ClockIcon className='w-6 h-6' />}
-                        label='Upcoming'
+                        label={t('dashboard.upcoming')}
                         value={stats.upcomingBookings}
                         color='purple'
                         delay={0.1}
                     />
                     <StatsCard
                         icon={<TrendingUpIcon className='w-6 h-6' />}
-                        label='Completed'
+                        label={t('dashboard.completed')}
                         value={stats.completedBookings}
                         color='blue'
                         delay={0.2}
                     />
                     <StatsCard
                         icon={<SparklesIcon className='w-6 h-6' />}
-                        label='Member Points'
+                        label={t('dashboard.memberPoints')}
                         value={stats.memberPoints}
                         color='amber'
                         delay={0.3}
@@ -100,12 +102,12 @@ export default function MemberDashboard() {
                     >
                         <div className='bg-white rounded-2xl shadow-xl p-6'>
                             <div className='flex items-center justify-between mb-6'>
-                                <h2 className='text-2xl font-bold text-gray-900'>Upcoming Appointments</h2>
+                                <h2 className='text-2xl font-bold text-gray-900'>{t('dashboard.upcomingAppointments')}</h2>
                                 <Link
                                     to='/dashboard/bookings'
                                     className='text-pink-500 hover:text-pink-600 font-medium flex items-center gap-1 transition-colors'
                                 >
-                                    View All
+                                    {t('dashboard.viewAll')}
                                     <ArrowRightIcon className='w-4 h-4' />
                                 </Link>
                             </div>
@@ -113,12 +115,12 @@ export default function MemberDashboard() {
                             {upcomingBookings.length === 0 ? (
                                 <div className='text-center py-12'>
                                     <CalendarIcon className='w-16 h-16 text-gray-300 mx-auto mb-4' />
-                                    <p className='text-gray-500 mb-4'>No upcoming appointments</p>
+                                    <p className='text-gray-500 mb-4'>{t('dashboard.noUpcomingAppointments')}</p>
                                     <Link
                                         to='/booking'
                                         className='inline-block px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold hover:shadow-lg transition-shadow'
                                     >
-                                        Book Now
+                                        {t('dashboard.bookNow')}
                                     </Link>
                                 </div>
                             ) : (
@@ -141,32 +143,32 @@ export default function MemberDashboard() {
                         {/* Quick Actions */}
                         {/* Quick Actions */}
                         <div className='bg-white rounded-2xl shadow-xl p-6'>
-                            <h3 className='text-xl font-bold text-gray-900 mb-4'>Quick Actions</h3>
+                            <h3 className='text-xl font-bold text-gray-900 mb-4'>{t('dashboard.quickActions')}</h3>
                             <div className='space-y-3'>
                                 <Link
                                     to='/booking'
                                     className='block w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold text-center hover:shadow-lg transition-shadow'
                                 >
-                                    Book New Appointment
+                                    {t('dashboard.bookNewAppointment')}
                                 </Link>
                                 <Link
                                     to='/dashboard/profile'
                                     className='block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors'
                                 >
-                                    Edit Profile
+                                    {t('dashboard.editProfile')}
                                 </Link>
                                 <Link
                                     to='/dashboard/bookings'
                                     className='block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors'
                                 >
-                                    View Booking History
+                                    {t('dashboard.viewBookingHistory')}
                                 </Link>
                             </div>
                         </div>
 
                         {/* Special Offers */}
                         <div className='bg-white rounded-2xl shadow-xl p-6'>
-                            <h3 className='text-xl font-bold text-gray-900 mb-4'>Special Offers 🎁</h3>
+                            <h3 className='text-xl font-bold text-gray-900 mb-4'>{t('dashboard.specialOffers')}</h3>
                             <div className='space-y-4'>
                                 {specialOffers.map((offer) => (
                                     <OfferCard key={offer.id} offer={offer} />
@@ -217,9 +219,10 @@ function StatsCard({
 
 // Booking Card Component
 function BookingCard({ booking }: { booking: MemberDashboardData['upcomingBookings'][0] }) {
+    const { i18n } = useTranslation();
     const formatDate = (isoDate: string) => {
         const date = new Date(isoDate);
-        return date.toLocaleDateString('vi-VN', {
+        return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
             weekday: 'short',
             year: 'numeric',
             month: 'short',
@@ -256,9 +259,10 @@ function BookingCard({ booking }: { booking: MemberDashboardData['upcomingBookin
 
 // Offer Card Component
 function OfferCard({ offer }: { offer: MemberDashboardData['specialOffers'][0] }) {
+    const { t, i18n } = useTranslation('common');
     const formatDate = (isoDate: string) => {
         const date = new Date(isoDate);
-        return date.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' });
+        return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { month: 'short', day: 'numeric' });
     };
 
     return (
@@ -268,7 +272,7 @@ function OfferCard({ offer }: { offer: MemberDashboardData['specialOffers'][0] }
                 <span className='text-pink-600 font-bold text-lg'>{offer.discountPercent}%</span>
             </div>
             <p className='text-sm text-gray-600 mb-2'>{offer.description}</p>
-            <p className='text-xs text-gray-500'>Valid until {formatDate(offer.validUntil)}</p>
+            <p className='text-xs text-gray-500'>{t('dashboard.validUntil')} {formatDate(offer.validUntil)}</p>
         </div>
     );
 }
