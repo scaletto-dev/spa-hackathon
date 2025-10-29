@@ -1,37 +1,46 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import branchController from '../controllers/branch.controller';
 
 const router = Router();
 
 /**
- * Branches Routes (Placeholder)
+ * Branch Routes
  * 
- * Actual implementations will be added in Story 2.5
+ * Defines API endpoints for branch/location management
  */
 
 /**
  * GET /api/v1/branches
  * Get all branches
+ * 
+ * Query Parameters:
+ * - includeServices: 'true' | 'false' (optional) - Include services in response
  */
-router.get('/', (req: Request, res: Response) => {
-  res.status(501).json({
-    error: 'NotImplementedError',
-    message: 'This endpoint will be implemented in Story 2.5',
-    statusCode: 501,
-    timestamp: new Date().toISOString(),
-  });
-});
+router.get('/', branchController.getAllBranches.bind(branchController));
 
 /**
  * GET /api/v1/branches/:id
- * Get branch by ID
+ * Get a single branch by ID
+ * 
+ * Path Parameters:
+ * - id: string (UUID) - Branch ID
+ * 
+ * Query Parameters:
+ * - includeServices: 'true' | 'false' (optional) - Include services in response
  */
-router.get('/:id', (req: Request, res: Response) => {
-  res.status(501).json({
-    error: 'NotImplementedError',
-    message: 'This endpoint will be implemented in Story 2.5',
-    statusCode: 501,
-    timestamp: new Date().toISOString(),
-  });
-});
+router.get('/:id', branchController.getBranchById.bind(branchController));
+
+/**
+ * GET /api/v1/branches/:id/services
+ * Get all services available at a specific branch
+ * 
+ * Path Parameters:
+ * - id: string (UUID) - Branch ID
+ * 
+ * Query Parameters:
+ * - page: number (optional, default: 1) - Page number
+ * - limit: number (optional, default: 20, max: 100) - Items per page
+ */
+router.get('/:id/services', branchController.getBranchServices.bind(branchController));
 
 export default router;

@@ -35,7 +35,7 @@ so that services can be organized and filtered by category.
 4. `GET /api/v1/categories/:id/services` endpoint returns all services in a specific category
 5. Categories endpoint supports optional query param `includeServices=true` to embed service data
 6. Categories ordered alphabetically by name by default
-7. Response follows consistent API structure: { data: {...} } or { data: [...] }
+7. Response follows consistent API structure in folder api.ts
 8. Proper error handling for invalid category IDs (404)
 9. API endpoints tested with Postman/Insomnia
 10. API documentation updated with category endpoints
@@ -185,4 +185,4 @@ so that the API is stable, scalable, and protected from abuse.
 10. Rate limiting tested with multiple rapid requests to verify it works correctly
 
 ---
-
+

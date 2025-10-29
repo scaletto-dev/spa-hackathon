@@ -21,6 +21,7 @@ enum UserRole {
 }
 
 enum BookingStatus {
+  PENDING
   CONFIRMED
   COMPLETED
   CANCELLED
@@ -28,14 +29,15 @@ enum BookingStatus {
 }
 
 enum MessageType {
-  GENERAL
-  BOOKING_INQUIRY
-  COMPLAINT
+  GENERAL_INQUIRY
+  SERVICE_QUESTION
+  BOOKING_ASSISTANCE
   FEEDBACK
+  OTHER
 }
 
 enum ContactStatus {
-  NEW
+  PENDING
   IN_PROGRESS
   RESOLVED
 }
@@ -143,7 +145,7 @@ model Booking {
   branchId           String
   appointmentDate    DateTime
   appointmentTime    String // Time slot like "14:00"
-  status             BookingStatus @default(CONFIRMED)
+  status             BookingStatus @default(PENDING)
   guestName          String? // Required if userId is null
   guestEmail         String? // Required if userId is null
   guestPhone         String? // Required if userId is null
@@ -231,7 +233,7 @@ model ContactSubmission {
   phone       String?
   messageType MessageType
   message     String        @db.Text
-  status      ContactStatus @default(NEW)
+  status      ContactStatus @default(PENDING)
   adminNotes  String?       @db.Text // Internal admin notes
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
