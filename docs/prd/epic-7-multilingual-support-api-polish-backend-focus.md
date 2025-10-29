@@ -1,6 +1,10 @@
-# Epic 7: Multilingual Support & Polish
+# Epic 7: Multilingual Support & API Polish (Backend Focus)
 
-**Expanded Goal:** Implement complete multilingual support for Vietnamese, Japanese, English, and Chinese languages across the entire application. Integrate i18next for frontend translations, enable language switching, translate all UI elements and content, implement language-aware email notifications, and perform final QA and polish. This epic transforms the platform into a truly international offering, enabling the clinic to serve diverse customer segments and complete the MVP for production deployment.
+**Expanded Goal:** Implement **backend support** for multilingual content delivery and final API refinement. Enable language-specific content retrieval, implement language-aware email notifications in 4 languages (Vietnamese, Japanese, English, Chinese), optimize API performance, complete comprehensive testing, and finalize API documentation. This epic ensures the backend is production-ready with international capabilities.
+
+**Phase 1 Focus:** Backend API ONLY - Multilingual content APIs, language-aware emails, API optimization, testing, documentation finalization.
+
+**Note:** Frontend i18next integration and UI translations are deferred to Phase 2.
 
 ### Story 7.1: Set Up i18next and Translation Infrastructure
 

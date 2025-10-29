@@ -1,6 +1,8 @@
-# Epic 5: Content Management & Reviews
+# Epic 5: Content Management & Reviews (Backend API)
 
-**Expanded Goal:** Build blog/news functionality for content marketing and SEO, plus customer review system for social proof. Enable content creation and management for blog posts with categorization and search, implement customer review submission with admin moderation, and display approved reviews on service pages. This epic provides tools for organic traffic generation through content marketing and builds customer trust through authentic reviews and testimonials.
+**Expanded Goal:** Build comprehensive **backend API** for blog/news content management and customer review system. Deliver RESTful APIs for blog post CRUD operations, category management, review submissions with moderation workflow, and content retrieval with filtering/search. This epic provides the backend foundation for content marketing, SEO, and customer social proof features.
+
+**Phase 1 Focus:** Backend API ONLY - Blog endpoints, review endpoints, admin moderation APIs, content management.
 
 ### Story 5.1: Design Blog Database Schema and API Structure
 

@@ -1,7 +1,7 @@
 # Beauty Clinic Care Website - Product Requirements Document (PRD)
 
-**Version:** 1.0  
-**Date:** October 28, 2025  
+**Version:** 1.1 (Backend-First Phase)  
+**Date:** October 29, 2025  
 **Project:** Beauty Clinic Care Website  
 **Document Owner:** John (Product Manager)
 
@@ -30,77 +30,83 @@ The Beauty Clinic Care Website addresses these challenges by creating a comprehe
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
 | October 28, 2025 | 1.0 | Initial PRD creation from approved Project Brief | John (PM) |
+| October 29, 2025 | 1.1 | **Scope Adjustment:** Changed from "Integration-First" to "Backend-First Approach" - Phase 1 focuses exclusively on API development, no UI work | John (PM) |
 
 ---
 
-## Scope Adjustment: Existing UI Provided (Integration-First Approach)
+## Scope Adjustment: Backend-First Approach (API Development Priority)
 
 ### Overview
 
-**Critical Context:** The clinic's website frontend has already been designed and implemented externally as a complete, standalone React application. The existing UI includes all pages, components, layouts, and styling needed for the full user experience.
+**Critical Context:** The clinic's website will be built in phases. **Phase 1 focuses exclusively on backend API development** to establish a solid foundation. Frontend UI development will follow in subsequent phases once the API layer is complete and tested.
 
-### What Exists (Pre-Built Frontend)
+### Current Phase: Backend API Development ONLY
 
-The existing frontend implementation includes:
-- **Complete React Application** with TypeScript, Tailwind CSS, and shadcn/ui components
-- **All User-Facing Pages:** Homepage, Service Catalog, Service Details, Branch Listings, Branch Details, Contact Page, Blog/News, Reviews
-- **Booking Flow UI:** Complete multi-step booking interface for both guest and member flows
-- **Member Features:** Registration forms, Login pages, Member Dashboard, Profile management, Booking History
-- **Admin Portal UI:** Full admin interface for content management, booking oversight, review moderation
-- **Responsive Design:** Mobile-first implementation with breakpoints for tablet and desktop
-- **Component Library:** Reusable UI components built with shadcn/ui and Tailwind CSS
-- **Routing Structure:** React Router implementation with all routes defined
-- **Static Assets:** Images, icons, fonts, and other media assets
+**What We Are Building in Phase 1:**
 
-### Project Focus: Backend + Integration
-
-For this project, development work focuses on:
-
-1. **Backend API Development (Primary Focus)**
+1. **Backend API Development (EXCLUSIVE FOCUS)**
    - Build complete RESTful API using Node.js + Express
+   - Design and implement database schema with PostgreSQL via Supabase and Prisma ORM
    - Implement all business logic for bookings, authentication, content management
-   - Set up PostgreSQL database via Supabase with Prisma ORM
    - Configure Supabase Auth for email OTP authentication
-   - Implement Redis caching for performance
-   - Set up file storage using Supabase Storage
+   - Implement Redis caching for performance optimization
+   - Set up file storage using Supabase Storage for images
+   - Create comprehensive API documentation
+   - Write unit and integration tests for all endpoints
+   - Implement security measures (rate limiting, input validation, authentication)
 
-2. **Frontend Integration Work (Secondary Focus)**
-   - **Connect existing UI to backend APIs** using Axios
-   - **Implement state management** using React Context + Hooks for auth, language, theme
-   - **Configure internationalization (i18n)** using i18next/react-i18next with 4 languages
-   - **Integrate authentication flow** with Supabase Auth (login, register, OTP verification)
-   - **Implement form validation** using React Hook Form + Zod
-   - **Add error handling** and loading states for API calls
-   - **Set up environment configuration** for API endpoints
-   - **Minor UI adjustments** for API integration, accessibility fixes, or polish only
+2. **API Testing & Documentation**
+   - Create Postman/Insomnia collection for all endpoints
+   - Document request/response schemas for each endpoint
+   - Provide example API calls and responses
+   - Set up automated API testing suite
 
-3. **Not In Scope**
-   - ❌ Building UI components from scratch
-   - ❌ Designing layouts or visual design
-   - ❌ Creating new pages or major UI features
-   - ❌ Rewriting existing React components
-   - ❌ Major styling changes or redesign work
+### What is NOT in Current Scope
 
-### Epic Interpretation
+**Phase 1 Exclusions (Deferred to Future Phases):**
+
+- ❌ **No Frontend UI Development** - No React components, pages, or styling
+- ❌ **No UI Integration** - No API consumption from frontend
+- ❌ **No User Interface Design** - No mockups, wireframes, or visual design
+- ❌ **No End-User Testing** - Focus on API testing only (Postman/automated tests)
+- ❌ **No Client-Side Code** - No JavaScript/TypeScript for browser execution
+
+### Epic Interpretation for Phase 1
 
 When epics reference "Create UI" or "Implement pages," interpret as:
-- **"Integrate existing [Page/Component] with backend API"**
-- Focus on API endpoints, data flow, state management, and business logic
-- UI work limited to wiring up existing components with real data
+- **"Build API endpoints to support [Feature/Page]"**
+- Focus on:
+  - RESTful endpoint design and implementation
+  - Database queries and data modeling
+  - Business logic and validation rules
+  - Response formatting and error handling
+  - API documentation
+- **Defer all UI work** to Phase 2
 
-### Requirements Scope
+### Requirements Scope for Phase 1
 
-- **Functional Requirements (FR):** All FRs remain valid - they describe system behavior, which must be implemented in backend + integration
-- **Non-Functional Requirements (NFR):** Performance, security, accessibility, and multilingual requirements apply to the integrated system
-- **Technical Requirements:** Backend architecture, database design, API contracts, testing requirements remain unchanged
+- **Functional Requirements (FR):** Implemented as **backend API capabilities**
+  - Example: FR8 "Guest users must be able to initiate booking" → Build `POST /api/v1/bookings` endpoint accepting guest data
+- **Non-Functional Requirements (NFR):** Apply to **backend services**
+  - Performance: API response times, database query optimization
+  - Security: Authentication, authorization, input validation, rate limiting
+  - Testing: Unit tests, integration tests, API contract tests
+- **Technical Requirements:** **Backend-focused only**
+  - Database design and migrations
+  - API architecture and patterns
+  - Testing infrastructure
+  - Development environment setup
 
-### Success Criteria
+### Success Criteria for Phase 1
 
-- ✅ All backend APIs functional and tested
-- ✅ Existing UI successfully integrated with backend services
-- ✅ Authentication, booking, content management flows working end-to-end
-- ✅ 4-language multilingual support fully operational
-- ✅ Performance and security requirements met
+- ✅ All backend APIs functional and tested (80%+ test coverage)
+- ✅ Database schema complete with proper relationships and indexes
+- ✅ Authentication system working (Supabase Auth integration)
+- ✅ All business logic implemented (booking, availability, notifications)
+- ✅ API documentation complete with examples
+- ✅ Postman collection available for manual testing
+- ✅ Performance benchmarks met (API response < 200ms)
+- ✅ Security measures in place (rate limiting, validation, encryption)
 
 ---
 
@@ -597,44 +603,29 @@ app/
 
 ## Epic 1: Foundation & Core Infrastructure
 
-**Expanded Goal:** Establish the complete technical foundation for the Beauty Clinic Care Website by setting up a monorepo with frontend (React + Tailwind + shadcn/ui) and backend (Node.js + Express + Prisma), integrating Supabase for database and authentication, and delivering a functional homepage displaying services. This epic proves the entire tech stack works end-to-end from database to UI, provides the deployment foundation for all future work, and delivers immediate user value with an attractive homepage showcasing the clinic's services.
+**Expanded Goal:** Establish the complete **backend technical foundation** for the Beauty Clinic Care Website by setting up the project structure with backend API (Node.js + Express + Prisma), integrating Supabase for database and authentication, implementing database schema, creating core API endpoints, and providing seed data. This epic proves the backend architecture works end-to-end from database to API, provides the foundation for all future API development, and delivers testable API endpoints for services data.
 
-### Story 1.1: Initialize Monorepo with Frontend and Backend Apps
+**Phase 1 Focus:** Backend API ONLY - No frontend UI work in this epic.
+
+### Story 1.1: Initialize Monorepo with Backend API Structure
 
 As a developer,
-I want to set up a monorepo structure with separate frontend and backend applications,
-so that I can develop and manage both codebases efficiently in a single repository.
+I want to set up a monorepo structure with backend application and project configuration,
+so that I can develop the API systematically with proper organization.
 
 #### Acceptance Criteria
-1. Repository created with monorepo structure using standard folder layout (app/:fronted,backend)
-2. Frontend app initialized in `apps/fronted/` with Vite + React + TypeScript
-3. Backend app initialized in `apps/backend/` with Node.js + Express + TypeScript
-4. Package.json scripts configured for running both apps concurrently (e.g., `npm run dev`)
-5. TypeScript configured for both apps with strict mode enabled
-6. ESLint and Prettier configured
-7. .gitignore configured to exclude node_modules, .env, dist, build directories
-8. README.md created with project overview and setup instructions
-9.  Both apps can start successfully (frontend on :5173, backend on :3000)
+1. Repository created with monorepo structure using standard folder layout (apps/backend, apps/frontend as placeholder)
+2. Backend app initialized in `apps/backend/` with Node.js + Express + TypeScript
+3. Frontend placeholder folder created in `apps/frontend/` (minimal setup, not implemented in Phase 1)
+4. Package.json scripts configured for running backend (`npm run dev:backend` or `npm run dev`)
+5. TypeScript configured for backend with strict mode enabled
+6. ESLint and Prettier configured for backend code
+7. .gitignore configured to exclude node_modules, .env, dist, build directories, logs
+8. README.md created with project overview, backend setup instructions, and API documentation structure
+9. Backend app can start successfully on port 3000
+10. Environment variables template (.env.example) created for backend configuration
 
-### Story 1.2: Configure Tailwind CSS and shadcn/ui Component System
-
-As a frontend developer,
-I want to set up Tailwind CSS and shadcn/ui with a customizable design system,
-so that I can build consistent, accessible UI components rapidly.
-
-#### Acceptance Criteria
-1. Tailwind CSS 3+ installed and configured in frontend app with PostCSS
-2. Tailwind config includes custom color palette (primary, secondary, accent, neutral scales)
-3. shadcn/ui CLI installed and initialized with default configuration
-4. At least 5 base components installed from shadcn/ui: Button, Card, Input, Label, Select
-5. Global CSS file configured with Tailwind directives and CSS variables for theming
-6. Typography plugin installed and configured for consistent text styling
-7. Responsive breakpoints configured matching requirements (mobile <768px, tablet 768-1024px, desktop >1024px)
-8. Test page created demonstrating all installed components rendering correctly
-9. Dark mode support configured (optional for MVP but architecture in place)
-10. Build process generates optimized CSS bundle <50KB gzipped
-
-### Story 1.3: Design and Implement Database Schema with Prisma
+### Story 1.2: Design and Implement Database Schema with Prisma
 
 As a backend developer,
 I want to design the complete database schema and set up Prisma ORM,
@@ -724,302 +715,400 @@ so that the application has content to display during development and testing.
 9. Seed script runs successfully and populates database with all data
 10. Verification query confirms data exists and relationships are correct
 
-### Story 1.8: Initialize React App with Routing and Layout // ko implement
+### Story 1.8: Create API Testing Collection and Documentation
 
-As a frontend developer,
-I want to set up React Router and create the base application layout,
-so that I can navigate between pages and maintain consistent UI structure.
-
-#### Acceptance Criteria
-1. React Router v6 installed and configured in frontend app
-2. Main routes defined: `/` (Home), `/services`, `/services/:id`, `/branches`, `/branches/:id`, `/contact`, `/blog`, `/login`, `/register`
-3. Root layout component created with header (navigation + language switcher placeholder) and footer
-4. Header includes logo placeholder, main navigation menu, and "Book Now" CTA button
-5. Header responsive: full navigation on desktop, hamburger menu on mobile
-6. Footer includes contact information placeholders, social media links placeholders, copyright
-7. Layout applies to all routes using React Router Outlet pattern
-8. 404 Not Found page created for invalid routes
-9. Navigation links properly highlight active route
-10. Layout renders correctly on mobile (320px), tablet (768px), and desktop (1280px) breakpoints
-
-### Story 1.9: Build Homepage with Hero Section and Featured Services // ko implement
-
-As a potential customer,
-I want to see an attractive homepage with hero banner and featured services,
-so that I can quickly understand the clinic's offerings and book an appointment.
+As a backend developer,
+I want to create comprehensive API testing collection and documentation,
+so that all endpoints can be tested manually and the API contract is clearly documented.
 
 #### Acceptance Criteria
-1. Homepage component created at `apps/web/src/pages/Home.tsx`
-2. Hero section includes: background image placeholder, headline text, subheadline, prominent "Book Now" button
-3. Hero section is full-viewport height on desktop, 60vh on mobile
-4. Featured services section displays services in grid layout (4 columns desktop, 2 tablet, 1 mobile)
-5. Service cards show: image, service name, brief description (truncated to 2 lines), duration, price
-6. Service cards include "Learn More" button linking to service detail page (placeholder)
-7. Homepage fetches featured services from API using Axios (`GET /api/v1/services/featured`)
-8. Loading state displayed while fetching services (skeleton cards or spinner)
-9. Error state displayed if API fetch fails with retry button
-10. Homepage is visually polished with proper spacing, typography hierarchy, and mobile responsiveness
-
-### Story 1.10: Connect Frontend to Backend and Deploy Locally
-
-As a developer,
-I want to connect the React frontend to the Express backend and verify end-to-end functionality,
-so that the complete application stack works locally and is ready for feature development.
-
-#### Acceptance Criteria
-1. Frontend environment variables configured: VITE_API_BASE_URL=http://localhost:3000
-2. Axios instance created in `apps/web/src/lib/api.ts` with base URL configuration
-3. API client includes error interceptor for handling 4xx and 5xx responses
-4. Frontend successfully fetches and displays data from backend API
-5. CORS configured correctly allowing frontend to make API requests
-6. Both frontend and backend can be started with single command (`npm run dev` from root)
-7. README.md updated with complete local setup instructions (prerequisites, installation, running)
-8. Environment variable template files created (.env.example) for both apps
-9. Verification checklist completed: homepage loads, featured services display, navigation works, API calls succeed
-10. Initial deployment successful with homepage fully functional showing real data from database
+1. Postman or Insomnia collection created with all implemented endpoints (health check, services, branches)
+2. Each endpoint includes example requests with proper headers, query parameters, and body data
+3. Each endpoint includes example successful responses with actual data structure
+4. Collection includes environment variables for base URL configuration (localhost:3000)
+4. API documentation created in `docs/api/` folder with endpoint specifications
+5. Documentation includes: HTTP method, endpoint path, request parameters, request body schema, response schema, error codes
+6. Documentation uses clear formatting (Markdown tables or OpenAPI/Swagger format)
+7. All endpoints tested manually via Postman/Insomnia and verified to return correct data
+8. README.md updated with instructions on importing and using the API collection
+9. Collection exported and committed to repository (e.g., `postman_collection.json`)
+10. Verification checklist: All API endpoints (GET /health, GET /services, GET /services/:id, GET /services/featured, GET /branches, GET /branches/:id) return expected responses
 
 ---
 
 ## Epic 2: Service Discovery & Information
 
-**Expanded Goal:** Enable customers to explore the complete service catalog and clinic locations through intuitive browsing interfaces. Deliver service listing with filtering/categorization, detailed service pages with pricing and imagery, branch listing with location information, branch detail pages with Google Maps integration, and a contact page. This epic provides customers with all information needed to make informed booking decisions.
+**Expanded Goal:** Build comprehensive **backend API endpoints** to support service catalog and clinic location information. Deliver RESTful APIs for services listing with category filtering, service details, branch listing, branch details, and contact form submissions. This epic provides all backend capabilities needed for customers to discover services and locations through future frontend interfaces.
 
-### Story 2.1: Build Services Listing Page with Category Filtering
+**Phase 1 Focus:** Backend API ONLY - API endpoints, business logic, database queries, validation.
 
-As a potential customer,
-I want to browse all available services with the ability to filter by category,
-so that I can find services relevant to my beauty care needs.
-
-#### Acceptance Criteria
-1. Services listing page created at `/services` route
-2. Page displays all services in responsive grid (3 columns desktop, 2 tablet, 1 mobile)
-3. Service cards show: image, name, category badge, duration, price, brief description (truncated)
-4. Category filter sidebar (desktop) or dropdown (mobile) displays all service categories
-5. Clicking category filter updates service grid to show only services in that category
-6. "All Services" option clears filter and shows complete catalog
-7. Active category visually highlighted in filter UI
-8. Empty state displayed when no services match filter (with "View All" button)
-9. Services fetched from `GET /api/v1/services` with categoryId query param when filtered
-10. Page includes page title, breadcrumb navigation (Home > Services), and meta description
-
-### Story 2.2: Create Service Detail Page with Rich Information
-
-As a potential customer,
-I want to view detailed information about a specific service,
-so that I understand what's included, the benefits, and can decide if I want to book.
-
-#### Acceptance Criteria
-1. Service detail page created at `/services/:id` route
-2. Page layout includes: hero image, service name, category, price, duration prominently displayed
-3. Full service description rendered with proper formatting (paragraphs, line breaks)
-4. "What's Included" section lists service components (if data available)
-5. "Benefits" section highlights key outcomes (if data available)
-6. Before/After photo gallery using Swiper component (if images available)
-7. FAQ accordion section for common questions about the service (if data available)
-8. "Book This Service" CTA button prominently displayed (links to booking flow - placeholder for Epic 3)
-9. Related/recommended services section showing 3-4 services in same category
-10. Page fetches data from `GET /api/v1/services/:id` and handles 404 if service not found
-
-### Story 2.3: Implement Branches Listing Page
-
-As a potential customer,
-I want to see all clinic locations,
-so that I can find a branch convenient to my location.
-
-#### Acceptance Criteria
-1. Branches listing page created at `/branches` route
-2. Page displays all branches in responsive grid (2 columns desktop, 1 mobile) or list view
-3. Branch cards show: featured image, branch name, address, phone number, operating hours summary
-4. Branch cards include "View Details" button linking to branch detail page
-5. Optional: Toggle between grid view and list view (icon buttons)
-6. Optional: Sort by distance (requires geolocation permission - can be deferred to polish)
-7. All branches fetched from `GET /api/v1/branches` endpoint (needs to be created in backend)
-8. Page includes page title, breadcrumb navigation (Home > Locations)
-9. Responsive layout works well on all screen sizes
-10. Loading and error states handled gracefully
-
-### Story 2.4: Build Branch Detail Page with Google Maps Integration
-
-As a potential customer,
-I want to view detailed information about a specific branch location with an interactive map,
-so that I can plan my visit and know exactly where to go.
-
-#### Acceptance Criteria
-1. Branch detail page created at `/branches/:id` route
-2. Page layout includes: hero image of branch, branch name, full address, phone number
-3. Operating hours displayed in clear format (table or list showing days and times)
-4. Google Maps integration showing branch location with accurate pin
-5. Map is interactive (zoom, pan, street view access)
-6. "Get Directions" button opens Google Maps with branch address in new tab
-7. Branch facility photo gallery using Swiper component (if multiple images)
-8. List of services available at this branch (linked to service detail pages)
-9. "Book at This Branch" CTA button (will pre-select branch in booking flow - placeholder for Epic 3)
-10. Page fetches data from `GET /api/v1/branches/:id` and handles 404 if branch not found
-
-### Story 2.5: Implement Branches API Endpoints
+### Story 2.1: Enhance Services API with Advanced Filtering and Search
 
 As a backend developer,
-I want to create RESTful API endpoints for branches data,
-so that the frontend can fetch and display clinic location information.
+I want to extend the services API with filtering, searching, and sorting capabilities,
+so that future frontend clients can provide rich service discovery features.
 
 #### Acceptance Criteria
-1. `GET /api/v1/branches` endpoint created returning all branches with location data
+1. `GET /api/v1/services` endpoint supports query parameter `categoryId` for category filtering
+2. Endpoint supports query parameter `q` for text search (searches in name and description fields)
+3. Endpoint supports query parameter `featured=true` to filter only featured services
+4. Endpoint supports query parameter `sort` with values: name, price-asc, price-desc, duration
+5. Endpoint supports pagination with `page` and `limit` query parameters (default limit=20, max limit=100)
+6. Response includes metadata: `{ data: [...], meta: { total, page, limit, totalPages } }`
+7. Search is case-insensitive and uses SQL LIKE or full-text search
+8. Multiple filters can be combined (e.g., `?categoryId=1&featured=true&q=facial`)
+9. Invalid query parameters return 400 error with clear error messages
+10. API documentation updated with all query parameters and examples
+
+### Story 2.2: Implement Service Categories API Endpoints
+
+As a backend developer,
+I want to create API endpoints for service categories management,
+so that services can be organized and filtered by category.
+
+#### Acceptance Criteria
+1. `GET /api/v1/categories` endpoint created returning all service categories
+2. `GET /api/v1/categories/:id` endpoint created returning single category with its services
+3. Category response includes: id, name, description, slug, serviceCount (number of services in category)
+4. `GET /api/v1/categories/:id/services` endpoint returns all services in a specific category
+5. Categories endpoint supports optional query param `includeServices=true` to embed service data
+6. Categories ordered alphabetically by name by default
+7. Response follows consistent API structure: { data: {...} } or { data: [...] }
+8. Proper error handling for invalid category IDs (404)
+9. API endpoints tested with Postman/Insomnia
+10. API documentation updated with category endpoints
+
+### Story 2.3: Implement Branches API with Location Data
+
+As a backend developer,
+I want to create comprehensive API endpoints for branch/location management,
+so that clinic locations can be discovered and filtered.
+
+#### Acceptance Criteria
+1. `GET /api/v1/branches` endpoint created returning all branches with complete location data
 2. `GET /api/v1/branches/:id` endpoint created returning single branch details
-3. Branch response includes: id, name, address, phone, operatingHours, latitude, longitude, images, services (array of service IDs or objects)
-4. Optional: Endpoint supports query param `services=true` to include full service details
-5. Proper error handling for invalid IDs (404) and database errors (500)
-6. Branches ordered by name alphabetically by default
-7. Response follows consistent API structure: { data: {...} } for single, { data: [...] } for list
-8. Prisma query includes relationship to services if needed
-9. API endpoints tested with manual requests returning expected data
-10. API documentation updated with branch endpoints specifications
+3. Branch response includes: id, name, address, phone, operatingHours (JSON), latitude, longitude, images (array), createdAt, updatedAt
+4. `GET /api/v1/branches/:id/services` endpoint returns all services available at specific branch
+5. Branches endpoint supports query param `includeServices=true` to embed service data
+6. Optional: Endpoint supports geolocation filtering with `lat`, `lng`, and `radius` parameters (can defer to later)
+7. Branches ordered by name alphabetically by default
+8. Proper error handling for invalid branch IDs (404) and database errors (500)
+9. Response follows consistent API structure
+10. API documentation updated with branch endpoints and examples
 
-### Story 2.6: Integrate Google Maps JavaScript API
-
-As a developer,
-I want to integrate Google Maps JavaScript API into the application,
-so that branch locations can be displayed on interactive maps.
-
-#### Acceptance Criteria
-1. Google Maps API key obtained and configured in frontend environment variables
-2. Google Maps JavaScript API script loaded in React app (via script tag or package)
-3. Reusable Map component created accepting props: latitude, longitude, zoom, markerTitle
-4. Map component renders correctly and displays marker at specified coordinates
-5. Map has default styling matching website aesthetic (optional: custom map style)
-6. Map controls enabled: zoom, pan, street view
-7. Click on marker shows info window with branch name and address
-8. Map is responsive and works on mobile devices (touch gestures)
-9. Error handling if API fails to load (displays fallback with static map image or address only)
-10. Map component documented with usage examples
-
-### Story 2.7: Create Contact Page with Form and Information
-
-As a potential customer,
-I want to contact the clinic with questions or inquiries,
-so that I can get information before booking or for non-booking matters.
-
-#### Acceptance Criteria
-1. Contact page created at `/contact` route
-2. Page layout: contact form on left, contact information and map on right (stacked on mobile)
-3. Contact form includes fields: name (required), email (required), phone (optional), message type (dropdown), message (required, textarea)
-4. Message type options: General Inquiry, Service Question, Booking Assistance, Feedback, Other
-5. Form validation: required fields marked with *, inline error messages for invalid inputs
-6. Submit button disabled while form is submitting
-7. Success message displayed after successful submission with form reset
-8. Contact information section displays: clinic phone number, email address, main office address
-9. Google Map embedded showing main/flagship clinic location
-10. Form submission calls `POST /api/v1/contact` endpoint (needs to be created in backend)
-
-### Story 2.8: Implement Contact Form API Endpoint
+### Story 2.4: Create Contact Form Submission API
 
 As a backend developer,
 I want to create an API endpoint for contact form submissions,
-so that customer inquiries are captured and notifications sent to staff.
+so that customer inquiries can be captured and processed.
 
 #### Acceptance Criteria
-1. `POST /api/v1/contact` endpoint created accepting: name, email, phone, messageType, message
-2. Request validation ensures all required fields are present and properly formatted
-3. Contact submissions saved to database (new ContactSubmission model in Prisma schema)
-4. Email notification sent to clinic admin email address with submission details
-5. Rate limiting applied to prevent spam (max 3 submissions per hour per IP)
-6. CAPTCHA verification integrated (optional for MVP, can add later if spam becomes issue)
-7. Response returns success message: { success: true, message: "Thank you for contacting us..." }
-8. Error handling for validation errors (400), server errors (500)
-9. Submitted data sanitized to prevent XSS attacks
-10. Endpoint tested with manual POST requests and various input scenarios
+1. ContactSubmission model added to Prisma schema with fields: id, name, email, phone, messageType, message, status, createdAt
+2. `POST /api/v1/contact` endpoint created accepting: name, email, phone, messageType, message
+3. Request validation ensures all required fields are present and properly formatted (email format, max lengths)
+4. messageType must be one of: general_inquiry, service_question, booking_assistance, feedback, other
+5. Contact submissions saved to database with status "pending"
+6. Rate limiting applied: max 3 submissions per hour per IP address
+7. Input sanitization to prevent XSS attacks (strip HTML tags, sanitize special characters)
+8. Response returns success message: `{ success: true, message: "Thank you for contacting us. We'll respond within 24 hours." }`
+9. Error handling for validation errors (400), rate limit exceeded (429), server errors (500)
+10. API endpoint tested with various valid and invalid inputs
 
-### Story 2.9: Add Search Functionality to Services
+### Story 2.5: Implement Email Notification for Contact Forms
 
-As a potential customer,
-I want to search for services by name or keyword,
-so that I can quickly find specific treatments I'm interested in.
-
-#### Acceptance Criteria
-1. Search bar component created and added to services listing page header
-2. Search input has placeholder text "Search services..." with search icon
-3. Search input debounced (300ms delay) to avoid excessive API calls while typing
-4. Typing in search filters services in real-time (client-side filtering if all services loaded)
-5. Search matches against service name and description (case-insensitive)
-6. Search results displayed in same grid layout as regular services listing
-7. Clear search button (X icon) appears when search has text, clears search on click
-8. Empty state shown when search returns no results with "Try different keywords" message
-9. Search state persists in URL query parameter (?q=facial) for shareable links
-10. Search works in combination with category filters (intersection of both filters)
-
-### Story 2.10: Optimize Images and Implement Lazy Loading
-
-As a developer,
-I want to optimize image loading across the application,
-so that pages load quickly and meet performance requirements (<2s mobile).
+As a backend developer,
+I want to send email notifications when contact forms are submitted,
+so that staff can respond to customer inquiries promptly.
 
 #### Acceptance Criteria
-1. All images use lazy loading attribute (`loading="lazy"`) or React lazy load library
-2. Images include responsive sizes with srcset for different screen sizes
-3. Placeholder blur or skeleton shown while images load
-4. Service and branch images compressed to optimal size (WebP format where supported, JPEG fallback)
-5. Images served from Supabase Storage with proper CDN headers
-6. Hero section images use priority loading (load immediately, no lazy load)
-7. Image optimization script or service integrated (Sharp library or similar)
-8. Alt text provided for all images for accessibility and SEO
-9. Page load time measured: homepage <2s on 4G, services listing <2s
-10. Lighthouse performance score >90 on mobile after image optimizations
+1. Email service integrated (Supabase email or external provider like Resend/SendGrid)
+2. Email template created for contact form notifications with all submission details
+3. Email sent to configured admin email address (from environment variable) after successful submission
+4. Email includes: submitter name, email, phone, message type, message content, submission timestamp
+5. Email sending is asynchronous (doesn't block API response)
+6. Failed email sends are logged but don't cause contact submission to fail
+7. Retry logic implemented for failed email sends (3 attempts with exponential backoff)
+8. Environment variable `CONTACT_NOTIFICATION_EMAIL` configured for recipient address
+9. Email "from" address and "reply-to" configured properly
+10. Test email sent successfully with all data populated correctly
+
+### Story 2.6: Add Image Upload API for Services and Branches
+
+As a backend developer,
+I want to create API endpoints for uploading images to Supabase Storage,
+so that service and branch images can be managed.
+
+#### Acceptance Criteria
+1. Supabase Storage bucket created for images with public read access (bucket name: "images" or "uploads")
+2. `POST /api/v1/upload/image` endpoint created accepting multipart/form-data file upload
+3. Endpoint validates file type (only JPEG, PNG, WebP allowed) and file size (max 5MB)
+4. Images uploaded to Supabase Storage with unique filenames (e.g., UUID + original extension)
+5. Endpoint returns uploaded image URL: `{ success: true, url: "https://..." }`
+6. Optional: Image resizing/optimization before upload (can defer to later)
+7. Error handling for invalid file types (400), file too large (413), upload failures (500)
+8. Rate limiting applied: max 10 uploads per hour per IP
+9. Uploaded image URLs can be used in service and branch data (stored in database)
+10. API endpoint tested with various image files and edge cases
+
+### Story 2.7: Implement Admin API for Managing Services (CRUD)
+
+As a backend developer,
+I want to create admin API endpoints for managing services (Create, Update, Delete),
+so that service catalog can be maintained through the API.
+
+#### Acceptance Criteria
+1. `POST /api/v1/admin/services` endpoint created for creating new services
+2. `PUT /api/v1/admin/services/:id` endpoint created for updating existing services
+3. `DELETE /api/v1/admin/services/:id` endpoint created for deleting services (soft delete or hard delete)
+4. All admin endpoints require authentication (check for valid Supabase Auth token in Authorization header)
+5. Admin endpoints require admin role verification (user.role === 'admin')
+6. Request validation for service data: required fields, data types, price > 0, duration > 0
+7. Create/Update endpoints accept: name, description, categoryId, price, duration, images (array), featured (boolean)
+8. Proper error responses: 401 Unauthorized, 403 Forbidden, 400 Bad Request, 404 Not Found, 500 Server Error
+9. Database constraints enforced (foreign key for categoryId, unique constraints if any)
+10. API endpoints tested with Postman including authentication scenarios
+
+### Story 2.8: Implement Admin API for Managing Branches (CRUD)
+
+As a backend developer,
+I want to create admin API endpoints for managing branches (Create, Update, Delete),
+so that branch information can be maintained through the API.
+
+#### Acceptance Criteria
+1. `POST /api/v1/admin/branches` endpoint created for creating new branches
+2. `PUT /api/v1/admin/branches/:id` endpoint created for updating existing branches
+3. `DELETE /api/v1/admin/branches/:id` endpoint created for deleting branches (soft delete recommended)
+4. All admin endpoints require authentication and admin role verification
+5. Create/Update endpoints accept: name, address, phone, operatingHours (JSON), latitude, longitude, images (array)
+6. Operating hours validation: ensure proper JSON structure with days and time ranges
+7. Geolocation validation: latitude between -90 and 90, longitude between -180 and 180
+8. Proper error responses for all failure scenarios
+9. Database constraints enforced
+10. API endpoints tested with authentication and various input scenarios
+
+### Story 2.9: Create Service Search with Redis Caching
+
+As a backend developer,
+I want to implement Redis caching for frequently accessed service and category data,
+so that API performance improves and database load is reduced.
+
+#### Acceptance Criteria
+1. Redis client library installed and configured (ioredis or node-redis)
+2. Redis connection established from backend application (local Redis instance or cloud service)
+3. Cache middleware created for services endpoints: `GET /api/v1/services`, `GET /api/v1/categories`
+4. Cache key strategy: `services:all`, `services:category:{id}`, `services:featured`, `categories:all`
+5. Cache TTL (Time To Live) set appropriately: 5 minutes for services, 10 minutes for categories
+6. Cache invalidation logic: when service/category is created, updated, or deleted, relevant cache keys are cleared
+7. Cache miss scenario: if data not in cache, fetch from database and store in cache
+8. Environment variable for Redis connection string: `REDIS_URL`
+9. Graceful fallback: if Redis is unavailable, API still works (queries database directly)
+10. Performance improvement measured: cached responses return in <50ms vs uncached ~100-200ms
+
+### Story 2.10: Add API Versioning and Rate Limiting
+
+As a backend developer,
+I want to implement proper API versioning and rate limiting across all endpoints,
+so that the API is stable, scalable, and protected from abuse.
+
+#### Acceptance Criteria
+1. All API routes use `/api/v1/` prefix for version 1
+2. Rate limiting middleware implemented using `express-rate-limit` library
+3. General rate limit: 100 requests per 15 minutes per IP for public endpoints
+4. Auth rate limit: 5 requests per minute per IP for login/register endpoints
+5. Contact form rate limit: 3 submissions per hour per IP
+6. Rate limit responses include `X-RateLimit-*` headers: Limit, Remaining, Reset
+7. Rate limit exceeded returns 429 status with clear error message
+8. API versioning allows for future `/api/v2/` routes without breaking v1 clients
+9. Documentation updated with rate limiting information
+10. Rate limiting tested with multiple rapid requests to verify it works correctly
 
 ---
 
-## Epic 3: Guest Booking Flow
+## Epic 3: Guest Booking Flow (Backend API)
 
-**Expanded Goal:** Implement the complete end-to-end booking functionality for guest users (non-members) from service selection through confirmation with email notifications. Enable customers to book appointments without creating an account, reducing friction and maximizing conversion. Deliver a multi-step booking wizard with real-time availability checking, form validation, booking confirmation, and automated email notifications. This epic delivers the core value proposition - enabling customers to book beauty services online 24/7.
+**Expanded Goal:** Implement the complete **backend API** for guest booking functionality, including availability checking, booking creation, confirmation, and email notifications. Enable the booking system through robust API endpoints that support real-time availability queries, booking management, and automated communications. This epic delivers the core backend business logic - the foundation for customers to book beauty services online 24/7.
 
-### Story 3.1: Create Booking Wizard UI Component with Step Navigation
+**Phase 1 Focus:** Backend API ONLY - Booking endpoints, availability logic, email notifications, validation.
 
-As a frontend developer,
-I want to build a multi-step booking wizard with clear progress indicators,
-so that customers can navigate through the booking process with confidence.
+### Story 3.1: Design Booking Database Schema and Relationships
 
-#### Acceptance Criteria
-1. Booking wizard component created with 4 steps: Service Selection, Branch Selection, Date & Time, Guest Information
-2. Progress indicator shows current step, completed steps, and upcoming steps (1 of 4, 2 of 4, etc.)
-3. "Next" button navigates to next step, "Back" button returns to previous step
-4. "Next" button disabled until current step's required fields are completed
-5. Wizard maintains state across steps (selections persist when navigating back/forward)
-6. Booking data stored in React context or state management (Redux/Zustand optional)
-7. Wizard is mobile-responsive with appropriate layout for small screens
-8. Each step has clear heading and instructions
-9. Wizard route created at `/booking` with optional query params for pre-selection (`?serviceId=1&branchId=2`)
-10. Visual design matches rest of application with appropriate spacing and typography
-
-### Story 3.2: Build Service Selection Step
-
-As a potential customer,
-I want to select the service I want to book,
-so that I can proceed with scheduling my appointment.
+As a backend developer,
+I want to extend the database schema to support comprehensive booking management,
+so that all booking data is properly structured and relational.
 
 #### Acceptance Criteria
-1. Step 1 of booking wizard displays all services in grid or list layout
-2. Each service card shows: image, name, duration, price, brief description
-3. Services organized by category with expandable/collapsible sections or tabs
-4. Clicking service card selects it (visual highlight, checkmark, or border change)
-5. Only one service can be selected at a time (single selection, not multi-select for MVP)
-6. Search bar allows filtering services by name
-7. Selected service information displayed in summary sidebar (desktop) or sticky footer (mobile)
-8. "Next" button becomes enabled once service is selected
-9. If arriving with `?serviceId` query param, that service is pre-selected
-10. Service data fetched from existing `GET /api/v1/services` endpoint
+1. Booking model in Prisma schema includes all required fields: id, serviceId, branchId, userId (nullable), appointmentDate, appointmentTime, status, guestName, guestEmail, guestPhone, specialRequests, referenceNumber, createdAt, updatedAt
+2. Booking status enum defined: pending, confirmed, completed, cancelled, no_show
+3. Foreign key relationships defined: Booking belongsTo Service, Booking belongsTo Branch, Booking belongsTo User (optional)
+4. Indexes created on: appointmentDate, branchId, referenceNumber, userId for optimized queries
+5. Unique constraint on referenceNumber field
+6. appointmentTime stored as string (HH:MM format) or Time type
+7. Migration created and applied successfully
+8. Test queries verify relationships work correctly (join booking with service and branch data)
+9. Documentation updated with booking data model description
+10. Seed script updated to include sample bookings (optional, for testing)
 
-### Story 3.3: Build Branch Selection Step
+### Story 3.2: Implement Availability Check API
 
-As a potential customer,
-I want to select which clinic location I want to visit,
-so that I can book an appointment at a convenient branch.
+As a backend developer,
+I want to create an API endpoint that returns available time slots for a given service, branch, and date,
+so that customers can see real-time availability when booking.
 
 #### Acceptance Criteria
-1. Step 2 of booking wizard displays all available branches
-2. Each branch card shows: image, name, address, phone, distance (if geolocation enabled - optional)
-3. Branches displayed in grid (2 columns desktop, 1 mobile) or list view
-4. Clicking branch card selects it (visual highlight indicator)
-5. Only one branch can be selected at a time
-6. Optional: "Use My Location" button to suggest nearest branch (can defer to polish)
-7. Mini map preview shown for selected branch (using Google Maps component from Epic 2)
+1. `GET /api/v1/availability` endpoint created accepting query params: serviceId, branchId, date (YYYY-MM-DD format)
+2. Endpoint validates all required parameters are present and properly formatted
+3. Business logic generates time slots based on branch operating hours for the specified date
+4. Time slots generated in appropriate increments (30 or 60 minutes based on service duration)
+5. Endpoint queries existing bookings for that branch/date and marks conflicting slots as unavailable
+6. Availability calculation accounts for service duration (e.g., 90-minute service blocks overlapping slots)
+7. Past time slots excluded (if date is today, only future times returned)
+8. Optional: Configurable buffer time between appointments (e.g., 15 minutes for cleanup)
+9. Response format: `{ date: "2025-10-30", slots: [{ time: "09:00", available: true }, { time: "09:30", available: false }, ...] }`
+10. Error handling: 400 for invalid params, 404 if service/branch not found, 500 for server errors
+
+### Story 3.3: Implement Create Booking API Endpoint
+
+As a backend developer,
+I want to create an API endpoint for creating new bookings,
+so that customers can schedule appointments through the API.
+
+#### Acceptance Criteria
+1. `POST /api/v1/bookings` endpoint created accepting request body: { serviceId, branchId, appointmentDate, appointmentTime, guestName, guestEmail, guestPhone, specialRequests }
+2. Request validation ensures all required fields present and properly formatted (email format, phone format, date in future)
+3. Business logic validates appointment time is available (not already booked)
+4. Business logic validates appointment time is within branch operating hours
+5. Unique booking reference number generated (format: BC-YYYYMMDD-XXXX where XXXX is random alphanumeric)
+6. Booking saved to database with status "confirmed" and all provided information
+7. Response returns created booking object: `{ success: true, booking: { id, referenceNumber, ...all booking data } }`
+8. Concurrent booking prevention: use database transaction to check availability and create booking atomically
+9. Error handling: 400 for validation errors, 409 for time slot conflict, 500 for server errors
+10. Rate limiting applied: max 10 bookings per hour per IP address
+
+### Story 3.4: Implement Get Booking by Reference Number API
+
+As a backend developer,
+I want to create an API endpoint to retrieve booking details by reference number,
+so that customers can look up their appointments.
+
+#### Acceptance Criteria
+1. `GET /api/v1/bookings/:referenceNumber` endpoint created
+2. Endpoint retrieves booking from database by referenceNumber (case-insensitive search recommended)
+3. Response includes full booking details plus related service and branch information
+4. Response format: `{ success: true, booking: { id, referenceNumber, appointmentDate, appointmentTime, service: {...}, branch: {...}, guestName, guestEmail, status, ... } }`
+5. Sensitive information handled appropriately (don't expose userId or internal IDs unnecessarily)
+6. Error handling: 404 if booking not found, 500 for server errors
+7. Optional: Require email verification to view booking (query param `?email=xxx` must match booking email)
+8. No authentication required for this endpoint (allow guest lookups)
+9. Rate limiting applied to prevent brute force reference number guessing
+10. API endpoint tested with valid and invalid reference numbers
+
+### Story 3.5: Implement Booking Confirmation Email Service
+
+As a backend developer,
+I want to send automated email confirmations when bookings are created,
+so that customers receive proof of their appointment and important details.
+
+#### Acceptance Criteria
+1. Email service module created with function `sendBookingConfirmation(booking)` 
+2. HTML email template created for booking confirmation with professional design
+3. Email template includes: booking reference number, service name, branch name & address, date & time, customer name, special requests (if any)
+4. Email includes call-to-action: "Add to Calendar" link or .ics file attachment (optional for MVP)
+5. Email sent immediately after successful booking creation (called from create booking endpoint)
+6. Email sending is asynchronous using background job or promise (doesn't block API response)
+7. Failed email sends logged to error log but don't cause booking creation to fail
+8. Retry logic implemented for failed email sends (3 attempts with exponential backoff)
+9. Environment variables configured: `EMAIL_FROM`, `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` (or Supabase email config)
+10. Test email sent successfully with all booking data populated correctly
+
+### Story 3.6: Implement Booking Cancellation API
+
+As a backend developer,
+I want to create an API endpoint for cancelling bookings,
+so that customers can cancel appointments if needed.
+
+#### Acceptance Criteria
+1. `POST /api/v1/bookings/:referenceNumber/cancel` endpoint created
+2. Endpoint accepts optional request body: { email, reason } for verification and feedback
+3. Email verification: booking can only be cancelled if provided email matches booking email (prevents unauthorized cancellations)
+4. Business logic validates booking can be cancelled (not already cancelled or completed)
+5. Optional: Cancellation policy check (e.g., can't cancel within 24 hours of appointment - configurable)
+6. Booking status updated to "cancelled" in database
+7. Cancellation confirmation email sent to customer
+8. Response returns success message: `{ success: true, message: "Your booking has been cancelled." }`
+9. Error handling: 400 for invalid email/verification failure, 404 if booking not found, 409 if already cancelled, 500 for server errors
+10. API endpoint tested with various scenarios (valid cancellation, already cancelled, wrong email)
+
+### Story 3.7: Implement Booking List API for Admin/Management
+
+As a backend developer,
+I want to create API endpoints for listing and filtering bookings,
+so that admins can view and manage all appointments.
+
+#### Acceptance Criteria
+1. `GET /api/v1/admin/bookings` endpoint created (requires authentication)
+2. Endpoint requires admin role verification (Authorization header with Supabase Auth token)
+3. Supports filtering by query params: branchId, serviceId, status, date (appointmentDate), dateFrom, dateTo
+4. Supports pagination with `page` and `limit` parameters (default limit=50)
+5. Supports sorting by: appointmentDate (asc/desc), createdAt (asc/desc)
+6. Response includes booking data with embedded service and branch details
+7. Response includes metadata: `{ data: [...], meta: { total, page, limit, totalPages } }`
+8. Proper error handling: 401 Unauthorized, 403 Forbidden (non-admin), 400 Bad Request, 500 Server Error
+9. Query performance optimized with database indexes
+10. API endpoint tested with various filter combinations and pagination
+
+### Story 3.8: Implement Booking Update API for Status Management
+
+As a backend developer,
+I want to create an API endpoint for updating booking status,
+so that admins can mark bookings as completed, no-show, etc.
+
+#### Acceptance Criteria
+1. `PATCH /api/v1/admin/bookings/:id/status` endpoint created (requires authentication)
+2. Endpoint requires admin role verification
+3. Request body accepts: { status } where status is one of: pending, confirmed, completed, cancelled, no_show
+4. Business logic validates status transitions (e.g., can't mark cancelled booking as completed)
+5. Booking status updated in database
+6. Optional: Send status update email to customer for certain status changes
+7. Response returns updated booking object
+8. Audit log created for status changes (who changed, when, old status, new status) - optional for MVP
+9. Error handling: 401/403 for auth issues, 400 for invalid status, 404 if booking not found, 500 for server errors
+10. API endpoint tested with various status transitions
+
+### Story 3.9: Implement Booking Validation and Business Rules
+
+As a backend developer,
+I want to implement comprehensive validation and business rules for bookings,
+so that the system prevents invalid bookings and maintains data integrity.
+
+#### Acceptance Criteria
+1. Validation middleware created to enforce business rules across booking endpoints
+2. Rule: Appointment date must be in the future (at least tomorrow, or configurable)
+3. Rule: Appointment time must be within branch operating hours for the specified day of week
+4. Rule: Service must be available at the selected branch
+5. Rule: Time slot must not conflict with existing bookings (accounting for service duration)
+6. Rule: Email format validation (valid email syntax)
+7. Rule: Phone format validation (accept various formats, normalize for storage)
+8. Rule: Special requests character limit (max 500 characters)
+9. All validation errors return 400 with clear error messages explaining what's wrong
+10. Validation logic is unit tested with various valid and invalid inputs
+
+### Story 3.10: Create Booking API Documentation and Testing Collection
+
+As a backend developer,
+I want to create comprehensive documentation and testing collection for all booking endpoints,
+so that the booking API is well-documented and easily testable.
+
+#### Acceptance Criteria
+1. API documentation created in `docs/api/bookings.md` with all booking endpoints
+2. Documentation includes: endpoint URL, HTTP method, request parameters, request body schema, response schema, error codes, examples
+3. Postman/Insomnia collection updated with all booking endpoints: availability check, create booking, get booking, cancel booking, admin list/update
+4. Collection includes example requests with realistic data
+5. Collection includes tests/assertions for successful responses
+6. Environment variables configured in collection for base URL and auth tokens
+7. All booking endpoints manually tested via Postman and verified to work correctly
+8. Integration test written for complete booking flow: check availability → create booking → verify booking exists → cancel booking
+9. README.md updated with booking API overview and links to detailed documentation
+10. Postman collection exported and committed to repository
 8. Selected branch information displayed in summary sidebar/footer
 9. "Next" button enabled once branch is selected
 10. If arriving with `?branchId` query param, that branch is pre-selected
@@ -1152,9 +1241,11 @@ so that I can retrieve my appointment details anytime.
 
 ---
 
-## Epic 4: Member Experience & Authentication
+## Epic 4: Member Experience & Authentication (Backend API)
 
-**Expanded Goal:** Build member registration, authentication, and personalized features to encourage customer loyalty and repeat bookings. Implement Supabase Auth with email OTP verification, member dashboard with booking history, profile management, and enhanced booking flow that auto-fills member information. Enable members to track their appointments, manage their profile, and access exclusive offers. This epic transforms one-time guest customers into loyal members with personalized experiences.
+**Expanded Goal:** Build comprehensive **backend API** for member registration, authentication, and profile management using Supabase Auth. Implement email OTP verification, JWT-based authentication, member booking history API, profile management endpoints, and enhanced member booking flow. Enable the foundation for personalized member experiences through robust authentication and data management APIs.
+
+**Phase 1 Focus:** Backend API ONLY - Authentication endpoints, user management, member booking APIs, profile APIs.
 
 ### Story 4.1: Integrate Supabase Auth with Email OTP Registration
 
@@ -1338,9 +1429,11 @@ so that member-only pages are properly secured and auth state is managed globall
 
 ---
 
-## Epic 5: Content Management & Reviews
+## Epic 5: Content Management & Reviews (Backend API)
 
-**Expanded Goal:** Build blog/news functionality for content marketing and SEO, plus customer review system for social proof. Enable content creation and management for blog posts with categorization and search, implement customer review submission with admin moderation, and display approved reviews on service pages. This epic provides tools for organic traffic generation through content marketing and builds customer trust through authentic reviews and testimonials.
+**Expanded Goal:** Build comprehensive **backend API** for blog/news content management and customer review system. Deliver RESTful APIs for blog post CRUD operations, category management, review submissions with moderation workflow, and content retrieval with filtering/search. This epic provides the backend foundation for content marketing, SEO, and customer social proof features.
+
+**Phase 1 Focus:** Backend API ONLY - Blog endpoints, review endpoints, admin moderation APIs, content management.
 
 ### Story 5.1: Design Blog Database Schema and API Structure
 
@@ -1524,9 +1617,11 @@ so that I can approve quality reviews and respond to feedback.
 
 ---
 
-## Epic 6: Admin Portal & Management
+## Epic 6: Admin Portal & Management (Backend API)
 
-**Expanded Goal:** Build comprehensive administrative interfaces for clinic operations management. Provide admins with tools to manage services, branches, bookings, users, and view analytics. Enable efficient daily operations through booking management dashboard, service/branch CRUD operations, user management, and basic analytics reporting. This epic delivers operational independence - admins can manage the platform without developer assistance.
+**Expanded Goal:** Build comprehensive **backend API** for administrative operations management. Provide robust API endpoints for managing services, branches, bookings, users, blog content, reviews, and analytics. Enable efficient platform management through RESTful APIs with proper authentication, authorization, and role-based access control. This epic delivers the administrative backend - the foundation for future admin dashboard interfaces.
+
+**Phase 1 Focus:** Backend API ONLY - Admin endpoints, analytics APIs, CRUD operations, role-based access control.
 
 ### Story 6.1: Create Admin Dashboard with Key Metrics
 
@@ -1720,9 +1815,13 @@ so that I can customize the platform without code changes.
 
 ---
 
-## Epic 7: Multilingual Support & Polish
+## Epic 7: Multilingual Support & API Polish (Backend Focus)
 
-**Expanded Goal:** Implement complete multilingual support for Vietnamese, Japanese, English, and Chinese languages across the entire application. Integrate i18next for frontend translations, enable language switching, translate all UI elements and content, implement language-aware email notifications, and perform final QA and polish. This epic transforms the platform into a truly international offering, enabling the clinic to serve diverse customer segments and complete the MVP for production deployment.
+**Expanded Goal:** Implement **backend support** for multilingual content delivery and final API refinement. Enable language-specific content retrieval, implement language-aware email notifications in 4 languages (Vietnamese, Japanese, English, Chinese), optimize API performance, complete comprehensive testing, and finalize API documentation. This epic ensures the backend is production-ready with international capabilities.
+
+**Phase 1 Focus:** Backend API ONLY - Multilingual content APIs, language-aware emails, API optimization, testing, documentation finalization.
+
+**Note:** Frontend i18next integration and UI translations are deferred to Phase 2.
 
 ### Story 7.1: Set Up i18next and Translation Infrastructure
 

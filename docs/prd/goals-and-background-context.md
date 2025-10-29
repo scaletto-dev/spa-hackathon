@@ -21,6 +21,7 @@ The Beauty Clinic Care Website addresses these challenges by creating a comprehe
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
 | October 28, 2025 | 1.0 | Initial PRD creation from approved Project Brief | John (PM) |
+| October 29, 2025 | 1.1 | **Scope Adjustment:** Changed from "Integration-First" to "Backend-First Approach" - Phase 1 focuses exclusively on API development, no UI work | John (PM) |
 
 ---
 
