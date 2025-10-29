@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { BotIcon, XIcon, SendIcon, SparklesIcon } from 'lucide-react';
 export function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);

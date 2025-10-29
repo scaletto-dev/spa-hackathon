@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { CheckCircleIcon, XCircleIcon, AlertTriangleIcon, XIcon } from 'lucide-react';
 interface ToastProps {
   message: string;

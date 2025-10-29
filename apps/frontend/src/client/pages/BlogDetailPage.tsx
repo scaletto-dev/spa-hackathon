@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CalendarIcon, ClockIcon, UserIcon, ArrowLeftIcon, ShareIcon, BookmarkIcon, TagIcon } from 'lucide-react';

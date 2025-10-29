@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { UserIcon, BellIcon, ShieldIcon, CreditCardIcon, GlobeIcon, SparklesIcon } from 'lucide-react';
 const tabs = [{
   id: 'profile',

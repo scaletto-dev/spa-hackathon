@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadIcon, XIcon, CheckIcon } from 'lucide-react';
 export function BankTransferPayment() {

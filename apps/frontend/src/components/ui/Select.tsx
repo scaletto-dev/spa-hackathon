@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-
-import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDownIcon, LoaderIcon, SearchIcon } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDownIcon, SearchIcon, LoaderIcon } from 'lucide-react';
 
 export interface SelectOption {
     value: string;
@@ -21,7 +20,7 @@ export interface SelectProps {
     options?: SelectOption[];
     groups?: SelectGroup[];
     placeholder?: string;
-    error?: string | undefined;
+    error?: string;
     disabled?: boolean;
     searchable?: boolean;
     loading?: boolean;

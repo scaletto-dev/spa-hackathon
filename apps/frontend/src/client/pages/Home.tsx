@@ -1,3 +1,4 @@
+import React from 'react';
 import { Hero } from '../components/Home/Hero';
 import { BookingWidget } from '../components/Home/BookingWidget';
 import { Services } from '../components/services/Services';

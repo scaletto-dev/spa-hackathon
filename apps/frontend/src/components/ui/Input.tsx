@@ -1,10 +1,8 @@
-import type { InputHTMLAttributes } from 'react';
-import { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
+import { LucideIcon } from 'lucide-react';
 
-import type { LucideIcon } from 'lucide-react';
-
-export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
-    error?: string | undefined;
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+    error?: string;
     leftIcon?: LucideIcon;
     rightIcon?: LucideIcon;
     onRightIconClick?: () => void;

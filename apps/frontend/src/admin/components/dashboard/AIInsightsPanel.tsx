@@ -1,3 +1,4 @@
+import React from 'react';
 import { BotIcon, TrendingUpIcon, ClockIcon, UsersIcon } from 'lucide-react';
 const insights = [{
   icon: TrendingUpIcon,

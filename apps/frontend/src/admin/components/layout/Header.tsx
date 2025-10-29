@@ -1,3 +1,4 @@
+import React from 'react';
 import { SearchIcon, BellIcon, BotIcon, ChevronDownIcon } from 'lucide-react';
 export function Header() {
   return <header className="h-16 bg-white/80 backdrop-blur-lg border-b border-pink-100 flex items-center justify-between px-6 shadow-sm">

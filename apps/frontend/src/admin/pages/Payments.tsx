@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DollarSignIcon, TrendingUpIcon, AlertTriangleIcon, EyeIcon, DownloadIcon } from 'lucide-react';
 import {
     LineChart,

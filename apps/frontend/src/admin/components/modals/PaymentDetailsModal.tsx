@@ -1,3 +1,4 @@
+import React from 'react';
 import { XIcon, CreditCardIcon, CalendarIcon, UserIcon, PrinterIcon, MailIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 

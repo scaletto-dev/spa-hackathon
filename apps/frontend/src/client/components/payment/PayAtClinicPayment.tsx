@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircleIcon, CheckCircleIcon } from 'lucide-react';
 export function PayAtClinicPayment() {

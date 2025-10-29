@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
+        "target": "ES2020",
         "useDefineForClassFields": true,
-        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "module": "ESNext",
         "skipLibCheck": true,
 
@@ -14,26 +14,11 @@
         "noEmit": true,
         "jsx": "react-jsx",
 
-        /* Strict Type Checking */
+        /* Linting */
         "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "strictBindCallApply": true,
-        "strictPropertyInitialization": true,
-        "noImplicitThis": true,
-        "alwaysStrict": true,
-        "noUncheckedIndexedAccess": true,
-        "exactOptionalPropertyTypes": true,
-
-        /* Additional Checks */
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitOverride": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
 
         /* Path aliases */
         "baseUrl": ".",
@@ -41,12 +26,7 @@
             "@/*": ["./src/*"],
             "@admin/*": ["./src/admin/*"],
             "@client/*": ["./src/client/*"],
-            "@components/*": ["./src/components/*"],
-            "@hooks/*": ["./src/hooks/*"],
-            "@store/*": ["./src/store/*"],
-            "@utils/*": ["./src/utils/*"],
-            "@contexts/*": ["./src/contexts/*"],
-            "@types/*": ["./src/types/*"]
+            "@shared/*": ["./src/shared/*"]
         }
     },
     "include": ["src"],

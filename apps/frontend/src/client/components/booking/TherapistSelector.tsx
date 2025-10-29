@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, UserIcon } from 'lucide-react';
 const therapists = [{

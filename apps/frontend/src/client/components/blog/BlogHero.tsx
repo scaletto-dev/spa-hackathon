@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { CalendarIcon, ArrowRightIcon } from 'lucide-react';
 export function BlogHero() {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, createElement } from 'react';
+import React, { useEffect, useRef, createElement } from 'react';
 export function BranchMap({ branches, selectedBranch, setSelectedBranch }) {
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);

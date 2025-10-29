@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BlogHero } from '../components/blog/BlogHero';
 import { BlogGrid } from '../components/blog/BlogGrid';

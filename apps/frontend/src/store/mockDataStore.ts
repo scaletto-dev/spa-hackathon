@@ -381,11 +381,8 @@ class MockDataStore {
     updateService = (id: number, updates: Partial<Service>) => {
         const index = this.services.findIndex((s) => s.id === id);
         if (index !== -1) {
-            const existing = this.services[index];
-            if (existing) {
-                this.services[index] = { ...existing, ...updates };
-                return this.services[index];
-            }
+            this.services[index] = { ...this.services[index], ...updates };
+            return this.services[index];
         }
         return null;
     };
@@ -404,11 +401,8 @@ class MockDataStore {
     updateBranch = (id: number, updates: Partial<Branch>) => {
         const index = this.branches.findIndex((b) => b.id === id);
         if (index !== -1) {
-            const existing = this.branches[index];
-            if (existing) {
-                this.branches[index] = { ...existing, ...updates };
-                return this.branches[index];
-            }
+            this.branches[index] = { ...this.branches[index], ...updates };
+            return this.branches[index];
         }
         return null;
     };
@@ -427,11 +421,8 @@ class MockDataStore {
     updateStaff = (id: number, updates: Partial<Staff>) => {
         const index = this.staff.findIndex((s) => s.id === id);
         if (index !== -1) {
-            const existing = this.staff[index];
-            if (existing) {
-                this.staff[index] = { ...existing, ...updates };
-                return this.staff[index];
-            }
+            this.staff[index] = { ...this.staff[index], ...updates };
+            return this.staff[index];
         }
         return null;
     };
@@ -450,11 +441,8 @@ class MockDataStore {
     updateCustomer = (id: number, updates: Partial<Customer>) => {
         const index = this.customers.findIndex((c) => c.id === id);
         if (index !== -1) {
-            const existing = this.customers[index];
-            if (existing) {
-                this.customers[index] = { ...existing, ...updates };
-                return this.customers[index];
-            }
+            this.customers[index] = { ...this.customers[index], ...updates };
+            return this.customers[index];
         }
         return null;
     };
@@ -473,11 +461,8 @@ class MockDataStore {
     updateAppointment = (id: number, updates: Partial<Appointment>) => {
         const index = this.appointments.findIndex((a) => a.id === id);
         if (index !== -1) {
-            const existing = this.appointments[index];
-            if (existing) {
-                this.appointments[index] = { ...existing, ...updates };
-                return this.appointments[index];
-            }
+            this.appointments[index] = { ...this.appointments[index], ...updates };
+            return this.appointments[index];
         }
         return null;
     };
@@ -496,11 +481,8 @@ class MockDataStore {
     updateReview = (id: number, updates: Partial<Review>) => {
         const index = this.reviews.findIndex((r) => r.id === id);
         if (index !== -1) {
-            const existing = this.reviews[index];
-            if (existing) {
-                this.reviews[index] = { ...existing, ...updates };
-                return this.reviews[index];
-            }
+            this.reviews[index] = { ...this.reviews[index], ...updates };
+            return this.reviews[index];
         }
         return null;
     };
@@ -519,11 +501,8 @@ class MockDataStore {
     updateBlogPost = (id: number, updates: Partial<BlogPost>) => {
         const index = this.blogPosts.findIndex((p) => p.id === id);
         if (index !== -1) {
-            const existing = this.blogPosts[index];
-            if (existing) {
-                this.blogPosts[index] = { ...existing, ...updates };
-                return this.blogPosts[index];
-            }
+            this.blogPosts[index] = { ...this.blogPosts[index], ...updates };
+            return this.blogPosts[index];
         }
         return null;
     };
@@ -542,11 +521,8 @@ class MockDataStore {
     updatePayment = (id: number, updates: Partial<Payment>) => {
         const index = this.payments.findIndex((p) => p.id === id);
         if (index !== -1) {
-            const existing = this.payments[index];
-            if (existing) {
-                this.payments[index] = { ...existing, ...updates };
-                return this.payments[index];
-            }
+            this.payments[index] = { ...this.payments[index], ...updates };
+            return this.payments[index];
         }
         return null;
     };

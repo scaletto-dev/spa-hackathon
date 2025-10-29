@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { StarIcon, QuoteIcon } from 'lucide-react';
 const testimonials = [{

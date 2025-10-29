@@ -1,17 +1,16 @@
-import type { ReactNode } from 'react';
-
-import { AnimatePresence, motion } from 'framer-motion';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircleIcon, CheckCircleIcon, InfoIcon } from 'lucide-react';
 
 export interface FormFieldProps {
     label?: string;
     name: string;
-    error?: string | undefined;
-    helpText?: string | undefined;
-    success?: string | undefined;
-    info?: string | undefined;
+    error?: string;
+    helpText?: string;
+    success?: string;
+    info?: string;
     required?: boolean;
-    children: ReactNode;
+    children: React.ReactNode;
     className?: string;
     'data-testid'?: string;
 }

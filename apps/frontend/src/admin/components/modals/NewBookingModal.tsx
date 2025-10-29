@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { XIcon, SparklesIcon, CalendarIcon, ClockIcon, UserIcon } from 'lucide-react';
 import { useAppointments } from '../../../hooks/useStore';
 import { toast } from '../../../utils/toast';

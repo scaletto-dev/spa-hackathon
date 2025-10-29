@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCardIcon, WalletIcon, BuildingIcon, BanknoteIcon } from 'lucide-react';
 import { CardPayment } from './CardPayment';

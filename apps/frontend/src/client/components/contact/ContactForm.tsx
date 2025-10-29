@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UserIcon, MailIcon, PhoneIcon, SendIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
