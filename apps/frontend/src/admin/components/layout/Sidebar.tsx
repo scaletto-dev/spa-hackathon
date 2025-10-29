@@ -11,6 +11,7 @@ import {
     FileTextIcon,
     SettingsIcon,
 } from 'lucide-react';
+import { toast } from '../../../utils/toast';
 
 const navItems = [
     {
@@ -114,7 +115,10 @@ export function Sidebar() {
                         <span className='font-semibold text-sm text-gray-800'>AI Assistant</span>
                     </div>
                     <p className='text-xs text-gray-600 mb-3'>Get intelligent insights and recommendations</p>
-                    <button className='w-full py-2 bg-white rounded-lg text-xs font-medium text-pink-600 hover:bg-pink-50 transition-colors'>
+                    <button
+                        onClick={() => toast.info('AI Assistant feature coming soon!')}
+                        className='w-full py-2 bg-white rounded-lg text-xs font-medium text-pink-600 hover:bg-pink-50 transition-colors'
+                    >
                         Ask AI
                     </button>
                 </div>
