@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SparklesIcon, MenuIcon, XIcon, LogOutIcon, LayoutDashboardIcon } from 'lucide-react';
 import { useAuth } from '../../../auth/useAuth';
+import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -115,6 +116,7 @@ export function Navbar() {
                 </nav>
                 {/* Auth Section - Desktop */}
                 <div className='hidden lg:flex items-center gap-3'>
+                    <LanguageSwitcher />
                     {!isAuthenticated ? (
                         <>
                             <Link
@@ -218,6 +220,9 @@ export function Navbar() {
 
                         {/* Mobile Auth Section */}
                         <div className='mt-2 pt-4 border-t border-gray-200 flex flex-col gap-3'>
+                            <div className='flex justify-center'>
+                                <LanguageSwitcher />
+                            </div>
                             {!isAuthenticated ? (
                                 <>
                                     <Link
