@@ -1,14 +1,14 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { EyeIcon, EyeOffIcon, MailIcon, LockIcon, SparklesIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, MailIcon, LockIcon, ShieldCheckIcon } from 'lucide-react';
 import { useAuth } from '../../auth/useAuth';
 import { toast } from '../../utils/toast';
 
-export function LoginPage() {
+export function AdminLoginPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { login, loginWithGoogle } = useAuth();
+    const { loginAdmin, loginWithGoogleAdmin } = useAuth();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -20,8 +20,8 @@ export function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-    // Get the page user tried to access before being redirected to login
-    const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
+    // Get the admin page user tried to access before login
+    const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/admin';
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -54,22 +54,21 @@ export function LoginPage() {
         setIsLoading(true);
 
         try {
-            // TODO: Replace with real API call
-            await login({ email: formData.email, password: formData.password });
+            await loginAdmin({ email: formData.email, password: formData.password });
             
-            toast.success('Welcome back!');
+            toast.success('Welcome back, Admin!');
             
-            // Redirect to original destination or home
+            // Redirect to original admin destination
             navigate(from, { replace: true });
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Invalid email or password');
+            toast.error(error instanceof Error ? error.message : 'Invalid admin credentials');
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center px-6 py-12'>
+        <div className='w-full min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6 py-12'>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -84,26 +83,26 @@ export function LoginPage() {
                         transition={{ duration: 0.5 }}
                         className='inline-flex items-center gap-2 mb-4'
                     >
-                        <div className='w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center'>
-                            <SparklesIcon className='w-6 h-6 text-white' />
+                        <div className='w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center'>
+                            <ShieldCheckIcon className='w-6 h-6 text-white' />
                         </div>
-                        <h1 className='text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
-                            BeautyAI
+                        <h1 className='text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent'>
+                            Admin Portal
                         </h1>
                     </motion.div>
-                    <p className='text-gray-600'>Welcome back! Please login to your account.</p>
+                    <p className='text-gray-400'>Secure access for administrators only</p>
                 </div>
 
                 {/* Login Form Card */}
-                <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8'>
+                <div className='bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 shadow-xl p-8'>
                     {/* Google Sign-In Button */}
                     <button
                         type='button'
                         onClick={async () => {
                             setIsGoogleLoading(true);
                             try {
-                                await loginWithGoogle();
-                                toast.success('Signed in with Google!');
+                                await loginWithGoogleAdmin();
+                                toast.success('Admin signed in with Google!');
                                 navigate(from, { replace: true });
                             } catch (error) {
                                 const message = error instanceof Error ? error.message : 'Google Sign-In failed';
@@ -113,10 +112,10 @@ export function LoginPage() {
                             }
                         }}
                         disabled={isGoogleLoading || isLoading}
-                        className='w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed'
+                        className='w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 border-slate-600 hover:border-slate-500 bg-slate-700 hover:bg-slate-600 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed'
                     >
                         {isGoogleLoading ? (
-                            <div className='w-5 h-5 border-2 border-gray-300 border-t-pink-500 rounded-full animate-spin' />
+                            <div className='w-5 h-5 border-2 border-slate-400 border-t-blue-500 rounded-full animate-spin' />
                         ) : (
                             <svg className='w-5 h-5' viewBox='0 0 24 24'>
                                 <path
@@ -137,30 +136,30 @@ export function LoginPage() {
                                 />
                             </svg>
                         )}
-                        <span className='font-medium text-gray-700 group-hover:text-gray-900'>
-                            Continue with Google
+                        <span className='font-medium text-gray-200 group-hover:text-white'>
+                            Sign in with Google (Admin)
                         </span>
                     </button>
 
                     {/* Divider */}
                     <div className='relative my-6'>
                         <div className='absolute inset-0 flex items-center'>
-                            <div className='w-full border-t border-gray-200' />
+                            <div className='w-full border-t border-slate-700' />
                         </div>
                         <div className='relative flex justify-center text-sm'>
-                            <span className='px-4 bg-white/70 text-gray-500'>Or continue with email</span>
+                            <span className='px-4 bg-slate-800/50 text-gray-400'>Or continue with email</span>
                         </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className='space-y-5'>
                         {/* Email Field */}
                         <div>
-                            <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-2'>
+                            <label htmlFor='email' className='block text-sm font-medium text-gray-300 mb-2'>
                                 Email Address
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                    <MailIcon className='w-5 h-5 text-gray-400' />
+                                    <MailIcon className='w-5 h-5 text-gray-500' />
                                 </div>
                                 <input
                                     id='email'
@@ -172,15 +171,15 @@ export function LoginPage() {
                                     }}
                                     className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
                                         errors.email
-                                            ? 'border-red-300 focus:ring-red-200'
-                                            : 'border-gray-200 focus:ring-pink-200'
-                                    } focus:outline-none focus:ring-2 transition-colors`}
-                                    placeholder='Enter your email'
+                                            ? 'border-red-500 focus:ring-red-400'
+                                            : 'border-slate-600 focus:ring-blue-500'
+                                    } bg-slate-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-colors`}
+                                    placeholder='admin@company.com'
                                     aria-describedby={errors.email ? 'email-error' : undefined}
                                 />
                             </div>
                             {errors.email && (
-                                <p id='email-error' className='mt-1 text-sm text-red-600' role='alert'>
+                                <p id='email-error' className='mt-1 text-sm text-red-400' role='alert'>
                                     {errors.email}
                                 </p>
                             )}
@@ -188,12 +187,12 @@ export function LoginPage() {
 
                         {/* Password Field */}
                         <div>
-                            <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-2'>
+                            <label htmlFor='password' className='block text-sm font-medium text-gray-300 mb-2'>
                                 Password
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                    <LockIcon className='w-5 h-5 text-gray-400' />
+                                    <LockIcon className='w-5 h-5 text-gray-500' />
                                 </div>
                                 <input
                                     id='password'
@@ -205,49 +204,43 @@ export function LoginPage() {
                                     }}
                                     className={`w-full pl-10 pr-12 py-3 rounded-xl border ${
                                         errors.password
-                                            ? 'border-red-300 focus:ring-red-200'
-                                            : 'border-gray-200 focus:ring-pink-200'
-                                    } focus:outline-none focus:ring-2 transition-colors`}
+                                            ? 'border-red-500 focus:ring-red-400'
+                                            : 'border-slate-600 focus:ring-blue-500'
+                                    } bg-slate-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-colors`}
                                     placeholder='Enter your password'
                                     aria-describedby={errors.password ? 'password-error' : undefined}
                                 />
                                 <button
                                     type='button'
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className='absolute inset-y-0 right-0 pr-3 flex items-center hover:text-pink-600 transition-colors'
+                                    className='absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300'
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                 >
                                     {showPassword ? (
-                                        <EyeOffIcon className='w-5 h-5 text-gray-400' />
+                                        <EyeOffIcon className='w-5 h-5' />
                                     ) : (
-                                        <EyeIcon className='w-5 h-5 text-gray-400' />
+                                        <EyeIcon className='w-5 h-5' />
                                     )}
                                 </button>
                             </div>
                             {errors.password && (
-                                <p id='password-error' className='mt-1 text-sm text-red-600' role='alert'>
+                                <p id='password-error' className='mt-1 text-sm text-red-400' role='alert'>
                                     {errors.password}
                                 </p>
                             )}
                         </div>
 
-                        {/* Remember Me & Forgot Password */}
+                        {/* Remember Me */}
                         <div className='flex items-center justify-between'>
                             <label className='flex items-center gap-2 cursor-pointer'>
                                 <input
                                     type='checkbox'
                                     checked={formData.rememberMe}
                                     onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
-                                    className='w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-200'
+                                    className='w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 focus:ring-offset-slate-800'
                                 />
-                                <span className='text-sm text-gray-600'>Remember me</span>
+                                <span className='text-sm text-gray-300'>Remember me</span>
                             </label>
-                            <Link
-                                to='/forgot-password'
-                                className='text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors'
-                            >
-                                Forgot password?
-                            </Link>
                         </div>
 
                         {/* Submit Button */}
@@ -258,8 +251,8 @@ export function LoginPage() {
                             whileTap={{ scale: isLoading ? 1 : 0.98 }}
                             className={`w-full py-3 rounded-xl font-semibold text-white shadow-lg transition-all ${
                                 isLoading
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600'
+                                    ? 'bg-slate-600 cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700'
                             }`}
                         >
                             {isLoading ? (
@@ -268,29 +261,23 @@ export function LoginPage() {
                                     Signing in...
                                 </span>
                             ) : (
-                                'Sign In'
+                                'Sign In to Admin Portal'
                             )}
                         </motion.button>
                     </form>
 
-                    {/* Sign Up Link */}
-                    <div className='mt-6 text-center'>
-                        <p className='text-sm text-gray-600'>
-                            Don't have an account?{' '}
-                            <Link
-                                to='/register'
-                                className='text-pink-600 hover:text-pink-700 font-semibold transition-colors'
-                            >
-                                Create account
-                            </Link>
+                    {/* Security Notice */}
+                    <div className='mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl'>
+                        <p className='text-xs text-blue-300 text-center'>
+                            Ì¥í Admin access is restricted and monitored. Unauthorized access attempts will be logged.
                         </p>
                     </div>
                 </div>
 
-                {/* Back to Home */}
+                {/* Back to Site */}
                 <div className='mt-6 text-center'>
-                    <Link to='/' className='text-sm text-gray-500 hover:text-pink-600 transition-colors'>
-                        ‚Üê Back to home
+                    <Link to='/' className='text-sm text-gray-400 hover:text-blue-400 transition-colors'>
+                        ‚Üê Back to main site
                     </Link>
                 </div>
             </motion.div>
@@ -298,4 +285,4 @@ export function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default AdminLoginPage;

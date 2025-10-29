@@ -22,6 +22,7 @@ const ContactPage = lazy(() => import('../client/pages/ContactPage'));
 // Auth pages
 const LoginPage = lazy(() => import('../client/pages/LoginPage'));
 const RegisterPage = lazy(() => import('../client/pages/RegisterPage'));
+const AdminLoginPage = lazy(() => import('../admin/pages/AdminLoginPage'));
 
 // Lazy load admin pages
 const Dashboard = lazy(() => import('../admin/pages/Dashboard'));
@@ -153,6 +154,16 @@ export const routes: RouteObject[] = [
             <RootErrorBoundary>
                 <Suspense fallback={<Pending />}>
                     <RegisterPage />
+                </Suspense>
+            </RootErrorBoundary>
+        ),
+    },
+    {
+        path: '/admin/login',
+        element: (
+            <RootErrorBoundary>
+                <Suspense fallback={<Pending />}>
+                    <AdminLoginPage />
                 </Suspense>
             </RootErrorBoundary>
         ),

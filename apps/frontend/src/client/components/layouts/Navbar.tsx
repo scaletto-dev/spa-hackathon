@@ -140,7 +140,7 @@ export function Navbar() {
                                 </div>
                                 <span className='font-medium text-gray-800'>{user?.name || 'User'}</span>
                             </button>
-                            
+
                             {/* User Dropdown Menu */}
                             <AnimatePresence>
                                 {isUserMenuOpen && (
@@ -155,7 +155,7 @@ export function Navbar() {
                                             <p className='text-sm font-semibold text-gray-900'>{user?.name}</p>
                                             <p className='text-xs text-gray-500'>{user?.email}</p>
                                         </div>
-                                        
+
                                         <button
                                             onClick={handleDashboardClick}
                                             className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-gray-700 hover:bg-pink-50 transition-colors'
@@ -165,7 +165,7 @@ export function Navbar() {
                                                 {user?.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
                                             </span>
                                         </button>
-                                        
+
                                         <button
                                             onClick={handleLogout}
                                             className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-red-600 hover:bg-red-50 transition-colors'
@@ -212,7 +212,7 @@ export function Navbar() {
                                 {link.name}
                             </Link>
                         ))}
-                        
+
                         {/* Mobile Auth Section */}
                         <div className='mt-2 pt-4 border-t border-gray-200 flex flex-col gap-3'>
                             {!isAuthenticated ? (
