@@ -229,55 +229,11 @@ Contact form submissions are stored in the database with status `PENDING` for ad
 3. Add internal notes via `adminNotes` field (future feature)
 4. Respond to customers via email (future feature)
 
-## Email Notifications
-
-### Admin Notification
-
-When a contact form is submitted successfully:
-
-1. **Automatic Email Sent:** Admin receives immediate notification email
-2. **Recipient:** Configured via `CONTACT_NOTIFICATION_EMAIL` environment variable
-3. **Email Content Includes:**
-   - Submitter's name
-   - Email address (set as reply-to for easy response)
-   - Phone number (if provided)
-   - Message type (formatted as human-readable label)
-   - Full message content
-   - Submission timestamp
-   - Unique submission ID
-
-4. **Retry Logic:** Email sending attempts up to 3 times with exponential backoff (1s, 2s, 4s delays)
-5. **Non-Blocking:** Email failures are logged but don't cause the API request to fail
-6. **Asynchronous:** Email sending doesn't block the API response
-
-### Email Service Configuration
-
-Required environment variables:
-
-```bash
-# Resend API Configuration
-RESEND_API_KEY=re_xxxxxxxxxxxx
-
-# Email Addresses
-EMAIL_FROM=noreply@yourdomain.com
-CONTACT_NOTIFICATION_EMAIL=admin@yourdomain.com
-```
-
-### Email Template
-
-The notification email includes:
-- Professional HTML formatting
-- Color-coded message type badge
-- Formatted submission details in a table
-- Action reminder to respond within 24 hours
-- Reply-to set to submitter's email for easy response
-
 ## Future Enhancements
 
-- ~~Email notification to admin when form is submitted~~ ✅ **Implemented**
+- Email notification to admin when form is submitted
 - Auto-responder email to customer confirming receipt
 - Admin dashboard for managing submissions
 - Search and filter submissions by status, type, date
 - Bulk actions for marking submissions as resolved
 - Integration with CRM or helpdesk system
-
