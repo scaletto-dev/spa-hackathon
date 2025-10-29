@@ -10,7 +10,10 @@
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "test": "echo \"No tests configured yet\""
+    "test": "echo \"No tests configured yet\"",
+    "test:db": "ts-node -r dotenv/config src/scripts/testDatabaseConnection.ts",
+    "test:auth": "ts-node -r dotenv/config src/scripts/testSupabaseAuth.ts",
+    "test:storage": "ts-node -r dotenv/config src/scripts/testSupabaseStorage.ts"
   },
   "keywords": [
     "express",

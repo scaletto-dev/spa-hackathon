@@ -1,0 +1,238 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum UserRole {
+  MEMBER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum MessageType {
+  GENERAL
+  BOOKING_INQUIRY
+  COMPLAINT
+  FEEDBACK
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+}
+
+// ============================================================================
+// MODELS
+// ============================================================================
+
+/// User model - Registered members and administrators
+/// Guest users don't have User records - their info is stored in Booking/Review
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  phone          String
+  fullName       String
+  role           UserRole @default(MEMBER)
+  emailVerified  Boolean  @default(false)
+  supabaseAuthId String?  @unique // Links to Supabase Auth user
+  language       String   @default("vi") // vi, ja, en, zh
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relationships
+  bookings  Booking[]
+  reviews   Review[]
+  blogPosts BlogPost[]
+
+  @@index([email])
+  @@index([supabaseAuthId])
+  @@index([role])
+}
+
+/// ServiceCategory model - Organizes services into groups
+model ServiceCategory {
+  id           String   @id @default(uuid())
+  name         String
+  slug         String   @unique
+  description  String?
+  displayOrder Int      @default(0)
+  icon         String? // Icon identifier (e.g., 'spa', 'beauty')
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  services Service[]
+}
+
+/// Service model - Individual beauty treatments and procedures
+model Service {
+  id                String   @id @default(uuid())
+  name              String
+  slug              String   @unique
+  description       String   @db.Text
+  excerpt           String // Short description for listings (~150 chars)
+  duration          Int // Duration in minutes
+  price             Decimal  @db.Decimal(10, 2) // Vietnamese Dong
+  categoryId        String
+  images            String[] // Array of image URLs from Supabase Storage
+  featured          Boolean  @default(false) // Shows on homepage
+  active            Boolean  @default(true) // Soft delete flag
+  beforeAfterPhotos String[] // Optional before/after image URLs (can be empty array)
+  faqs              Json? // [{question: "...", answer: "..."}]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relationships
+  category ServiceCategory @relation(fields: [categoryId], references: [id])
+  bookings Booking[]
+  reviews  Review[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([featured])
+}
+
+/// Branch model - Physical clinic locations
+model Branch {
+  id             String   @id @default(uuid())
+  name           String
+  slug           String   @unique
+  address        String
+  phone          String
+  email          String?
+  latitude       Decimal  @db.Decimal(10, 8) // GPS coordinates
+  longitude      Decimal  @db.Decimal(11, 8)
+  operatingHours Json // {monday: {open: "09:00", close: "18:00"}, ...}
+  images         String[] // Array of facility image URLs
+  active         Boolean  @default(true) // Soft delete flag
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relationships
+  bookings Booking[]
+
+  @@index([slug])
+}
+
+/// Booking model - Appointment reservations (supports guest and member bookings)
+model Booking {
+  id                 String        @id @default(uuid())
+  referenceNumber    String        @unique // Format: BCW-YYYYMMDD-XXXX
+  userId             String? // Nullable for guest bookings
+  serviceId          String
+  branchId           String
+  appointmentDate    DateTime
+  appointmentTime    String // Time slot like "14:00"
+  status             BookingStatus @default(CONFIRMED)
+  guestName          String? // Required if userId is null
+  guestEmail         String? // Required if userId is null
+  guestPhone         String? // Required if userId is null
+  notes              String?       @db.Text // Customer special requests
+  language           String        @default("vi") // For email confirmations
+  cancellationReason String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relationships
+  user    User?   @relation(fields: [userId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+  branch  Branch  @relation(fields: [branchId], references: [id])
+
+  @@index([referenceNumber])
+  @@index([appointmentDate])
+  @@index([userId])
+  @@index([serviceId])
+  @@index([branchId])
+  @@index([status])
+}
+
+/// BlogCategory model - Organizes blog posts into topics
+model BlogCategory {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  posts BlogPost[]
+}
+
+/// BlogPost model - Blog articles for content marketing and SEO
+model BlogPost {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  content       String    @db.Text // Full post content (rich text/markdown)
+  excerpt       String // Short preview for listings
+  featuredImage String // Hero image URL
+  categoryId    String
+  authorId      String // Foreign key to User (admin only)
+  published     Boolean   @default(false)
+  publishedAt   DateTime? // Set when published
+  language      String    @default("vi") // vi, ja, en, zh
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relationships
+  category BlogCategory @relation(fields: [categoryId], references: [id])
+  author   User         @relation(fields: [authorId], references: [id])
+
+  @@index([slug])
+  @@index([published])
+  @@index([categoryId])
+}
+
+/// Review model - Customer reviews and ratings for services
+model Review {
+  id            String   @id @default(uuid())
+  serviceId     String
+  userId        String? // Nullable for guest reviews
+  customerName  String // Reviewer's name
+  email         String // Contact email
+  rating        Int // 1-5 stars
+  reviewText    String   @db.Text // Review content (max ~500 chars enforced at app level)
+  approved      Boolean  @default(false) // Admin moderation
+  adminResponse String?  @db.Text // Optional admin reply
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  service Service @relation(fields: [serviceId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
+}
+
+/// ContactSubmission model - Contact form submissions for admin review
+model ContactSubmission {
+  id          String        @id @default(uuid())
+  name        String
+  email       String
+  phone       String?
+  messageType MessageType
+  message     String        @db.Text
+  status      ContactStatus @default(NEW)
+  adminNotes  String?       @db.Text // Internal admin notes
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
