@@ -42,22 +42,34 @@ export function validateCreateBooking(
 
       // Required fields
       if (!serviceId || typeof serviceId !== "string") {
-         throw new ValidationError("Service ID is required and must be a string");
+         throw new ValidationError(
+            "Service ID is required and must be a string"
+         );
       }
 
       if (!branchId || typeof branchId !== "string") {
-         throw new ValidationError("Branch ID is required and must be a string");
+         throw new ValidationError(
+            "Branch ID is required and must be a string"
+         );
       }
 
       if (!appointmentDate || typeof appointmentDate !== "string") {
-         throw new ValidationError("Appointment date is required and must be a string");
+         throw new ValidationError(
+            "Appointment date is required and must be a string"
+         );
       }
 
       if (!appointmentTime || typeof appointmentTime !== "string") {
-         throw new ValidationError("Appointment time is required and must be a string");
+         throw new ValidationError(
+            "Appointment time is required and must be a string"
+         );
       }
 
-      if (!guestName || typeof guestName !== "string" || guestName.trim().length === 0) {
+      if (
+         !guestName ||
+         typeof guestName !== "string" ||
+         guestName.trim().length === 0
+      ) {
          throw new ValidationError("Guest name is required");
       }
 
@@ -110,12 +122,23 @@ export function validateCreateBooking(
       const timeParts = appointmentTime.split(":");
       const hours = parseInt(timeParts[0] || "0");
       const minutes = parseInt(timeParts[1] || "0");
-      if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
-         throw new ValidationError("Invalid time. Hours must be 00-23, minutes 00-59");
+      if (
+         isNaN(hours) ||
+         isNaN(minutes) ||
+         hours < 0 ||
+         hours > 23 ||
+         minutes < 0 ||
+         minutes > 59
+      ) {
+         throw new ValidationError(
+            "Invalid time. Hours must be 00-23, minutes 00-59"
+         );
       }
 
       // Validate appointment is in the future
-      const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}:00`);
+      const appointmentDateTime = new Date(
+         `${appointmentDate}T${appointmentTime}:00`
+      );
       const now = new Date();
       if (appointmentDateTime <= now) {
          throw new ValidationError(
@@ -326,7 +349,9 @@ export function validateListBookingsQuery(
          const from = new Date(dateFrom as string);
          const to = new Date(dateTo as string);
          if (from > to) {
-            throw new ValidationError("dateFrom must be before or equal to dateTo");
+            throw new ValidationError(
+               "dateFrom must be before or equal to dateTo"
+            );
          }
       }
 
@@ -338,12 +363,11 @@ export function validateListBookingsQuery(
             "updatedAt",
             "status",
          ];
-         if (
-            typeof sortBy !== "string" ||
-            !validSortFields.includes(sortBy)
-         ) {
+         if (typeof sortBy !== "string" || !validSortFields.includes(sortBy)) {
             throw new ValidationError(
-               `Invalid sortBy field. Must be one of: ${validSortFields.join(", ")}`
+               `Invalid sortBy field. Must be one of: ${validSortFields.join(
+                  ", "
+               )}`
             );
          }
       }
@@ -356,7 +380,9 @@ export function validateListBookingsQuery(
             !validSortOrders.includes(sortOrder)
          ) {
             throw new ValidationError(
-               `Invalid sortOrder. Must be one of: ${validSortOrders.join(", ")}`
+               `Invalid sortOrder. Must be one of: ${validSortOrders.join(
+                  ", "
+               )}`
             );
          }
       }
@@ -435,4 +461,3 @@ export function validateUUID(paramName: string = "id") {
       }
    };
 }
-

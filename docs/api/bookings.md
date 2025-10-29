@@ -4,18 +4,18 @@ Complete API reference for booking management endpoints in the Beauty Clinic SPA
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Guest Booking APIs](#guest-booking-apis)
-  - [Create Booking](#create-booking)
-  - [Get Booking by Reference](#get-booking-by-reference)
-  - [Cancel Booking](#cancel-booking)
-- [Admin Booking APIs](#admin-booking-apis)
-  - [List All Bookings](#list-all-bookings)
-  - [Update Booking Status](#update-booking-status)
-- [Data Models](#data-models)
-- [Error Responses](#error-responses)
-- [Rate Limiting](#rate-limiting)
-- [Authentication](#authentication)
+-  [Overview](#overview)
+-  [Guest Booking APIs](#guest-booking-apis)
+   -  [Create Booking](#create-booking)
+   -  [Get Booking by Reference](#get-booking-by-reference)
+   -  [Cancel Booking](#cancel-booking)
+-  [Admin Booking APIs](#admin-booking-apis)
+   -  [List All Bookings](#list-all-bookings)
+   -  [Update Booking Status](#update-booking-status)
+-  [Data Models](#data-models)
+-  [Error Responses](#error-responses)
+-  [Rate Limiting](#rate-limiting)
+-  [Authentication](#authentication)
 
 ---
 
@@ -43,76 +43,76 @@ Create a new service booking appointment.
 
 ```json
 {
-  "serviceId": "uuid",
-  "branchId": "uuid",
-  "appointmentDate": "2024-12-15",
-  "appointmentTime": "14:30",
-  "guestName": "Nguyễn Văn A",
-  "guestEmail": "nguyen.van.a@example.com",
-  "guestPhone": "+84901234567",
-  "notes": "Tôi muốn dịch vụ massage thư giãn",
-  "language": "vi"
+   "serviceId": "uuid",
+   "branchId": "uuid",
+   "appointmentDate": "2024-12-15",
+   "appointmentTime": "14:30",
+   "guestName": "Nguyễn Văn A",
+   "guestEmail": "nguyen.van.a@example.com",
+   "guestPhone": "+84901234567",
+   "notes": "Tôi muốn dịch vụ massage thư giãn",
+   "language": "vi"
 }
 ```
 
 **Field Validations**:
 
-| Field | Type | Required | Validation |
-|-------|------|----------|------------|
-| serviceId | string | Yes | Valid UUID, must be an active service |
-| branchId | string | Yes | Valid UUID, must be an active branch |
-| appointmentDate | string | Yes | YYYY-MM-DD format, must be future date |
-| appointmentTime | string | Yes | HH:MM format (00:00-23:59) |
-| guestName | string | Yes | Min 1 character |
-| guestEmail | string | Yes | Valid email format |
-| guestPhone | string | Yes | 10+ digits, supports international format |
-| notes | string | No | Max 500 characters |
-| language | string | No | One of: `vi`, `en`, `ja` (default: `vi`) |
+| Field           | Type   | Required | Validation                                |
+| --------------- | ------ | -------- | ----------------------------------------- |
+| serviceId       | string | Yes      | Valid UUID, must be an active service     |
+| branchId        | string | Yes      | Valid UUID, must be an active branch      |
+| appointmentDate | string | Yes      | YYYY-MM-DD format, must be future date    |
+| appointmentTime | string | Yes      | HH:MM format (00:00-23:59)                |
+| guestName       | string | Yes      | Min 1 character                           |
+| guestEmail      | string | Yes      | Valid email format                        |
+| guestPhone      | string | Yes      | 10+ digits, supports international format |
+| notes           | string | No       | Max 500 characters                        |
+| language        | string | No       | One of: `vi`, `en`, `ja` (default: `vi`)  |
 
 **Success Response** (201 Created):
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "uuid",
-    "referenceNumber": "BC-20241215-1234",
-    "serviceId": "uuid",
-    "branchId": "uuid",
-    "appointmentDate": "2024-12-15T00:00:00.000Z",
-    "appointmentTime": "14:30",
-    "status": "CONFIRMED",
-    "guestName": "Nguyễn Văn A",
-    "guestEmail": "nguyen.van.a@example.com",
-    "guestPhone": "+84901234567",
-    "notes": "Tôi muốn dịch vụ massage thư giãn",
-    "language": "vi",
-    "createdAt": "2024-12-10T10:30:00.000Z",
-    "updatedAt": "2024-12-10T10:30:00.000Z",
-    "service": {
+   "success": true,
+   "data": {
       "id": "uuid",
-      "name": "Massage Thư Giãn",
-      "duration": 60,
-      "price": "500000"
-    },
-    "branch": {
-      "id": "uuid",
-      "name": "Chi nhánh Quận 1",
-      "address": "123 Nguyễn Huệ, Quận 1, TP.HCM",
-      "phone": "+842812345678"
-    }
-  },
-  "message": "Booking created successfully. Check your email for confirmation."
+      "referenceNumber": "BC-20241215-1234",
+      "serviceId": "uuid",
+      "branchId": "uuid",
+      "appointmentDate": "2024-12-15T00:00:00.000Z",
+      "appointmentTime": "14:30",
+      "status": "CONFIRMED",
+      "guestName": "Nguyễn Văn A",
+      "guestEmail": "nguyen.van.a@example.com",
+      "guestPhone": "+84901234567",
+      "notes": "Tôi muốn dịch vụ massage thư giãn",
+      "language": "vi",
+      "createdAt": "2024-12-10T10:30:00.000Z",
+      "updatedAt": "2024-12-10T10:30:00.000Z",
+      "service": {
+         "id": "uuid",
+         "name": "Massage Thư Giãn",
+         "duration": 60,
+         "price": "500000"
+      },
+      "branch": {
+         "id": "uuid",
+         "name": "Chi nhánh Quận 1",
+         "address": "123 Nguyễn Huệ, Quận 1, TP.HCM",
+         "phone": "+842812345678"
+      }
+   },
+   "message": "Booking created successfully. Check your email for confirmation."
 }
 ```
 
 **Error Responses**:
 
-- `400 Bad Request`: Validation errors
-- `404 Not Found`: Service or branch not found
-- `409 Conflict`: Time slot no longer available
-- `429 Too Many Requests`: Rate limit exceeded
-- `500 Internal Server Error`: Server error
+-  `400 Bad Request`: Validation errors
+-  `404 Not Found`: Service or branch not found
+-  `409 Conflict`: Time slot no longer available
+-  `429 Too Many Requests`: Rate limit exceeded
+-  `500 Internal Server Error`: Server error
 
 **Business Rules**:
 
@@ -149,53 +149,53 @@ Retrieve booking details using reference number.
 
 **URL Parameters**:
 
-- `referenceNumber` (string, required): Booking reference number (format: BC-YYYYMMDD-XXXX)
+-  `referenceNumber` (string, required): Booking reference number (format: BC-YYYYMMDD-XXXX)
 
 **Query Parameters**:
 
-- `email` (string, optional): Guest email for verification
+-  `email` (string, optional): Guest email for verification
 
 **Success Response** (200 OK):
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "uuid",
-    "referenceNumber": "BC-20241215-1234",
-    "serviceId": "uuid",
-    "branchId": "uuid",
-    "appointmentDate": "2024-12-15T00:00:00.000Z",
-    "appointmentTime": "14:30",
-    "status": "CONFIRMED",
-    "guestName": "Nguyễn Văn A",
-    "guestEmail": "nguyen.van.a@example.com",
-    "guestPhone": "+84901234567",
-    "notes": "Tôi muốn dịch vụ massage thư giãn",
-    "language": "vi",
-    "createdAt": "2024-12-10T10:30:00.000Z",
-    "updatedAt": "2024-12-10T10:30:00.000Z",
-    "service": {
+   "success": true,
+   "data": {
       "id": "uuid",
-      "name": "Massage Thư Giãn",
-      "duration": 60,
-      "price": "500000"
-    },
-    "branch": {
-      "id": "uuid",
-      "name": "Chi nhánh Quận 1",
-      "address": "123 Nguyễn Huệ, Quận 1, TP.HCM",
-      "phone": "+842812345678"
-    }
-  }
+      "referenceNumber": "BC-20241215-1234",
+      "serviceId": "uuid",
+      "branchId": "uuid",
+      "appointmentDate": "2024-12-15T00:00:00.000Z",
+      "appointmentTime": "14:30",
+      "status": "CONFIRMED",
+      "guestName": "Nguyễn Văn A",
+      "guestEmail": "nguyen.van.a@example.com",
+      "guestPhone": "+84901234567",
+      "notes": "Tôi muốn dịch vụ massage thư giãn",
+      "language": "vi",
+      "createdAt": "2024-12-10T10:30:00.000Z",
+      "updatedAt": "2024-12-10T10:30:00.000Z",
+      "service": {
+         "id": "uuid",
+         "name": "Massage Thư Giãn",
+         "duration": 60,
+         "price": "500000"
+      },
+      "branch": {
+         "id": "uuid",
+         "name": "Chi nhánh Quận 1",
+         "address": "123 Nguyễn Huệ, Quận 1, TP.HCM",
+         "phone": "+842812345678"
+      }
+   }
 }
 ```
 
 **Error Responses**:
 
-- `400 Bad Request`: Invalid reference number format
-- `404 Not Found`: Booking not found
-- `400 Bad Request`: Email does not match booking records (when email query param is provided)
+-  `400 Bad Request`: Invalid reference number format
+-  `404 Not Found`: Booking not found
+-  `400 Bad Request`: Email does not match booking records (when email query param is provided)
 
 **Example cURL**:
 
@@ -219,23 +219,23 @@ Cancel an existing booking (requires email verification).
 
 **URL Parameters**:
 
-- `referenceNumber` (string, required): Booking reference number
+-  `referenceNumber` (string, required): Booking reference number
 
 **Request Body**:
 
 ```json
 {
-  "email": "nguyen.van.a@example.com",
-  "reason": "Tôi có việc đột xuất"
+   "email": "nguyen.van.a@example.com",
+   "reason": "Tôi có việc đột xuất"
 }
 ```
 
 **Field Validations**:
 
-| Field | Type | Required | Validation |
-|-------|------|----------|------------|
-| email | string | Yes | Must match booking email |
-| reason | string | No | Max 500 characters |
+| Field  | Type   | Required | Validation               |
+| ------ | ------ | -------- | ------------------------ |
+| email  | string | Yes      | Must match booking email |
+| reason | string | No       | Max 500 characters       |
 
 **Success Response** (200 OK):
 
@@ -254,9 +254,9 @@ Cancel an existing booking (requires email verification).
 
 **Error Responses**:
 
-- `400 Bad Request`: Validation errors, invalid reference number, email mismatch, cancellation within 24 hours
-- `404 Not Found`: Booking not found
-- `409 Conflict`: Booking already cancelled or completed
+-  `400 Bad Request`: Validation errors, invalid reference number, email mismatch, cancellation within 24 hours
+-  `404 Not Found`: Booking not found
+-  `409 Conflict`: Booking already cancelled or completed
 
 **Business Rules**:
 
@@ -293,68 +293,68 @@ Retrieve all bookings with filtering and pagination.
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| page | number | 1 | Page number (≥ 1) |
-| limit | number | 50 | Items per page (1-100) |
-| branchId | string | - | Filter by branch UUID |
-| serviceId | string | - | Filter by service UUID |
-| status | string | - | Filter by status (CONFIRMED, CANCELLED, COMPLETED, NO_SHOW) |
-| date | string | - | Filter by specific date (YYYY-MM-DD) |
-| dateFrom | string | - | Filter by date range start (YYYY-MM-DD) |
-| dateTo | string | - | Filter by date range end (YYYY-MM-DD) |
-| sortBy | string | appointmentDate | Sort field (appointmentDate, createdAt, updatedAt, status) |
-| sortOrder | string | desc | Sort order (asc, desc) |
+| Parameter | Type   | Default         | Description                                                 |
+| --------- | ------ | --------------- | ----------------------------------------------------------- |
+| page      | number | 1               | Page number (≥ 1)                                           |
+| limit     | number | 50              | Items per page (1-100)                                      |
+| branchId  | string | -               | Filter by branch UUID                                       |
+| serviceId | string | -               | Filter by service UUID                                      |
+| status    | string | -               | Filter by status (CONFIRMED, CANCELLED, COMPLETED, NO_SHOW) |
+| date      | string | -               | Filter by specific date (YYYY-MM-DD)                        |
+| dateFrom  | string | -               | Filter by date range start (YYYY-MM-DD)                     |
+| dateTo    | string | -               | Filter by date range end (YYYY-MM-DD)                       |
+| sortBy    | string | appointmentDate | Sort field (appointmentDate, createdAt, updatedAt, status)  |
+| sortOrder | string | desc            | Sort order (asc, desc)                                      |
 
 **Success Response** (200 OK):
 
 ```json
 {
-  "success": true,
-  "data": [
-    {
-      "id": "uuid",
-      "referenceNumber": "BC-20241215-1234",
-      "serviceId": "uuid",
-      "branchId": "uuid",
-      "appointmentDate": "2024-12-15T00:00:00.000Z",
-      "appointmentTime": "14:30",
-      "status": "CONFIRMED",
-      "guestName": "Nguyễn Văn A",
-      "guestEmail": "nguyen.van.a@example.com",
-      "guestPhone": "+84901234567",
-      "notes": "Tôi muốn dịch vụ massage thư giãn",
-      "language": "vi",
-      "createdAt": "2024-12-10T10:30:00.000Z",
-      "updatedAt": "2024-12-10T10:30:00.000Z",
-      "service": {
-        "id": "uuid",
-        "name": "Massage Thư Giãn",
-        "duration": 60,
-        "price": "500000"
-      },
-      "branch": {
-        "id": "uuid",
-        "name": "Chi nhánh Quận 1",
-        "address": "123 Nguyễn Huệ, Quận 1, TP.HCM",
-        "phone": "+842812345678"
+   "success": true,
+   "data": [
+      {
+         "id": "uuid",
+         "referenceNumber": "BC-20241215-1234",
+         "serviceId": "uuid",
+         "branchId": "uuid",
+         "appointmentDate": "2024-12-15T00:00:00.000Z",
+         "appointmentTime": "14:30",
+         "status": "CONFIRMED",
+         "guestName": "Nguyễn Văn A",
+         "guestEmail": "nguyen.van.a@example.com",
+         "guestPhone": "+84901234567",
+         "notes": "Tôi muốn dịch vụ massage thư giãn",
+         "language": "vi",
+         "createdAt": "2024-12-10T10:30:00.000Z",
+         "updatedAt": "2024-12-10T10:30:00.000Z",
+         "service": {
+            "id": "uuid",
+            "name": "Massage Thư Giãn",
+            "duration": 60,
+            "price": "500000"
+         },
+         "branch": {
+            "id": "uuid",
+            "name": "Chi nhánh Quận 1",
+            "address": "123 Nguyễn Huệ, Quận 1, TP.HCM",
+            "phone": "+842812345678"
+         }
       }
-    }
-  ],
-  "meta": {
-    "total": 150,
-    "page": 1,
-    "limit": 50,
-    "totalPages": 3
-  }
+   ],
+   "meta": {
+      "total": 150,
+      "page": 1,
+      "limit": 50,
+      "totalPages": 3
+   }
 }
 ```
 
 **Error Responses**:
 
-- `400 Bad Request`: Invalid query parameters
-- `401 Unauthorized`: Missing or invalid admin authentication
-- `500 Internal Server Error`: Server error
+-  `400 Bad Request`: Invalid query parameters
+-  `401 Unauthorized`: Missing or invalid admin authentication
+-  `500 Internal Server Error`: Server error
 
 **Example cURL**:
 
@@ -390,22 +390,22 @@ Update the status of an existing booking.
 
 **URL Parameters**:
 
-- `id` (string, required): Booking UUID
+-  `id` (string, required): Booking UUID
 
 **Request Body**:
 
 ```json
 {
-  "status": "COMPLETED"
+   "status": "COMPLETED"
 }
 ```
 
 **Valid Status Values**:
 
-- `CONFIRMED` - Booking is confirmed
-- `CANCELLED` - Booking is cancelled
-- `COMPLETED` - Service has been completed
-- `NO_SHOW` - Guest did not show up
+-  `CONFIRMED` - Booking is confirmed
+-  `CANCELLED` - Booking is cancelled
+-  `COMPLETED` - Service has been completed
+-  `NO_SHOW` - Guest did not show up
 
 **Success Response** (200 OK):
 
@@ -424,10 +424,10 @@ Update the status of an existing booking.
 
 **Error Responses**:
 
-- `400 Bad Request`: Invalid UUID format, invalid status, invalid state transition
-- `401 Unauthorized`: Missing or invalid admin authentication
-- `404 Not Found`: Booking not found
-- `429 Too Many Requests`: Rate limit exceeded
+-  `400 Bad Request`: Invalid UUID format, invalid status, invalid state transition
+-  `401 Unauthorized`: Missing or invalid admin authentication
+-  `404 Not Found`: Booking not found
+-  `429 Too Many Requests`: Rate limit exceeded
 
 **Business Rules**:
 
@@ -452,10 +452,10 @@ curl -X PATCH http://localhost:5000/api/v1/admin/bookings/uuid-here/status \
 
 ```typescript
 enum BookingStatus {
-  CONFIRMED = "CONFIRMED",
-  CANCELLED = "CANCELLED",
-  COMPLETED = "COMPLETED",
-  NO_SHOW = "NO_SHOW"
+   CONFIRMED = "CONFIRMED",
+   CANCELLED = "CANCELLED",
+   COMPLETED = "COMPLETED",
+   NO_SHOW = "NO_SHOW",
 }
 ```
 
@@ -463,32 +463,32 @@ enum BookingStatus {
 
 ```typescript
 interface BookingWithDetailsDTO {
-  id: string;
-  referenceNumber: string;
-  serviceId: string;
-  branchId: string;
-  appointmentDate: string; // ISO 8601
-  appointmentTime: string; // HH:MM
-  status: BookingStatus;
-  guestName: string;
-  guestEmail: string;
-  guestPhone: string;
-  notes: string | null;
-  language: string; // 'vi' | 'en' | 'ja'
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
-  service: {
-    id: string;
-    name: string;
-    duration: number; // minutes
-    price: string; // decimal as string
-  };
-  branch: {
-    id: string;
-    name: string;
-    address: string;
-    phone: string;
-  };
+   id: string;
+   referenceNumber: string;
+   serviceId: string;
+   branchId: string;
+   appointmentDate: string; // ISO 8601
+   appointmentTime: string; // HH:MM
+   status: BookingStatus;
+   guestName: string;
+   guestEmail: string;
+   guestPhone: string;
+   notes: string | null;
+   language: string; // 'vi' | 'en' | 'ja'
+   createdAt: string; // ISO 8601
+   updatedAt: string; // ISO 8601
+   service: {
+      id: string;
+      name: string;
+      duration: number; // minutes
+      price: string; // decimal as string
+   };
+   branch: {
+      id: string;
+      name: string;
+      address: string;
+      phone: string;
+   };
 }
 ```
 
@@ -500,23 +500,23 @@ All error responses follow this format:
 
 ```json
 {
-  "error": "ErrorType",
-  "message": "Human-readable error message",
-  "statusCode": 400,
-  "timestamp": "2024-12-10T10:30:00.000Z"
+   "error": "ErrorType",
+   "message": "Human-readable error message",
+   "statusCode": 400,
+   "timestamp": "2024-12-10T10:30:00.000Z"
 }
 ```
 
 ### Common Error Types
 
-| Status Code | Error Type | Description |
-|-------------|------------|-------------|
-| 400 | ValidationError | Invalid request data |
-| 401 | UnauthorizedError | Missing or invalid authentication |
-| 404 | NotFoundError | Resource not found |
-| 409 | ConflictError | Resource conflict (e.g., time slot taken) |
-| 429 | TooManyRequestsError | Rate limit exceeded |
-| 500 | InternalServerError | Server error |
+| Status Code | Error Type           | Description                               |
+| ----------- | -------------------- | ----------------------------------------- |
+| 400         | ValidationError      | Invalid request data                      |
+| 401         | UnauthorizedError    | Missing or invalid authentication         |
+| 404         | NotFoundError        | Resource not found                        |
+| 409         | ConflictError        | Resource conflict (e.g., time slot taken) |
+| 429         | TooManyRequestsError | Rate limit exceeded                       |
+| 500         | InternalServerError  | Server error                              |
 
 ---
 
@@ -524,12 +524,12 @@ All error responses follow this format:
 
 Rate limits are applied per IP address:
 
-| Endpoint Pattern | Limit |
-|------------------|-------|
-| POST /bookings | 10 requests per hour |
-| POST /bookings/:ref/cancel | 10 requests per hour |
-| PATCH /admin/bookings/:id/status | 30 requests per minute |
-| Other endpoints | 100 requests per minute |
+| Endpoint Pattern                 | Limit                   |
+| -------------------------------- | ----------------------- |
+| POST /bookings                   | 10 requests per hour    |
+| POST /bookings/:ref/cancel       | 10 requests per hour    |
+| PATCH /admin/bookings/:id/status | 30 requests per minute  |
+| Other endpoints                  | 100 requests per minute |
 
 Rate limit headers are included in responses:
 
@@ -575,32 +575,36 @@ Import the provided Postman collection for easy API testing:
 
 The collection includes:
 
-- Pre-configured requests for all endpoints
-- Environment variables for base URL and API keys
-- Example requests with valid data
-- Test scripts for response validation
+-  Pre-configured requests for all endpoints
+-  Environment variables for base URL and API keys
+-  Example requests with valid data
+-  Test scripts for response validation
 
 ### Example Test Flow
 
 1. **Create Booking**
-   - POST /bookings with valid data
-   - Save `referenceNumber` from response
+
+   -  POST /bookings with valid data
+   -  Save `referenceNumber` from response
 
 2. **Get Booking**
-   - GET /bookings/:referenceNumber
-   - Verify booking details
+
+   -  GET /bookings/:referenceNumber
+   -  Verify booking details
 
 3. **List Bookings (Admin)**
-   - GET /admin/bookings with X-Admin-Key
-   - Verify booking appears in list
+
+   -  GET /admin/bookings with X-Admin-Key
+   -  Verify booking appears in list
 
 4. **Update Status (Admin)**
-   - PATCH /admin/bookings/:id/status
-   - Change status to COMPLETED
+
+   -  PATCH /admin/bookings/:id/status
+   -  Change status to COMPLETED
 
 5. **Cancel Booking**
-   - POST /bookings/:referenceNumber/cancel
-   - Verify cancellation (should fail if already completed)
+   -  POST /bookings/:referenceNumber/cancel
+   -  Verify cancellation (should fail if already completed)
 
 ---
 
@@ -620,12 +624,12 @@ The collection includes:
 ## Support
 
 For API support or questions, contact:
-- Email: dev@beautyclinic.com
-- Documentation: https://docs.beautyclinic.com/api
+
+-  Email: dev@beautyclinic.com
+-  Documentation: https://docs.beautyclinic.com/api
 
 ---
 
 **Version**: 1.0.0  
 **Last Updated**: 2024-12-10  
 **Maintainer**: Backend Team
-
