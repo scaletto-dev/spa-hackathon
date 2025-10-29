@@ -21,6 +21,7 @@ enum UserRole {
 }
 
 enum BookingStatus {
+  PENDING
   CONFIRMED
   COMPLETED
   CANCELLED
@@ -144,7 +145,7 @@ model Booking {
   branchId           String
   appointmentDate    DateTime
   appointmentTime    String // Time slot like "14:00"
-  status             BookingStatus @default(CONFIRMED)
+  status             BookingStatus @default(PENDING)
   guestName          String? // Required if userId is null
   guestEmail         String? // Required if userId is null
   guestPhone         String? // Required if userId is null
