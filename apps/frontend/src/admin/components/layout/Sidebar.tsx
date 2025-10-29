@@ -72,7 +72,7 @@ const navItems = [
 ];
 export function Sidebar({ onClose }: SidebarProps) {
     return (
-        <aside className='w-64 bg-white/60 backdrop-blur-xl border-r border-pink-100 flex flex-col shadow-lg'>
+        <aside className='w-64 h-full bg-white backdrop-blur-xl border-r border-pink-100 flex flex-col shadow-lg'>
             {/* Header with close button for mobile */}
             <div className='h-16 flex items-center justify-between px-4 border-b border-pink-100'>
                 <div className='flex items-center gap-2'>

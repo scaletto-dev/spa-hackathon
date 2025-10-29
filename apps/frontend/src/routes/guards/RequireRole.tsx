@@ -17,8 +17,11 @@ interface RequireRoleProps {
 export function RequireRole({ children, role }: PropsWithChildren<RequireRoleProps>) {
     const { user, isLoading } = useAuth();
 
+    console.log('🔒 RequireRole check:', { role, user, isLoading });
+
     // Wait for auth check to complete
     if (isLoading) {
+        console.log('⏳ Auth loading...');
         return (
             <div className='flex items-center justify-center min-h-screen'>
                 <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500'></div>
@@ -28,6 +31,7 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
 
     // Not logged in -> redirect to appropriate login page
     if (!user) {
+        console.log('❌ No user, redirecting to login');
         if (role === 'admin') {
             return <Navigate to='/admin/login' replace />;
         }
@@ -36,15 +40,18 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
 
     // Role mismatch handling
     if (role === 'admin' && user.role !== 'admin') {
+        console.log('❌ User is not admin, redirecting to home');
         // Client trying to access admin area -> redirect home
         return <Navigate to='/' replace />;
     }
 
     if (role === 'client' && user.role === 'admin') {
+        console.log('❌ Admin trying to access client page, redirecting to admin');
         // Admin trying to access client-only page -> redirect to admin dashboard
         return <Navigate to='/admin' replace />;
     }
 
+    console.log('✅ Role check passed, rendering children');
     // Role matches -> render children
     return <>{children}</>;
 }
