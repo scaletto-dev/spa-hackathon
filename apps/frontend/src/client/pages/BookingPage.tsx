@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZapIcon, ListIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BookingProgress } from '../components/booking/BookingProgress';
 import { BookingServiceSelect } from '../components/booking/BookingServiceSelect';
 import { BookingBranchSelect } from '../components/booking/BookingBranchSelect';
@@ -75,6 +76,7 @@ const branchMap: Record<string, Branch> = {
 };
 
 export function BookingPage() {
+    const { t } = useTranslation('common');
     const [bookingMode, setBookingMode] = useState('quick'); // 'quick' or 'full'
     const [currentStep, setCurrentStep] = useState(1);
     const [bookingData, setBookingData] = useState<BookingData>({
@@ -128,7 +130,16 @@ export function BookingPage() {
             }
         }
     }, []);
-    const steps = ['Select Service', 'Choose Branch', 'Pick Date & Time', 'Your Info', 'Payment', 'Confirm'];
+    
+    const steps = [
+        t('bookings.steps.selectService'),
+        t('bookings.steps.chooseBranch'),
+        t('bookings.steps.pickDateTime'),
+        t('bookings.steps.yourInfo'),
+        t('bookings.steps.payment'),
+        t('bookings.steps.confirm'),
+    ];
+    
     const handleNextStep = () => {
         if (currentStep < steps.length) {
             setCurrentStep(currentStep + 1);
@@ -194,11 +205,11 @@ export function BookingPage() {
                 >
                     <h1 className='text-4xl md:text-5xl font-bold mb-4'>
                         <span className='bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
-                            Smart Booking
+                            {t('bookings.smartBooking')}
                         </span>
                     </h1>
                     <p className='text-xl text-gray-600 max-w-2xl mx-auto mb-8'>
-                        Experience our AI-powered appointment system for personalized beauty treatments
+                        {t('bookings.smartBookingDescription')}
                     </p>
                     <div className='flex items-center justify-center gap-3'>
                         <motion.button
@@ -216,7 +227,7 @@ export function BookingPage() {
                             }`}
                         >
                             <ListIcon className='w-5 h-5' />
-                            Full Booking
+                            {t('bookings.fullBooking')}
                         </motion.button>
                         <motion.button
                             whileHover={{
@@ -233,7 +244,7 @@ export function BookingPage() {
                             }`}
                         >
                             <ZapIcon className='w-5 h-5' />
-                            Quick Booking
+                            {t('bookings.quickBooking')}
                         </motion.button>
                     </div>
                 </motion.div>
@@ -273,7 +284,7 @@ export function BookingPage() {
                                                 className='flex items-center gap-2 px-6 py-2 bg-white border border-pink-200 text-gray-700 rounded-full font-medium shadow hover:shadow-md transition-all hover:scale-105'
                                             >
                                                 <ArrowLeftIcon className='w-4 h-4' />
-                                                <span className='hidden sm:inline'>Back</span>
+                                                <span className='hidden sm:inline'>{t('bookings.back')}</span>
                                             </button>
                                         ) : (
                                             <div className='w-24'></div>
@@ -281,7 +292,7 @@ export function BookingPage() {
 
                                         <div className='text-center'>
                                             <p className='text-sm text-gray-500'>
-                                                Step {currentStep} of {steps.length}
+                                                {t('bookings.step')} {currentStep} {t('bookings.of')} {steps.length}
                                             </p>
                                             <p className='font-semibold text-gray-800 hidden sm:block'>
                                                 {steps[currentStep - 1]}
@@ -297,7 +308,7 @@ export function BookingPage() {
                                                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                             }`}
                                         >
-                                            <span className='hidden sm:inline'>Continue</span>
+                                            <span className='hidden sm:inline'>{t('bookings.continue')}</span>
                                             <ArrowRightIcon className='w-4 h-4' />
                                         </button>
                                     </div>
