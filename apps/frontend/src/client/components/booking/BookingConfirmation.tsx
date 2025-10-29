@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, CalendarIcon, MapPinIcon, ClockIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { XIcon, Edit3Icon, TrashIcon, CalendarIcon, DollarSignIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { Input, Select, Textarea, FormField } from '../../../components/ui';

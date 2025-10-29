@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { XIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { useCustomers } from '../../../hooks/useStore';

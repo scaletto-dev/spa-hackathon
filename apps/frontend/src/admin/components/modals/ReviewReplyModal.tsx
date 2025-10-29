@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { XIcon, SparklesIcon, SendIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { Textarea, FormField } from '../../../components/ui';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CalendarIcon, ClockIcon, MapPinIcon, TagIcon } from 'lucide-react';
 export function OrderSummary({

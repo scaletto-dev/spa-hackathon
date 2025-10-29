@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, SparklesIcon } from 'lucide-react';
 // Fake data for the calendar

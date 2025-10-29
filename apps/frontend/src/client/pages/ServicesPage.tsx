@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ServicesBanner } from '../components/services/ServicesBanner';
 import { CategoryFilter } from '../components/services/CategoryFilter';

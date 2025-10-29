@@ -1,4 +1,3 @@
-import React from 'react';
 import { BoxIcon } from 'lucide-react';
 interface MetricCardProps {
   title: string;

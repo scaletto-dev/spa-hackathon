@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StarIcon, ThumbsUpIcon, MessageSquareIcon, TrendingUpIcon, FilterIcon } from 'lucide-react';
 import { ReviewReplyModal } from '../components/modals/ReviewReplyModal';
 const reviews = [

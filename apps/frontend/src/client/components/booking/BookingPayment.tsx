@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, ArrowLeftIcon, SparklesIcon, LockIcon } from 'lucide-react';
 import { OrderSummary } from '../payment/OrderSummary';

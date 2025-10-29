@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZapIcon, ListIcon } from 'lucide-react';
 import { BookingProgress } from '../components/booking/BookingProgress';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { MetricCard } from '../components/dashboard/MetricCard';
 import { AIInsightsPanel } from '../components/dashboard/AIInsightsPanel';
 import { CalendarIcon, UsersIcon, DollarSignIcon, SparklesIcon } from 'lucide-react';

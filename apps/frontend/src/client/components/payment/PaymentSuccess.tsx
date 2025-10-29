@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, DownloadIcon, CalendarIcon } from 'lucide-react';
 export function PaymentSuccess({

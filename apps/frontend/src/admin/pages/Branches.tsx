@@ -1,4 +1,3 @@
-import React from 'react';
 import { MapPinIcon, PhoneIcon, ClockIcon, Edit3Icon, TrendingUpIcon } from 'lucide-react';
 const branches = [{
   id: 1,
