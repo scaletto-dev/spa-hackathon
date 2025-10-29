@@ -19,6 +19,10 @@ const QuizPage = lazy(() => import('../client/pages/QuizPage'));
 const FormShowcasePage = lazy(() => import('../client/pages/FormShowcasePage'));
 const ContactPage = lazy(() => import('../client/pages/ContactPage'));
 
+// Auth pages
+const LoginPage = lazy(() => import('../client/pages/LoginPage'));
+const RegisterPage = lazy(() => import('../client/pages/RegisterPage'));
+
 // Lazy load admin pages
 const Dashboard = lazy(() => import('../admin/pages/Dashboard'));
 const Appointments = lazy(() => import('../admin/pages/Appointments'));
@@ -130,6 +134,28 @@ export const routes: RouteObject[] = [
                 ),
             },
         ],
+    },
+
+    // Auth Routes (Standalone - No Layout)
+    {
+        path: '/login',
+        element: (
+            <RootErrorBoundary>
+                <Suspense fallback={<Pending />}>
+                    <LoginPage />
+                </Suspense>
+            </RootErrorBoundary>
+        ),
+    },
+    {
+        path: '/register',
+        element: (
+            <RootErrorBoundary>
+                <Suspense fallback={<Pending />}>
+                    <RegisterPage />
+                </Suspense>
+            </RootErrorBoundary>
+        ),
     },
 
     // Admin Routes (Protected - Requires Admin Role)
