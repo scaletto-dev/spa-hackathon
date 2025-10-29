@@ -12,65 +12,68 @@ import {
     SettingsIcon,
     XIcon,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from '../../../utils/toast';
 
 interface SidebarProps {
     onClose?: () => void;
 }
 
-const navItems = [
-    {
-        path: '/admin',
-        icon: LayoutDashboardIcon,
-        label: 'Dashboard',
-    },
-    {
-        path: '/admin/appointments',
-        icon: CalendarIcon,
-        label: 'Appointments',
-    },
-    {
-        path: '/admin/services',
-        icon: SparklesIcon,
-        label: 'Services',
-    },
-    {
-        path: '/admin/branches',
-        icon: BuildingIcon,
-        label: 'Branches',
-    },
-    {
-        path: '/admin/customers',
-        icon: UsersIcon,
-        label: 'Customers',
-    },
-    {
-        path: '/admin/staff',
-        icon: UserIcon,
-        label: 'Staff',
-    },
-    {
-        path: '/admin/payments',
-        icon: CreditCardIcon,
-        label: 'Payments',
-    },
-    {
-        path: '/admin/reviews',
-        icon: MessageSquareIcon,
-        label: 'Reviews',
-    },
-    {
-        path: '/admin/blog',
-        icon: FileTextIcon,
-        label: 'Blog',
-    },
-    {
-        path: '/admin/settings',
-        icon: SettingsIcon,
-        label: 'Settings',
-    },
-];
 export function Sidebar({ onClose }: SidebarProps) {
+    const { t } = useTranslation('common');
+    
+    const navItems = [
+        {
+            path: '/admin',
+            icon: LayoutDashboardIcon,
+            label: t('admin.nav.dashboard'),
+        },
+        {
+            path: '/admin/appointments',
+            icon: CalendarIcon,
+            label: t('admin.nav.appointments'),
+        },
+        {
+            path: '/admin/services',
+            icon: SparklesIcon,
+            label: t('admin.nav.services'),
+        },
+        {
+            path: '/admin/branches',
+            icon: BuildingIcon,
+            label: t('admin.nav.branches'),
+        },
+        {
+            path: '/admin/customers',
+            icon: UsersIcon,
+            label: t('admin.nav.customers'),
+        },
+        {
+            path: '/admin/staff',
+            icon: UserIcon,
+            label: t('admin.nav.staff'),
+        },
+        {
+            path: '/admin/payments',
+            icon: CreditCardIcon,
+            label: t('admin.nav.payments'),
+        },
+        {
+            path: '/admin/reviews',
+            icon: MessageSquareIcon,
+            label: t('admin.nav.reviews'),
+        },
+        {
+            path: '/admin/blog',
+            icon: FileTextIcon,
+            label: t('admin.nav.blog'),
+        },
+        {
+            path: '/admin/settings',
+            icon: SettingsIcon,
+            label: t('admin.nav.settings'),
+        },
+    ];
     return (
         <aside className='w-64 h-full bg-white backdrop-blur-xl border-r border-pink-100 flex flex-col shadow-lg'>
             {/* Header with close button for mobile */}
@@ -83,7 +86,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                         <h1 className='text-lg font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
                             BeautyAI
                         </h1>
-                        <p className='text-xs text-gray-500'>Admin Portal</p>
+                        <p className='text-xs text-gray-500'>{t('admin.portal')}</p>
                     </div>
                 </div>
                 {/* Close button - only visible on mobile */}

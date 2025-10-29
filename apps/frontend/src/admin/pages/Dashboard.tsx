@@ -13,6 +13,7 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 const bookingData = [
     {
         name: 'Mon',
@@ -63,15 +64,17 @@ const serviceData = [
 ];
 const COLORS = ['#f472b6', '#c084fc', '#fb7185', '#a78bfa'];
 export function Dashboard() {
+    const { t, i18n } = useTranslation('common');
+    
     return (
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold text-gray-800'>Dashboard</h1>
-                    <p className='text-gray-600 mt-1'>Welcome back! Here is your clinic overview</p>
+                    <h1 className='text-3xl font-bold text-gray-800'>{t('admin.dashboard.title')}</h1>
+                    <p className='text-gray-600 mt-1'>{t('admin.dashboard.welcome')}</p>
                 </div>
                 <div className='text-sm text-gray-500'>
-                    {new Date().toLocaleDateString('en-US', {
+                    {new Date().toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -81,28 +84,28 @@ export function Dashboard() {
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
                 <MetricCard
-                    title='Total Bookings Today'
+                    title={t('admin.dashboard.totalBookingsToday')}
                     value='47'
                     change='+12%'
                     icon={CalendarIcon}
                     gradient='from-pink-400 to-pink-500'
                 />
                 <MetricCard
-                    title='Active Members'
+                    title={t('admin.dashboard.activeMembers')}
                     value='1,284'
                     change='+8%'
                     icon={UsersIcon}
                     gradient='from-purple-400 to-purple-500'
                 />
                 <MetricCard
-                    title='Revenue This Week'
+                    title={t('admin.dashboard.revenue')}
                     value='$12,450'
                     change='+15%'
                     icon={DollarSignIcon}
                     gradient='from-rose-400 to-rose-500'
                 />
                 <MetricCard
-                    title='AI Recommendations'
+                    title={t('admin.dashboard.satisfaction')}
                     value='23'
                     icon={SparklesIcon}
                     gradient='from-violet-400 to-violet-500'
@@ -110,7 +113,7 @@ export function Dashboard() {
             </div>
             <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
                 <div className='lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-100 shadow-sm'>
-                    <h3 className='text-lg font-semibold text-gray-800 mb-4'>Bookings Over Time</h3>
+                    <h3 className='text-lg font-semibold text-gray-800 mb-4'>{t('admin.dashboard.recentBookings')}</h3>
                     <ResponsiveContainer width='100%' height={300}>
                         <LineChart data={bookingData}>
                             <CartesianGrid strokeDasharray='3 3' stroke='#fecdd3' />
@@ -145,7 +148,7 @@ export function Dashboard() {
                 <AIInsightsPanel />
             </div>
             <div className='bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-100 shadow-sm'>
-                <h3 className='text-lg font-semibold text-gray-800 mb-4'>Service Distribution</h3>
+                <h3 className='text-lg font-semibold text-gray-800 mb-4'>{t('admin.dashboard.topServices')}</h3>
                 <ResponsiveContainer width='100%' height={300}>
                     <PieChart>
                         <Pie
