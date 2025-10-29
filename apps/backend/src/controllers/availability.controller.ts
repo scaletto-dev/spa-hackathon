@@ -55,4 +55,3 @@ export class AvailabilityController {
 }
 
 export default new AvailabilityController();
-

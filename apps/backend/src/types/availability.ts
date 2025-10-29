@@ -34,4 +34,3 @@ export interface BranchOperatingHours {
    saturday?: OperatingHours;
    sunday?: OperatingHours;
 }
-

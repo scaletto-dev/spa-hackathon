@@ -35,7 +35,7 @@ export class AvailabilityService {
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!dateRegex.test(date)) {
          throw new ValidationError(
-            'Invalid date format. Use YYYY-MM-DD format'
+            "Invalid date format. Use YYYY-MM-DD format"
          );
       }
 
@@ -112,11 +112,13 @@ export class AvailabilityService {
 
       // Filter out past time slots if date is today
       const now = new Date();
-      const isToday =
-         requestedDate.toDateString() === now.toDateString();
+      const isToday = requestedDate.toDateString() === now.toDateString();
 
       if (isToday) {
-         const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+         const currentTime = `${String(now.getHours()).padStart(
+            2,
+            "0"
+         )}:${String(now.getMinutes()).padStart(2, "0")}`;
          return {
             date,
             slots: slots.filter((slot) => slot.time > currentTime),
@@ -153,7 +155,9 @@ export class AvailabilityService {
       while (currentMinutes + serviceDuration <= closeMinutes) {
          const hours = Math.floor(currentMinutes / 60);
          const minutes = currentMinutes % 60;
-         const timeString = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+         const timeString = `${String(hours).padStart(2, "0")}:${String(
+            minutes
+         ).padStart(2, "0")}`;
 
          slots.push({
             time: timeString,
@@ -273,4 +277,3 @@ export class AvailabilityService {
 }
 
 export default new AvailabilityService();
-

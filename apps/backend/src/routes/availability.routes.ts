@@ -17,4 +17,3 @@ const router = Router();
 router.get("/", availabilityController.getAvailableSlots);
 
 export default router;
-
