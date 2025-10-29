@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZapIcon, ListIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { BookingProgress } from '../components/booking/BookingProgress';
@@ -9,7 +9,70 @@ import { BookingUserInfo } from '../components/booking/BookingUserInfo';
 import { BookingPayment } from '../components/booking/BookingPayment';
 import { BookingConfirmation } from '../components/booking/BookingConfirmation';
 import { QuickBooking } from '../components/booking/QuickBooking';
-import { BookingData } from '../components/booking/types';
+import { BookingData, Service, Branch } from '../components/booking/types';
+
+// Mock data for mapping
+const serviceMap: Record<string, Service> = {
+    facial: {
+        id: 1,
+        title: 'AI Skin Analysis Facial',
+        category: 'Facial',
+        price: '$150',
+        duration: '60 min',
+        image: '/services/facial.jpg',
+    },
+    laser: {
+        id: 3,
+        title: 'Laser Hair Removal',
+        category: 'Laser',
+        price: '$120',
+        duration: '30-90 min',
+        image: '/services/laser.jpg',
+    },
+    botox: {
+        id: 4,
+        title: 'Botox & Fillers',
+        category: 'Injectable',
+        price: '$350',
+        duration: '30 min',
+        image: '/services/botox.jpg',
+    },
+    analysis: {
+        id: 1,
+        title: 'AI Skin Analysis Facial',
+        category: 'Facial',
+        price: '$150',
+        duration: '60 min',
+        image: '/services/facial.jpg',
+    },
+};
+
+const branchMap: Record<string, Branch> = {
+    downtown: {
+        id: 1,
+        name: 'Downtown Clinic',
+        address: '123 Main Street',
+        phone: '(555) 123-4567',
+        hours: '9 AM - 8 PM',
+        image: '/branches/downtown.jpg',
+    },
+    westside: {
+        id: 2,
+        name: 'Westside Center',
+        address: '456 West Avenue',
+        phone: '(555) 234-5678',
+        hours: '9 AM - 8 PM',
+        image: '/branches/westside.jpg',
+    },
+    eastside: {
+        id: 3,
+        name: 'Eastside Spa',
+        address: '789 East Boulevard',
+        phone: '(555) 345-6789',
+        hours: '9 AM - 8 PM',
+        image: '/branches/eastside.jpg',
+    },
+};
 
 export function BookingPage() {
     const [bookingMode, setBookingMode] = useState('quick'); // 'quick' or 'full'
@@ -28,6 +91,43 @@ export function BookingPage() {
         paymentMethod: null,
         promoCode: null,
     });
+
+    // Load data from sessionStorage if coming from home page quick booking
+    useEffect(() => {
+        const quickBookingDataStr = sessionStorage.getItem('quickBookingData');
+
+        if (quickBookingDataStr) {
+            try {
+                const quickData = JSON.parse(quickBookingDataStr);
+
+                // Map service and branch strings to objects
+                const mappedService = quickData.service ? serviceMap[quickData.service] : null;
+                const mappedBranch = quickData.branch ? branchMap[quickData.branch] : null;
+
+                const newBookingData = {
+                    service: mappedService || null,
+                    branch: mappedBranch || null,
+                    therapist: null,
+                    date: quickData.date || null,
+                    time: quickData.time || null,
+                    name: '',
+                    email: '',
+                    phone: '',
+                    notes: '',
+                    useAI: quickData.aiAssist || false,
+                    paymentMethod: null,
+                    promoCode: null,
+                };
+
+                setBookingData(newBookingData);
+
+                // Clear sessionStorage after loading
+                sessionStorage.removeItem('quickBookingData');
+            } catch (error) {
+                console.error('Failed to load quick booking data:', error);
+            }
+        }
+    }, []);
     const steps = ['Select Service', 'Choose Branch', 'Pick Date & Time', 'Your Info', 'Payment', 'Confirm'];
     const handleNextStep = () => {
         if (currentStep < steps.length) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, ZapIcon, ListIcon } from 'lucide-react';
 import { TherapistSelector } from './TherapistSelector';
@@ -62,7 +62,18 @@ const branches = [
         address: '789 East Boulevard',
     },
 ];
-const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
+const timeSlots = [
+    '9:00 AM',
+    '10:00 AM',
+    '11:00 AM',
+    '12:00 PM',
+    '1:00 PM',
+    '2:00 PM',
+    '3:00 PM',
+    '4:00 PM',
+    '5:00 PM',
+];
+
 export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }: QuickBookingProps) {
     const [formData, setFormData] = useState({
         service: bookingData.service || null,
@@ -80,7 +91,49 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
     const [paymentDetailsComplete, setPaymentDetailsComplete] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
-    const handleChange = (field: string, value: any) => {
+
+    // Sync formData when bookingData prop changes (e.g., from sessionStorage)
+    useEffect(() => {
+        if (bookingData.service || bookingData.branch || bookingData.date || bookingData.time) {
+            setFormData((prev) => {
+                // Convert ISO date string to yyyy-MM-dd format for date input
+                let formattedDate: string | null = bookingData.date || prev.date;
+                if (formattedDate && typeof formattedDate === 'string' && formattedDate.includes('T')) {
+                    formattedDate = formattedDate.split('T')[0] || null; // Extract yyyy-MM-dd part
+                }
+
+                // Convert 24-hour time (HH:MM) to 12-hour format (H:MM AM/PM)
+                let formattedTime: string | null = bookingData.time || prev.time;
+
+                if (formattedTime && typeof formattedTime === 'string' && formattedTime.includes(':')) {
+                    const [hourStr, minute] = formattedTime.split(':');
+                    const hour = parseInt(hourStr || '0', 10);
+
+                    if (hour >= 0 && hour < 24) {
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                        formattedTime = `${hour12}:${minute} ${period}`;
+                    }
+                }
+
+                return {
+                    ...prev,
+                    service: bookingData.service || prev.service,
+                    branch: bookingData.branch || prev.branch,
+                    therapist: bookingData.therapist || prev.therapist,
+                    date: formattedDate,
+                    time: formattedTime,
+                    name: bookingData.name || prev.name,
+                    email: bookingData.email || prev.email,
+                    phone: bookingData.phone || prev.phone,
+                    paymentMethod: bookingData.paymentMethod || prev.paymentMethod,
+                    useAI: bookingData.useAI || prev.useAI,
+                };
+            });
+        }
+    }, [bookingData]);
+
+    const handleChange = (field: string, value: unknown) => {
         setFormData({
             ...formData,
             [field]: value,
@@ -280,7 +333,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     />
                                 </div>
                                 <div>
-                                    <label className='block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2'>
+                                    <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
                                         Select Time *{formData.date && formData.service && <AvailabilityIndicator />}
                                     </label>
                                     <select

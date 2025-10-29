@@ -46,16 +46,15 @@ export function BookingWidget() {
         }
 
         // Store in sessionStorage for booking page
-        sessionStorage.setItem(
-            'quickBookingData',
-            JSON.stringify({
-                service: formData.service,
-                branch: formData.branch,
-                date: formData.date?.toISOString(),
-                time: formData.time,
-                aiAssist,
-            }),
-        );
+        const bookingData = {
+            service: formData.service,
+            branch: formData.branch,
+            date: formData.date?.toISOString(),
+            time: formData.time,
+            aiAssist,
+        };
+
+        sessionStorage.setItem('quickBookingData', JSON.stringify(bookingData));
 
         toast.success('Đang chuyển đến trang đặt lịch...');
         setTimeout(() => {
