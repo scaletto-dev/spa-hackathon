@@ -1,4 +1,3 @@
-import React from 'react';
 import { SparklesIcon, ClockIcon, DollarSignIcon, EyeIcon, EyeOffIcon, Edit3Icon } from 'lucide-react';
 const services = [{
   id: 1,

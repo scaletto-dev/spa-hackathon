@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPinIcon, PhoneIcon, ClockIcon, ArrowRightIcon } from 'lucide-react';
 import { BranchMap } from '../components/branches/BranchMap';
@@ -61,7 +61,12 @@ const branches = [
     },
 ];
 export function BranchesPage() {
-    const [selectedBranch, setSelectedBranch] = useState(branches[0]);
+    const [selectedBranch, setSelectedBranch] = useState<(typeof branches)[0] | null>(branches[0] ?? null);
+
+    if (!selectedBranch) {
+        return null; // Early return if no branch is selected
+    }
+
     return (
         <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24'>
             <div className='max-w-7xl mx-auto px-6 py-12'>

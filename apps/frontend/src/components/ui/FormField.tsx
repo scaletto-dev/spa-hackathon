@@ -5,7 +5,7 @@ import { AlertCircleIcon, CheckCircleIcon, InfoIcon } from 'lucide-react';
 export interface FormFieldProps {
     label?: string;
     name: string;
-    error?: string;
+    error?: string | undefined;
     helpText?: string;
     success?: string;
     info?: string;

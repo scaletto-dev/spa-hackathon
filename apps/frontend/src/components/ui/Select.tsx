@@ -20,7 +20,7 @@ export interface SelectProps {
     options?: SelectOption[];
     groups?: SelectGroup[];
     placeholder?: string;
-    error?: string;
+    error?: string | undefined;
     disabled?: boolean;
     searchable?: boolean;
     loading?: boolean;

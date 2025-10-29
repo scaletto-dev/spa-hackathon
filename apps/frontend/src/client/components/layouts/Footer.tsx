@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { InstagramIcon, FacebookIcon, TwitterIcon, YoutubeIcon, SparklesIcon } from 'lucide-react';
 export function Footer() {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPinIcon, PhoneIcon, ClockIcon } from 'lucide-react';
 const branches = [{

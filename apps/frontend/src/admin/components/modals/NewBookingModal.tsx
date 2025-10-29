@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { XIcon, SparklesIcon, CalendarIcon, ClockIcon, UserIcon } from 'lucide-react';
+import { XIcon, SparklesIcon, } from 'lucide-react';
 import { useAppointments } from '../../../hooks/useStore';
 import { toast } from '../../../utils/toast';
-import { FormField, Input, Select, Textarea, DatePicker, TimePicker } from '../../../components/ui';
+import { FormField, Select, Textarea, DatePicker, TimePicker } from '../../../components/ui';
 
 interface NewBookingModalProps {
     isOpen: boolean;

@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircleIcon, XIcon, SendIcon, SparklesIcon } from 'lucide-react';
 import { useChatWidget } from '../../contexts/ChatWidgetContext';
-import { toast } from '../../utils/toast';
 
 export function GlobalChatWidget() {
     const { isOpen, closeChat, toggleChat } = useChatWidget();
