@@ -7,29 +7,37 @@ import { getReviews, type Review } from '../../../api/adapters/reviews';
 export function Testimonials() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [totalReviews, setTotalReviews] = useState(0);
 
-    useEffect(() => {
-        const loadReviews = async () => {
-            try {
-                setIsLoading(true);
-                // Get top 3 highest-rated reviews for homepage
-                const response = await getReviews({
-                    page: 1,
-                    limit: 3,
-                    rating: 5, // Only 5-star reviews
-                    sortBy: 'date',
-                    sortOrder: 'desc',
-                });
-                setReviews(response.data);
-                setTotalReviews(response.stats.totalReviews);
-            } catch (error) {
-                console.error('Failed to load reviews:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    const loadReviews = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            
+            const response = await getReviews({
+                page: 1,
+                limit: 3,
+                rating: 5, // Only 5-star reviews for testimonials
+                sortBy: 'date',
+                sortOrder: 'desc',
+            });
 
+            if (!response.success) {
+                throw new Error('Failed to load reviews');
+            }
+
+            setReviews(response.data);
+            setTotalReviews(response.meta.total);
+        } catch (error) {
+            console.error('Failed to load reviews:', error);
+            setError('Không thể tải đánh giá. Vui lòng thử lại sau.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         loadReviews();
     }, []);
     return (
@@ -69,6 +77,16 @@ export function Testimonials() {
                         <Loader2 className='w-8 h-8 text-pink-500 animate-spin' />
                         <span className='ml-3 text-gray-600'>Đang tải đánh giá...</span>
                     </div>
+                ) : error ? (
+                    <div className='text-center py-20'>
+                        <p className='text-red-500'>{error}</p>
+                        <button 
+                            onClick={() => loadReviews()} 
+                            className='mt-4 text-pink-500 hover:text-pink-600 underline'
+                        >
+                            Thử lại
+                        </button>
+                    </div>
                 ) : reviews.length === 0 ? (
                     <div className='text-center py-20'>
                         <p className='text-gray-600'>Chưa có đánh giá nào</p>
@@ -105,21 +123,38 @@ export function Testimonials() {
                                             <StarIcon key={i} className='w-5 h-5 fill-yellow-400 text-yellow-400' />
                                         ))}
                                     </div>
-                                    <p className='text-gray-700 leading-relaxed mb-6 line-clamp-4'>{review.comment}</p>
+                                    <p className='text-gray-700 leading-relaxed mb-6 line-clamp-4'>{review.reviewText}</p>
                                     <div className='flex items-center gap-4'>
-                                        <img
-                                            src={review.customerAvatar}
-                                            alt={review.customerName}
-                                            className='w-14 h-14 rounded-full object-cover border-2 border-pink-200'
-                                        />
+                                        {review.customerAvatar ? (
+                                            <img
+                                                src={review.customerAvatar}
+                                                alt={review.customerName}
+                                                className='w-14 h-14 rounded-full object-cover border-2 border-pink-200'
+                                            />
+                                        ) : (
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center border-2 border-pink-200">
+                                                <span className="text-xl font-semibold text-pink-500">
+                                                    {review.customerName.charAt(0)}
+                                                </span>
+                                            </div>
+                                        )}
                                         <div>
                                             <div className='flex items-center gap-2'>
                                                 <p className='font-semibold text-gray-800'>{review.customerName}</p>
-                                                {review.verified && <CheckCircle className='w-4 h-4 text-green-500' />}
+                                                {review.approved && <CheckCircle className='w-4 h-4 text-green-500' />}
                                             </div>
-                                            <p className='text-sm text-gray-500'>Verified Client</p>
+                                            <p className='text-sm text-gray-500'>
+                                                {review.service?.name || 'Verified Client'}
+                                            </p>
                                         </div>
                                     </div>
+                                    {review.adminResponse && (
+                                        <div className="mt-4 pt-4 border-t border-gray-100">
+                                            <p className="text-sm text-gray-600 italic">
+                                                <span className="font-medium text-pink-600">Reply:</span> {review.adminResponse}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </motion.div>
                         ))}
