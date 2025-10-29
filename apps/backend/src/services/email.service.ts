@@ -9,15 +9,28 @@ class EmailService {
   private resend: Resend | null = null;
   private maxRetries = 3;
   private baseDelay = 1000; // 1 second
+  private initialized = false;
 
   constructor() {
+    // Don't initialize here - do it lazily on first use
+  }
+
+  /**
+   * Initialize Resend client (lazy initialization)
+   */
+  private initialize(): void {
+    if (this.initialized) return;
+
     const apiKey = process.env.RESEND_API_KEY;
     
     if (apiKey) {
       this.resend = new Resend(apiKey);
+      console.log('✅ Email service initialized with Resend API');
     } else {
-      console.warn('RESEND_API_KEY not configured. Email notifications will be disabled.');
+      console.warn('⚠️ RESEND_API_KEY not configured. Email notifications will be disabled.');
     }
+
+    this.initialized = true;
   }
 
   /**
@@ -25,18 +38,23 @@ class EmailService {
    * Implements retry logic with exponential backoff
    */
   async sendContactFormNotification(submission: ContactSubmissionDTO): Promise<void> {
+    // Initialize on first use
+    this.initialize();
+
     if (!this.resend) {
-      console.error('Email service not configured. Skipping email notification.');
+      console.error('❌ Email service not configured. Skipping email notification.');
       return;
     }
 
     const recipientEmail = process.env.CONTACT_NOTIFICATION_EMAIL;
     if (!recipientEmail) {
-      console.error('CONTACT_NOTIFICATION_EMAIL not configured. Skipping email notification.');
+      console.error('❌ CONTACT_NOTIFICATION_EMAIL not configured. Skipping email notification.');
       return;
     }
 
-    const fromEmail = process.env.EMAIL_FROM || 'noreply@beautyclinic.com';
+    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+
+    console.log(`📧 Sending contact form notification to ${recipientEmail}...`);
 
     const emailContent = this.createContactNotificationTemplate(submission);
 
@@ -45,7 +63,7 @@ class EmailService {
     // Retry logic with exponential backoff
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        await this.resend.emails.send({
+        const { data, error } = await this.resend.emails.send({
           from: fromEmail,
           to: recipientEmail,
           replyTo: submission.email,
@@ -53,16 +71,21 @@ class EmailService {
           html: emailContent,
         });
 
-        console.log(`Contact form notification email sent successfully to ${recipientEmail}`);
+        if (error) {
+          throw new Error(error.message || 'Failed to send email');
+        }
+
+        console.log(`✅ Contact form notification email sent successfully to ${recipientEmail}`);
+        console.log(`Email ID: ${data?.id}`);
         return; // Success, exit function
       } catch (error) {
         lastError = error as Error;
-        console.error(`Email send attempt ${attempt} failed:`, error);
+        console.error(`❌ Email send attempt ${attempt} failed:`, error);
 
         if (attempt < this.maxRetries) {
           // Exponential backoff: 1s, 2s, 4s
           const delay = this.baseDelay * Math.pow(2, attempt - 1);
-          console.log(`Retrying in ${delay}ms...`);
+          console.log(`⏳ Retrying in ${delay}ms...`);
           await this.sleep(delay);
         }
       }
