@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ZapIcon, ListIcon } from 'lucide-react';
+import { ZapIcon, ListIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { BookingProgress } from '../components/booking/BookingProgress';
 import { BookingServiceSelect } from '../components/booking/BookingServiceSelect';
 import { BookingBranchSelect } from '../components/booking/BookingBranchSelect';
@@ -47,6 +47,34 @@ export function BookingPage() {
             ...data,
         });
     };
+
+    // Validation logic for each step
+    const canContinue = () => {
+        switch (currentStep) {
+            case 1: // Select Service
+                return bookingData.service !== null;
+            case 2: // Choose Branch
+                return bookingData.branch !== null;
+            case 3: // Pick Date & Time
+                return (bookingData.date !== null && bookingData.time !== null) || bookingData.useAI === true;
+            case 4: // Your Info
+                return bookingData.name !== '' && bookingData.email !== '' && bookingData.phone !== '';
+            case 5: // Payment
+                // Must select a payment method
+                if (!bookingData.paymentMethod || bookingData.paymentMethod === '') {
+                    return false;
+                }
+                // If 'clinic' (pay at clinic), no additional details needed
+                if (bookingData.paymentMethod === 'clinic') {
+                    return true;
+                }
+                // For card/ewallet/bank, need payment details to be complete
+                return bookingData.paymentDetailsComplete === true;
+            default:
+                return true;
+        }
+    };
+
     return (
         <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24'>
             <div className='max-w-6xl mx-auto px-6 py-12'>
@@ -134,6 +162,48 @@ export function BookingPage() {
                             }}
                         >
                             <BookingProgress currentStep={currentStep} steps={steps} />
+
+                            {/* Sticky Navigation Bar - Show for all steps except final confirmation */}
+                            {currentStep < steps.length && (
+                                <div className='sticky top-20 z-10 bg-gradient-to-r from-pink-50/95 via-white/95 to-purple-50/95 backdrop-blur-lg border-b border-pink-100 p-4 mb-6 rounded-2xl shadow-sm mt-8'>
+                                    <div className='flex justify-between items-center'>
+                                        {currentStep > 1 ? (
+                                            <button
+                                                onClick={handlePrevStep}
+                                                className='flex items-center gap-2 px-6 py-2 bg-white border border-pink-200 text-gray-700 rounded-full font-medium shadow hover:shadow-md transition-all hover:scale-105'
+                                            >
+                                                <ArrowLeftIcon className='w-4 h-4' />
+                                                <span className='hidden sm:inline'>Back</span>
+                                            </button>
+                                        ) : (
+                                            <div className='w-24'></div>
+                                        )}
+
+                                        <div className='text-center'>
+                                            <p className='text-sm text-gray-500'>
+                                                Step {currentStep} of {steps.length}
+                                            </p>
+                                            <p className='font-semibold text-gray-800 hidden sm:block'>
+                                                {steps[currentStep - 1]}
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={handleNextStep}
+                                            disabled={!canContinue()}
+                                            className={`flex items-center gap-2 px-6 py-2 rounded-full font-medium shadow transition-all ${
+                                                canContinue()
+                                                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:shadow-lg hover:scale-105'
+                                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            }`}
+                                        >
+                                            <span className='hidden sm:inline'>Continue</span>
+                                            <ArrowRightIcon className='w-4 h-4' />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className='mt-12 mb-24'>
                                 <AnimatePresence mode='wait'>
                                     {currentStep === 1 && (

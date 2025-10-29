@@ -14,10 +14,13 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData({
+        const updatedFormData = {
             ...formData,
             [name]: value,
-        });
+        };
+        setFormData(updatedFormData);
+        // Update bookingData immediately for validation
+        updateBookingData({ [name]: value });
         // Clear error when user types
         if (errors[name]) {
             setErrors({ ...errors, [name]: '' });
@@ -39,6 +42,16 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
             updateBookingData(formData);
             onNext();
         }
+    };
+
+    // Check if form is valid for enabling button
+    const isFormValid = () => {
+        return (
+            formData.name.trim() !== '' &&
+            formData.email.trim() !== '' &&
+            /\S+@\S+\.\S+/.test(formData.email) &&
+            formData.phone.trim() !== ''
+        );
     };
 
     return (
@@ -116,12 +129,14 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                         </p>
                         <p>
                             <span className='font-medium'>Ngày:</span>{' '}
-                            {bookingData.date?.toLocaleDateString('vi-VN', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                            })}
+                            {bookingData.date
+                                ? new Date(bookingData.date).toLocaleDateString('vi-VN', {
+                                      weekday: 'long',
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                  })
+                                : 'Chưa chọn'}
                         </p>
                         <p>
                             <span className='font-medium'>Giờ:</span> {bookingData.time}
@@ -149,7 +164,12 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSubmit}
-                    className='flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl'
+                    disabled={!isFormValid()}
+                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                        isFormValid()
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
                 >
                     Hoàn tất đặt lịch
                     <ArrowRightIcon className='w-5 h-5' />

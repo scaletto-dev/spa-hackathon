@@ -1,24 +1,46 @@
 import { useState } from 'react';
 import { BookingStepProps } from './types';
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, SparklesIcon } from 'lucide-react';
+import {
+    ArrowRightIcon,
+    ArrowLeftIcon,
+    CalendarIcon,
+    ClockIcon,
+    SparklesIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+} from 'lucide-react';
+
 // Fake data for the calendar
-const currentDate = new Date();
-const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
 const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
+
 export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
     const [selectedDate, setSelectedDate] = useState<string | null>(bookingData.date || null);
     const [selectedTime, setSelectedTime] = useState(bookingData.time || null);
     const [useAI, setUseAI] = useState(bookingData.useAI || false);
 
+    // Calendar navigation state
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+
     const handleSelectDate = (day: number) => {
-        const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
         const dateString = date.toISOString().split('T')[0] || '';
         setSelectedDate(dateString);
         updateBookingData({
             date: dateString,
         });
+    };
+
+    const handlePrevMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+    };
+
+    const handleNextMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+    };
+
+    const getMonthName = () => {
+        return currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     };
     const handleSelectTime = (time: string) => {
         setSelectedTime(time);
@@ -28,6 +50,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
     };
     const handleUseAI = (value: boolean) => {
         setUseAI(value);
+        updateBookingData({ useAI: value });
         // If AI is selected, automatically pick a time (just for demo)
         if (value) {
             const randomIndex = Math.floor(Math.random() * timeSlots.length);
@@ -36,9 +59,11 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
             updateBookingData({
                 time: aiRecommendedTime,
             });
-            // If no date is selected, pick today's date
+            // If no date is selected, pick tomorrow's date
             if (!selectedDate) {
-                const dateString = currentDate.toISOString().split('T')[0] ?? '';
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dateString = tomorrow.toISOString().split('T')[0] ?? '';
                 setSelectedDate(dateString);
                 updateBookingData({
                     date: dateString,
@@ -46,18 +71,28 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
             }
         }
     };
+
     const renderCalendar = () => {
         const days = [];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Get days in current viewing month
+        const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+        const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+
         // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
             days.push(<div key={`empty-${i}`} className='h-10 w-10'></div>);
         }
         // Add cells for each day of the month
         for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            const isToday = day === currentDate.getDate();
-            const isSelected = selectedDate && day === new Date(selectedDate).getDate();
-            const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+            const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+            date.setHours(0, 0, 0, 0);
+
+            const isToday = date.getTime() === today.getTime();
+            const isSelected = selectedDate && date.toISOString().split('T')[0] === selectedDate;
+            const isPast = date < today;
             days.push(
                 <motion.div
                     key={day}
@@ -125,9 +160,31 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                 {!useAI && (
                     <>
                         <div className='mb-8'>
-                            <div className='flex items-center gap-2 mb-4'>
-                                <CalendarIcon className='w-5 h-5 text-pink-500' />
-                                <h3 className='text-lg font-semibold text-gray-800'>Select Date</h3>
+                            <div className='flex items-center justify-between mb-4'>
+                                <div className='flex items-center gap-2'>
+                                    <CalendarIcon className='w-5 h-5 text-pink-500' />
+                                    <h3 className='text-lg font-semibold text-gray-800'>Select Date</h3>
+                                </div>
+                                {/* Month Navigation */}
+                                <div className='flex items-center gap-3'>
+                                    <button
+                                        onClick={handlePrevMonth}
+                                        className='p-2 rounded-full hover:bg-pink-100 transition-colors'
+                                        aria-label='Previous month'
+                                    >
+                                        <ChevronLeftIcon className='w-5 h-5 text-gray-600' />
+                                    </button>
+                                    <span className='font-semibold text-gray-800 min-w-[150px] text-center'>
+                                        {getMonthName()}
+                                    </span>
+                                    <button
+                                        onClick={handleNextMonth}
+                                        className='p-2 rounded-full hover:bg-pink-100 transition-colors'
+                                        aria-label='Next month'
+                                    >
+                                        <ChevronRightIcon className='w-5 h-5 text-gray-600' />
+                                    </button>
+                                </div>
                             </div>
                             <div className='grid grid-cols-7 gap-2 text-center mb-4'>
                                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (

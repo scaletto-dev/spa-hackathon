@@ -7,15 +7,34 @@ import { PaymentSuccess } from '../payment/PaymentSuccess';
 import { BookingStepProps } from './types';
 
 export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
-    const [selectedMethod, setSelectedMethod] = useState('card');
+    const [selectedMethod, setSelectedMethod] = useState(bookingData.paymentMethod || '');
     const [isProcessing, setIsProcessing] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [promoCode, setPromoCode] = useState('');
     const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+
+    // Update bookingData immediately when payment method changes
+    const handleMethodChange = (method: string) => {
+        setSelectedMethod(method);
+        // If 'clinic' (pay at clinic), mark payment details as complete automatically
+        const isClinic = method === 'clinic';
+        updateBookingData({
+            paymentMethod: method,
+            paymentDetailsComplete: isClinic ? true : false,
+        });
+    };
     const subtotal = parseFloat(bookingData.service?.price.replace('$', '') || '0');
     const discount = appliedPromo ? subtotal * 0.1 : 0;
     const tax = (subtotal - discount) * 0.08;
     const total = subtotal - discount + tax;
+
+    // Check if payment is ready
+    const isPaymentReady = () => {
+        if (!selectedMethod) return false;
+        if (selectedMethod === 'clinic') return true; // No additional details needed
+        return bookingData.paymentDetailsComplete === true;
+    };
+
     const handlePayment = async () => {
         setIsProcessing(true);
         // Simulate payment processing
@@ -81,11 +100,14 @@ export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev 
                 <div className='lg:col-span-2'>
                     <PaymentMethodSelector
                         selectedMethod={selectedMethod}
-                        setSelectedMethod={setSelectedMethod}
+                        setSelectedMethod={handleMethodChange}
                         promoCode={promoCode}
                         setPromoCode={setPromoCode}
                         appliedPromo={appliedPromo}
                         setAppliedPromo={setAppliedPromo}
+                        onPaymentDetailsChange={(isComplete: boolean) => {
+                            updateBookingData({ paymentDetailsComplete: isComplete });
+                        }}
                     />
                 </div>
                 {/* Order Summary - Takes 1 column */}
@@ -128,14 +150,18 @@ export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev 
                 </motion.button>
                 <motion.button
                     whileHover={{
-                        scale: 1.05,
+                        scale: isPaymentReady() ? 1.05 : 1,
                     }}
                     whileTap={{
-                        scale: 0.95,
+                        scale: isPaymentReady() ? 0.95 : 1,
                     }}
                     onClick={handlePayment}
-                    disabled={isProcessing}
-                    className={`flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${isProcessing ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'}`}
+                    disabled={isProcessing || !isPaymentReady()}
+                    className={`flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                        isProcessing || !isPaymentReady()
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                    }`}
                 >
                     {isProcessing ? (
                         <>
@@ -168,14 +194,18 @@ export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev 
                 </div>
                 <motion.button
                     whileHover={{
-                        scale: 1.02,
+                        scale: isPaymentReady() ? 1.02 : 1,
                     }}
                     whileTap={{
-                        scale: 0.98,
+                        scale: isPaymentReady() ? 0.98 : 1,
                     }}
                     onClick={handlePayment}
-                    disabled={isProcessing}
-                    className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-full font-semibold shadow-xl ${isProcessing ? 'bg-gray-300 text-gray-500' : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'}`}
+                    disabled={isProcessing || !isPaymentReady()}
+                    className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-full font-semibold shadow-xl ${
+                        isProcessing || !isPaymentReady()
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                    }`}
                 >
                     {isProcessing ? 'Processing...' : `Pay $${total.toFixed(2)}`}
                 </motion.button>

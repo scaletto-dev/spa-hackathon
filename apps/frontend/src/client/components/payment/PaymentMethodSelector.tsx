@@ -35,6 +35,7 @@ interface PaymentMethodSelectorProps {
     setPromoCode: (code: string) => void;
     appliedPromo: string | null;
     setAppliedPromo: (promo: string | null) => void;
+    onPaymentDetailsChange: (isComplete: boolean) => void;
 }
 
 export function PaymentMethodSelector({
@@ -44,6 +45,7 @@ export function PaymentMethodSelector({
     setPromoCode,
     appliedPromo,
     setAppliedPromo,
+    onPaymentDetailsChange,
 }: PaymentMethodSelectorProps) {
     return (
         <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6'>
@@ -104,9 +106,9 @@ export function PaymentMethodSelector({
                         duration: 0.3,
                     }}
                 >
-                    {selectedMethod === 'card' && <CardPayment />}
-                    {selectedMethod === 'ewallet' && <EWalletPayment />}
-                    {selectedMethod === 'bank' && <BankTransferPayment />}
+                    {selectedMethod === 'card' && <CardPayment onComplete={onPaymentDetailsChange} />}
+                    {selectedMethod === 'ewallet' && <EWalletPayment onComplete={onPaymentDetailsChange} />}
+                    {selectedMethod === 'bank' && <BankTransferPayment onComplete={onPaymentDetailsChange} />}
                     {selectedMethod === 'clinic' && <PayAtClinicPayment />}
                 </motion.div>
             </AnimatePresence>

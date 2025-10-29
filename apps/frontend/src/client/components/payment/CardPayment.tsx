@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CreditCardIcon, ShieldCheckIcon } from 'lucide-react';
 
@@ -10,7 +10,11 @@ interface CardData {
     saveCard: boolean;
 }
 
-export function CardPayment() {
+interface CardPaymentProps {
+    onComplete: (isComplete: boolean) => void;
+}
+
+export function CardPayment({ onComplete }: CardPaymentProps) {
     const [cardData, setCardData] = useState<CardData>({
         number: '',
         name: '',
@@ -19,6 +23,16 @@ export function CardPayment() {
         saveCard: false,
     });
     const [_errors, _setErrors] = useState<Record<string, string>>({});
+
+    // Validate if card form is complete
+    useEffect(() => {
+        const isComplete =
+            cardData.number.replace(/\s/g, '').length >= 16 &&
+            cardData.name.trim().length > 0 &&
+            cardData.expiry.length === 5 &&
+            cardData.cvc.length >= 3;
+        onComplete(isComplete);
+    }, [cardData, onComplete]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;

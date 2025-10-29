@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, DownloadIcon, CalendarIcon } from 'lucide-react';
 import { BookingData } from '../booking/types';
@@ -8,6 +9,11 @@ interface PaymentSuccessProps {
 }
 
 export function PaymentSuccess({ bookingData, total }: PaymentSuccessProps) {
+    // Generate transaction ID once and keep it stable
+    const transactionId = useMemo(() => {
+        return Math.floor(100000 + Math.random() * 900000);
+    }, []);
+
     return (
         <motion.div
             initial={{
@@ -42,8 +48,7 @@ export function PaymentSuccess({ bookingData, total }: PaymentSuccessProps) {
             <div className='max-w-md mx-auto space-y-4'>
                 <div className='p-4 bg-pink-50 rounded-2xl border border-pink-200 text-left'>
                     <p className='text-sm text-gray-700'>
-                        <span className='font-medium'>Transaction ID:</span> #TXN
-                        {Math.floor(100000 + Math.random() * 900000)}
+                        <span className='font-medium'>Transaction ID:</span> #TXN{transactionId}
                     </p>
                     <p className='text-sm text-gray-700 mt-1'>
                         <span className='font-medium'>Payment Method:</span>{' '}

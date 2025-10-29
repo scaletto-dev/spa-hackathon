@@ -41,6 +41,7 @@ export interface BookingData {
     useAI?: boolean;
     paymentMethod?: string | null;
     promoCode?: string | null;
+    paymentDetailsComplete?: boolean; // For card/ewallet/bank forms
 }
 
 export interface BookingStepProps {

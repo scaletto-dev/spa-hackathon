@@ -1,9 +1,15 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, CalendarIcon, MapPinIcon, ClockIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BookingConfirmationProps } from './types';
 
 export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmationProps) {
+    // Generate booking reference once and keep it stable
+    const bookingReference = useMemo(() => {
+        return Math.floor(100000 + Math.random() * 900000);
+    }, []);
+
     return (
         <motion.div
             initial={{
@@ -52,13 +58,14 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                         <div className='text-left'>
                             <p className='text-sm text-gray-500'>Date</p>
                             <p className='text-lg font-medium text-gray-800'>
-                                {bookingData.date &&
-                                    new Date(bookingData.date).toLocaleDateString('en-US', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                    })}
+                                {bookingData.date
+                                    ? new Date(bookingData.date).toLocaleDateString('en-US', {
+                                          weekday: 'long',
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                      })
+                                    : 'Not selected'}
                             </p>
                         </div>
                     </div>
@@ -96,8 +103,7 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                         <span className='font-medium'>Confirmation sent to:</span> {bookingData.email}
                     </p>
                     <p className='text-sm text-gray-700 mt-1'>
-                        <span className='font-medium'>Booking reference:</span> #BEA
-                        {Math.floor(100000 + Math.random() * 900000)}
+                        <span className='font-medium'>Booking reference:</span> #BEA{bookingReference}
                     </p>
                 </div>
             </div>

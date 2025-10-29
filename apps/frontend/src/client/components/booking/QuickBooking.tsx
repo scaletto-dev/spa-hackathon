@@ -77,6 +77,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
         useAI: false,
         promoCode: '',
     });
+    const [paymentDetailsComplete, setPaymentDetailsComplete] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const handleChange = (field: string, value: any) => {
@@ -106,6 +107,18 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
         setIsProcessing(false);
         setShowConfirmation(true);
     };
+
+    // Validation: for quick booking, just check if payment method is selected
+    // (Quick booking is meant to be fast, detailed payment forms are in Full Booking)
+    const isPaymentReady = () => {
+        // Pay at clinic doesn't need details
+        if (formData.paymentMethod === 'clinic') {
+            return true;
+        }
+        // Other methods need payment details to be complete
+        return formData.paymentMethod !== '' && formData.paymentMethod !== null && paymentDetailsComplete;
+    };
+
     const isFormValid =
         formData.service &&
         formData.branch &&
@@ -114,7 +127,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
         formData.name &&
         formData.email &&
         formData.phone &&
-        formData.paymentMethod;
+        isPaymentReady();
     return (
         <>
             <motion.div
@@ -319,6 +332,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     onSelect={(method: string) => handleChange('paymentMethod', method)}
                                     promoCode={formData.promoCode}
                                     onPromoChange={(code: string) => handleChange('promoCode', code)}
+                                    onPaymentDetailsChange={(isComplete: boolean) =>
+                                        setPaymentDetailsComplete(isComplete)
+                                    }
                                 />
                             </div>
                         </div>

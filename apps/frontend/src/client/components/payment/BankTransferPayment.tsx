@@ -1,10 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadIcon, XIcon, CheckIcon } from 'lucide-react';
 
-export function BankTransferPayment() {
+interface BankTransferPaymentProps {
+    onComplete: (isComplete: boolean) => void;
+}
+
+export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+    // Generate reference number once and keep it stable
+    const referenceNumber = useMemo(() => {
+        return `BEA${Math.floor(100000 + Math.random() * 900000)}`;
+    }, []);
+
+    // Bank transfer is complete once a receipt is uploaded
+    useEffect(() => {
+        onComplete(uploadedFile !== null);
+    }, [uploadedFile, onComplete]);
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -33,9 +47,7 @@ export function BankTransferPayment() {
                     </div>
                     <div className='flex justify-between'>
                         <span className='text-gray-600'>Reference:</span>
-                        <span className='font-medium text-pink-600'>
-                            BEA{Math.floor(100000 + Math.random() * 900000)}
-                        </span>
+                        <span className='font-medium text-pink-600'>{referenceNumber}</span>
                     </div>
                 </div>
             </div>
