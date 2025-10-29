@@ -12,7 +12,11 @@ import {
     XCircleIcon,
     ClockIcon as PendingIcon,
 } from 'lucide-react';
-import { getMemberBookings, type BookingHistoryParams, type BookingHistoryResponse } from '../../../api/adapters/member';
+import {
+    getMemberBookings,
+    type BookingHistoryParams,
+    type BookingHistoryResponse,
+} from '../../../api/adapters/member';
 import { useTranslation } from 'react-i18next';
 
 type StatusFilter = 'all' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
@@ -87,7 +91,9 @@ export default function BookingHistory() {
         const badge = badges[status as keyof typeof badges] || badges.confirmed;
 
         return (
-            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}>
+            <span
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}
+            >
                 {badge.icon}
                 {badge.label}
             </span>
@@ -107,11 +113,7 @@ export default function BookingHistory() {
         <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 px-4 pt-24'>
             <div className='max-w-7xl mx-auto'>
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className='mb-8'
-                >
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className='mb-8'>
                     <Link
                         to='/dashboard'
                         className='inline-flex items-center gap-2 text-pink-600 hover:text-pink-700 mb-4'
@@ -224,7 +226,9 @@ export default function BookingHistory() {
                                                                 className='w-12 h-12 rounded-lg object-cover'
                                                             />
                                                         )}
-                                                        <span className='font-medium text-gray-900'>{booking.serviceName}</span>
+                                                        <span className='font-medium text-gray-900'>
+                                                            {booking.serviceName}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td className='px-6 py-4'>
@@ -238,7 +242,9 @@ export default function BookingHistory() {
                                                         <ClockIcon className='w-4 h-4 text-gray-400' />
                                                         <div className='text-sm'>
                                                             <div>{formatDate(booking.appointmentDate)}</div>
-                                                            <div className='text-gray-500'>{booking.appointmentTime}</div>
+                                                            <div className='text-gray-500'>
+                                                                {booking.appointmentTime}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -273,7 +279,9 @@ export default function BookingHistory() {
                                                 />
                                             )}
                                             <div className='flex-1 min-w-0'>
-                                                <h4 className='font-semibold text-gray-900 mb-1'>{booking.serviceName}</h4>
+                                                <h4 className='font-semibold text-gray-900 mb-1'>
+                                                    {booking.serviceName}
+                                                </h4>
                                                 <div className='text-sm text-gray-600 mb-1'>
                                                     <MapPinIcon className='w-3 h-3 inline mr-1' />
                                                     {booking.branchName}
@@ -299,7 +307,11 @@ export default function BookingHistory() {
                                 <div className='px-6 py-4 bg-gray-50 border-t border-gray-200'>
                                     <div className='flex items-center justify-between'>
                                         <div className='text-sm text-gray-700'>
-                                            Showing <span className='font-medium'>{(currentPage - 1) * bookings.meta.limit + 1}</span> to{' '}
+                                            Showing{' '}
+                                            <span className='font-medium'>
+                                                {(currentPage - 1) * bookings.meta.limit + 1}
+                                            </span>{' '}
+                                            to{' '}
                                             <span className='font-medium'>
                                                 {Math.min(currentPage * bookings.meta.limit, bookings.meta.total)}
                                             </span>{' '}
@@ -333,14 +345,4 @@ export default function BookingHistory() {
             </div>
         </div>
     );
-}
-
-function formatDate(isoDate: string): string {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString('vi-VN', {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
 }
