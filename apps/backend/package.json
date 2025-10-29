@@ -10,7 +10,9 @@
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "test": "echo \"No tests configured yet\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "test:db": "ts-node -r dotenv/config src/scripts/testDatabaseConnection.ts",
     "test:auth": "ts-node -r dotenv/config src/scripts/testSupabaseAuth.ts",
     "test:storage": "ts-node -r dotenv/config src/scripts/testSupabaseStorage.ts"
@@ -23,20 +25,27 @@
   "author": "Spa Hackathon Team",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^6.18.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "express-validator": "^7.3.0",
     "helmet": "^8.1.0",
+    "triple-beam": "^1.4.1",
     "winston": "^3.18.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/helmet": "^0.0.48",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.9.1",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.10",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
