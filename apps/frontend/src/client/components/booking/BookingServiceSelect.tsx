@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BookingStepProps } from './types';
 
 const services = [
@@ -60,6 +61,7 @@ const services = [
     },
 ];
 export function BookingServiceSelect({ bookingData, updateBookingData, onNext }: Omit<BookingStepProps, 'onPrev'>) {
+    const { t } = useTranslation('common');
     const handleSelectService = (service: (typeof services)[number]) => {
         updateBookingData({
             service,
@@ -84,8 +86,8 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
             }}
         >
             <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>Select a Service</h2>
-                <p className='text-gray-600'>Choose from our range of AI-enhanced beauty treatments</p>
+                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.selectService')}</h2>
+                <p className='text-gray-600'>{t('bookings.selectServiceDesc')}</p>
             </div>
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
                 {services.map((service) => (
@@ -95,7 +97,11 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
                             y: -5,
                         }}
                         onClick={() => handleSelectService(service)}
-                        className={`cursor-pointer bg-white/70 backdrop-blur-xl rounded-3xl border-2 ${bookingData.service?.id === service.id ? 'border-pink-500 shadow-lg shadow-pink-200' : 'border-white/50 shadow-lg'} overflow-hidden transition-all`}
+                        className={`cursor-pointer bg-white/70 backdrop-blur-xl rounded-3xl border-2 ${
+                            bookingData.service?.id === service.id
+                                ? 'border-pink-500 shadow-lg shadow-pink-200'
+                                : 'border-white/50 shadow-lg'
+                        } overflow-hidden transition-all`}
                     >
                         <div className='relative h-44 overflow-hidden'>
                             <img src={service.image} alt={service.title} className='w-full h-full object-cover' />
@@ -132,9 +138,13 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
                     }}
                     onClick={onNext}
                     disabled={!bookingData.service}
-                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${bookingData.service ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                        bookingData.service
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
                 >
-                    Continue
+                    {t('common.continue')}
                     <ArrowRightIcon className='w-5 h-5' />
                 </motion.button>
             </div>

@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, CheckCircleIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../auth/useAuth';
 import { toast } from '../../utils/toast';
 
@@ -20,20 +21,20 @@ interface LocationState {
  * Password strength validator
  * Requirements: ≥8 chars, 1 uppercase, 1 lowercase, 1 number
  */
-function validatePassword(password: string): { valid: boolean; message: string } {
+function validatePassword(password: string, t: (key: string) => string): { valid: boolean; message: string } {
     if (password.length < 8) {
-        return { valid: false, message: 'Password must be at least 8 characters' };
+        return { valid: false, message: t('auth.passwordMinLength') };
     }
     if (!/[A-Z]/.test(password)) {
-        return { valid: false, message: 'Password must contain at least one uppercase letter' };
+        return { valid: false, message: t('auth.passwordUppercase') };
     }
     if (!/[a-z]/.test(password)) {
-        return { valid: false, message: 'Password must contain at least one lowercase letter' };
+        return { valid: false, message: t('auth.passwordLowercase') };
     }
     if (!/[0-9]/.test(password)) {
-        return { valid: false, message: 'Password must contain at least one number' };
+        return { valid: false, message: t('auth.passwordNumber') };
     }
-    return { valid: true, message: 'Strong password' };
+    return { valid: true, message: t('auth.passwordStrong') };
 }
 
 /**
@@ -45,6 +46,7 @@ function validateEmail(email: string): boolean {
 }
 
 export function RegisterPage() {
+    const { t } = useTranslation('common');
     const navigate = useNavigate();
     const location = useLocation();
     const { register } = useAuth();
@@ -89,30 +91,30 @@ export function RegisterPage() {
         const newErrors: typeof errors = {};
 
         if (!formData.name.trim()) {
-            newErrors.name = 'Full name is required';
+            newErrors.name = t('auth.fullNameRequired');
         } else if (formData.name.trim().length < 2) {
-            newErrors.name = 'Name must be at least 2 characters';
+            newErrors.name = t('auth.nameMinLength');
         }
 
         if (!formData.email) {
-            newErrors.email = 'Email is required';
+            newErrors.email = t('auth.emailRequired');
         } else if (!validateEmail(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
+            newErrors.email = t('auth.validEmail');
         }
 
-        const passwordValidation = validatePassword(formData.password);
+        const passwordValidation = validatePassword(formData.password, t);
         if (!passwordValidation.valid) {
             newErrors.password = passwordValidation.message;
         }
 
         if (!formData.confirmPassword) {
-            newErrors.confirmPassword = 'Please confirm your password';
+            newErrors.confirmPassword = t('auth.confirmPasswordRequired');
         } else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Passwords do not match';
+            newErrors.confirmPassword = t('auth.passwordMismatch');
         }
 
         if (!agreeToTerms) {
-            newErrors.terms = 'You must agree to the Terms of Service and Privacy Policy';
+            newErrors.terms = t('auth.agreeToTermsRequired');
         }
 
         // If there are errors, show them and stop
@@ -130,12 +132,12 @@ export function RegisterPage() {
                 password: formData.password,
             });
 
-            toast.show('Account created successfully! Welcome!', 'success');
+            toast.show(t('auth.registerSuccess'), 'success');
 
             // Redirect to original destination or home
             navigate(from, { replace: true });
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+            const errorMessage = error instanceof Error ? error.message : t('auth.registerSuccess');
             toast.show(errorMessage, 'error');
             setErrors({ email: errorMessage });
         } finally {
@@ -143,7 +145,7 @@ export function RegisterPage() {
         }
     };
 
-    const passwordStrength = validatePassword(formData.password);
+    const passwordStrength = validatePassword(formData.password, t);
     const showPasswordStrength = formData.password.length > 0;
 
     return (
@@ -160,9 +162,9 @@ export function RegisterPage() {
                     <div className='text-center mb-8'>
                         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} transition={{ duration: 0.3 }}>
                             <h1 className='text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
-                                Create Account
+                                {t('auth.createAccount')}
                             </h1>
-                            <p className='text-gray-600 mt-2'>Join us to book your perfect spa day</p>
+                            <p className='text-gray-600 mt-2'>{t('auth.joinUs')}</p>
                         </motion.div>
                     </div>
 
@@ -171,7 +173,7 @@ export function RegisterPage() {
                         {/* Full Name */}
                         <div>
                             <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-2'>
-                                Full Name
+                                {t('auth.fullName')}
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -186,7 +188,7 @@ export function RegisterPage() {
                                     className={`block w-full pl-10 pr-3 py-3 border ${
                                         errors.name ? 'border-red-300' : 'border-pink-100'
                                     } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
-                                    placeholder='John Doe'
+                                    placeholder={t('auth.namePlaceholder')}
                                     aria-invalid={!!errors.name}
                                     aria-describedby={errors.name ? 'name-error' : undefined}
                                 />
@@ -201,7 +203,7 @@ export function RegisterPage() {
                         {/* Email */}
                         <div>
                             <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-2'>
-                                Email Address
+                                {t('auth.emailAddress')}
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -216,7 +218,7 @@ export function RegisterPage() {
                                     className={`block w-full pl-10 pr-3 py-3 border ${
                                         errors.email ? 'border-red-300' : 'border-pink-100'
                                     } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
-                                    placeholder='you@example.com'
+                                    placeholder={t('auth.emailPlaceholder')}
                                     aria-invalid={!!errors.email}
                                     aria-describedby={errors.email ? 'email-error' : undefined}
                                 />
@@ -231,7 +233,7 @@ export function RegisterPage() {
                         {/* Password */}
                         <div>
                             <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-2'>
-                                Password
+                                {t('auth.password')}
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -246,21 +248,21 @@ export function RegisterPage() {
                                     className={`block w-full pl-10 pr-10 py-3 border ${
                                         errors.password ? 'border-red-300' : 'border-pink-100'
                                     } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
-                                    placeholder='••••••••'
+                                    placeholder={t('auth.passwordPlaceholder')}
                                     aria-invalid={!!errors.password}
                                     aria-describedby={
                                         errors.password
                                             ? 'password-error'
                                             : showPasswordStrength
-                                              ? 'password-strength'
-                                              : undefined
+                                            ? 'password-strength'
+                                            : undefined
                                     }
                                 />
                                 <button
                                     type='button'
                                     onClick={() => setShowPassword(!showPassword)}
                                     className='absolute inset-y-0 right-0 pr-3 flex items-center'
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                                 >
                                     {showPassword ? (
                                         <EyeOffIcon className='h-5 w-5 text-gray-400 hover:text-gray-600' />
@@ -290,7 +292,7 @@ export function RegisterPage() {
                         {/* Confirm Password */}
                         <div>
                             <label htmlFor='confirmPassword' className='block text-sm font-medium text-gray-700 mb-2'>
-                                Confirm Password
+                                {t('auth.confirmPassword')}
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -305,7 +307,7 @@ export function RegisterPage() {
                                     className={`block w-full pl-10 pr-10 py-3 border ${
                                         errors.confirmPassword ? 'border-red-300' : 'border-pink-100'
                                     } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
-                                    placeholder='••••••••'
+                                    placeholder={t('auth.confirmPasswordPlaceholder')}
                                     aria-invalid={!!errors.confirmPassword}
                                     aria-describedby={errors.confirmPassword ? 'confirm-password-error' : undefined}
                                 />
@@ -313,7 +315,7 @@ export function RegisterPage() {
                                     type='button'
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                     className='absolute inset-y-0 right-0 pr-3 flex items-center'
-                                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                    aria-label={showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                                 >
                                     {showConfirmPassword ? (
                                         <EyeOffIcon className='h-5 w-5 text-gray-400 hover:text-gray-600' />
@@ -350,13 +352,13 @@ export function RegisterPage() {
                                     aria-describedby={errors.terms ? 'terms-error' : undefined}
                                 />
                                 <span className='ml-2 text-sm text-gray-700'>
-                                    I agree to the{' '}
+                                    {t('auth.agreeToTerms')}{' '}
                                     <Link to='/terms' className='text-pink-600 hover:text-pink-700 underline'>
-                                        Terms of Service
+                                        {t('auth.termsAndConditions')}
                                     </Link>{' '}
-                                    and{' '}
+                                    {t('auth.and')}{' '}
                                     <Link to='/privacy' className='text-pink-600 hover:text-pink-700 underline'>
-                                        Privacy Policy
+                                        {t('auth.privacyPolicy')}
                                     </Link>
                                 </span>
                             </label>
@@ -397,10 +399,10 @@ export function RegisterPage() {
                                             d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                                         />
                                     </svg>
-                                    Creating Account...
+                                    {t('auth.creatingAccount')}
                                 </span>
                             ) : (
-                                'Create Account'
+                                t('auth.createAccount')
                             )}
                         </motion.button>
                     </form>
@@ -408,20 +410,16 @@ export function RegisterPage() {
                     {/* Divider */}
                     <div className='mt-6 text-center'>
                         <p className='text-sm text-gray-600'>
-                            Already have an account?{' '}
+                            {t('auth.alreadyHaveAccount')}{' '}
                             <Link to='/login' className='text-pink-600 hover:text-pink-700 font-semibold'>
-                                Sign In
+                                {t('auth.signIn')}
                             </Link>
                         </p>
                     </div>
                 </div>
 
                 {/* Additional Info */}
-                <p className='text-center text-xs text-gray-500 mt-6'>
-                    By creating an account, you'll be able to save your preferences,
-                    <br />
-                    track bookings, and enjoy exclusive member benefits.
-                </p>
+                <p className='text-center text-xs text-gray-500 mt-6'>{t('auth.accountBenefits')}</p>
             </motion.div>
         </div>
     );

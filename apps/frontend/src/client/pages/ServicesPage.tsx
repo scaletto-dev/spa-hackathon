@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ServicesBanner } from '../components/services/ServicesBanner';
 import { CategoryFilter } from '../components/services/CategoryFilter';
 import { ServiceCard } from '../components/services/ServiceCard';
@@ -8,6 +9,7 @@ import { ServicesCTA } from '../components/services/ServicesCTA';
 import { servicesApi, type Service } from '../../services/servicesApi';
 
 export function ServicesPage() {
+    const { t } = useTranslation('common');
     const [services, setServices] = useState<Service[]>([]);
     const [categories, setCategories] = useState<string[]>(['All']);
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -24,14 +26,14 @@ export function ServicesPage() {
 
                 // Extract unique categories from services
                 const uniqueCategories = Array.from(
-                    new Set(response.data.map((service) => service.categoryName).filter(Boolean))
+                    new Set(response.data.map((service) => service.categoryName).filter(Boolean)),
                 ) as string[];
                 setCategories(['All', ...uniqueCategories]);
 
                 setError(null);
             } catch (err) {
                 console.error('Failed to load services:', err);
-                setError('Không thể tải dịch vụ. Vui lòng thử lại sau.');
+                setError(t('home.services.error'));
             } finally {
                 setLoading(false);
             }
@@ -42,9 +44,7 @@ export function ServicesPage() {
 
     // Filter services by selected category
     const filteredServices =
-        selectedCategory === 'All'
-            ? services
-            : services.filter((service) => service.categoryName === selectedCategory);
+        selectedCategory === 'All' ? services : services.filter((service) => service.categoryName === selectedCategory);
 
     if (loading) {
         return (
@@ -76,7 +76,7 @@ export function ServicesPage() {
                 <div className='max-w-7xl mx-auto'>
                     {filteredServices.length === 0 ? (
                         <div className='text-center text-gray-600 py-12'>
-                            <p>Không tìm thấy dịch vụ nào trong danh mục này.</p>
+                            <p>{t('services.noServicesFound')}</p>
                         </div>
                     ) : (
                         <motion.div layout className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>

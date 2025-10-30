@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { XIcon, UploadIcon, SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { FormField, Input, Select, Textarea } from '../../../components/ui';
 import { toast } from '../../../utils/toast';
 
@@ -10,6 +11,7 @@ interface StaffModalProps {
 }
 
 export function StaffModal({ isOpen, onClose, onSuccess }: StaffModalProps) {
+    const { t } = useTranslation('common');
     const [formData, setFormData] = useState({
         name: '',
         specialization: '',
@@ -47,25 +49,25 @@ export function StaffModal({ isOpen, onClose, onSuccess }: StaffModalProps) {
     const handleSubmit = () => {
         // Validation
         if (!formData.name.trim()) {
-            toast.error('Vui lòng nhập họ và tên');
+            toast.error(t('admin.staff.enterName'));
             return;
         }
         if (!formData.specialization) {
-            toast.error('Vui lòng chọn chuyên môn');
+            toast.error(t('admin.staff.selectSpecialization'));
             return;
         }
         if (!formData.branch) {
-            toast.error('Vui lòng chọn chi nhánh');
+            toast.error(t('admin.staff.selectBranch'));
             return;
         }
         if (!formData.startTime || !formData.endTime) {
-            toast.error('Vui lòng nhập giờ làm việc');
+            toast.error(t('admin.staff.enterWorkingHours'));
             return;
         }
 
         // Validate time range
         if (formData.startTime >= formData.endTime) {
-            toast.error('Giờ kết thúc phải sau giờ bắt đầu');
+            toast.error(t('admin.staff.endTimeAfterStart'));
             return;
         }
 

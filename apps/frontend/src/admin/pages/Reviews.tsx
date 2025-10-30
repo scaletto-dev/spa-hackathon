@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { StarIcon, ThumbsUpIcon, MessageSquareIcon, TrendingUpIcon, FilterIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ReviewReplyModal } from '../components/modals/ReviewReplyModal';
 const reviews = [
     {
@@ -51,6 +52,7 @@ const reviews = [
     },
 ];
 export function Reviews() {
+    const { t } = useTranslation('common');
     const [selectedReview, setSelectedReview] = useState<number | null>(null);
 
     const handleReplySuccess = () => {
@@ -73,8 +75,8 @@ export function Reviews() {
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold text-gray-800'>Reviews & Feedback</h1>
-                    <p className='text-gray-600 mt-1'>Manage customer reviews and responses</p>
+                    <h1 className='text-3xl font-bold text-gray-800'>{t('admin.reviews.title')}</h1>
+                    <p className='text-gray-600 mt-1'>{t('admin.reviews.subtitle')}</p>
                 </div>
             </div>
 

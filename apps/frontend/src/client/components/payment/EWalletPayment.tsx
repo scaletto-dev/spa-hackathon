@@ -1,50 +1,53 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckIcon } from 'lucide-react';
-const wallets = [
-    {
-        id: 'stripe',
-        name: 'Stripe Link',
-        logo: '💳',
-        badge: 'Fastest',
-        description: 'Pay with saved payment methods',
-    },
-    {
-        id: 'apple',
-        name: 'Apple Pay',
-        logo: '',
-        badge: 'Recommended',
-        description: 'Touch ID or Face ID',
-    },
-    {
-        id: 'google',
-        name: 'Google Pay',
-        logo: 'G',
-        badge: null,
-        description: 'Fast & secure',
-    },
-    {
-        id: 'momo',
-        name: 'MoMo',
-        logo: 'M',
-        badge: 'Test',
-        description: 'Vietnam e-wallet',
-    },
-    {
-        id: 'zalopay',
-        name: 'ZaloPay',
-        logo: 'Z',
-        badge: 'Test',
-        description: 'Vietnam e-wallet',
-    },
-];
+import { useTranslation } from 'react-i18next';
 
 interface EWalletPaymentProps {
     onComplete: (isComplete: boolean) => void;
 }
 
 export function EWalletPayment({ onComplete }: EWalletPaymentProps) {
+    const { t } = useTranslation('common');
     const [selectedWallet, setSelectedWallet] = useState('stripe');
+
+    const wallets = [
+        {
+            id: 'stripe',
+            name: 'Stripe Link',
+            logo: '💳',
+            badge: t('payment.fastest'),
+            description: t('payment.savedMethods'),
+        },
+        {
+            id: 'apple',
+            name: 'Apple Pay',
+            logo: '',
+            badge: t('payment.recommended'),
+            description: t('payment.touchId'),
+        },
+        {
+            id: 'google',
+            name: 'Google Pay',
+            logo: 'G',
+            badge: null,
+            description: t('payment.fastSecure'),
+        },
+        {
+            id: 'momo',
+            name: 'MoMo',
+            logo: 'M',
+            badge: t('payment.test'),
+            description: t('payment.vietnamWallet'),
+        },
+        {
+            id: 'zalopay',
+            name: 'ZaloPay',
+            logo: 'Z',
+            badge: t('payment.test'),
+            description: t('payment.vietnamWallet'),
+        },
+    ];
 
     // E-wallet is complete once a wallet is selected
     useEffect(() => {
@@ -62,11 +65,19 @@ export function EWalletPayment({ onComplete }: EWalletPaymentProps) {
                         scale: 0.99,
                     }}
                     onClick={() => setSelectedWallet(wallet.id)}
-                    className={`relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedWallet === wallet.id ? 'border-pink-500 bg-pink-50' : 'border-gray-200 bg-white hover:border-pink-200'}`}
+                    className={`relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                        selectedWallet === wallet.id
+                            ? 'border-pink-500 bg-pink-50'
+                            : 'border-gray-200 bg-white hover:border-pink-200'
+                    }`}
                 >
                     <div className='flex items-center gap-4'>
                         <div
-                            className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${selectedWallet === wallet.id ? 'bg-gradient-to-br from-pink-400 to-purple-500 text-white' : 'bg-gray-100 text-gray-600'}`}
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${
+                                selectedWallet === wallet.id
+                                    ? 'bg-gradient-to-br from-pink-400 to-purple-500 text-white'
+                                    : 'bg-gray-100 text-gray-600'
+                            }`}
                         >
                             {wallet.logo}
                         </div>
@@ -75,7 +86,13 @@ export function EWalletPayment({ onComplete }: EWalletPaymentProps) {
                                 <h4 className='font-semibold text-gray-800'>{wallet.name}</h4>
                                 {wallet.badge && (
                                     <span
-                                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${wallet.badge === 'Fastest' ? 'bg-green-100 text-green-700' : wallet.badge === 'Recommended' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}
+                                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                            wallet.badge === t('payment.fastest')
+                                                ? 'bg-green-100 text-green-700'
+                                                : wallet.badge === t('payment.recommended')
+                                                ? 'bg-blue-100 text-blue-700'
+                                                : 'bg-gray-100 text-gray-600'
+                                        }`}
                                     >
                                         {wallet.badge}
                                     </span>
@@ -91,26 +108,10 @@ export function EWalletPayment({ onComplete }: EWalletPaymentProps) {
                     </div>
                 </motion.div>
             ))}
-            {/* Selected Wallet Info */}
-            {selectedWallet && (
-                <motion.div
-                    initial={{
-                        opacity: 0,
-                        y: 10,
-                    }}
-                    animate={{
-                        opacity: 1,
-                        y: 0,
-                    }}
-                    className='p-4 bg-pink-50 rounded-2xl border border-pink-200'
-                >
-                    <p className='text-sm text-gray-700'>
-                        You will be redirected to{' '}
-                        <span className='font-medium'>{wallets.find((w) => w.id === selectedWallet)?.name}</span> to
-                        complete your payment securely.
-                    </p>
-                </motion.div>
-            )}
+            {/* Security Note */}
+            <div className='p-4 bg-gray-50 rounded-2xl border border-gray-200'>
+                <p className='text-xs text-gray-600 text-center'>{t('payment.secureNote')}</p>
+            </div>
         </div>
     );
 }

@@ -2,10 +2,12 @@ import { useState, FormEvent, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { EyeIcon, EyeOffIcon, MailIcon, LockIcon, SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../auth/useAuth';
 import { toast } from '../../utils/toast';
 
 export function LoginPage() {
+    const { t } = useTranslation('common');
     const navigate = useNavigate();
     const location = useLocation();
     const { login, loginWithGoogle, isAuthenticated } = useAuth();
@@ -51,14 +53,14 @@ export function LoginPage() {
 
         // Email validation
         if (!formData.email) {
-            newErrors.email = 'Email is required';
+            newErrors.email = t('auth.emailRequired');
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
+            newErrors.email = t('auth.validEmail');
         }
 
         // Password validation
         if (!formData.password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = t('auth.passwordRequired');
         } else if (formData.password.length < 8) {
             newErrors.password = 'Password must be at least 8 characters';
         }
@@ -114,7 +116,7 @@ export function LoginPage() {
                             BeautyAI
                         </h1>
                     </motion.div>
-                    <p className='text-gray-600'>Welcome back! Please login to your account.</p>
+                    <p className='text-gray-600'>{t('auth.welcomeBack')}</p>
                 </div>
 
                 {/* Login Form Card */}
@@ -128,7 +130,7 @@ export function LoginPage() {
                             <div className='w-full border-t border-gray-200' />
                         </div>
                         <div className='relative flex justify-center text-sm'>
-                            <span className='px-4 bg-white/70 text-gray-500'>Or continue with email</span>
+                            <span className='px-4 bg-white/70 text-gray-500'>{t('auth.orContinueEmail')}</span>
                         </div>
                     </div>
 
@@ -136,7 +138,7 @@ export function LoginPage() {
                         {/* Email Field */}
                         <div>
                             <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-2'>
-                                Email Address
+                                {t('auth.emailAddress')}
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -155,7 +157,7 @@ export function LoginPage() {
                                             ? 'border-red-300 focus:ring-red-200'
                                             : 'border-gray-200 focus:ring-pink-200'
                                     } focus:outline-none focus:ring-2 transition-colors`}
-                                    placeholder='Enter your email'
+                                    placeholder={t('auth.enterYourEmail')}
                                     aria-describedby={errors.email ? 'email-error' : undefined}
                                 />
                             </div>
@@ -169,7 +171,7 @@ export function LoginPage() {
                         {/* Password Field */}
                         <div>
                             <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-2'>
-                                Password
+                                {t('auth.password')}
                             </label>
                             <div className='relative'>
                                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -188,7 +190,7 @@ export function LoginPage() {
                                             ? 'border-red-300 focus:ring-red-200'
                                             : 'border-gray-200 focus:ring-pink-200'
                                     } focus:outline-none focus:ring-2 transition-colors`}
-                                    placeholder='Enter your password'
+                                    placeholder={t('auth.enterYourPassword')}
                                     aria-describedby={errors.password ? 'password-error' : undefined}
                                 />
                                 <button
@@ -220,13 +222,13 @@ export function LoginPage() {
                                     onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
                                     className='w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-200'
                                 />
-                                <span className='text-sm text-gray-600'>Remember me</span>
+                                <span className='text-sm text-gray-600'>{t('auth.rememberMe')}</span>
                             </label>
                             <Link
                                 to='/forgot-password'
                                 className='text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors'
                             >
-                                Forgot password?
+                                {t('auth.forgotPassword')}
                             </Link>
                         </div>
 
@@ -245,10 +247,10 @@ export function LoginPage() {
                             {isLoading ? (
                                 <span className='flex items-center justify-center gap-2'>
                                     <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                                    Signing in...
+                                    {t('auth.signingIn')}
                                 </span>
                             ) : (
-                                'Sign In'
+                                t('auth.signInButton')
                             )}
                         </motion.button>
                     </form>
@@ -256,12 +258,12 @@ export function LoginPage() {
                     {/* Sign Up Link */}
                     <div className='mt-6 text-center'>
                         <p className='text-sm text-gray-600'>
-                            Don't have an account?{' '}
+                            {t('auth.dontHaveAccount')}{' '}
                             <Link
                                 to='/register'
                                 className='text-pink-600 hover:text-pink-700 font-semibold transition-colors'
                             >
-                                Create account
+                                {t('auth.createAccount')}
                             </Link>
                         </p>
                     </div>
@@ -270,7 +272,7 @@ export function LoginPage() {
                 {/* Back to Home */}
                 <div className='mt-6 text-center'>
                     <Link to='/' className='text-sm text-gray-500 hover:text-pink-600 transition-colors'>
-                        ← Back to home
+                        {t('common.backHome')}
                     </Link>
                 </div>
             </motion.div>

@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, CalendarIcon, MapPinIcon, ClockIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BookingConfirmationProps } from './types';
 
 export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmationProps) {
+    const { t } = useTranslation('common');
     // Generate booking reference once and keep it stable
     const bookingReference = useMemo(() => {
         return Math.floor(100000 + Math.random() * 900000);
@@ -46,17 +48,17 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
             >
                 <CheckCircleIcon className='w-14 h-14 text-white' />
             </motion.div>
-            <h2 className='text-3xl font-bold text-gray-800 mb-4'>Booking Confirmed!</h2>
-            <p className='text-xl text-gray-600 mb-12'>Your appointment has been successfully scheduled</p>
+            <h2 className='text-3xl font-bold text-gray-800 mb-4'>{t('bookings.bookingConfirmed')}</h2>
+            <p className='text-xl text-gray-600 mb-12'>{t('bookings.appointmentScheduled')}</p>
             <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 mb-12 max-w-xl mx-auto'>
-                <h3 className='text-2xl font-bold text-gray-800 mb-6'>Appointment Details</h3>
+                <h3 className='text-2xl font-bold text-gray-800 mb-6'>{t('bookings.appointmentDetails')}</h3>
                 <div className='space-y-6'>
                     <div className='flex items-center gap-4'>
                         <div className='w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center flex-shrink-0'>
                             <CalendarIcon className='w-6 h-6 text-pink-600' />
                         </div>
                         <div className='text-left'>
-                            <p className='text-sm text-gray-500'>Date</p>
+                            <p className='text-sm text-gray-500'>{t('bookings.dateLabel')}</p>
                             <p className='text-lg font-medium text-gray-800'>
                                 {bookingData.date
                                     ? new Date(bookingData.date).toLocaleDateString('en-US', {
@@ -65,7 +67,7 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                                           month: 'long',
                                           day: 'numeric',
                                       })
-                                    : 'Not selected'}
+                                    : t('bookings.notSelected')}
                             </p>
                         </div>
                     </div>
@@ -74,7 +76,7 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                             <ClockIcon className='w-6 h-6 text-purple-600' />
                         </div>
                         <div className='text-left'>
-                            <p className='text-sm text-gray-500'>Time</p>
+                            <p className='text-sm text-gray-500'>{t('bookings.timeLabel')}</p>
                             <p className='text-lg font-medium text-gray-800'>{bookingData.time}</p>
                         </div>
                     </div>
@@ -83,7 +85,7 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                             <MapPinIcon className='w-6 h-6 text-blue-600' />
                         </div>
                         <div className='text-left'>
-                            <p className='text-sm text-gray-500'>Location</p>
+                            <p className='text-sm text-gray-500'>{t('bookings.locationSummary')}</p>
                             <p className='text-lg font-medium text-gray-800'>{bookingData.branch?.name}</p>
                             <p className='text-sm text-gray-600'>{bookingData.branch?.address}</p>
                         </div>
@@ -100,10 +102,11 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                 </div>
                 <div className='mt-8 p-4 bg-pink-50 rounded-2xl border border-pink-200 text-left'>
                     <p className='text-sm text-gray-700'>
-                        <span className='font-medium'>Confirmation sent to:</span> {bookingData.email}
+                        <span className='font-medium'>{t('bookings.confirmationSentTo')}</span> {bookingData.email}
                     </p>
                     <p className='text-sm text-gray-700 mt-1'>
-                        <span className='font-medium'>Booking reference:</span> #BEA{bookingReference}
+                        <span className='font-medium'>{t('bookings.bookingReferenceLabel')}</span> #BEA
+                        {bookingReference}
                     </p>
                 </div>
             </div>
@@ -119,7 +122,7 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                     className='flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg'
                 >
                     <ArrowLeftIcon className='w-5 h-5' />
-                    Edit Booking
+                    {t('bookings.editBooking')}
                 </motion.button>
                 <Link to='/'>
                     <motion.button
@@ -131,7 +134,7 @@ export function BookingConfirmation({ bookingData, onPrev }: BookingConfirmation
                         }}
                         className='flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl'
                     >
-                        Return Home
+                        {t('bookings.returnHome')}
                         <ArrowRightIcon className='w-5 h-5' />
                     </motion.button>
                 </Link>

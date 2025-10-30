@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { TagIcon, CheckIcon, XIcon } from 'lucide-react';
 
 interface PromoCodeInputProps {
@@ -10,6 +11,7 @@ interface PromoCodeInputProps {
 }
 
 export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppliedPromo }: PromoCodeInputProps) {
+    const { t } = useTranslation('common');
     const [error, setError] = useState('');
     const [isApplying, setIsApplying] = useState(false);
     const handleApply = async () => {
@@ -24,7 +26,7 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
             setAppliedPromo(promoCode.toUpperCase());
             setError('');
         } else {
-            setError('Invalid promo code');
+            setError(t('payment.invalidPromoCode'));
             setAppliedPromo(null);
         }
         setIsApplying(false);
@@ -36,7 +38,7 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
     };
     return (
         <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>Promo Code</label>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>{t('payment.promoCode')}</label>
             {appliedPromo ? (
                 <motion.div
                     initial={{
@@ -53,7 +55,7 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
                         <CheckIcon className='w-5 h-5 text-green-600' />
                         <div>
                             <p className='font-medium text-gray-800'>{appliedPromo}</p>
-                            <p className='text-sm text-gray-600'>10% discount applied</p>
+                            <p className='text-sm text-gray-600'>{t('payment.discountApplied')}</p>
                         </div>
                     </div>
                     <button onClick={handleRemove} className='text-gray-400 hover:text-gray-600'>
@@ -71,7 +73,9 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 onKeyPress={(e) => e.key === 'Enter' && handleApply()}
                                 placeholder='Enter code'
-                                className={`w-full pl-10 pr-4 py-3 bg-white/80 border-2 ${error ? 'border-red-300' : 'border-pink-100'} rounded-2xl focus:outline-none focus:border-pink-300 transition-colors`}
+                                className={`w-full pl-10 pr-4 py-3 bg-white/80 border-2 ${
+                                    error ? 'border-red-300' : 'border-pink-100'
+                                } rounded-2xl focus:outline-none focus:border-pink-300 transition-colors`}
                             />
                         </div>
                         <motion.button
@@ -83,7 +87,11 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
                             }}
                             onClick={handleApply}
                             disabled={!promoCode.trim() || isApplying}
-                            className={`px-6 py-3 rounded-2xl font-medium transition-all ${promoCode.trim() && !isApplying ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                            className={`px-6 py-3 rounded-2xl font-medium transition-all ${
+                                promoCode.trim() && !isApplying
+                                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            }`}
                         >
                             {isApplying ? 'Applying...' : 'Apply'}
                         </motion.button>

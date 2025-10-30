@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, ZapIcon, ListIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { TherapistSelector } from './TherapistSelector';
 import { InlinePaymentMethod } from './InlinePaymentMethod';
 import { AvailabilityIndicator } from './AvailabilityIndicator';
@@ -75,6 +76,7 @@ const timeSlots = [
 ];
 
 export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }: QuickBookingProps) {
+    const { t } = useTranslation('common');
     const [formData, setFormData] = useState({
         service: bookingData.service || null,
         branch: bookingData.branch || null,
@@ -273,7 +275,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                         <div className='space-y-6'>
                             {/* Service Selection */}
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-2'>Select Service *</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                    {t('bookings.selectServiceLabel')}
+                                </label>
                                 <select
                                     value={formData.service?.id || ''}
                                     onChange={(e) => {
@@ -282,7 +286,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     }}
                                     className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
                                 >
-                                    <option value=''>Choose a service...</option>
+                                    <option value=''>{t('bookings.chooseService')}</option>
                                     {services.map((service) => (
                                         <option key={service.id} value={service.id}>
                                             {service.title} - {service.price} ({service.duration})
@@ -292,7 +296,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             </div>
                             {/* Branch Selection */}
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-2'>Select Branch *</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                    {t('bookings.selectBranchLabel')}
+                                </label>
                                 <select
                                     value={formData.branch?.id || ''}
                                     onChange={(e) => {
@@ -302,7 +308,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     disabled={formData.useAI}
                                     className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors disabled:opacity-50'
                                 >
-                                    <option value=''>Choose a location...</option>
+                                    <option value=''>{t('bookings.chooseLocation')}</option>
                                     {branches.map((branch) => (
                                         <option key={branch.id} value={branch.id}>
                                             {branch.name} - {branch.address}
@@ -321,7 +327,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             <div className='grid md:grid-cols-2 gap-4'>
                                 <div>
                                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                        Select Date *
+                                        {t('bookings.selectDateLabel')}
                                     </label>
                                     <input
                                         type='date'
@@ -334,7 +340,8 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 </div>
                                 <div>
                                     <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
-                                        Select Time *{formData.date && formData.service && <AvailabilityIndicator />}
+                                        {t('bookings.selectTimeLabel')}
+                                        {formData.date && formData.service && <AvailabilityIndicator />}
                                     </label>
                                     <select
                                         value={formData.time || ''}
@@ -342,7 +349,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                         disabled={formData.useAI}
                                         className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors disabled:opacity-50'
                                     >
-                                        <option value=''>Choose a time...</option>
+                                        <option value=''>{t('bookings.chooseTime')}</option>
                                         {timeSlots.map((time) => (
                                             <option key={time} value={time}>
                                                 {time}
@@ -353,18 +360,20 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             </div>
                             {/* Contact Information */}
                             <div className='pt-4 border-t border-gray-200'>
-                                <h3 className='text-lg font-semibold text-gray-800 mb-4'>Your Information</h3>
+                                <h3 className='text-lg font-semibold text-gray-800 mb-4'>
+                                    {t('bookings.yourInformationLabel')}
+                                </h3>
                                 <div className='grid md:grid-cols-2 gap-4'>
                                     <input
                                         type='text'
-                                        placeholder='Full Name *'
+                                        placeholder={t('bookings.fullNamePlaceholder')}
                                         value={formData.name}
                                         onChange={(e) => handleChange('name', e.target.value)}
                                         className='px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
                                     />
                                     <input
                                         type='tel'
-                                        placeholder='Phone Number *'
+                                        placeholder={t('bookings.phoneNumberPlaceholder')}
                                         value={formData.phone}
                                         onChange={(e) => handleChange('phone', e.target.value)}
                                         className='px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
@@ -372,7 +381,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 </div>
                                 <input
                                     type='email'
-                                    placeholder='Email Address *'
+                                    placeholder={t('bookings.emailAddressPlaceholder')}
                                     value={formData.email}
                                     onChange={(e) => handleChange('email', e.target.value)}
                                     className='mt-4 w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
@@ -415,7 +424,11 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 }}
                                 onClick={handleSubmit}
                                 disabled={!isFormValid || isProcessing}
-                                className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${isFormValid && !isProcessing ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                                className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                                    isFormValid && !isProcessing
+                                        ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                }`}
                             >
                                 {isProcessing ? (
                                     <>

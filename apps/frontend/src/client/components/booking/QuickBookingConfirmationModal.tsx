@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, XIcon, DownloadIcon, CalendarIcon, MapPinIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BookingData } from './types';
 
 interface QuickBookingConfirmationModalProps {
@@ -9,6 +10,7 @@ interface QuickBookingConfirmationModalProps {
 }
 
 export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBookingConfirmationModalProps) {
+    const { t } = useTranslation('common');
     return (
         <motion.div
             initial={{
@@ -58,27 +60,27 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                     <CheckCircleIcon className='w-12 h-12 text-white' />
                 </motion.div>
                 <h2 className='text-3xl font-bold text-gray-800 text-center mb-2'>
-                    ✅ Your smart booking is confirmed!
+                    {t('bookings.smartBookingConfirmed')}
                 </h2>
                 <p className='text-gray-600 text-center mb-8'>
-                    Appointment details have been sent to {bookingData.email}
+                    {t('bookings.detailsSentTo')} {bookingData.email}
                 </p>
                 {/* Booking Details Card */}
                 <div className='bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-6 mb-6 space-y-4'>
                     <div>
-                        <p className='text-sm text-gray-500 mb-1'>Service</p>
+                        <p className='text-sm text-gray-500 mb-1'>{t('bookings.serviceLabel')}</p>
                         <p className='font-semibold text-gray-800'>{bookingData.service?.title}</p>
                     </div>
                     <div className='flex items-center gap-2'>
                         <MapPinIcon className='w-4 h-4 text-pink-500' />
                         <div>
-                            <p className='text-sm text-gray-500'>Location</p>
+                            <p className='text-sm text-gray-500'>{t('bookings.locationLabel')}</p>
                             <p className='font-medium text-gray-800'>{bookingData.branch?.name}</p>
                         </div>
                     </div>
                     {bookingData.therapist && (
                         <div>
-                            <p className='text-sm text-gray-500 mb-1'>Therapist</p>
+                            <p className='text-sm text-gray-500 mb-1'>{t('bookings.therapistLabel')}</p>
                             <p className='font-medium text-gray-800'>
                                 {typeof bookingData.therapist === 'string'
                                     ? bookingData.therapist
@@ -89,7 +91,7 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                     <div className='flex items-center gap-2'>
                         <CalendarIcon className='w-4 h-4 text-pink-500' />
                         <div>
-                            <p className='text-sm text-gray-500'>Date & Time</p>
+                            <p className='text-sm text-gray-500'>{t('bookings.dateTimeLabel')}</p>
                             <p className='font-medium text-gray-800'>
                                 {bookingData.date &&
                                     new Date(bookingData.date).toLocaleDateString('en-US', {
@@ -103,7 +105,7 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                     </div>
                     <div className='pt-4 border-t border-gray-200'>
                         <div className='flex justify-between items-center'>
-                            <span className='text-gray-600'>Total Paid</span>
+                            <span className='text-gray-600'>{t('bookings.totalPaid')}</span>
                             <span className='text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
                                 {bookingData.service?.price}
                             </span>
@@ -122,7 +124,7 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                         className='flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-pink-200 text-gray-700 rounded-2xl font-medium'
                     >
                         <DownloadIcon className='w-5 h-5' />
-                        Receipt
+                        {t('bookings.receipt')}
                     </motion.button>
                     <motion.button
                         whileHover={{
@@ -134,7 +136,7 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                         className='flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-pink-200 text-gray-700 rounded-2xl font-medium'
                     >
                         <CalendarIcon className='w-5 h-5' />
-                        Add to Calendar
+                        {t('bookings.addToCalendar')}
                     </motion.button>
                 </div>
                 <Link to='/'>

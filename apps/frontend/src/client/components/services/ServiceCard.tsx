@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { ClockIcon, ArrowRightIcon, Eye } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from '../../../utils/toast';
 import { formatPrice, formatDuration, type Service } from '../../../services/servicesApi';
 
@@ -10,19 +11,21 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({ service, index }: ServiceCardProps) {
+    const { t } = useTranslation('common');
     const navigate = useNavigate();
 
     const handleBookNow = () => {
         // Store selected service in sessionStorage
         sessionStorage.setItem('selectedService', JSON.stringify(service));
-        toast.success(`Selected: ${service.name}`);
+        toast.success(t('services.selected', { name: service.name }));
         navigate('/booking');
     };
 
     // Get first image or fallback
-    const serviceImage = service.images && service.images.length > 0 
-        ? service.images[0] 
-        : 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop';
+    const serviceImage =
+        service.images && service.images.length > 0
+            ? service.images[0]
+            : 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop';
 
     return (
         <motion.div
@@ -75,9 +78,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
                             <ClockIcon className='w-5 h-5 text-pink-500' />
                             <span className='font-medium'>{formatDuration(service.duration)}</span>
                         </div>
-                        <div className='text-2xl font-bold text-gray-800'>
-                            {formatPrice(service.price)}
-                        </div>
+                        <div className='text-2xl font-bold text-gray-800'>{formatPrice(service.price)}</div>
                     </div>
                     {/* Action Buttons */}
                     <div className='flex gap-3'>
@@ -86,7 +87,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
                             className='flex-1 flex items-center justify-center gap-2 py-3 bg-white border-2 border-pink-500 text-pink-600 rounded-2xl font-semibold hover:bg-pink-50 transition-colors'
                         >
                             <Eye className='w-5 h-5' />
-                            Chi tiết
+                            {t('services.details')}
                         </Link>
                         <motion.button
                             onClick={handleBookNow}
@@ -99,7 +100,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
                             }}
                             className='flex-1 flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-shadow group/btn'
                         >
-                            Đặt ngay
+                            {t('services.bookNow')}
                             <ArrowRightIcon className='w-5 h-5 group-hover/btn:translate-x-1 transition-transform' />
                         </motion.button>
                     </div>
