@@ -1,6 +1,6 @@
 import prisma from '../lib/prisma';
 import { NotFoundError } from '../utils/errors';
-import { ServiceDTO, ServiceWithCategoryDTO, ServicesResponse } from '../types/service';
+import { ServiceDTO, ServiceWithCategoryDTO, ServicesResponse, FeaturedServiceDTO } from '../types/service';
 
 /**
  * Service Service
@@ -16,7 +16,7 @@ export class ServiceService {
    * @param page - Page number (1-indexed)
    * @param limit - Number of items per page
    * @param categoryId - Filter by category ID
-   * @param featured - Filter by featured status
+   * @param featured - Filter by featured status (returns lightweight data when true)
    * @returns Paginated services with metadata
    */
   async getAllServices(
@@ -46,17 +46,20 @@ export class ServiceService {
     const totalPages = Math.ceil(total / limit);
 
     // Get services with category information
+    // For featured services, fetch minimal fields
     const services = await prisma.service.findMany({
       where,
       include: {
         category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            description: true,
-            icon: true,
-          },
+          select: featured
+            ? { name: true }
+            : {
+                id: true,
+                name: true,
+                slug: true,
+                description: true,
+                icon: true,
+              },
         },
       },
       orderBy: [
@@ -67,8 +70,13 @@ export class ServiceService {
       take: limit,
     });
 
+    // Map to appropriate DTO based on featured flag
+    const mappedServices = featured
+      ? services.map((service) => this.mapFeaturedServiceToDTO(service))
+      : services.map((service) => this.mapServiceToDTO(service));
+
     return {
-      data: services.map((service) => this.mapServiceToDTO(service)),
+      data: mappedServices,
       meta: {
         total,
         page,
@@ -79,12 +87,13 @@ export class ServiceService {
   }
 
   /**
-   * Get featured services
+   * Get featured services (lightweight version for display)
+   * Returns only essential fields: id, name, categoryName, images, duration, price, excerpt
    *
    * @param limit - Maximum number of services to return
-   * @returns Array of featured services
+   * @returns Array of featured services with minimal fields
    */
-  async getFeaturedServices(limit: number = 8): Promise<ServiceDTO[]> {
+  async getFeaturedServices(limit: number = 8): Promise<FeaturedServiceDTO[]> {
     const services = await prisma.service.findMany({
       where: {
         featured: true,
@@ -93,11 +102,7 @@ export class ServiceService {
       include: {
         category: {
           select: {
-            id: true,
             name: true,
-            slug: true,
-            description: true,
-            icon: true,
           },
         },
       },
@@ -107,7 +112,7 @@ export class ServiceService {
       take: limit,
     });
 
-    return services.map((service) => this.mapServiceToDTO(service));
+    return services.map((service) => this.mapFeaturedServiceToDTO(service));
   }
 
   /**
@@ -182,6 +187,12 @@ export class ServiceService {
    * @param service - Prisma service object with category
    * @returns ServiceDTO
    */
+  /**
+   * Map Prisma Service model to ServiceDTO
+   *
+   * @param service - Prisma service object with category relation
+   * @returns ServiceDTO
+   */
   private mapServiceToDTO(service: any): ServiceDTO {
     return {
       id: service.id,
@@ -206,7 +217,28 @@ export class ServiceService {
   }
 
   /**
-   * Get all service categories with active service count
+   * Map Prisma Service model to FeaturedServiceDTO (lightweight version)
+   * Used for featured services listing with minimal fields
+   *
+   * @param service - Prisma service object with category relation
+   * @returns FeaturedServiceDTO with formatted duration
+   */
+  private mapFeaturedServiceToDTO(service: any): FeaturedServiceDTO {
+    return {
+      id: service.id,
+      name: service.name,
+      categoryName: service.category?.name || 'Uncategorized',
+      images: service.images,
+      duration: `${service.duration} min`,
+      price: service.price.toString(),
+      excerpt: service.excerpt,
+      slug: service.slug,
+    };
+  }
+
+  /**
+   * Get all service categories with featured service count
+   * Only counts featured and active services
    */
   async getAllCategories() {
     const categories = await prisma.serviceCategory.findMany({
@@ -217,6 +249,7 @@ export class ServiceService {
             services: {
               where: {
                 active: true,
+                featured: true, // Only count featured services
               },
             },
           },

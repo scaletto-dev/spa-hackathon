@@ -87,6 +87,8 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                             onChange={handleChange}
                             leftIcon={MailIcon}
                             placeholder='email@example.com'
+                            disabled={bookingData.isLoggedIn}
+                            readOnly={bookingData.isLoggedIn}
                         />
                     </FormField>
 
@@ -124,10 +126,14 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                     <h3 className='text-lg font-semibold text-gray-800 mb-2'>{t('bookings.appointmentSummary')}</h3>
                     <div className='space-y-2 text-gray-700'>
                         <p>
-                            <span className='font-medium'>{t('bookings.service')}:</span> {bookingData.service?.title}
+                            <span className='font-medium'>{t('bookings.service')}:</span>{' '}
+                            {bookingData.selectedServices && bookingData.selectedServices.length > 0
+                                ? bookingData.selectedServices.map((s: any) => s.name).join(' + ')
+                                : bookingData.service?.name || t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.branch')}:</span> {bookingData.branch?.name}
+                            <span className='font-medium'>{t('bookings.branch')}:</span>{' '}
+                            {bookingData.branch?.name || t('bookings.notSelected')}
                         </p>
                         <p>
                             <span className='font-medium'>{t('bookings.date')}:</span>{' '}
@@ -141,14 +147,31 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                                 : t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.time')}:</span> {bookingData.time}
+                            <span className='font-medium'>{t('bookings.time')}:</span>{' '}
+                            {bookingData.time || t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.price')}:</span> {bookingData.service?.price}
+                            <span className='font-medium'>{t('bookings.price')}:</span>{' '}
+                            {(() => {
+                                let totalPrice = 0;
+                                if (bookingData.selectedServices && bookingData.selectedServices.length > 0) {
+                                    totalPrice = bookingData.selectedServices.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+                                } else if (bookingData.service?.price) {
+                                    totalPrice = bookingData.service.price;
+                                }
+                                return totalPrice > 0
+                                    ? new Intl.NumberFormat('vi-VN', {
+                                          style: 'currency',
+                                          currency: 'VND',
+                                      }).format(totalPrice)
+                                    : t('bookings.notSelected');
+                            })()}
                         </p>
                         <p>
                             <span className='font-medium'>{t('bookings.duration')}:</span>{' '}
-                            {bookingData.service?.duration}
+                            {bookingData.selectedServices && bookingData.selectedServices.length > 0
+                                ? bookingData.selectedServices.map((s: any) => s.duration).join(', ')
+                                : bookingData.service?.duration || t('bookings.notSelected')}
                         </p>
                     </div>
                 </div>

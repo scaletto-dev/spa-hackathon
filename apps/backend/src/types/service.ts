@@ -25,6 +25,21 @@ export interface ServiceDTO {
    updatedAt: string;
 }
 
+/**
+ * Featured Service DTO - Lightweight response for featured services list
+ * Only includes essential display fields
+ */
+export interface FeaturedServiceDTO {
+   id: string;
+   name: string;
+   categoryName: string;
+   images: string[];
+   duration: string; // Formatted as "90 min"
+   price: string;
+   excerpt: string;
+   slug: string;
+}
+
 export interface ServiceWithCategoryDTO extends ServiceDTO {
    category: {
       id: string;
@@ -43,7 +58,7 @@ export interface GetServicesQueryParams {
 }
 
 export interface ServicesResponse {
-   data: ServiceDTO[];
+   data: ServiceDTO[] | FeaturedServiceDTO[];
    meta: {
       total: number;
       page: number;
