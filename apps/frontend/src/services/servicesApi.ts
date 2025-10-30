@@ -6,16 +6,26 @@
 import axios from 'axios';
 import { 
   Service, 
+  ServiceCategory,
   ServicesResponse, 
   ServiceParams, 
-  ServiceDetailResponse 
+  ServiceDetailResponse,
+  ServiceCategoriesResponse
 } from '../types/service';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const servicesApi = {
   /**
-   * Get all services with optional filters
+   * Get all service categories with service count
+   */
+  getAllCategories: async (): Promise<ServiceCategory[]> => {
+    const { data } = await axios.get<ServiceCategoriesResponse>(`${API_URL}/api/v1/services/categories`);
+    return data.data;
+  },
+
+  /**
+   * Get all services with optional filters and pagination
    */
   getServices: async (params?: ServiceParams): Promise<ServicesResponse> => {
     const { data } = await axios.get(`${API_URL}/api/v1/services`, { params });
@@ -33,7 +43,7 @@ export const servicesApi = {
   },
 
   /**
-   * Get a single service by ID
+   * Get a single service by ID or slug
    */
   getServiceById: async (id: string): Promise<Service> => {
     const { data } = await axios.get(`${API_URL}/api/v1/services/${id}`);
@@ -42,7 +52,7 @@ export const servicesApi = {
 };
 
 // Re-export types for convenience
-export type { Service, ServicesResponse, ServiceParams, ServiceDetailResponse };
+export type { Service, ServiceCategory, ServicesResponse, ServiceParams, ServiceDetailResponse };
 
 // Re-export format utilities for convenience
 export { formatPrice, formatDuration, formatOperatingHours } from '../utils/format';

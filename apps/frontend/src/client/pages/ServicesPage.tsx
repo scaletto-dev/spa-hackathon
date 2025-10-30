@@ -1,33 +1,51 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ServicesBanner } from '../components/services/ServicesBanner';
 import { CategoryFilter } from '../components/services/CategoryFilter';
 import { ServiceCard } from '../components/services/ServiceCard';
 import { ServicesCTA } from '../components/services/ServicesCTA';
-import { servicesApi, type Service } from '../../services/servicesApi';
+import { servicesApi, type Service, type ServiceCategory } from '../../services/servicesApi';
 
 export function ServicesPage() {
     const [services, setServices] = useState<Service[]>([]);
-    const [categories, setCategories] = useState<string[]>(['All']);
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [categories, setCategories] = useState<ServiceCategory[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [loading, setLoading] = useState(true);
+    const [loadingCategories, setLoadingCategories] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 9; // 3x3 grid
 
+    // Fetch categories on mount
     useEffect(() => {
-        const fetchServicesAndCategories = async () => {
+        const fetchCategories = async () => {
+            try {
+                setLoadingCategories(true);
+                const data = await servicesApi.getAllCategories();
+                setCategories(data);
+            } catch (err) {
+                console.error('Failed to load categories:', err);
+            } finally {
+                setLoadingCategories(false);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    // Fetch services when category or page changes
+    useEffect(() => {
+        const fetchServices = async () => {
             try {
                 setLoading(true);
-                // Fetch all services
-                const response = await servicesApi.getServices();
+                const response = await servicesApi.getServices({
+                    page,
+                    limit,
+                    ...(selectedCategory !== 'All' && { categoryId: selectedCategory }),
+                });
                 setServices(response.data);
-
-                // Extract unique categories from services
-                const uniqueCategories = Array.from(
-                    new Set(response.data.map((service) => service.categoryName).filter(Boolean))
-                ) as string[];
-                setCategories(['All', ...uniqueCategories]);
-
+                setTotalPages(response.meta.totalPages);
                 setError(null);
             } catch (err) {
                 console.error('Failed to load services:', err);
@@ -37,14 +55,13 @@ export function ServicesPage() {
             }
         };
 
-        fetchServicesAndCategories();
-    }, []);
+        fetchServices();
+    }, [selectedCategory, page]);
 
-    // Filter services by selected category
-    const filteredServices =
-        selectedCategory === 'All'
-            ? services
-            : services.filter((service) => service.categoryName === selectedCategory);
+    // Reset page when category changes
+    useEffect(() => {
+        setPage(1);
+    }, [selectedCategory]);
 
     if (loading) {
         return (
@@ -71,19 +88,59 @@ export function ServicesPage() {
                 categories={categories}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
+                loading={loadingCategories}
             />
             <section className='w-full py-16 px-6'>
                 <div className='max-w-7xl mx-auto'>
-                    {filteredServices.length === 0 ? (
+                    {services.length === 0 ? (
                         <div className='text-center text-gray-600 py-12'>
                             <p>Không tìm thấy dịch vụ nào trong danh mục này.</p>
                         </div>
                     ) : (
-                        <motion.div layout className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
-                            {filteredServices.map((service, index) => (
-                                <ServiceCard key={service.id} service={service} index={index} />
-                            ))}
-                        </motion.div>
+                        <>
+                            <motion.div layout className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+                                {services.map((service, index) => (
+                                    <ServiceCard key={service.id} service={service} index={index} />
+                                ))}
+                            </motion.div>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className='flex justify-center items-center gap-2 mt-12'>
+                                    <button
+                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        disabled={page === 1}
+                                        className='p-2 rounded-lg border border-gray-300 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                                    >
+                                        <ChevronLeft className='w-5 h-5' />
+                                    </button>
+                                    
+                                    <div className='flex gap-2'>
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                                            <button
+                                                key={pageNum}
+                                                onClick={() => setPage(pageNum)}
+                                                className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                                                    page === pageNum
+                                                        ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                                                        : 'border border-gray-300 hover:bg-pink-50'
+                                                }`}
+                                            >
+                                                {pageNum}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={page === totalPages}
+                                        className='p-2 rounded-lg border border-gray-300 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                                    >
+                                        <ChevronRight className='w-5 h-5' />
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </section>
