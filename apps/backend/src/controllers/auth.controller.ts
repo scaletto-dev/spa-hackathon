@@ -7,6 +7,12 @@ import {
   VerifyOtpResponse,
   LoginRequest,
   LoginResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
 } from '../types/auth';
 import { ValidationError } from '../utils/errors';
 
@@ -157,6 +163,133 @@ class AuthController {
         success: true,
         user: result.user,
         session: result.session,
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/auth/change-password
+   * Change password for authenticated user
+   * Requires authentication
+   */
+  async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user?.id;
+
+      if (!userId) {
+        throw new ValidationError('User ID not found in request. Authentication required.');
+      }
+
+      const { currentPassword, newPassword } = req.body;
+
+      // Validation
+      if (!currentPassword || !newPassword) {
+        throw new ValidationError('Current password and new password are required');
+      }
+
+      if (currentPassword === newPassword) {
+        throw new ValidationError('New password must be different from current password');
+      }
+
+      const changePasswordData: ChangePasswordRequest = {
+        currentPassword,
+        newPassword,
+      };
+
+      await authService.changePassword(
+        userId,
+        changePasswordData.currentPassword,
+        changePasswordData.newPassword
+      );
+
+      const response: ChangePasswordResponse = {
+        success: true,
+        message: 'Password changed successfully',
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/auth/forgot-password
+   * Send password reset email
+   * Public endpoint (no authentication required)
+   */
+  async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { email } = req.body;
+
+      // Validation
+      if (!email) {
+        throw new ValidationError('Email is required');
+      }
+
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new ValidationError('Invalid email format');
+      }
+
+      const forgotPasswordData: ForgotPasswordRequest = {
+        email: email.toLowerCase().trim(),
+      };
+
+      await authService.forgotPassword(forgotPasswordData.email);
+
+      // Always return success message (security: don't reveal if email exists)
+      const response: ForgotPasswordResponse = {
+        success: true,
+        message: 'If an account exists with this email, a password reset link has been sent',
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/auth/reset-password
+   * Reset password using token from email
+   * Public endpoint (no authentication required)
+   */
+  async resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { token, newPassword } = req.body;
+
+      // Validation
+      if (!token || !newPassword) {
+        throw new ValidationError('Token and new password are required');
+      }
+
+      if (newPassword.length < 8) {
+        throw new ValidationError('Password must be at least 8 characters');
+      }
+
+      if (newPassword.length > 100) {
+        throw new ValidationError('Password must not exceed 100 characters');
+      }
+
+      const resetPasswordData: ResetPasswordRequest = {
+        token,
+        newPassword,
+      };
+
+      await authService.resetPassword(
+        resetPasswordData.token,
+        resetPasswordData.newPassword
+      );
+
+      const response: ResetPasswordResponse = {
+        success: true,
+        message: 'Password reset successfully',
       };
 
       res.status(200).json(response);
