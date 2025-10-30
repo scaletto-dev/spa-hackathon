@@ -11,10 +11,11 @@ export interface Branch {
   address: string;
   phone: string;
   email: string | null;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   operatingHours: Record<string, OperatingHoursEntry>;
   images: string[];
+  image: string; // Primary image for display
   active: boolean;
   description: string | null;
   createdAt: string;

@@ -1,72 +1,57 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPinIcon, PhoneIcon, ClockIcon, ArrowRightIcon } from 'lucide-react';
+import { MapPinIcon, PhoneIcon, ClockIcon, ArrowRightIcon, MailIcon, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BranchMap } from '../components/branches/BranchMap';
-const branches = [
-    {
-        id: 1,
-        name: 'Downtown Clinic',
-        image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-        address: '123 Main Street, Downtown, New York, NY 10001',
-        phone: '(555) 123-4567',
-        email: 'downtown@beautyai.com',
-        hours: 'Monday - Friday: 9AM - 7PM\nSaturday: 10AM - 5PM\nSunday: Closed',
-        location: {
-            lat: 40.7128,
-            lng: -74.006,
-        },
-        services: ['Facial Treatments', 'Laser Therapy', 'Skin Analysis', 'Anti-Aging'],
-    },
-    {
-        id: 2,
-        name: 'Westside Center',
-        image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
-        address: '456 West Avenue, Westside, Los Angeles, CA 90001',
-        phone: '(555) 234-5678',
-        email: 'westside@beautyai.com',
-        hours: 'Monday - Friday: 9AM - 8PM\nSaturday: 9AM - 6PM\nSunday: 11AM - 4PM',
-        location: {
-            lat: 34.0522,
-            lng: -118.2437,
-        },
-        services: ['Body Contouring', 'Laser Hair Removal', 'Botox & Fillers', 'Chemical Peels'],
-    },
-    {
-        id: 3,
-        name: 'Eastside Spa',
-        image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=400&fit=crop',
-        address: '789 East Boulevard, Eastside, Chicago, IL 60007',
-        phone: '(555) 345-6789',
-        email: 'eastside@beautyai.com',
-        hours: 'Monday - Friday: 10AM - 7PM\nSaturday: 10AM - 5PM\nSunday: Closed',
-        location: {
-            lat: 41.8781,
-            lng: -87.6298,
-        },
-        services: ['AI Skin Analysis', 'Microneedling', 'Facial Rejuvenation', 'Wellness Consultations'],
-    },
-    {
-        id: 4,
-        name: 'North Point Clinic',
-        image: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=600&h=400&fit=crop',
-        address: '321 North Road, Seattle, WA 98101',
-        phone: '(555) 456-7890',
-        email: 'northpoint@beautyai.com',
-        hours: 'Monday - Friday: 9AM - 7PM\nSaturday: 9AM - 5PM\nSunday: Closed',
-        location: {
-            lat: 47.6062,
-            lng: -122.3321,
-        },
-        services: ['Laser Treatments', 'Hydrafacial', 'Botox & Fillers', 'Body Contouring'],
-    },
-];
+import { branchesApi, type Branch } from '../../services/branchesApi';
+import { formatOperatingHours, formatPhone } from '../../utils/format';
+
 export function BranchesPage() {
     const { t } = useTranslation('common');
-    const [selectedBranch, setSelectedBranch] = useState<(typeof branches)[0] | null>(branches[0] ?? null);
+    const [branches, setBranches] = useState<Branch[]>([]);
+    const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchBranches = async () => {
+            try {
+                setLoading(true);
+                const response = await branchesApi.getAllBranches();
+                setBranches(response.data);
+                if (response.data.length > 0) {
+                    setSelectedBranch(response.data[0] || null);
+                }
+            } catch (err) {
+                console.error('Failed to load branches:', err);
+                setError('Không thể tải thông tin chi nhánh. Vui lòng thử lại sau.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchBranches();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center pt-24'>
+                <Loader2 className='w-12 h-12 text-pink-500 animate-spin' />
+            </div>
+        );
+    }
+
+    if (error || branches.length === 0) {
+        return (
+            <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center pt-24'>
+                <div className='text-center text-red-600 p-8 bg-red-50 rounded-2xl max-w-md'>
+                    <p>{error || 'Không tìm thấy chi nhánh nào.'}</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!selectedBranch) {
-        return null; // Early return if no branch is selected
+        return null;
     }
 
     return (
@@ -135,34 +120,44 @@ export function BranchesPage() {
                                     <MapPinIcon className='w-5 h-5 text-pink-500 flex-shrink-0 mt-1' />
                                     <p className='text-gray-700'>{selectedBranch.address}</p>
                                 </div>
-                                <div className='flex items-center gap-3'>
-                                    <PhoneIcon className='w-5 h-5 text-pink-500 flex-shrink-0' />
-                                    <p className='text-gray-700'>{selectedBranch.phone}</p>
-                                </div>
-                                <div className='flex items-start gap-3'>
-                                    <ClockIcon className='w-5 h-5 text-pink-500 flex-shrink-0 mt-1' />
-                                    <div className='text-gray-700 whitespace-pre-line'>{selectedBranch.hours}</div>
-                                </div>
-                                <div className='border-t border-gray-200 pt-5'>
-                                    <h3 className='text-lg font-semibold text-gray-800 mb-2'>{t('branches.availableServices')}</h3>
-                                    <div className='flex flex-wrap gap-2'>
-                                        {selectedBranch.services.map((service) => (
-                                            <span
-                                                key={service}
-                                                className='px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm'
-                                            >
-                                                {service}
-                                            </span>
-                                        ))}
+                                {selectedBranch.phone && (
+                                    <div className='flex items-center gap-3'>
+                                        <PhoneIcon className='w-5 h-5 text-pink-500 flex-shrink-0' />
+                                        <a 
+                                            href={`tel:${selectedBranch.phone}`}
+                                            className='text-gray-700 hover:text-pink-600 transition-colors'
+                                        >
+                                            {formatPhone(selectedBranch.phone)}
+                                        </a>
                                     </div>
-                                </div>
+                                )}
+                                {selectedBranch.email && (
+                                    <div className='flex items-center gap-3'>
+                                        <MailIcon className='w-5 h-5 text-pink-500 flex-shrink-0' />
+                                        <a 
+                                            href={`mailto:${selectedBranch.email}`}
+                                            className='text-gray-700 hover:text-pink-600 transition-colors'
+                                        >
+                                            {selectedBranch.email}
+                                        </a>
+                                    </div>
+                                )}
+                                {selectedBranch.operatingHours && (
+                                    <div className='flex items-start gap-3'>
+                                        <ClockIcon className='w-5 h-5 text-pink-500 flex-shrink-0 mt-1' />
+                                        <div className='text-gray-700'>
+                                            {formatOperatingHours(selectedBranch.operatingHours)}
+                                        </div>
+                                    </div>
+                                )}
                                 <div className='pt-4'>
                                     <a
-                                        href={`https://maps.google.com/?q=${selectedBranch.location.lat},${selectedBranch.location.lng}`}
+                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedBranch.address)}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
-                                        className='inline-flex items-center gap-2 text-pink-600 font-medium hover:text-pink-700 transition-colors'
+                                        className='inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition-opacity font-medium'
                                     >
+                                        <MapPinIcon className='w-4 h-4' />
                                         {t('branches.getDirections')}
                                         <ArrowRightIcon className='w-4 h-4' />
                                     </a>
@@ -193,14 +188,16 @@ export function BranchesPage() {
                                 </div>
                             </div>
                             <div className='p-4'>
-                                <div className='flex items-center gap-2 text-gray-700 text-sm mb-1'>
+                                <div className='flex items-center gap-2 text-gray-700 text-sm mb-2'>
                                     <MapPinIcon className='w-4 h-4 text-pink-500 flex-shrink-0' />
-                                    <p className='line-clamp-1'>{branch.address.split(',')[0]}</p>
+                                    <p className='line-clamp-1'>{branch.address}</p>
                                 </div>
-                                <div className='flex items-center gap-2 text-gray-700 text-sm'>
-                                    <PhoneIcon className='w-4 h-4 text-pink-500 flex-shrink-0' />
-                                    <p>{branch.phone}</p>
-                                </div>
+                                {branch.phone && (
+                                    <div className='flex items-center gap-2 text-gray-700 text-sm'>
+                                        <PhoneIcon className='w-4 h-4 text-pink-500 flex-shrink-0' />
+                                        <p>{formatPhone(branch.phone)}</p>
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     ))}
