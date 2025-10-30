@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, ChevronLeft, ChevronRight, Loader2, CheckCircle, MessageCircle, PenSquare } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { getReviews, type Review, type ReviewsResponse } from '../../api/adapters/reviews';
 import { WriteReviewModal } from '../components/reviews/WriteReviewModal';
 
 export default function ReviewsPage() {
+    const { t, i18n } = useTranslation('common');
     const [reviews, setReviews] = useState<Review[]>([]);
     const [stats, setStats] = useState<ReviewsResponse['stats'] | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +55,8 @@ export default function ReviewsPage() {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
+        const locale = i18n.language === 'vi' ? 'vi-VN' : 'en-US';
+        return date.toLocaleDateString(locale, {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -74,17 +77,17 @@ export default function ReviewsPage() {
                     className='text-center mb-12'
                 >
                     <h1 className='text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4'>
-                        Đánh giá từ khách hàng
+                        {t('reviews.title')}
                     </h1>
                     <p className='text-lg text-gray-600 mb-6'>
-                        Trải nghiệm thực tế từ những người đã sử dụng dịch vụ của chúng tôi
+                        {t('reviews.subtitle')}
                     </p>
                     <button
                         onClick={() => setIsWriteModalOpen(true)}
                         className='inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow'
                     >
                         <PenSquare className='w-5 h-5' />
-                        Viết đánh giá
+                        {t('reviews.writeReview')}
                     </button>
                 </motion.div>
 
@@ -114,7 +117,9 @@ export default function ReviewsPage() {
                                         />
                                     ))}
                                 </div>
-                                <p className='text-gray-600'>Dựa trên {stats.totalReviews} đánh giá</p>
+                                <p className='text-gray-600'>
+                                    {t('reviews.basedOn')} {stats.totalReviews} {t('reviews.reviews')}
+                                </p>
                             </div>
 
                             {/* Rating Distribution */}
@@ -184,14 +189,14 @@ export default function ReviewsPage() {
                     </div>
 
                     <div className='flex items-center gap-2'>
-                        <span className='text-sm font-medium text-gray-600'>Sắp xếp:</span>
+                        <span className='text-sm font-medium text-gray-600'>{t('reviews.sortBy')}:</span>
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as 'date' | 'rating')}
                             className='px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:border-transparent'
                         >
-                            <option value='date'>Mới nhất</option>
-                            <option value='rating'>Điểm cao nhất</option>
+                            <option value='date'>{t('reviews.latest')}</option>
+                            <option value='rating'>{t('reviews.highestRating')}</option>
                         </select>
                     </div>
                 </div>
@@ -200,16 +205,16 @@ export default function ReviewsPage() {
                 {isLoading ? (
                     <div className='flex items-center justify-center py-20'>
                         <Loader2 className='w-8 h-8 text-pink-500 animate-spin' />
-                        <span className='ml-3 text-gray-600'>Đang tải đánh giá...</span>
+                        <span className='ml-3 text-gray-600'>{t('reviews.loading')}</span>
                     </div>
                 ) : reviews.length === 0 ? (
                     <div className='text-center py-20'>
-                        <p className='text-gray-600 mb-4'>Không tìm thấy đánh giá phù hợp</p>
+                        <p className='text-gray-600 mb-4'>{t('reviews.noReviews')}</p>
                         <button
                             onClick={() => handleRatingFilter(null)}
                             className='px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors'
                         >
-                            Xem tất cả đánh giá
+                            {t('reviews.viewAll')}
                         </button>
                     </div>
                 ) : (

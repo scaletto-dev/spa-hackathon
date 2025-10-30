@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, ArrowLeftIcon, MapPinIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BookingStepProps } from './types';
 
 const branches = [
@@ -30,6 +31,7 @@ const branches = [
 ];
 
 export function BookingBranchSelect({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
+    const { t } = useTranslation('common');
     const handleSelectBranch = (branch: (typeof branches)[number]) => {
         updateBookingData({
             branch,
@@ -54,10 +56,8 @@ export function BookingBranchSelect({ bookingData, updateBookingData, onNext, on
             }}
         >
             <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>Choose a Branch</h2>
-                <p className='text-gray-600'>
-                    Select which BeautyAI location you'd like to visit for your {bookingData.service?.title}
-                </p>
+                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.chooseABranch')}</h2>
+                <p className='text-gray-600'>{t('bookings.selectLocation', { service: bookingData.service?.title })}</p>
             </div>
             <div className='grid md:grid-cols-3 gap-6 mb-8'>
                 {branches.map((branch) => (
@@ -67,7 +67,11 @@ export function BookingBranchSelect({ bookingData, updateBookingData, onNext, on
                             y: -5,
                         }}
                         onClick={() => handleSelectBranch(branch)}
-                        className={`cursor-pointer bg-white/70 backdrop-blur-xl rounded-3xl border-2 ${bookingData.branch?.id === branch.id ? 'border-pink-500 shadow-lg shadow-pink-200' : 'border-white/50 shadow-lg'} overflow-hidden transition-all`}
+                        className={`cursor-pointer bg-white/70 backdrop-blur-xl rounded-3xl border-2 ${
+                            bookingData.branch?.id === branch.id
+                                ? 'border-pink-500 shadow-lg shadow-pink-200'
+                                : 'border-white/50 shadow-lg'
+                        } overflow-hidden transition-all`}
                     >
                         <div className='relative h-44 overflow-hidden'>
                             <img src={branch.image} alt={branch.name} className='w-full h-full object-cover' />
@@ -100,7 +104,7 @@ export function BookingBranchSelect({ bookingData, updateBookingData, onNext, on
                     className='flex items-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg'
                 >
                     <ArrowLeftIcon className='w-5 h-5' />
-                    Back
+                    {t('common.back')}
                 </motion.button>
                 <motion.button
                     whileHover={{
@@ -111,9 +115,13 @@ export function BookingBranchSelect({ bookingData, updateBookingData, onNext, on
                     }}
                     onClick={onNext}
                     disabled={!bookingData.branch}
-                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${bookingData.branch ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                        bookingData.branch
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
                 >
-                    Continue
+                    {t('common.continue')}
                     <ArrowRightIcon className='w-5 h-5' />
                 </motion.button>
             </div>

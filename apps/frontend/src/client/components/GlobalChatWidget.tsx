@@ -2,14 +2,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircleIcon, XIcon, SendIcon, SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useChatWidget } from '../../contexts/ChatWidgetContext';
 
 export function GlobalChatWidget() {
+    const { t } = useTranslation('common');
     const { isOpen, closeChat, toggleChat } = useChatWidget();
     const [messages, setMessages] = useState<Array<{ type: 'bot' | 'user'; text: string }>>([
         {
             type: 'bot',
-            text: "Hello! I'm BeautyAI's virtual assistant. How can I help you today?",
+            text: t('chat.greeting'),
         },
     ]);
     const [input, setInput] = useState('');
@@ -82,7 +84,7 @@ export function GlobalChatWidget() {
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleChat}
                 data-testid='chat-toggle-button'
-                aria-label={isOpen ? 'Close chat' : 'Open chat'}
+                aria-label={isOpen ? t('chat.closeChat') : t('chat.openChat')}
             >
                 {isOpen ? (
                     <XIcon className='w-7 h-7 text-white' />
@@ -105,18 +107,18 @@ export function GlobalChatWidget() {
                                 <SparklesIcon className='w-5 h-5 text-white' />
                             </div>
                             <div className='flex-1'>
-                                <p className='text-sm text-gray-800'>Cần giúp đỡ? Hỏi AI assistant của chúng tôi!</p>
+                                <p className='text-sm text-gray-800'>{t('chat.needHelp')}</p>
                                 <button
                                     className='text-xs text-pink-600 font-medium mt-1 hover:text-pink-700'
                                     onClick={toggleChat}
                                 >
-                                    Bắt đầu chat →
+                                    {t('chat.startChat')}
                                 </button>
                             </div>
                             <button
                                 onClick={() => setShowHint(false)}
                                 className='flex-shrink-0 p-1 hover:bg-gray-100 rounded-full transition-colors'
-                                aria-label='Đóng gợi ý'
+                                aria-label={t('chat.closeHint')}
                             >
                                 <XIcon className='w-4 h-4 text-gray-400' />
                             </button>
@@ -144,14 +146,14 @@ export function GlobalChatWidget() {
                                         <SparklesIcon className='w-5 h-5 text-white' />
                                     </div>
                                     <div>
-                                        <h3 className='font-bold text-white text-sm'>BeautyAI Assistant</h3>
-                                        <p className='text-xs text-white/80'>AI-powered support</p>
+                                        <h3 className='font-bold text-white text-sm'>{t('chat.assistant')}</h3>
+                                        <p className='text-xs text-white/80'>{t('chat.aiSupport')}</p>
                                     </div>
                                 </div>
                                 <button
                                     onClick={closeChat}
                                     className='p-1 hover:bg-white/20 rounded-full transition-colors'
-                                    aria-label='Close chat'
+                                    aria-label={t('chat.closeChat')}
                                 >
                                     <XIcon className='w-5 h-5 text-white' />
                                 </button>
@@ -199,7 +201,7 @@ export function GlobalChatWidget() {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder='Type your message...'
+                                    placeholder={t('chat.placeholder')}
                                     className='flex-1 px-3 py-2 text-sm border-2 border-gray-200 rounded-full focus:outline-none focus:border-pink-300'
                                     data-testid='chat-input'
                                 />
@@ -209,12 +211,12 @@ export function GlobalChatWidget() {
                                     onClick={handleSend}
                                     className='w-9 h-9 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'
                                     data-testid='chat-send-button'
-                                    aria-label='Send message'
+                                    aria-label={t('chat.send')}
                                 >
                                     <SendIcon className='w-4 h-4 text-white' />
                                 </motion.button>
                             </div>
-                            <p className='text-xs text-gray-500 mt-2 text-center'>Powered by BeautyAI Technology</p>
+                            <p className='text-xs text-gray-500 mt-2 text-center'>{t('chat.poweredBy')}</p>
                         </div>
                     </motion.div>
                 )}

@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { CalendarIcon, MessageCircleIcon, SparklesIcon } from 'lucide-react';
 import { useChatWidget } from '../../../contexts/ChatWidgetContext';
 
 export function ServicesCTA() {
+    const { t } = useTranslation('common');
     const navigate = useNavigate();
     const { openChat } = useChatWidget();
     return (
@@ -42,12 +44,9 @@ export function ServicesCTA() {
                                 <SparklesIcon className='w-10 h-10 text-white' />
                             </motion.div>
                             <h2 className='text-4xl md:text-5xl font-bold text-gray-800'>
-                                Ready to Transform Your Skin?
+                                {t('services.readyToTransform')}
                             </h2>
-                            <p className='text-xl text-gray-600 leading-relaxed'>
-                                Book your personalized consultation today and let our AI technology create the perfect
-                                treatment plan for you. Experience the future of beauty care.
-                            </p>
+                            <p className='text-xl text-gray-600 leading-relaxed'>{t('services.bookConsultation')}</p>
                             <div className='flex flex-col sm:flex-row gap-4 justify-center pt-4'>
                                 <motion.button
                                     onClick={() => navigate('/booking')}
@@ -61,7 +60,7 @@ export function ServicesCTA() {
                                     className='flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl'
                                 >
                                     <CalendarIcon className='w-5 h-5' />
-                                    Book Appointment
+                                    {t('services.bookAppointment')}
                                 </motion.button>
                                 <motion.button
                                     onClick={openChat}
@@ -75,7 +74,7 @@ export function ServicesCTA() {
                                     className='flex items-center justify-center gap-2 px-8 py-4 bg-white/80 backdrop-blur-md text-gray-700 rounded-full font-semibold border-2 border-pink-200 shadow-lg hover:bg-white transition-colors'
                                 >
                                     <MessageCircleIcon className='w-5 h-5' />
-                                    Chat with AI
+                                    {t('services.chatWithAI')}
                                 </motion.button>
                             </div>
                             <div className='grid md:grid-cols-3 gap-6 pt-8'>

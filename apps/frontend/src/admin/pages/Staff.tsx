@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PlusIcon, Edit3Icon, CalendarIcon, XCircleIcon, SparklesIcon } from 'lucide-react';
 import { StaffModal } from '../components/modals/StaffModal';
 import { Toast } from '../components/Toast';
+import { useTranslation } from 'react-i18next';
 const staff = [
     {
         id: 1,
@@ -41,6 +42,7 @@ const staff = [
     },
 ];
 export function Staff() {
+    const { t } = useTranslation('common');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [toast, setToast] = useState<{
         message: string;
@@ -48,7 +50,7 @@ export function Staff() {
     } | null>(null);
     const handleStaffAdded = () => {
         setToast({
-            message: 'Therapist added successfully!',
+            message: t('admin.staff.staffAdded'),
             type: 'success',
         });
     };
@@ -56,7 +58,7 @@ export function Staff() {
     const handleEditStaff = (staffId: number, name: string) => {
         console.log(`✏️ Mock: Editing staff #${staffId}`);
         setToast({
-            message: `Chức năng chỉnh sửa "${name}" đang được phát triển...`,
+            message: t('admin.staff.editInProgress', { name }),
             type: 'warning',
         });
     };
@@ -64,16 +66,16 @@ export function Staff() {
     const handleViewSchedule = (staffId: number, name: string) => {
         console.log(`📅 Mock: Viewing schedule for staff #${staffId}`);
         setToast({
-            message: `Đang xem lịch của "${name}"... (Mocked)`,
+            message: t('admin.staff.viewingSchedule', { name }),
             type: 'success',
         });
     };
 
     const handleDeleteStaff = (staffId: number, name: string) => {
-        if (window.confirm(`Bạn có chắc chắn muốn xóa chuyên viên "${name}"?`)) {
+        if (window.confirm(t('admin.staff.confirmDelete', { name }))) {
             console.log(`🗑️ Mock: Deleted staff #${staffId}`);
             setToast({
-                message: `Đã xóa chuyên viên "${name}"! (Mocked)`,
+                message: t('admin.staff.staffDeleted', { name }),
                 type: 'success',
             });
         }
@@ -82,15 +84,15 @@ export function Staff() {
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold text-gray-800'>Staff & Therapists</h1>
-                    <p className='text-gray-600 mt-1'>Manage your team members</p>
+                    <h1 className='text-3xl font-bold text-gray-800'>{t('admin.staff.title')}</h1>
+                    <p className='text-gray-600 mt-1'>{t('admin.staff.subtitle')}</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className='px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm flex items-center gap-2'
                 >
                     <PlusIcon className='w-5 h-5' />
-                    Add New Therapist
+                    {t('admin.staff.addNewStaff')}
                 </button>
             </div>
             <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
@@ -99,8 +101,7 @@ export function Staff() {
                         <SparklesIcon className='w-4 h-4 text-white' />
                     </div>
                     <p className='text-sm text-gray-700'>
-                        <span className='font-semibold'>AI Tip:</span> Click "Generate Bio" when adding a therapist to
-                        automatically create a professional description
+                        <span className='font-semibold'>{t('admin.staff.aiTip')}:</span> {t('admin.staff.aiTipText')}
                     </p>
                 </div>
             </div>
@@ -120,7 +121,9 @@ export function Staff() {
                                             : 'bg-orange-500 text-white'
                                     }`}
                                 >
-                                    {member.status === 'available' ? 'Available' : 'On Leave'}
+                                    {member.status === 'available'
+                                        ? t('admin.staff.available')
+                                        : t('admin.staff.onLeave')}
                                 </span>
                             </div>
                             <div className='absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1'>
@@ -138,17 +141,19 @@ export function Staff() {
                                     className='flex-1 py-2 bg-pink-50 text-pink-600 rounded-lg text-sm font-medium hover:bg-pink-100 transition-colors flex items-center justify-center gap-1'
                                 >
                                     <Edit3Icon className='w-4 h-4' />
-                                    Edit
+                                    {t('common.edit')}
                                 </button>
                                 <button
                                     onClick={() => handleViewSchedule(member.id, member.name)}
                                     className='p-2 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors'
+                                    aria-label={t('admin.staff.viewSchedule')}
                                 >
                                     <CalendarIcon className='w-4 h-4' />
                                 </button>
                                 <button
                                     onClick={() => handleDeleteStaff(member.id, member.name)}
                                     className='p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors'
+                                    aria-label={t('common.delete')}
                                 >
                                     <XCircleIcon className='w-4 h-4' />
                                 </button>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { CreditCardIcon, ShieldCheckIcon } from 'lucide-react';
 
 interface CardData {
@@ -15,6 +16,7 @@ interface CardPaymentProps {
 }
 
 export function CardPayment({ onComplete }: CardPaymentProps) {
+    const { t } = useTranslation('common');
     const [cardData, setCardData] = useState<CardData>({
         number: '',
         name: '',
@@ -84,11 +86,11 @@ export function CardPayment({ onComplete }: CardPaymentProps) {
                         </p>
                         <div className='flex justify-between items-end'>
                             <div>
-                                <p className='text-xs opacity-80 mb-1'>Card Holder</p>
-                                <p className='font-medium'>{cardData.name || 'YOUR NAME'}</p>
+                                <p className='text-xs opacity-80 mb-1'>{t('payment.cardHolder')}</p>
+                                <p className='font-medium'>{cardData.name || t('payment.yourName')}</p>
                             </div>
                             <div>
-                                <p className='text-xs opacity-80 mb-1'>Expires</p>
+                                <p className='text-xs opacity-80 mb-1'>{t('payment.expires')}</p>
                                 <p className='font-medium'>{cardData.expiry || 'MM/YY'}</p>
                             </div>
                         </div>
@@ -98,7 +100,7 @@ export function CardPayment({ onComplete }: CardPaymentProps) {
             {/* Card Form */}
             <div className='grid md:grid-cols-2 gap-4'>
                 <div className='md:col-span-2'>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>Card Number</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>{t('payment.cardNumber')}</label>
                     <input
                         type='text'
                         name='number'
@@ -119,7 +121,9 @@ export function CardPayment({ onComplete }: CardPaymentProps) {
                     />
                 </div>
                 <div className='md:col-span-2'>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>Cardholder Name</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                        {t('payment.cardholderName')}
+                    </label>
                     <input
                         type='text'
                         name='name'
@@ -130,7 +134,7 @@ export function CardPayment({ onComplete }: CardPaymentProps) {
                     />
                 </div>
                 <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>Expiry Date</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>{t('payment.expiryDate')}</label>
                     <input
                         type='text'
                         name='expiry'
@@ -166,7 +170,7 @@ export function CardPayment({ onComplete }: CardPaymentProps) {
             {/* 3D Secure Badge */}
             <div className='flex items-center gap-2 p-3 bg-green-50 rounded-xl border border-green-200'>
                 <ShieldCheckIcon className='w-5 h-5 text-green-600' />
-                <span className='text-sm text-green-700 font-medium'>3-D Secure protected transaction</span>
+                <span className='text-sm text-green-700 font-medium'>{t('payment.secureTransaction')}</span>
             </div>
             {/* Save Card Option */}
             <label className='flex items-center gap-2 cursor-pointer'>
@@ -177,7 +181,7 @@ export function CardPayment({ onComplete }: CardPaymentProps) {
                     onChange={handleChange}
                     className='w-4 h-4 rounded accent-pink-500'
                 />
-                <span className='text-sm text-gray-700'>Save this card for future bookings</span>
+                <span className='text-sm text-gray-700'>{t('payment.saveCard')}</span>
             </label>
         </div>
     );

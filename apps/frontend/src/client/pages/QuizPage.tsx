@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon, ArrowRightIcon, SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from '../../utils/toast';
 
 interface Question {
@@ -39,6 +40,7 @@ const questions: Question[] = [
 ];
 
 export default function QuizPage() {
+    const { t } = useTranslation('common');
     const navigate = useNavigate();
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<number, string>>({});

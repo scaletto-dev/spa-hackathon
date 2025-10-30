@@ -4,6 +4,7 @@ import { X, Star, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../../auth/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { reviewsApi } from '../../../services/reviewsApi';
+import { useTranslation } from 'react-i18next';
 
 interface WriteReviewModalProps {
     isOpen: boolean;
@@ -20,6 +21,7 @@ export function WriteReviewModal({
     serviceId: _serviceId,
     onSubmitSuccess,
 }: WriteReviewModalProps) {
+    const { t } = useTranslation('common');
     const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const [rating, setRating] = useState(0);
@@ -61,22 +63,22 @@ export function WriteReviewModal({
         setError('');
 
         if (rating === 0) {
-            setError('Vui lòng chọn số sao đánh giá');
+            setError(t('reviews.errorSelectRating'));
             return;
         }
 
         if (comment.trim().length < 10) {
-            setError('Nội dung đánh giá phải có ít nhất 10 ký tự');
+            setError(t('reviews.errorMinLength'));
             return;
         }
 
         if (!_serviceId) {
-            setError('Không tìm thấy thông tin dịch vụ');
+            setError(t('reviews.errorNoService'));
             return;
         }
 
         if (!user) {
-            setError('Không tìm thấy thông tin người dùng');
+            setError(t('reviews.errorNoUser'));
             return;
         }
 
@@ -141,7 +143,7 @@ export function WriteReviewModal({
                             {/* Header */}
                             <div className='sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl'>
                                 <h2 className='text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
-                                    Viết đánh giá
+                                    {t('reviews.writeReview')}
                                 </h2>
                                 <button
                                     onClick={handleClose}
@@ -159,16 +161,16 @@ export function WriteReviewModal({
                                     <div className='w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4'>
                                         <AlertCircle className='w-8 h-8 text-pink-600' />
                                     </div>
-                                    <h3 className='text-xl font-semibold text-gray-900 mb-2'>Bạn cần đăng nhập</h3>
-                                    <p className='text-gray-600 mb-6'>
-                                        Vui lòng đăng nhập để viết đánh giá về dịch vụ của chúng tôi
-                                    </p>
+                                    <h3 className='text-xl font-semibold text-gray-900 mb-2'>
+                                        {t('reviews.needLogin')}
+                                    </h3>
+                                    <p className='text-gray-600 mb-6'>{t('reviews.needLoginDesc')}</p>
                                     <div className='flex gap-3'>
                                         <button
                                             onClick={handleClose}
                                             className='flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium'
                                         >
-                                            Hủy
+                                            {t('common.cancel')}
                                         </button>
                                         <button
                                             onClick={() => {
@@ -177,7 +179,7 @@ export function WriteReviewModal({
                                             }}
                                             className='flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-shadow font-medium'
                                         >
-                                            Đăng nhập
+                                            {t('auth.login')}
                                         </button>
                                     </div>
                                 </div>
@@ -185,7 +187,7 @@ export function WriteReviewModal({
                                 // Checking Booking Status
                                 <div className='p-6 text-center py-12'>
                                     <Loader2 className='w-12 h-12 text-pink-500 animate-spin mx-auto mb-4' />
-                                    <p className='text-gray-600'>Đang kiểm tra lịch sử đặt hẹn...</p>
+                                    <p className='text-gray-600'>{t('reviews.checkingBooking')}</p>
                                 </div>
                             ) : hasCompletedBooking === false ? (
                                 // No Completed Booking State
@@ -193,17 +195,16 @@ export function WriteReviewModal({
                                     <div className='w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4'>
                                         <AlertCircle className='w-8 h-8 text-orange-600' />
                                     </div>
-                                    <h3 className='text-xl font-semibold text-gray-900 mb-2'>Chưa thể đánh giá</h3>
-                                    <p className='text-gray-600 mb-6'>
-                                        Bạn cần hoàn thành ít nhất 1 lần sử dụng dịch vụ này trước khi có thể viết đánh
-                                        giá.
-                                    </p>
+                                    <h3 className='text-xl font-semibold text-gray-900 mb-2'>
+                                        {t('reviews.cannotReview')}
+                                    </h3>
+                                    <p className='text-gray-600 mb-6'>{t('reviews.cannotReviewDesc')}</p>
                                     <div className='flex gap-3'>
                                         <button
                                             onClick={handleClose}
                                             className='flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium'
                                         >
-                                            Đóng
+                                            {t('reviews.close')}
                                         </button>
                                         <button
                                             onClick={() => {
@@ -212,7 +213,7 @@ export function WriteReviewModal({
                                             }}
                                             className='flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-shadow font-medium'
                                         >
-                                            Đặt lịch ngay
+                                            {t('reviews.bookNowBtn')}
                                         </button>
                                     </div>
                                 </div>
@@ -222,7 +223,7 @@ export function WriteReviewModal({
                                     {/* Service Name */}
                                     {serviceName && (
                                         <div className='bg-pink-50 rounded-lg p-4'>
-                                            <p className='text-sm text-gray-600 mb-1'>Dịch vụ:</p>
+                                            <p className='text-sm text-gray-600 mb-1'>{t('reviews.serviceLabel')}</p>
                                             <p className='font-semibold text-gray-900'>{serviceName}</p>
                                         </div>
                                     )}
@@ -230,7 +231,7 @@ export function WriteReviewModal({
                                     {/* Rating Stars */}
                                     <div>
                                         <label className='block text-sm font-medium text-gray-700 mb-3'>
-                                            Đánh giá của bạn <span className='text-red-500'>*</span>
+                                            {t('reviews.yourRating')} <span className='text-red-500'>*</span>
                                         </label>
                                         <div className='flex items-center gap-2'>
                                             {[1, 2, 3, 4, 5].map((star) => (
@@ -253,11 +254,11 @@ export function WriteReviewModal({
                                             ))}
                                             {rating > 0 && (
                                                 <span className='ml-2 text-sm font-medium text-gray-600'>
-                                                    {rating === 5 && 'Xuất sắc'}
-                                                    {rating === 4 && 'Tốt'}
-                                                    {rating === 3 && 'Trung bình'}
-                                                    {rating === 2 && 'Tệ'}
-                                                    {rating === 1 && 'Rất tệ'}
+                                                    {rating === 5 && t('reviews.excellent')}
+                                                    {rating === 4 && t('reviews.good')}
+                                                    {rating === 3 && t('reviews.average')}
+                                                    {rating === 2 && t('reviews.poor')}
+                                                    {rating === 1 && t('reviews.veryPoor')}
                                                 </span>
                                             )}
                                         </div>
@@ -269,19 +270,19 @@ export function WriteReviewModal({
                                             htmlFor='comment'
                                             className='block text-sm font-medium text-gray-700 mb-2'
                                         >
-                                            Nội dung đánh giá <span className='text-red-500'>*</span>
+                                            {t('reviews.reviewContent')} <span className='text-red-500'>*</span>
                                         </label>
                                         <textarea
                                             id='comment'
                                             value={comment}
                                             onChange={(e) => setComment(e.target.value)}
-                                            placeholder='Chia sẻ trải nghiệm của bạn về dịch vụ này...'
+                                            placeholder={t('reviews.reviewPlaceholder')}
                                             rows={5}
                                             className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none'
                                             disabled={isSubmitting}
                                         />
                                         <p className='mt-1 text-xs text-gray-500'>
-                                            Tối thiểu 10 ký tự ({comment.length}/500)
+                                            {t('reviews.minCharacters')} ({comment.length}/500)
                                         </p>
                                     </div>
 
@@ -305,9 +306,11 @@ export function WriteReviewModal({
                                         >
                                             <CheckCircle className='w-6 h-6 text-green-500 flex-shrink-0' />
                                             <div>
-                                                <p className='font-semibold text-green-900'>Gửi đánh giá thành công!</p>
+                                                <p className='font-semibold text-green-900'>
+                                                    {t('reviews.submitSuccess')}
+                                                </p>
                                                 <p className='text-sm text-green-700'>
-                                                    Cảm ơn bạn đã chia sẻ trải nghiệm.
+                                                    {t('reviews.submitSuccessDesc')}
                                                 </p>
                                             </div>
                                         </motion.div>
@@ -321,7 +324,7 @@ export function WriteReviewModal({
                                             disabled={isSubmitting}
                                             className='flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 font-medium'
                                         >
-                                            Hủy
+                                            {t('common.cancel')}
                                         </button>
                                         <button
                                             type='submit'
@@ -331,10 +334,10 @@ export function WriteReviewModal({
                                             {isSubmitting ? (
                                                 <>
                                                     <Loader2 className='w-5 h-5 animate-spin' />
-                                                    Đang gửi...
+                                                    {t('reviews.submitting')}
                                                 </>
                                             ) : (
-                                                'Gửi đánh giá'
+                                                t('reviews.submit')
                                             )}
                                         </button>
                                     </div>

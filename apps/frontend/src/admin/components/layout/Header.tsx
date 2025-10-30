@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SearchIcon, BellIcon, BotIcon, ChevronDownIcon, LogOutIcon, UserIcon, MenuIcon } from 'lucide-react';
 import { useAuth } from '../../../auth/useAuth';
 import { toast } from '../../../utils/toast';
+import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
 
 interface HeaderProps {
     onMenuClick: () => void;
@@ -73,6 +74,9 @@ export function Header({ onMenuClick }: HeaderProps) {
 
             {/* Right: Actions */}
             <div className='flex items-center gap-2 md:gap-4'>
+                {/* Language Switcher */}
+                <LanguageSwitcher />
+                
                 {/* AI Assistant Button - Hidden on small mobile */}
                 <button
                     onClick={() => toast.info('AI Assistant feature coming soon!')}

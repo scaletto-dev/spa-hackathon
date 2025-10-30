@@ -12,6 +12,7 @@ import {
 import { CustomerModal } from '../components/modals/CustomerModal';
 import { CustomerDetailsModal } from '../components/modals/CustomerDetailsModal';
 import { Toast } from '../components/Toast';
+import { useTranslation } from 'react-i18next';
 const customers = [
     {
         id: 1,
@@ -65,6 +66,7 @@ const tierColors = {
     New: 'bg-gradient-to-r from-blue-400 to-cyan-400 text-white',
 };
 export function Customers() {
+    const { t } = useTranslation('common');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<{
         id: number;
@@ -76,23 +78,23 @@ export function Customers() {
     } | null>(null);
     const handleCustomerAdded = () => {
         setToast({
-            message: 'Customer added successfully!',
+            message: t('admin.customers.customerAdded'),
             type: 'success',
         });
     };
 
     const handleCustomerUpdated = () => {
         setToast({
-            message: 'Customer updated successfully!',
+            message: t('admin.customers.customerUpdated'),
             type: 'success',
         });
     };
 
     const handleCustomerDeleted = (customerId: number) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa khách hàng này?')) {
+        if (window.confirm(t('admin.customers.confirmDelete'))) {
             console.log(`🗑️ Mock: Deleted customer #${customerId}`);
             setToast({
-                message: 'Customer deleted successfully! (Mocked)',
+                message: t('admin.customers.customerDeleted'),
                 type: 'success',
             });
         }
@@ -101,15 +103,15 @@ export function Customers() {
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold text-gray-800'>Customers</h1>
-                    <p className='text-gray-600 mt-1'>Manage your client database</p>
+                    <h1 className='text-3xl font-bold text-gray-800'>{t('admin.customers.title')}</h1>
+                    <p className='text-gray-600 mt-1'>{t('admin.customers.subtitle')}</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className='px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm flex items-center gap-2'
                 >
                     <PlusIcon className='w-5 h-5' />
-                    Add Customer
+                    {t('admin.customers.addCustomer')}
                 </button>
             </div>
             <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
@@ -119,14 +121,12 @@ export function Customers() {
                             <TrendingUpIcon className='w-4 h-4 text-white' />
                         </div>
                         <div>
-                            <p className='text-sm font-semibold text-gray-800'>AI Insights</p>
-                            <p className='text-xs text-gray-600'>
-                                Most frequent customers: Sarah Johnson (24 visits), Michael Chen (12 visits)
-                            </p>
+                            <p className='text-sm font-semibold text-gray-800'>{t('admin.customers.aiInsight')}</p>
+                            <p className='text-xs text-gray-600'>{t('admin.customers.aiInsightText')}</p>
                         </div>
                     </div>
                     <span className='text-xs font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full'>
-                        High Retention: 88%
+                        {t('admin.customers.highRetention')}
                     </span>
                 </div>
             </div>
@@ -136,23 +136,26 @@ export function Customers() {
                         <SearchIcon className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400' />
                         <input
                             type='text'
-                            placeholder='Search customers by name, email, or phone...'
+                            placeholder={t('admin.customers.searchPlaceholder')}
                             className='w-full pl-10 pr-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'
                         />
                     </div>
                     <select className='px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'>
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
+                        <option>{t('admin.customers.allStatus')}</option>
+                        <option>{t('admin.customers.active')}</option>
+                        <option>{t('admin.customers.inactive')}</option>
                     </select>
                     <select className='px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'>
-                        <option>All Tiers</option>
+                        <option>{t('admin.customers.allTiers')}</option>
                         <option>VIP</option>
                         <option>Gold</option>
                         <option>Silver</option>
-                        <option>New</option>
+                        <option>{t('admin.customers.new')}</option>
                     </select>
-                    <button className='p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors'>
+                    <button
+                        className='p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors'
+                        aria-label={t('common.filter')}
+                    >
                         <FilterIcon className='w-5 h-5 text-gray-600' />
                     </button>
                 </div>
@@ -161,25 +164,25 @@ export function Customers() {
                         <thead className='bg-pink-50/50'>
                             <tr>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Customer
+                                    {t('admin.customers.customer')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Contact
+                                    {t('admin.customers.contact')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Total Bookings
+                                    {t('admin.customers.totalBookings')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Membership
+                                    {t('admin.customers.membership')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Retention
+                                    {t('admin.customers.retention')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Status
+                                    {t('admin.customers.status')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Actions
+                                    {t('admin.customers.actions')}
                                 </th>
                             </tr>
                         </thead>
@@ -220,7 +223,7 @@ export function Customers() {
                                     </td>
                                     <td className='px-6 py-4'>
                                         <span className='inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700'>
-                                            Active
+                                            {t('admin.customers.active')}
                                         </span>
                                     </td>
                                     <td className='px-6 py-4'>
@@ -233,6 +236,7 @@ export function Customers() {
                                                     })
                                                 }
                                                 className='p-2 rounded-lg hover:bg-blue-100 transition-colors'
+                                                aria-label={t('admin.customers.viewDetails')}
                                             >
                                                 <EyeIcon className='w-4 h-4 text-blue-600' />
                                             </button>
@@ -244,12 +248,14 @@ export function Customers() {
                                                     })
                                                 }
                                                 className='p-2 rounded-lg hover:bg-pink-100 transition-colors'
+                                                aria-label={t('common.edit')}
                                             >
                                                 <Edit3Icon className='w-4 h-4 text-gray-600' />
                                             </button>
                                             <button
                                                 onClick={() => handleCustomerDeleted(customer.id)}
                                                 className='p-2 rounded-lg hover:bg-red-100 transition-colors'
+                                                aria-label={t('common.delete')}
                                             >
                                                 <XCircleIcon className='w-4 h-4 text-red-500' />
                                             </button>

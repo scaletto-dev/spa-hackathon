@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { SparklesIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { FormField, Select, DatePicker, TimePicker } from '../../../components/ui';
+import { useTranslation } from 'react-i18next';
 
 export function BookingWidget() {
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
     const [aiAssist, setAiAssist] = useState(false);
     const [formData, setFormData] = useState({
         service: '',
@@ -16,18 +18,18 @@ export function BookingWidget() {
     });
 
     const serviceOptions = [
-        { value: '', label: 'Chọn dịch vụ' },
-        { value: 'facial', label: 'Chăm sóc da mặt' },
-        { value: 'laser', label: 'Triệt lông Laser' },
-        { value: 'botox', label: 'Botox & Filler' },
-        { value: 'analysis', label: 'Phân tích da' },
+        { value: '', label: t('home.bookingWidget.selectService') },
+        { value: 'facial', label: t('home.bookingWidget.services.facial') },
+        { value: 'laser', label: t('home.bookingWidget.services.laser') },
+        { value: 'botox', label: t('home.bookingWidget.services.botox') },
+        { value: 'analysis', label: t('home.bookingWidget.services.analysis') },
     ];
 
     const branchOptions = [
-        { value: '', label: 'Chọn chi nhánh' },
-        { value: 'downtown', label: 'Chi nhánh Trung tâm' },
-        { value: 'westside', label: 'Chi nhánh Tây' },
-        { value: 'eastside', label: 'Chi nhánh Đông' },
+        { value: '', label: t('home.bookingWidget.selectBranch') },
+        { value: 'downtown', label: t('home.bookingWidget.branches.downtown') },
+        { value: 'westside', label: t('home.bookingWidget.branches.westside') },
+        { value: 'eastside', label: t('home.bookingWidget.branches.eastside') },
     ];
 
     const handleSelectChange = (name: string) => (value: string) => {
@@ -41,7 +43,7 @@ export function BookingWidget() {
     const handleQuickBook = () => {
         // Validate form
         if (!formData.service || !formData.branch || !formData.date || !formData.time) {
-            toast.error('Vui lòng điền đầy đủ thông tin');
+            toast.error(t('home.bookingWidget.fillAllFields'));
             return;
         }
 
@@ -56,7 +58,7 @@ export function BookingWidget() {
 
         sessionStorage.setItem('quickBookingData', JSON.stringify(bookingData));
 
-        toast.success('Đang chuyển đến trang đặt lịch...');
+        toast.success(t('home.bookingWidget.redirecting'));
         setTimeout(() => {
             navigate('/booking');
         }, 500);
@@ -83,7 +85,7 @@ export function BookingWidget() {
             >
                 <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8'>
                     <div className='flex items-center justify-between mb-6'>
-                        <h2 className='text-2xl font-bold text-gray-800'>Đặt lịch nhanh</h2>
+                        <h2 className='text-2xl font-bold text-gray-800'>{t('home.bookingWidget.title')}</h2>
                         <label className='flex items-center gap-2 cursor-pointer'>
                             <input
                                 type='checkbox'
@@ -93,48 +95,48 @@ export function BookingWidget() {
                             />
                             <span className='text-sm text-gray-600 flex items-center gap-1'>
                                 <SparklesIcon className='w-4 h-4 text-pink-500' />
-                                Để AI chọn giờ tốt nhất
+                                {t('home.bookingWidget.aiAssist')}
                             </span>
                         </label>
                     </div>
                     <div className='grid md:grid-cols-4 gap-4 mb-6'>
-                        <FormField label='Dịch vụ' name='service'>
+                        <FormField label={t('home.bookingWidget.service')} name='service'>
                             <Select
                                 name='service'
                                 value={formData.service}
                                 onChange={handleSelectChange('service')}
                                 options={serviceOptions}
-                                placeholder='Chọn dịch vụ'
+                                placeholder={t('home.bookingWidget.selectService')}
                             />
                         </FormField>
 
-                        <FormField label='Chi nhánh' name='branch'>
+                        <FormField label={t('home.bookingWidget.branch')} name='branch'>
                             <Select
                                 name='branch'
                                 value={formData.branch}
                                 onChange={handleSelectChange('branch')}
                                 options={branchOptions}
-                                placeholder='Chọn chi nhánh'
+                                placeholder={t('home.bookingWidget.selectBranch')}
                                 searchable={false}
                             />
                         </FormField>
 
-                        <FormField label='Ngày' name='date'>
+                        <FormField label={t('home.bookingWidget.date')} name='date'>
                             <DatePicker
                                 name='date'
                                 value={formData.date}
                                 onChange={handleDateChange}
-                                placeholder='Chọn ngày'
+                                placeholder={t('home.bookingWidget.selectDate')}
                                 disablePastDates
                             />
                         </FormField>
 
-                        <FormField label='Giờ' name='time'>
+                        <FormField label={t('home.bookingWidget.time')} name='time'>
                             <TimePicker
                                 name='time'
                                 value={formData.time}
                                 onChange={handleSelectChange('time')}
-                                placeholder='Chọn giờ'
+                                placeholder={t('home.bookingWidget.selectTime')}
                                 interval={60}
                             />
                         </FormField>
@@ -149,7 +151,7 @@ export function BookingWidget() {
                         }}
                         className='w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-shadow'
                     >
-                        {aiAssist ? 'Xác nhận với AI Assistant' : 'Xác nhận đặt lịch'}
+                        {aiAssist ? t('home.bookingWidget.confirmWithAI') : t('home.bookingWidget.confirmBooking')}
                     </motion.button>
                 </div>
             </motion.div>

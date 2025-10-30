@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BookingStepProps } from './types';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     ArrowRightIcon,
     ArrowLeftIcon,
@@ -15,6 +16,7 @@ import {
 const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
 
 export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
+    const { t } = useTranslation('common');
     const [selectedDate, setSelectedDate] = useState<string | null>(bookingData.date || null);
     const [selectedTime, setSelectedTime] = useState(bookingData.time || null);
     const [useAI, setUseAI] = useState(bookingData.useAI || false);
@@ -111,7 +113,15 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                             : {}
                     }
                     onClick={() => !isPast && handleSelectDate(day)}
-                    className={`h-10 w-10 rounded-full flex items-center justify-center cursor-pointer ${isPast ? 'text-gray-300 cursor-not-allowed' : isSelected ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : isToday ? 'border-2 border-pink-400 text-pink-600' : 'hover:bg-pink-100 text-gray-700'}`}
+                    className={`h-10 w-10 rounded-full flex items-center justify-center cursor-pointer ${
+                        isPast
+                            ? 'text-gray-300 cursor-not-allowed'
+                            : isSelected
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                            : isToday
+                            ? 'border-2 border-pink-400 text-pink-600'
+                            : 'hover:bg-pink-100 text-gray-700'
+                    }`}
                 >
                     {day}
                 </motion.div>,
@@ -138,9 +148,12 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
             }}
         >
             <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>Pick a Date & Time</h2>
+                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.pickDateTime')}</h2>
                 <p className='text-gray-600'>
-                    Choose when you'd like to visit {bookingData.branch?.name} for your {bookingData.service?.title}
+                    {t('bookings.chooseDateTime', {
+                        branch: bookingData.branch?.name,
+                        service: bookingData.service?.title,
+                    })}
                 </p>
             </div>
             <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6 mb-8'>
@@ -154,7 +167,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                     />
                     <label htmlFor='aiAssist' className='flex items-center gap-2 cursor-pointer'>
                         <SparklesIcon className='w-5 h-5 text-pink-500' />
-                        <span className='text-gray-700'>Let AI choose the best time for me</span>
+                        <span className='text-gray-700'>{t('bookings.letAIChoose')}</span>
                     </label>
                 </div>
                 {!useAI && (
@@ -163,7 +176,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                             <div className='flex items-center justify-between mb-4'>
                                 <div className='flex items-center gap-2'>
                                     <CalendarIcon className='w-5 h-5 text-pink-500' />
-                                    <h3 className='text-lg font-semibold text-gray-800'>Select Date</h3>
+                                    <h3 className='text-lg font-semibold text-gray-800'>{t('bookings.selectDate')}</h3>
                                 </div>
                                 {/* Month Navigation */}
                                 <div className='flex items-center gap-3'>
@@ -198,7 +211,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                         <div>
                             <div className='flex items-center gap-2 mb-4'>
                                 <ClockIcon className='w-5 h-5 text-pink-500' />
-                                <h3 className='text-lg font-semibold text-gray-800'>Select Time</h3>
+                                <h3 className='text-lg font-semibold text-gray-800'>{t('bookings.selectTime')}</h3>
                             </div>
                             <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
                                 {timeSlots.map((time) => (
@@ -211,7 +224,11 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                                             scale: 0.95,
                                         }}
                                         onClick={() => handleSelectTime(time)}
-                                        className={`py-3 rounded-xl border-2 text-center cursor-pointer ${selectedTime === time ? 'border-pink-500 bg-pink-50 text-pink-600' : 'border-gray-200 hover:border-pink-200 text-gray-700'}`}
+                                        className={`py-3 rounded-xl border-2 text-center cursor-pointer ${
+                                            selectedTime === time
+                                                ? 'border-pink-500 bg-pink-50 text-pink-600'
+                                                : 'border-gray-200 hover:border-pink-200 text-gray-700'
+                                        }`}
                                     >
                                         {time}
                                     </motion.div>
@@ -227,11 +244,10 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                                 <SparklesIcon className='w-6 h-6 text-white' />
                             </div>
                             <div>
-                                <h3 className='text-lg font-semibold text-gray-800 mb-2'>AI Recommendation</h3>
-                                <p className='text-gray-600 mb-3'>
-                                    Based on your service type, provider availability, and optimal healing conditions,
-                                    we recommend:
-                                </p>
+                                <h3 className='text-lg font-semibold text-gray-800 mb-2'>
+                                    {t('bookings.aiRecommendation')}
+                                </h3>
+                                <p className='text-gray-600 mb-3'>{t('bookings.aiRecommendationDesc')}</p>
                                 <div className='flex flex-wrap gap-3 mb-2'>
                                     <div className='bg-white rounded-xl px-4 py-2 border border-pink-200 flex items-center gap-2'>
                                         <CalendarIcon className='w-4 h-4 text-pink-500' />
@@ -250,9 +266,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                                         <span className='font-medium'>{selectedTime || 'Loading...'}</span>
                                     </div>
                                 </div>
-                                <p className='text-sm text-gray-500 italic'>
-                                    This time has been selected based on optimal conditions for your treatment.
-                                </p>
+                                <p className='text-sm text-gray-500 italic'>{t('bookings.optimalConditions')}</p>
                             </div>
                         </div>
                     </div>
@@ -270,7 +284,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                     className='flex items-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg'
                 >
                     <ArrowLeftIcon className='w-5 h-5' />
-                    Back
+                    {t('common.back')}
                 </motion.button>
                 <motion.button
                     whileHover={{
@@ -281,9 +295,13 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                     }}
                     onClick={onNext}
                     disabled={!(selectedDate && selectedTime) && !useAI}
-                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${(selectedDate && selectedTime) || useAI ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                        (selectedDate && selectedTime) || useAI
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
                 >
-                    Continue
+                    {t('common.continue')}
                     <ArrowRightIcon className='w-5 h-5' />
                 </motion.button>
             </div>

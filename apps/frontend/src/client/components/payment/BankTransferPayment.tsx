@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadIcon, XIcon, CheckIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface BankTransferPaymentProps {
     onComplete: (isComplete: boolean) => void;
 }
 
 export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
+    const { t } = useTranslation('common');
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
@@ -31,34 +33,34 @@ export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
         <div className='space-y-6'>
             {/* Bank Details */}
             <div className='p-4 bg-gray-50 rounded-2xl border border-gray-200'>
-                <h4 className='font-semibold text-gray-800 mb-3'>Bank Transfer Instructions</h4>
+                <h4 className='font-semibold text-gray-800 mb-3'>{t('payment.bankTransferInstructions')}</h4>
                 <div className='space-y-2 text-sm text-gray-700'>
                     <div className='flex justify-between'>
-                        <span className='text-gray-600'>Bank Name:</span>
+                        <span className='text-gray-600'>{t('payment.bankName')}</span>
                         <span className='font-medium'>BeautyAI Bank</span>
                     </div>
                     <div className='flex justify-between'>
-                        <span className='text-gray-600'>Account Name:</span>
+                        <span className='text-gray-600'>{t('payment.accountName')}</span>
                         <span className='font-medium'>BeautyAI Clinic Ltd.</span>
                     </div>
                     <div className='flex justify-between'>
-                        <span className='text-gray-600'>Account Number:</span>
+                        <span className='text-gray-600'>{t('payment.accountNumber')}</span>
                         <span className='font-medium'>1234567890</span>
                     </div>
                     <div className='flex justify-between'>
-                        <span className='text-gray-600'>Reference:</span>
+                        <span className='text-gray-600'>{t('payment.reference')}</span>
                         <span className='font-medium text-pink-600'>{referenceNumber}</span>
                     </div>
                 </div>
             </div>
             {/* Important Notes */}
             <div className='p-4 bg-yellow-50 rounded-2xl border border-yellow-200'>
-                <h4 className='font-semibold text-gray-800 mb-2 text-sm'>Important Notes:</h4>
+                <h4 className='font-semibold text-gray-800 mb-2 text-sm'>{t('payment.importantNotes')}</h4>
                 <ul className='space-y-1 text-sm text-gray-700 list-disc list-inside'>
-                    <li>Please include the reference number in your transfer</li>
-                    <li>Upload your receipt after completing the transfer</li>
-                    <li>Your booking will be confirmed once payment is verified</li>
-                    <li>Verification typically takes 1-2 business days</li>
+                    <li>{t('payment.includeReference')}</li>
+                    <li>{t('payment.uploadReceipt')}</li>
+                    <li>{t('payment.confirmAfterVerify')}</li>
+                    <li>{t('payment.verificationTime')}</li>
                 </ul>
             </div>
             {/* Upload Receipt */}
@@ -79,7 +81,7 @@ export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
                             <CheckIcon className='w-6 h-6 text-white' />
                         </div>
                         <div className='flex-1'>
-                            <p className='font-medium text-gray-800'>Receipt uploaded</p>
+                            <p className='font-medium text-gray-800'>{t('payment.receiptUploaded')}</p>
                             <p className='text-sm text-gray-600'>{uploadedFile.name}</p>
                         </div>
                         <button onClick={() => setUploadedFile(null)} className='text-gray-400 hover:text-gray-600'>
@@ -99,8 +101,8 @@ export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
                     className='w-full p-6 border-2 border-dashed border-pink-300 rounded-2xl hover:border-pink-400 hover:bg-pink-50 transition-all'
                 >
                     <UploadIcon className='w-8 h-8 text-pink-500 mx-auto mb-2' />
-                    <p className='text-gray-700 font-medium'>Upload Transfer Receipt</p>
-                    <p className='text-sm text-gray-500 mt-1'>PNG, JPG or PDF (max 5MB)</p>
+                    <p className='text-gray-700 font-medium'>{t('payment.uploadButton')}</p>
+                    <p className='text-sm text-gray-500 mt-1'>{t('payment.supportedFormats')}</p>
                 </motion.button>
             )}
             {/* Upload Modal */}
@@ -136,7 +138,7 @@ export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
                             className='bg-white rounded-3xl p-6 max-w-md w-full'
                         >
                             <div className='flex justify-between items-center mb-6'>
-                                <h3 className='text-xl font-bold text-gray-800'>Upload Receipt</h3>
+                                <h3 className='text-xl font-bold text-gray-800'>{t('payment.uploadTitle')}</h3>
                                 <button
                                     onClick={() => setShowUploadModal(false)}
                                     className='text-gray-400 hover:text-gray-600'
@@ -147,8 +149,8 @@ export function BankTransferPayment({ onComplete }: BankTransferPaymentProps) {
                             <label className='block'>
                                 <div className='border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-all'>
                                     <UploadIcon className='w-12 h-12 text-gray-400 mx-auto mb-3' />
-                                    <p className='text-gray-700 font-medium mb-1'>Click to upload or drag and drop</p>
-                                    <p className='text-sm text-gray-500'>PNG, JPG or PDF (max 5MB)</p>
+                                    <p className='text-gray-700 font-medium mb-1'>{t('payment.dragDrop')}</p>
+                                    <p className='text-sm text-gray-500'>{t('payment.supportedFormats')}</p>
                                 </div>
                                 <input
                                     type='file'
