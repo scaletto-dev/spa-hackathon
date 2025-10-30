@@ -1,49 +1,84 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, ChevronLeft, ChevronRight, Loader2, CheckCircle, MessageCircle, PenSquare } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Loader2, MessageCircle, PenSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getReviews, type Review, type ReviewsResponse } from '../../api/adapters/reviews';
+import { reviewsApi, type Review } from '../../services/reviewsApi';
 import { WriteReviewModal } from '../components/reviews/WriteReviewModal';
+
+interface ReviewStats {
+    averageRating: number;
+    totalReviews: number;
+    ratingDistribution: {
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+    };
+}
 
 export default function ReviewsPage() {
     const { t, i18n } = useTranslation('common');
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [stats, setStats] = useState<ReviewsResponse['stats'] | null>(null);
+    const [stats, setStats] = useState<ReviewStats | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedRating, setSelectedRating] = useState<number | null>(null);
-    const [sortBy, setSortBy] = useState<'date' | 'rating'>('date');
+    const [sortBy, setSortBy] = useState<'recent' | 'rating'>('recent');
 
     useEffect(() => {
         loadReviews();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, selectedRating, sortBy]);
+    }, [currentPage, sortBy]);
 
     const loadReviews = async () => {
         try {
             setIsLoading(true);
-            const response = await getReviews({
+            
+            // Fetch reviews with filters
+            const response = await reviewsApi.getAllReviews({
                 page: currentPage,
                 limit: 6,
-                ...(selectedRating && { rating: selectedRating }),
-                sortBy,
-                sortOrder: 'desc',
+                sort: sortBy,
             });
+            
             setReviews(response.data);
-            setStats(response.stats);
             setTotalPages(response.meta.totalPages);
+            
+            // Calculate stats from all reviews (fetch all to get accurate stats)
+            const allReviewsResponse = await reviewsApi.getAllReviews({
+                page: 1,
+                limit: 100, // Get all reviews for stats
+                sort: 'recent',
+            });
+            
+            const allReviews = allReviewsResponse.data;
+            const totalReviews = allReviews.length;
+            
+            if (totalReviews > 0) {
+                const ratingDistribution = {
+                    1: allReviews.filter(r => r.rating === 1).length,
+                    2: allReviews.filter(r => r.rating === 2).length,
+                    3: allReviews.filter(r => r.rating === 3).length,
+                    4: allReviews.filter(r => r.rating === 4).length,
+                    5: allReviews.filter(r => r.rating === 5).length,
+                };
+                
+                const totalRating = allReviews.reduce((sum, r) => sum + r.rating, 0);
+                const averageRating = totalRating / totalReviews;
+                
+                setStats({
+                    averageRating: Math.round(averageRating * 10) / 10,
+                    totalReviews,
+                    ratingDistribution,
+                });
+            }
         } catch (error) {
             console.error('Load reviews error:', error);
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleRatingFilter = (rating: number | null) => {
-        setSelectedRating(rating);
-        setCurrentPage(1); // Reset to page 1 when filter changes
     };
 
     const handlePageChange = (newPage: number) => {
@@ -129,16 +164,9 @@ export default function ReviewsPage() {
                                         stats.ratingDistribution[rating as keyof typeof stats.ratingDistribution];
                                     const percentage = getPercentage(count, stats.totalReviews);
                                     return (
-                                        <button
+                                        <div
                                             key={rating}
-                                            onClick={() =>
-                                                handleRatingFilter(selectedRating === rating ? null : rating)
-                                            }
-                                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-colors ${
-                                                selectedRating === rating
-                                                    ? 'bg-pink-100 border-2 border-pink-500'
-                                                    : 'hover:bg-gray-50'
-                                            }`}
+                                            className='w-full flex items-center gap-3 p-2 rounded-lg'
                                         >
                                             <div className='flex items-center gap-1 w-16'>
                                                 <span className='text-sm font-medium'>{rating}</span>
@@ -151,7 +179,7 @@ export default function ReviewsPage() {
                                                 />
                                             </div>
                                             <span className='text-sm text-gray-600 w-12 text-right'>{count}</span>
-                                        </button>
+                                        </div>
                                     );
                                 })}
                             </div>
@@ -159,43 +187,16 @@ export default function ReviewsPage() {
                     </motion.div>
                 )}
 
-                {/* Filter & Sort Bar */}
-                <div className='flex flex-wrap items-center justify-between gap-4 mb-6'>
-                    <div className='flex items-center gap-2'>
-                        <span className='text-sm font-medium text-gray-600'>Lọc theo:</span>
-                        <button
-                            onClick={() => handleRatingFilter(null)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                selectedRating === null
-                                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
-                                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                            }`}
-                        >
-                            Tất cả
-                        </button>
-                        {[5, 4, 3].map((rating) => (
-                            <button
-                                key={rating}
-                                onClick={() => handleRatingFilter(rating)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1 ${
-                                    selectedRating === rating
-                                        ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
-                                        : 'bg-white text-gray-700 hover:bg-gray-100'
-                                }`}
-                            >
-                                {rating} <Star className='w-4 h-4' />
-                            </button>
-                        ))}
-                    </div>
-
+                {/* Sort Bar */}
+                <div className='flex items-center justify-end gap-4 mb-6'>
                     <div className='flex items-center gap-2'>
                         <span className='text-sm font-medium text-gray-600'>{t('reviews.sortBy')}:</span>
                         <select
                             value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as 'date' | 'rating')}
+                            onChange={(e) => setSortBy(e.target.value as 'recent' | 'rating')}
                             className='px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:border-transparent'
                         >
-                            <option value='date'>{t('reviews.latest')}</option>
+                            <option value='recent'>{t('reviews.latest')}</option>
                             <option value='rating'>{t('reviews.highestRating')}</option>
                         </select>
                     </div>
@@ -210,12 +211,6 @@ export default function ReviewsPage() {
                 ) : reviews.length === 0 ? (
                     <div className='text-center py-20'>
                         <p className='text-gray-600 mb-4'>{t('reviews.noReviews')}</p>
-                        <button
-                            onClick={() => handleRatingFilter(null)}
-                            className='px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors'
-                        >
-                            {t('reviews.viewAll')}
-                        </button>
                     </div>
                 ) : (
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-8'>
@@ -230,23 +225,25 @@ export default function ReviewsPage() {
                                 {/* Review Header */}
                                 <div className='flex items-start gap-4 mb-4'>
                                     <img
-                                        src={review.customerAvatar}
+                                        src={
+                                            review.customerAvatar ||
+                                            `https://ui-avatars.com/api/?name=${encodeURIComponent(review.customerName)}&background=ec4899&color=fff`
+                                        }
                                         alt={review.customerName}
                                         className='w-12 h-12 rounded-full object-cover'
                                     />
                                     <div className='flex-1'>
                                         <div className='flex items-center gap-2 mb-1'>
                                             <h3 className='font-semibold text-gray-900'>{review.customerName}</h3>
-                                            {review.verified && (
-                                                <div className='inline-flex' title='Đã xác thực'>
-                                                    <CheckCircle className='w-4 h-4 text-green-500' />
-                                                </div>
-                                            )}
                                         </div>
                                         <div className='flex items-center gap-2 text-sm text-gray-600'>
-                                            <span>{formatDate(review.date)}</span>
-                                            <span>•</span>
-                                            <span>{review.service}</span>
+                                            <span>{formatDate(review.createdAt)}</span>
+                                            {review.service && (
+                                                <>
+                                                    <span>•</span>
+                                                    <span>{review.service.name}</span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -263,27 +260,19 @@ export default function ReviewsPage() {
                                     ))}
                                 </div>
 
-                                {/* Review Comment */}
-                                <p className='text-gray-700 leading-relaxed mb-4'>{review.comment}</p>
+                                {/* Review Text */}
+                                <p className='text-gray-700 leading-relaxed mb-4'>{review.reviewText}</p>
 
-                                {/* Branch */}
-                                <p className='text-sm text-gray-500 mb-3'>📍 {review.branch}</p>
-
-                                {/* Admin Reply */}
-                                {review.reply && (
+                                {/* Admin Response */}
+                                {review.adminResponse && (
                                     <div className='mt-4 pt-4 border-t border-gray-200'>
                                         <div className='flex items-start gap-3 bg-pink-50 rounded-lg p-4'>
                                             <MessageCircle className='w-5 h-5 text-pink-600 flex-shrink-0 mt-1' />
                                             <div>
                                                 <p className='text-sm font-semibold text-pink-800 mb-1'>
-                                                    Phản hồi từ Beauty Clinic Care
+                                                    {t('reviews.response')}
                                                 </p>
-                                                <p className='text-sm text-gray-700 mb-2'>{review.reply}</p>
-                                                {review.replyDate && (
-                                                    <p className='text-xs text-gray-500'>
-                                                        {formatDate(review.replyDate)}
-                                                    </p>
-                                                )}
+                                                <p className='text-sm text-gray-700'>{review.adminResponse}</p>
                                             </div>
                                         </div>
                                     </div>

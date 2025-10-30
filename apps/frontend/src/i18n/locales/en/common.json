@@ -388,12 +388,16 @@
         "minCharacters": "Minimum 10 characters",
         "submitSuccess": "Review submitted successfully!",
         "submitSuccessDesc": "Thank you for sharing your experience.",
+        "pendingApproval": "Your review is pending approval and will be published after our team reviews it.",
         "submit": "Submit Review",
         "submitting": "Submitting...",
         "errorSelectRating": "Please select a star rating",
         "errorMinLength": "Review content must be at least 10 characters",
         "errorNoService": "Service information not found",
-        "errorNoUser": "User information not found"
+        "errorNoUser": "User information not found",
+        "errorSelectService": "Please select a service to review",
+        "selectService": "Select Service",
+        "chooseService": "Choose a service..."
     },
     "branches": {
         "title": "Our Locations",

@@ -4,6 +4,7 @@ import { X, Star, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../../auth/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { reviewsApi } from '../../../services/reviewsApi';
+import { servicesApi, type Service } from '../../../services/servicesApi';
 import { useTranslation } from 'react-i18next';
 
 interface WriteReviewModalProps {
@@ -32,6 +33,9 @@ export function WriteReviewModal({
     const [error, setError] = useState('');
     const [hasCompletedBooking, setHasCompletedBooking] = useState<boolean | null>(null);
     const [isCheckingBooking, setIsCheckingBooking] = useState(false);
+    const [services, setServices] = useState<Service[]>([]);
+    const [selectedServiceId, setSelectedServiceId] = useState<string>(_serviceId || '');
+    const [isLoadingServices, setIsLoadingServices] = useState(false);
 
     // Check if user has completed booking for this service
     const checkCompletedBooking = async (_svcId: string) => {
@@ -48,19 +52,50 @@ export function WriteReviewModal({
         }
     };
 
+    // Fetch services when modal opens
+    useEffect(() => {
+        const fetchServices = async () => {
+            if (isOpen && !_serviceId) {
+                try {
+                    setIsLoadingServices(true);
+                    const response = await servicesApi.getServices({ limit: 100 });
+                    setServices(response.data);
+                } catch (error) {
+                    console.error('Failed to load services:', error);
+                } finally {
+                    setIsLoadingServices(false);
+                }
+            }
+        };
+        fetchServices();
+    }, [isOpen, _serviceId]);
+
+    // Update selectedServiceId when serviceId prop changes
+    useEffect(() => {
+        if (_serviceId) {
+            setSelectedServiceId(_serviceId);
+        }
+    }, [_serviceId]);
+
     // Check booking status when modal opens (only if authenticated)
     useEffect(() => {
-        if (isOpen && isAuthenticated && _serviceId) {
-            checkCompletedBooking(_serviceId);
+        if (isOpen && isAuthenticated && selectedServiceId) {
+            // For now, allow anyone to write review (skip booking check)
+            setHasCompletedBooking(true);
         } else if (isOpen && !isAuthenticated) {
             setHasCompletedBooking(null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, isAuthenticated, _serviceId]);
+    }, [isOpen, isAuthenticated, selectedServiceId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        if (!selectedServiceId) {
+            setError(t('reviews.errorSelectService'));
+            return;
+        }
 
         if (rating === 0) {
             setError(t('reviews.errorSelectRating'));
@@ -69,11 +104,6 @@ export function WriteReviewModal({
 
         if (comment.trim().length < 10) {
             setError(t('reviews.errorMinLength'));
-            return;
-        }
-
-        if (!_serviceId) {
-            setError(t('reviews.errorNoService'));
             return;
         }
 
@@ -87,7 +117,7 @@ export function WriteReviewModal({
 
             // Call API to create review
             await reviewsApi.createReview({
-                serviceId: _serviceId,
+                serviceId: selectedServiceId,
                 customerName: user.fullName || user.email,
                 email: user.email,
                 rating,
@@ -116,8 +146,15 @@ export function WriteReviewModal({
             setComment('');
             setError('');
             setShowSuccess(false);
+            setSelectedServiceId(_serviceId || '');
             onClose();
         }
+    };
+
+    const getSelectedServiceName = () => {
+        if (serviceName) return serviceName;
+        const selected = services.find(s => s.id === selectedServiceId);
+        return selected?.name || '';
     };
 
     return (
@@ -220,11 +257,39 @@ export function WriteReviewModal({
                             ) : (
                                 // Logged In & Has Completed Booking - Show Review Form
                                 <form onSubmit={handleSubmit} className='p-6 space-y-6'>
-                                    {/* Service Name */}
-                                    {serviceName && (
+                                    {/* Service Selector/Display */}
+                                    {_serviceId || serviceName ? (
                                         <div className='bg-pink-50 rounded-lg p-4'>
-                                            <p className='text-sm text-gray-600 mb-1'>{t('reviews.serviceLabel')}</p>
-                                            <p className='font-semibold text-gray-900'>{serviceName}</p>
+                                            <p className='text-sm text-gray-600 mb-1'>{t('reviews.service')}</p>
+                                            <p className='font-semibold text-gray-900'>{getSelectedServiceName()}</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <label htmlFor='service' className='block text-sm font-medium text-gray-700 mb-2'>
+                                                {t('reviews.selectService')} <span className='text-red-500'>*</span>
+                                            </label>
+                                            {isLoadingServices ? (
+                                                <div className='flex items-center gap-2 text-gray-500 py-3'>
+                                                    <Loader2 className='w-4 h-4 animate-spin' />
+                                                    <span>{t('common.loading')}</span>
+                                                </div>
+                                            ) : (
+                                                <select
+                                                    id='service'
+                                                    value={selectedServiceId}
+                                                    onChange={(e) => setSelectedServiceId(e.target.value)}
+                                                    className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent'
+                                                    disabled={isSubmitting}
+                                                    required
+                                                >
+                                                    <option value=''>{t('reviews.chooseService')}</option>
+                                                    {services.map((service) => (
+                                                        <option key={service.id} value={service.id}>
+                                                            {service.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
                                         </div>
                                     )}
 
@@ -302,16 +367,21 @@ export function WriteReviewModal({
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className='bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3'
+                                            className='bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3'
                                         >
-                                            <CheckCircle className='w-6 h-6 text-green-500 flex-shrink-0' />
-                                            <div>
-                                                <p className='font-semibold text-green-900'>
+                                            <CheckCircle className='w-6 h-6 text-green-500 flex-shrink-0 mt-0.5' />
+                                            <div className='flex-1'>
+                                                <p className='font-semibold text-green-900 mb-1'>
                                                     {t('reviews.submitSuccess')}
                                                 </p>
-                                                <p className='text-sm text-green-700'>
+                                                <p className='text-sm text-green-700 mb-2'>
                                                     {t('reviews.submitSuccessDesc')}
                                                 </p>
+                                                <div className='bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3'>
+                                                    <p className='text-sm text-blue-800'>
+                                                        ℹ️ {t('reviews.pendingApproval')}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </motion.div>
                                     )}

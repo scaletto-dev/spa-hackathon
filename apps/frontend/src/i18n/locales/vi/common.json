@@ -388,12 +388,16 @@
         "minCharacters": "Tối thiểu 10 ký tự",
         "submitSuccess": "Gửi đánh giá thành công!",
         "submitSuccessDesc": "Cảm ơn bạn đã chia sẻ trải nghiệm.",
+        "pendingApproval": "Đánh giá của bạn đang chờ phê duyệt và sẽ được đăng sau khi nhóm của chúng tôi xem xét.",
         "submit": "Gửi đánh giá",
         "submitting": "Đang gửi...",
         "errorSelectRating": "Vui lòng chọn số sao đánh giá",
         "errorMinLength": "Nội dung đánh giá phải có ít nhất 10 ký tự",
         "errorNoService": "Không tìm thấy thông tin dịch vụ",
-        "errorNoUser": "Không tìm thấy thông tin người dùng"
+        "errorNoUser": "Không tìm thấy thông tin người dùng",
+        "errorSelectService": "Vui lòng chọn dịch vụ để đánh giá",
+        "selectService": "Chọn dịch vụ",
+        "chooseService": "Chọn một dịch vụ..."
     },
     "branches": {
         "title": "Địa điểm của chúng tôi",
