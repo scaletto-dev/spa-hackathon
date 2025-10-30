@@ -941,6 +941,7 @@
         "subscribeSuccess": "Đăng ký nhận tin thành công!",
         "enterEmail": "Vui lòng nhập địa chỉ email",
         "enterValidEmail": "Vui lòng nhập địa chỉ email hợp lệ",
-        "readFullArticle": "Đọc bài viết đầy đủ"
+        "readFullArticle": "Đọc bài viết đầy đủ",
+        "viewAll": "Xem tất cả bài viết"
     }
 }

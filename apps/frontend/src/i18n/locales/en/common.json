@@ -942,6 +942,7 @@
         "subscribeSuccess": "Successfully subscribed to newsletter!",
         "enterEmail": "Please enter email address",
         "enterValidEmail": "Please enter a valid email address",
-        "readFullArticle": "Read Full Article"
+        "readFullArticle": "Read Full Article",
+        "viewAll": "View All Articles"
     }
 }
