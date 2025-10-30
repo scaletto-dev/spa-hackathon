@@ -43,6 +43,8 @@ export interface BlogCategory {
   id: string;
   name: string;
   slug: string;
+  description: string | null;
+  postCount: number;
 }
 
 export interface BlogListResponse {
@@ -54,6 +56,36 @@ export interface BlogListResponse {
     limit: number;
     totalPages: number;
   };
+  timestamp: string;
+}
+
+export interface BlogCategoriesResponse {
+  success: boolean;
+  data: BlogCategory[];
+  timestamp: string;
+}
+
+export interface BlogPostDetail extends BlogPostBackend {
+  relatedPosts: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    featuredImage: string;
+    publishedAt: string | null;
+    category: {
+      name: string;
+      slug: string;
+    };
+    author: {
+      fullName: string;
+    };
+  }>;
+}
+
+export interface BlogPostDetailResponse {
+  success: boolean;
+  data: BlogPostDetail;
   timestamp: string;
 }
 
