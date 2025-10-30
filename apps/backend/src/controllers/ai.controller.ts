@@ -5,7 +5,7 @@ import { ValidationError } from '../utils/errors';
 
 /**
  * AI Controller
- * 
+ *
  * Handles HTTP requests for AI-powered features:
  * - Chat Widget (conversational AI)
  * - Skin Analysis (quiz analysis)
@@ -20,7 +20,7 @@ export class AIController {
     async chat(
         req: Request<{}, {}, { message: string; sessionId?: string; context?: any }>,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         try {
             const { message, sessionId, context } = req.body;
@@ -59,7 +59,7 @@ export class AIController {
     async analyzeSkin(
         req: Request<{}, {}, { answers: Array<{ questionId: number; question: string; answer: string }> }>,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         try {
             const { answers } = req.body;
@@ -95,7 +95,7 @@ export class AIController {
     async analyzeSentiment(
         req: Request<{}, {}, { reviewText: string }>,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         try {
             const { reviewText } = req.body;
@@ -135,7 +135,7 @@ export class AIController {
     async generateBlog(
         req: Request<{}, {}, { topic: string; keywords: string[] }>,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         try {
             const { topic, keywords } = req.body;
@@ -172,17 +172,13 @@ export class AIController {
      * GET /api/v1/ai/health
      * Health check for AI service
      */
-    async health(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): Promise<void> {
+    async health(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const response: SuccessResponse<{ status: string; model: string }> = {
                 success: true,
                 data: {
                     status: 'AI service is operational',
-                    model: 'gemini-1.5-flash'
+                    model: 'gemini-2.0-flash',
                 },
                 timestamp: new Date().toISOString(),
             };

@@ -187,10 +187,43 @@ model ContactSubmission {
   updatedAt   DateTime      @updatedAt
 }
 
+/// SupportConversation model - Customer support chat conversations
+model SupportConversation {
+  id              String             @id @default(uuid())
+  customerName    String
+  customerEmail   String?
+  status          ConversationStatus @default(PENDING)
+  assignedStaffId String?
+  lastMessage     String?
+  unreadCount     Int                @default(0)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  messages        SupportMessage[]
+
+  @@index([status])
+  @@index([assignedStaffId])
+  @@index([updatedAt])
+}
+
+/// SupportMessage model - Individual messages in support conversations
+model SupportMessage {
+  id             String              @id @default(uuid())
+  conversationId String
+  sender         MessageSender
+  senderName     String?
+  content        String
+  createdAt      DateTime            @default(now())
+  conversation   SupportConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
 enum UserRole {
   MEMBER
   ADMIN
   SUPER_ADMIN
+  STAFF
 }
 
 enum BookingStatus {
@@ -213,4 +246,16 @@ enum ContactStatus {
   PENDING
   IN_PROGRESS
   RESOLVED
+}
+
+enum ConversationStatus {
+  PENDING
+  ACTIVE
+  CLOSED
+}
+
+enum MessageSender {
+  CUSTOMER
+  STAFF
+  AI
 }

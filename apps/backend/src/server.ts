@@ -3,12 +3,14 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
+import { createServer } from 'http';
 import { corsOptions } from './config/cors';
 import { requestLogger } from './middleware/requestLogger';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { errorHandler } from './middleware/errorHandler';
 import { configureRoutes } from './routes';
 import logger from './config/logger';
+import socketService from './services/socket.service';
 
 // Load environment variables from root .env file
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
@@ -17,9 +19,12 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Create HTTP server for Socket.IO
+const httpServer = createServer(app);
+
 /**
  * Middleware Configuration
- * 
+ *
  * CRITICAL: Middleware must be applied in this specific order:
  * 1. helmet() - Security headers (first)
  * 2. cors() - CORS handling
@@ -53,13 +58,18 @@ app.use(notFoundHandler);
 // 7. Global error handler (MUST BE LAST)
 app.use(errorHandler);
 
+// Initialize Socket.IO
+socketService.initialize(httpServer);
+
 // Start server
-app.listen(PORT, () => {
-  logger.info(`🚀 Backend server running on http://localhost:${PORT}`);
-  logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`🔗 Health check: http://localhost:${PORT}/api/health`);
+httpServer.listen(PORT, () => {
+    logger.info(`🚀 Backend server running on http://localhost:${PORT}`);
+    logger.info(`� Socket.IO server ready on ws://localhost:${PORT}`);
+    logger.info(`�📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`🔗 Health check: http://localhost:${PORT}/api/health`);
+    logger.info(`💬 Support Chat API: http://localhost:${PORT}/api/v1/support`);
 });
 
-// Export app for testing
+// Export app and server for testing
 export default app;
-
+export { httpServer };

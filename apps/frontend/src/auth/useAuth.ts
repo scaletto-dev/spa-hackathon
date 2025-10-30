@@ -11,7 +11,7 @@ interface User {
     id: string;
     name: string;
     email: string;
-    role: 'admin' | 'client';
+    role: 'admin' | 'client' | 'staff';
 }
 
 interface AuthState {
@@ -398,7 +398,9 @@ export function useAuth(): AuthState {
                             console.error('❌ Domain not allowed:', emailDomain);
                             reject(
                                 new Error(
-                                    `Admin access requires authorized email domain. Allowed: ${allowedDomains.join(', ')}`,
+                                    `Admin access requires authorized email domain. Allowed: ${allowedDomains.join(
+                                        ', ',
+                                    )}`,
                                 ),
                             );
                             return;

@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react';
 import { useAuth } from '../../auth/useAuth';
 
 interface RequireRoleProps {
-    role: 'admin' | 'client';
+    role: 'admin' | 'client' | 'staff';
 }
 
 /**

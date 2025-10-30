@@ -79,7 +79,7 @@ class AIService {
 
             // Fast model for chat and quick tasks
             this.flashModel = genAI.getGenerativeModel({
-                model: 'gemini-2.0-flash-exp',
+                model: 'gemini-2.0-flash',
                 generationConfig: {
                     temperature: 0.7,
                     maxOutputTokens: 800,
@@ -826,6 +826,122 @@ Important guidelines:
             score: normalizedScore,
             confidence,
         };
+    }
+
+    /**
+     * Generate AI-powered support chat suggestions
+     */
+    async generateSupportSuggestions(
+        conversationId: string,
+        forceLanguage?: string,
+    ): Promise<{
+        suggestions: Array<{
+            id: string;
+            content: string;
+            confidence: number;
+            reasoning: string;
+        }>;
+    }> {
+        try {
+            // Fetch conversation and recent messages
+            const conversation = await prisma.supportConversation.findUnique({
+                where: { id: conversationId },
+                include: {
+                    messages: {
+                        orderBy: { createdAt: 'desc' },
+                        take: 10,
+                    },
+                },
+            });
+
+            if (!conversation) {
+                throw new Error('Conversation not found');
+            }
+
+            // Build conversation context
+            const messageHistory = conversation.messages
+                .reverse()
+                .map((msg) => `${msg.sender}: ${msg.content}`)
+                .join('\n');
+
+            // Use force language if provided, otherwise detect from conversation
+            let language: string;
+            if (forceLanguage) {
+                language = forceLanguage;
+            } else {
+                const isVietnamese = conversation.messages.some((msg) =>
+                    /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(msg.content),
+                );
+                language = isVietnamese ? 'Vietnamese' : 'English';
+            }
+
+            const prompt = `You are a professional customer support assistant for a spa and beauty services business.
+
+CRITICAL: You MUST respond in ${language} language ONLY. All suggestions must be in ${language}.
+
+Analyze this customer conversation and provide 3 helpful, professional reply suggestions:
+
+Customer: ${conversation.customerName}
+Email: ${conversation.customerEmail || 'N/A'}
+
+Recent conversation:
+${messageHistory}
+
+Based on the context above, suggest 3 different professional replies IN ${language} that:
+1. Address the customer's most recent message or question
+2. Are helpful, empathetic, and solution-oriented
+3. Match a professional spa/beauty service tone
+4. Include relevant information about services, booking, pricing when applicable
+5. MUST be written entirely in ${language} language
+
+Return ONLY a valid JSON array with this exact format (no markdown, no code blocks):
+[
+  {
+    "content": "Your first suggested reply here IN ${language}",
+    "reasoning": "Why this reply is appropriate IN ${language}"
+  },
+  {
+    "content": "Your second suggested reply here IN ${language}",
+    "reasoning": "Why this reply is appropriate IN ${language}"
+  },
+  {
+    "content": "Your third suggested reply here IN ${language}",
+    "reasoning": "Why this reply is appropriate IN ${language}"
+  }
+]`;
+
+            const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+            const result = await model.generateContent(prompt);
+            const response = result.response;
+            const text = response.text();
+
+            // Parse JSON response
+            let suggestions;
+            try {
+                // Clean up the response - remove markdown code blocks if present
+                const cleanedText = text
+                    .replace(/```json\n?/g, '')
+                    .replace(/```\n?/g, '')
+                    .trim();
+                suggestions = JSON.parse(cleanedText);
+            } catch (parseError) {
+                logger.error('Failed to parse AI suggestions JSON:', parseError);
+                throw new Error('Failed to parse AI response');
+            }
+
+            // Add IDs and confidence scores
+            const formattedSuggestions = suggestions.map((suggestion: any, index: number) => ({
+                id: `ai-suggestion-${Date.now()}-${index}`,
+                content: suggestion.content,
+                confidence: 0.9 - index * 0.05, // Decreasing confidence
+                reasoning: suggestion.reasoning,
+            }));
+
+            return { suggestions: formattedSuggestions };
+        } catch (error) {
+            logger.error('AI support suggestions error:', error);
+            throw error;
+        }
     }
 }
 
