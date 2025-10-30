@@ -48,19 +48,19 @@ model Service {
   name              String
   slug              String          @unique
   description       String
-  longDescription   String?
   excerpt           String
   duration          Int
   price             Decimal         @db.Decimal(10, 2)
   categoryId        String
   images            String[]
-  benefits          String[]
   featured          Boolean         @default(false)
   active            Boolean         @default(true)
   beforeAfterPhotos String[]
   faqs              Json?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  benefits          String[]
+  longDescription   String?
   bookings          Booking[]
   reviews           Review[]
   category          ServiceCategory @relation(fields: [categoryId], references: [id])
