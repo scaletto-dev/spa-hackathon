@@ -11,7 +11,8 @@ export function ServicesPage() {
     const [services, setServices] = useState<Service[]>([]);
     const [categories, setCategories] = useState<ServiceCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [loading, setLoading] = useState(true);
+    const [initialLoading, setInitialLoading] = useState(true); // First time loading
+    const [loading, setLoading] = useState(false); // Subsequent loading
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState(1);
@@ -39,6 +40,7 @@ export function ServicesPage() {
         const fetchServices = async () => {
             try {
                 setLoading(true);
+                
                 const response = await servicesApi.getServices({
                     page,
                     limit,
@@ -52,6 +54,7 @@ export function ServicesPage() {
                 setError('Không thể tải dịch vụ. Vui lòng thử lại sau.');
             } finally {
                 setLoading(false);
+                setInitialLoading(false);
             }
         };
 
@@ -63,20 +66,11 @@ export function ServicesPage() {
         setPage(1);
     }, [selectedCategory]);
 
-    if (loading) {
+    // Show full page loading only on initial load
+    if (initialLoading) {
         return (
             <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center'>
                 <Loader2 className='w-12 h-12 text-pink-500 animate-spin' />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center'>
-                <div className='text-center text-red-500 p-8 bg-red-50 rounded-2xl max-w-md'>
-                    <p>{error}</p>
-                </div>
             </div>
         );
     }
@@ -91,8 +85,19 @@ export function ServicesPage() {
                 loading={loadingCategories}
             />
             <section className='w-full py-16 px-6'>
-                <div className='max-w-7xl mx-auto'>
-                    {services.length === 0 ? (
+                <div className='max-w-7xl mx-auto relative'>
+                    {/* Loading overlay for subsequent loads */}
+                    {loading && !initialLoading && (
+                        <div className='absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-10 rounded-3xl'>
+                            <Loader2 className='w-8 h-8 text-pink-500 animate-spin' />
+                        </div>
+                    )}
+
+                    {error ? (
+                        <div className='text-center text-red-600 py-12 bg-red-50 rounded-2xl'>
+                            <p>{error}</p>
+                        </div>
+                    ) : services.length === 0 ? (
                         <div className='text-center text-gray-600 py-12'>
                             <p>Không tìm thấy dịch vụ nào trong danh mục này.</p>
                         </div>

@@ -1,259 +1,297 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CalendarIcon, ClockIcon, UserIcon, ArrowLeftIcon, ShareIcon, BookmarkIcon, TagIcon } from 'lucide-react';
-import { toast } from '../../utils/toast';
+import { ArrowLeftIcon, CalendarIcon, UserIcon, Clock, Loader2 } from 'lucide-react';
+import { blogApi } from '../../services/blogApi';
+import { BlogPostDetail } from '../../types/blog';
 
-// Mock blog data - in real app, this would come from mockDataStore
-const blogPosts: Record<string, any> = {
-    'ai-revolutionizing-skincare': {
-        id: 1,
-        slug: 'ai-revolutionizing-skincare',
-        title: 'How AI is Revolutionizing Skincare Analysis',
-        category: 'AI Technology',
-        image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1200&h=600&fit=crop',
-        date: 'March 15, 2024',
-        author: 'Dr. Sarah Johnson',
-        readTime: '8 min read',
-        tags: ['AI', 'Technology', 'Skincare', 'Innovation'],
-        content: `
-      <p>Artificial Intelligence is transforming the beauty and skincare industry in unprecedented ways. From personalized product recommendations to advanced skin analysis, AI is making professional-grade skincare advice accessible to everyone.</p>
-      
-      <h2>The Power of AI Skin Analysis</h2>
-      <p>Modern AI systems can analyze thousands of skin conditions, identifying issues that might be invisible to the naked eye. Using advanced machine learning algorithms, these systems can detect early signs of aging, acne formation, and pigmentation changes.</p>
-      
-      <h2>Personalized Treatment Plans</h2>
-      <p>One of the most significant advantages of AI in skincare is its ability to create highly personalized treatment plans. By analyzing your skin type, concerns, and goals, AI can recommend specific treatments and products tailored to your unique needs.</p>
-      
-      <h2>Real-Time Monitoring</h2>
-      <p>AI-powered apps now allow you to track your skin's progress over time, providing valuable insights into which treatments are working and which might need adjustment. This continuous feedback loop ensures optimal results.</p>
-      
-      <h2>The Future of Skincare</h2>
-      <p>As AI technology continues to evolve, we can expect even more sophisticated skin analysis tools, predictive modeling for aging, and automated treatment adjustments. The future of skincare is intelligent, personalized, and incredibly exciting.</p>
-    `,
-    },
-    'top-aesthetic-treatments-2024': {
-        id: 2,
-        slug: 'top-aesthetic-treatments-2024',
-        title: 'Top 5 Aesthetic Treatments for 2024',
-        category: 'Beauty Trends',
-        image: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=1200&h=600&fit=crop',
-        date: 'March 10, 2024',
-        author: 'Emma Rodriguez',
-        readTime: '6 min read',
-        tags: ['Treatments', 'Beauty', 'Trends', '2024'],
-        content: `
-      <p>The aesthetic treatment landscape is constantly evolving, with new innovations emerging every year. Here are the top 5 treatments trending in 2024.</p>
-      
-      <h2>1. Hydrafacial MD</h2>
-      <p>This non-invasive treatment combines cleansing, exfoliation, extraction, and hydration in one session. Perfect for all skin types, it delivers immediate results with no downtime.</p>
-      
-      <h2>2. LED Light Therapy</h2>
-      <p>Using different wavelengths of light, this treatment addresses various skin concerns from acne to aging. It's painless, relaxing, and highly effective.</p>
-      
-      <h2>3. Microneedling with PRP</h2>
-      <p>Also known as the "vampire facial," this treatment uses your body's own growth factors to rejuvenate skin, reduce scarring, and improve texture.</p>
-      
-      <h2>4. Chemical Peels</h2>
-      <p>Modern chemical peels are gentler yet more effective than ever, offering customizable solutions for pigmentation, acne scars, and aging concerns.</p>
-      
-      <h2>5. Cryotherapy Facials</h2>
-      <p>Using controlled cold therapy, these treatments tighten skin, reduce inflammation, and boost collagen production for a youthful glow.</p>
-    `,
-    },
-    'new-branch-opening-downtown': {
-        id: 3,
-        slug: 'new-branch-opening-downtown',
-        title: 'New Branch Opening Downtown',
-        category: 'Clinic News',
-        image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&h=600&fit=crop',
-        date: 'March 5, 2024',
-        author: 'Management Team',
-        readTime: '4 min read',
-        tags: ['News', 'Announcement', 'Location', 'Expansion'],
-        content: `
-      <p>We're thrilled to announce the opening of our newest location in the heart of downtown! This expansion represents our commitment to making quality aesthetic care accessible to more people.</p>
-      
-      <h2>State-of-the-Art Facility</h2>
-      <p>Our new downtown branch features the latest in aesthetic technology, with dedicated treatment rooms, a relaxation lounge, and a consultation suite designed for your comfort and privacy.</p>
-      
-      <h2>Expert Team</h2>
-      <p>We've assembled a team of highly trained professionals, including board-certified dermatologists, licensed aestheticians, and skincare specialists who are passionate about helping you achieve your beauty goals.</p>
-      
-      <h2>Grand Opening Special</h2>
-      <p>To celebrate our opening, we're offering exclusive discounts on select treatments throughout March. Book your appointment today to take advantage of these limited-time offers!</p>
-      
-      <h2>Location & Hours</h2>
-      <p>Find us at 123 Main Street, Downtown. We're open Monday through Saturday, 9 AM to 7 PM, with extended hours on Fridays until 9 PM.</p>
-    `,
-    },
-};
-
-export default function BlogDetailPage() {
+export function BlogDetailPage() {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
+    const [post, setPost] = useState<BlogPostDetail | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const post = slug ? blogPosts[slug] : null;
+    useEffect(() => {
+        if (!slug) return;
 
-    if (!post) {
+        const fetchPost = async () => {
+            try {
+                setLoading(true);
+                const data = await blogApi.getPostBySlug(slug);
+                setPost(data);
+                // Scroll to top when post loads
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                console.error('Failed to load blog post:', err);
+                setError('Không thể tải bài viết. Vui lòng thử lại sau.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPost();
+    }, [slug]);
+
+    const formatDate = (dateString: string | null) => {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
+    const calculateReadTime = (content: string): string => {
+        const wordsPerMinute = 200;
+        const wordCount = content.split(/\s+/).length;
+        const minutes = Math.ceil(wordCount / wordsPerMinute);
+        return `${minutes} phút đọc`;
+    };
+
+    if (loading) {
         return (
-            <div className='min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center px-6'>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='text-center'>
-                    <h1 className='text-4xl font-bold text-gray-800 mb-4'>Article Not Found</h1>
-                    <p className='text-gray-600 mb-8'>The article you're looking for doesn't exist.</p>
-                    <motion.button
-                        onClick={() => navigate('/blog')}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className='px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl'
-                    >
-                        Back to Blog
-                    </motion.button>
-                </motion.div>
+            <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center pt-24'>
+                <Loader2 className='w-12 h-12 text-pink-500 animate-spin' />
             </div>
         );
     }
 
-    const handleShare = () => {
-        navigator.clipboard.writeText(window.location.href);
-        toast.success('Link copied to clipboard!');
-    };
-
-    const handleBookmark = () => {
-        toast.success('Article bookmarked!');
-    };
+    if (error || !post) {
+        return (
+            <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center pt-24'>
+                <div className='text-center max-w-md'>
+                    <p className='text-red-600 mb-4'>{error || 'Không tìm thấy bài viết'}</p>
+                    <button
+                        onClick={() => navigate('/blog')}
+                        className='px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition-opacity'
+                    >
+                        Quay lại Blog
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-16'>
-            {/* Hero Image */}
-            <div className='relative h-[60vh] overflow-hidden'>
-                <img src={post.image} alt={post.title} className='w-full h-full object-cover' />
-                <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent' />
-
+        <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24'>
+            <div className='max-w-7xl mx-auto px-6 py-12'>
                 {/* Back Button */}
                 <motion.button
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     onClick={() => navigate('/blog')}
-                    className='absolute top-8 left-8 flex items-center gap-2 px-6 py-3 bg-white/90 backdrop-blur-md rounded-full font-medium text-gray-800 shadow-lg hover:bg-white transition-colors'
+                    className='flex items-center gap-2 text-gray-600 hover:text-pink-600 mb-8 transition-colors'
                 >
                     <ArrowLeftIcon className='w-5 h-5' />
-                    Back to Blog
+                    <span>Quay lại Blog</span>
                 </motion.button>
 
-                {/* Category Badge */}
+                {/* Featured Image - Full Width */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className='absolute bottom-8 left-8'
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6 }}
+                    className='relative aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl mb-12'
                 >
-                    <span className='px-6 py-3 bg-white/90 backdrop-blur-md rounded-full text-sm font-medium text-pink-600'>
-                        {post.category}
-                    </span>
-                </motion.div>
-            </div>
-
-            {/* Content */}
-            <div className='max-w-4xl mx-auto px-6 py-12'>
-                <motion.article
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    {/* Title */}
-                    <h1 className='text-5xl font-bold text-gray-800 mb-6'>{post.title}</h1>
-
-                    {/* Meta Info */}
-                    <div className='flex flex-wrap items-center gap-6 mb-8 text-gray-600'>
-                        <div className='flex items-center gap-2'>
-                            <UserIcon className='w-5 h-5' />
-                            <span>{post.author}</span>
-                        </div>
-                        <div className='flex items-center gap-2'>
-                            <CalendarIcon className='w-5 h-5' />
-                            <span>{post.date}</span>
-                        </div>
-                        <div className='flex items-center gap-2'>
-                            <ClockIcon className='w-5 h-5' />
-                            <span>{post.readTime}</span>
-                        </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className='flex items-center gap-4 mb-12 pb-8 border-b border-gray-200'>
-                        <motion.button
-                            onClick={handleShare}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className='flex items-center gap-2 px-6 py-3 bg-white rounded-full border-2 border-pink-200 text-gray-700 font-medium shadow-md hover:border-pink-300 transition-colors'
-                        >
-                            <ShareIcon className='w-5 h-5' />
-                            Share
-                        </motion.button>
-                        <motion.button
-                            onClick={handleBookmark}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className='flex items-center gap-2 px-6 py-3 bg-white rounded-full border-2 border-pink-200 text-gray-700 font-medium shadow-md hover:border-pink-300 transition-colors'
-                        >
-                            <BookmarkIcon className='w-5 h-5' />
-                            Bookmark
-                        </motion.button>
-                    </div>
-
-                    {/* Article Content */}
-                    <div
-                        className='prose prose-lg prose-pink max-w-none mb-12'
-                        dangerouslySetInnerHTML={{ __html: post.content }}
-                        style={{
-                            fontSize: '1.125rem',
-                            lineHeight: '1.75',
-                            color: '#374151',
-                        }}
+                    <img
+                        src={post.featuredImage}
+                        alt={post.title}
+                        className='w-full h-full object-cover'
                     />
-
-                    {/* Tags */}
-                    <div className='flex items-center gap-3 mb-12'>
-                        <TagIcon className='w-5 h-5 text-gray-600' />
-                        <div className='flex flex-wrap gap-2'>
-                            {post.tags.map((tag: string) => (
-                                <motion.button
-                                    key={tag}
-                                    onClick={() => {
-                                        toast.info(`Filtering by #${tag}...`);
-                                        navigate('/blog');
-                                    }}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className='px-4 py-2 bg-gradient-to-r from-pink-50 to-purple-50 text-pink-600 rounded-full text-sm font-medium cursor-pointer hover:from-pink-100 hover:to-purple-100 transition-colors'
-                                >
-                                    #{tag}
-                                </motion.button>
-                            ))}
-                        </div>
+                    <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent' />
+                    
+                    {/* Category Badge */}
+                    <div className='absolute top-6 left-6'>
+                        <span className='px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full text-sm font-semibold shadow-lg'>
+                            {post.category.name}
+                        </span>
                     </div>
 
-                    {/* CTA */}
+                    {/* Meta Info on Image */}
+                    <div className='absolute bottom-6 left-6 right-6'>
+                        <div className='flex flex-wrap gap-4 text-white/90'>
+                            <div className='flex items-center gap-2'>
+                                <UserIcon className='w-4 h-4' />
+                                <span className='text-sm font-medium'>{post.author.fullName}</span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                                <CalendarIcon className='w-4 h-4' />
+                                <span className='text-sm'>{formatDate(post.publishedAt)}</span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                                <Clock className='w-4 h-4' />
+                                <span className='text-sm'>{calculateReadTime(post.content)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Article Content - Centered for readability */}
+                <div className='max-w-5xl mx-auto'>
+                    <motion.article
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className='bg-white/80 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 md:p-12'
+                    >
+                    {/* Title */}
+                    <h1 className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight'>
+                        {post.title}
+                    </h1>
+
+                    {/* Excerpt */}
+                    <div className='bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6 mb-8 border-l-4 border-pink-500'>
+                        <p className='text-lg text-gray-800 leading-relaxed italic'>
+                            {post.excerpt}
+                        </p>
+                    </div>
+
+                    {/* Content */}
+                    <div className='prose prose-lg max-w-none'>
+                        <style>{`
+                            .blog-content h1 { 
+                                font-size: 2em; 
+                                font-weight: bold; 
+                                margin-top: 2em; 
+                                margin-bottom: 0.5em;
+                                color: #1f2937;
+                            }
+                            .blog-content h2 { 
+                                font-size: 1.5em; 
+                                font-weight: bold; 
+                                margin-top: 1.5em; 
+                                margin-bottom: 0.5em;
+                                color: #374151;
+                            }
+                            .blog-content h3 { 
+                                font-size: 1.25em; 
+                                font-weight: 600; 
+                                margin-top: 1.5em; 
+                                margin-bottom: 0.5em;
+                                color: #4b5563;
+                            }
+                            .blog-content p { 
+                                margin-bottom: 1.25em; 
+                                line-height: 1.8;
+                                color: #374151;
+                            }
+                            .blog-content ul, .blog-content ol { 
+                                margin: 1.5em 0; 
+                                padding-left: 1.5em;
+                            }
+                            .blog-content li { 
+                                margin-bottom: 0.5em;
+                                line-height: 1.8;
+                            }
+                            .blog-content strong { 
+                                font-weight: 600; 
+                                color: #1f2937;
+                            }
+                            .blog-content a { 
+                                color: #ec4899; 
+                                text-decoration: underline;
+                            }
+                            .blog-content blockquote {
+                                border-left: 4px solid #ec4899;
+                                padding-left: 1em;
+                                margin: 1.5em 0;
+                                font-style: italic;
+                                color: #6b7280;
+                            }
+                            .blog-content code {
+                                background: #f3f4f6;
+                                padding: 0.2em 0.4em;
+                                border-radius: 0.25em;
+                                font-size: 0.9em;
+                            }
+                            .blog-content pre {
+                                background: #1f2937;
+                                color: #f9fafb;
+                                padding: 1em;
+                                border-radius: 0.5em;
+                                overflow-x: auto;
+                                margin: 1.5em 0;
+                            }
+                        `}</style>
+                        <div 
+                            className='blog-content'
+                            dangerouslySetInnerHTML={{ 
+                                __html: post.content
+                                    .replace(/\n\n/g, '</p><p>')
+                                    .replace(/\n/g, '<br />')
+                                    .replace(/^/, '<p>')
+                                    .replace(/$/, '</p>')
+                                    .replace(/# (.*?)(\n|<br \/>)/g, '<h1>$1</h1>')
+                                    .replace(/## (.*?)(\n|<br \/>)/g, '<h2>$1</h2>')
+                                    .replace(/### (.*?)(\n|<br \/>)/g, '<h3>$1</h3>')
+                                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                    .replace(/- (.*?)(<br \/>|<\/p>)/g, '<li>$1</li>')
+                            }}
+                        />
+                    </div>
+                </motion.article>
+                </div>
+
+                {/* Related Posts */}
+                {post.relatedPosts && post.relatedPosts.length > 0 && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className='bg-gradient-to-r from-pink-500 to-purple-500 rounded-3xl p-12 text-center text-white'
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        className='mt-16'
                     >
-                        <h3 className='text-3xl font-bold mb-4'>Ready to Transform Your Skin?</h3>
-                        <p className='text-lg mb-8 text-white/90'>
-                            Book a consultation with our experts and start your journey to beautiful skin today.
-                        </p>
-                        <motion.button
-                            onClick={() => navigate('/booking')}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className='px-8 py-4 bg-white text-pink-600 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-shadow'
-                        >
-                            Book Appointment
-                        </motion.button>
+                        <div className='text-center mb-10'>
+                            <h2 className='text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2'>
+                                Bài viết liên quan
+                            </h2>
+                            <p className='text-gray-600'>Khám phá thêm những bài viết thú vị khác</p>
+                        </div>
+                        <div className='grid md:grid-cols-3 gap-8'>
+                            {post.relatedPosts.map((relatedPost, index) => (
+                                <motion.div
+                                    key={relatedPost.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                                    whileHover={{ y: -8, scale: 1.02 }}
+                                    onClick={() => navigate(`/blog/${relatedPost.slug}`)}
+                                    className='bg-white/80 backdrop-blur-xl rounded-2xl border border-white/50 shadow-lg overflow-hidden cursor-pointer group'
+                                >
+                                    <div className='relative h-48 overflow-hidden'>
+                                        <img
+                                            src={relatedPost.featuredImage}
+                                            alt={relatedPost.title}
+                                            className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-700'
+                                        />
+                                        <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                                        <div className='absolute top-3 left-3'>
+                                            <span className='px-3 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full text-xs font-semibold'>
+                                                {relatedPost.category.name}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className='p-5'>
+                                        <h3 className='text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-pink-600 transition-colors mb-2 min-h-[3.5rem]'>
+                                            {relatedPost.title}
+                                        </h3>
+                                        <p className='text-sm text-gray-600 line-clamp-2 mb-3'>
+                                            {relatedPost.excerpt}
+                                        </p>
+                                        <div className='flex items-center gap-2 text-xs text-gray-500'>
+                                            <CalendarIcon className='w-3 h-3' />
+                                            <span>{formatDate(relatedPost.publishedAt)}</span>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </motion.div>
-                </motion.article>
+                )}
             </div>
         </div>
     );
 }
+
+export default BlogDetailPage;

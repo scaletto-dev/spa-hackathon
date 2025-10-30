@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { SearchIcon, CalendarIcon, TrendingUpIcon, ArrowRightIcon, MailIcon, TagIcon } from 'lucide-react';
+import { SearchIcon, MailIcon, TagIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { BlogCategory } from '../../../types/blog';
 
 interface BlogSidebarProps {
     categories: BlogCategory[];
     onTopicClick?: (category: string) => void;
+    onSearch?: (query: string) => void;
 }
 
-export function BlogSidebar({ categories, onTopicClick }: BlogSidebarProps) {
-    const navigate = useNavigate();
+export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarProps) {
     const [email, setEmail] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -31,24 +30,45 @@ export function BlogSidebar({ categories, onTopicClick }: BlogSidebarProps) {
     };
 
     const handleSearch = () => {
-        if (searchQuery.trim()) {
-            toast.info(`Đang tìm kiếm "${searchQuery}"...`);
+        if (onSearch) {
+            onSearch(searchQuery);
         }
     };
 
     return (
         <>
             <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6'>
-                <div className='flex items-center gap-2 mb-6'>
-                    <SearchIcon className='w-5 h-5 text-gray-400' />
-                    <input
-                        type='text'
-                        placeholder='Search articles...'
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                        className='w-full bg-transparent border-b-2 border-gray-200 focus:border-pink-300 outline-none py-2 text-gray-700'
-                    />
+                <div className='mb-6'>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <SearchIcon className='w-5 h-5 text-gray-400' />
+                        <input
+                            type='text'
+                            placeholder='Tìm kiếm bài viết...'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                            className='flex-1 bg-transparent border-b-2 border-gray-200 focus:border-pink-300 outline-none py-2 text-gray-700'
+                        />
+                    </div>
+                    <div className='flex gap-2'>
+                        <button
+                            onClick={handleSearch}
+                            className='px-4 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg text-sm hover:opacity-90 transition-opacity'
+                        >
+                            Tìm kiếm
+                        </button>
+                        {searchQuery && (
+                            <button
+                                onClick={() => {
+                                    setSearchQuery('');
+                                    if (onSearch) onSearch('');
+                                }}
+                                className='px-4 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition-colors'
+                            >
+                                Xóa
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <div className='space-y-2'>
                     <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>

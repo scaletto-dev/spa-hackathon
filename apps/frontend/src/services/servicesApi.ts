@@ -6,6 +6,7 @@
 import axios from 'axios';
 import { 
   Service,
+  ServiceCategory,
   ServiceWithCategory,
   ServicesResponse, 
   ServiceParams, 
@@ -52,7 +53,7 @@ export const servicesApi = {
 };
 
 // Re-export types for convenience
-export type { Service, ServiceWithCategory, ServicesResponse, ServiceParams, ServiceDetailResponse };
+export type { Service, ServiceCategory, ServicesResponse, ServiceParams, ServiceDetailResponse };
 
 // Re-export format utilities for convenience
 export { formatPrice, formatDuration, formatOperatingHours } from '../utils/format';

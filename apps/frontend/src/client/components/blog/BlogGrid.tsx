@@ -15,9 +15,10 @@ const calculateReadTime = (content: string): string => {
 interface BlogGridProps {
     category: string;
     categories: BlogCategory[];
+    searchQuery?: string;
 }
 
-export function BlogGrid({ category, categories }: BlogGridProps) {
+export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
     const navigate = useNavigate();
     const [posts, setPosts] = useState<BlogPostBackend[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,7 @@ export function BlogGrid({ category, categories }: BlogGridProps) {
                     page,
                     limit,
                     ...(category !== 'All' && { categoryId: category }),
+                    ...(searchQuery && searchQuery.trim() && { search: searchQuery.trim() }),
                 });
                 setPosts(response.data);
                 setTotalPages(response.meta.totalPages);
@@ -46,12 +48,12 @@ export function BlogGrid({ category, categories }: BlogGridProps) {
             }
         };
         fetchPosts();
-    }, [category, page]);
+    }, [category, page, searchQuery]);
 
-    // Reset page when category changes
+    // Reset page when category or search changes
     useEffect(() => {
         setPage(1);
-    }, [category]);
+    }, [category, searchQuery]);
 
     const getCategoryName = (categoryId: string) => {
         const cat = categories.find(c => c.id === categoryId);

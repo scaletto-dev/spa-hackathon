@@ -10,6 +10,7 @@ export function BlogPage() {
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [categories, setCategories] = useState<BlogCategory[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -49,10 +50,10 @@ export function BlogPage() {
                         </span>
                     </h1>
                     <p className='text-xl text-gray-600 max-w-2xl mx-auto'>
-                        Explore the latest in beauty technology, skincare innovations, and clinic updates
-                    </p>
-                </motion.div>
-                <BlogHero />
+                   Explore the latest in beauty technology, skincare innovations, and clinic updates
+               </p>
+           </motion.div>
+           <BlogHero categories={categories} />
                 
                 {/* Categories Filter */}
                 <div className='mt-12 mb-8 flex flex-wrap gap-3 justify-center'>
@@ -95,17 +96,22 @@ export function BlogPage() {
                     )}
                 </div>
 
-                <div className='grid lg:grid-cols-3 gap-8 mb-20'>
-                    <div className='lg:col-span-2'>
-                        <BlogGrid category={selectedCategory} categories={categories} />
-                    </div>
-                    <div className='space-y-8'>
-                        <BlogSidebar 
-                            categories={categories} 
-                            onTopicClick={setSelectedCategory} 
-                        />
-                    </div>
-                </div>
+                       <div className='grid lg:grid-cols-3 gap-8 mb-20'>
+                           <div className='lg:col-span-2'>
+                               <BlogGrid 
+                                   category={selectedCategory} 
+                                   categories={categories}
+                                   searchQuery={searchQuery}
+                               />
+                           </div>
+                           <div className='space-y-8'>
+                               <BlogSidebar
+                                   categories={categories}
+                                   onTopicClick={setSelectedCategory}
+                                   onSearch={setSearchQuery}
+                               />
+                           </div>
+                       </div>
             </div>
         </div>
     );

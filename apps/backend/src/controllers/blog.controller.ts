@@ -13,7 +13,7 @@ import { GetBlogPostsQueryParams } from '../types/blog';
 export class BlogController {
     /**
      * GET /api/v1/blog/posts
-     * Get all published blog posts with pagination
+     * Get all published blog posts with pagination and search
      */
     async getAllPosts(
         req: Request<{}, {}, {}, GetBlogPostsQueryParams>,
@@ -24,6 +24,7 @@ export class BlogController {
             const page = parseInt(req.query.page || '1', 10);
             const limit = parseInt(req.query.limit || '6', 10);
             const categoryId = req.query.categoryId;
+            const search = req.query.search;
 
             // Validation
             if (page < 1) {
@@ -33,7 +34,7 @@ export class BlogController {
                 throw new ValidationError('Limit must be between 1 and 100');
             }
 
-            const result = await blogService.getAllPosts(page, limit, categoryId);
+            const result = await blogService.getAllPosts(page, limit, categoryId, search);
 
             const response: SuccessResponse<typeof result.data> = {
                 success: true,

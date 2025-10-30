@@ -7,6 +7,7 @@ export interface GetBlogPostsQueryParams {
     page?: string;
     limit?: string;
     categoryId?: string;
+    search?: string;
 }
 
 export interface BlogPostResponseDto {

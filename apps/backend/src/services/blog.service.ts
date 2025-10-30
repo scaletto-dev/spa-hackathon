@@ -8,20 +8,30 @@ import type { BlogPostResponseDto, BlogPostListItem } from '../types/blog';
  */
 class BlogService {
     /**
-     * Get all published blog posts with pagination
+     * Get all published blog posts with pagination and search
      */
     async getAllPosts(
         page: number = 1,
         limit: number = 6,
-        categoryId?: string
+        categoryId?: string,
+        search?: string
     ) {
         const skip = (page - 1) * limit;
 
         // Build where clause
-        const where = {
+        const where: any = {
             published: true,
             ...(categoryId ? { categoryId } : {}),
         };
+
+        // Add search condition (search in title, excerpt, and content)
+        if (search && search.trim()) {
+            where.OR = [
+                { title: { contains: search.trim(), mode: 'insensitive' } },
+                { excerpt: { contains: search.trim(), mode: 'insensitive' } },
+                { content: { contains: search.trim(), mode: 'insensitive' } },
+            ];
+        }
 
         // Get posts with category and author
         const [posts, total] = await Promise.all([
