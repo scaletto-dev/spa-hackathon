@@ -78,6 +78,30 @@ export class BlogController {
             next(error);
         }
     }
+
+    /**
+     * GET /api/v1/blog/categories
+     * Get all blog categories with post count
+     */
+    async getAllCategories(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const categories = await blogService.getAllCategories();
+
+            const response: SuccessResponse<typeof categories> = {
+                success: true,
+                data: categories,
+                timestamp: new Date().toISOString(),
+            };
+
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new BlogController();

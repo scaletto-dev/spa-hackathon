@@ -57,3 +57,11 @@ export interface BlogPostDetail extends Omit<BlogPostResponseDto, 'category' | '
     author: NonNullable<BlogPostResponseDto['author']>;
     relatedPosts: BlogPostListItem[];
 }
+
+export interface BlogCategoryDto {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    postCount: number;
+}

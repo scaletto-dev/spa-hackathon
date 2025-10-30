@@ -150,6 +150,34 @@ class BlogService {
             },
         }));
     }
+
+    /**
+     * Get all blog categories with post count
+     */
+    async getAllCategories() {
+        const categories = await prisma.blogCategory.findMany({
+            orderBy: { name: 'asc' },
+            include: {
+                _count: {
+                    select: {
+                        posts: {
+                            where: {
+                                published: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return categories.map((category) => ({
+            id: category.id,
+            name: category.name,
+            slug: category.slug,
+            description: category.description,
+            postCount: category._count.posts,
+        }));
+    }
 }
 
 export default new BlogService();
