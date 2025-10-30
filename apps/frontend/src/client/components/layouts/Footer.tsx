@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { InstagramIcon, FacebookIcon, TwitterIcon, YoutubeIcon, SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 export function Footer() {
+    const { t } = useTranslation('common');
     return (
         <footer className='w-full bg-gradient-to-br from-[#111827] via-[#8430c4] to-[#111827] text-white py-16 px-6'>
             <div className='max-w-7xl mx-auto'>
@@ -13,35 +15,32 @@ export function Footer() {
                             </div>
                             <span className='text-2xl font-bold'>BeautyAI</span>
                         </div>
-                        <p className='text-gray-400 leading-relaxed'>
-                            Where beauty meets intelligence. Experience the future of aesthetic care with our AI-powered
-                            treatments and personalized skincare solutions.
-                        </p>
+                        <p className='text-gray-400 leading-relaxed'>{t('footer.tagline')}</p>
                     </div>
                     {/* Contact */}
                     <div>
-                        <h3 className='text-xl font-bold mb-4'>Contact Us</h3>
+                        <h3 className='text-xl font-bold mb-4'>{t('footer.contactUs')}</h3>
                         <div className='space-y-3 text-gray-400'>
-                            <p>Email: hello@beautyai.com</p>
-                            <p>Phone: (555) 123-4567</p>
-                            <p>Hours: Mon-Sat, 9AM-7PM</p>
+                            <p>{t('footer.email')}</p>
+                            <p>{t('footer.phone')}</p>
+                            <p>{t('footer.hours')}</p>
                         </div>
                     </div>
                     {/* Quick Links */}
                     <div>
-                        <h3 className='text-xl font-bold mb-4'>Quick Links</h3>
+                        <h3 className='text-xl font-bold mb-4'>{t('footer.quickLinks')}</h3>
                         <div className='space-y-3'>
                             <a href='#' className='block text-gray-400 hover:text-pink-400 transition-colors'>
-                                About Us
+                                {t('footer.aboutUs')}
                             </a>
                             <a href='#' className='block text-gray-400 hover:text-pink-400 transition-colors'>
-                                Services
+                                {t('nav.services')}
                             </a>
                             <a href='#' className='block text-gray-400 hover:text-pink-400 transition-colors'>
-                                Privacy Policy
+                                {t('footer.privacyPolicy')}
                             </a>
                             <a href='#' className='block text-gray-400 hover:text-pink-400 transition-colors'>
-                                Terms of Service
+                                {t('footer.termsOfService')}
                             </a>
                         </div>
                     </div>
@@ -49,7 +48,7 @@ export function Footer() {
                 {/* Social Media */}
                 <div className='border-t border-gray-800 pt-8'>
                     <div className='flex flex-col md:flex-row items-center justify-between gap-6'>
-                        <p className='text-gray-400 text-sm'>© 2024 BeautyAI Clinic. All rights reserved.</p>
+                        <p className='text-gray-400 text-sm'>{t('footer.copyright')}</p>
                         <div className='flex items-center gap-4'>
                             {[
                                 {

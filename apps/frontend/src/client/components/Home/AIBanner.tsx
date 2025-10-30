@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { SparklesIcon, ArrowRightIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function AIBanner() {
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
     return (
         <section className='w-full py-16 px-6'>
             <motion.div
@@ -42,12 +44,9 @@ export function AIBanner() {
                                 </motion.div>
                                 <div>
                                     <h3 className='text-3xl font-bold text-gray-800 mb-2'>
-                                        Unsure which treatment fits you?
+                                        {t('home.aiBanner.title')}
                                     </h3>
-                                    <p className='text-gray-600 text-lg'>
-                                        Try our AI beauty consultant for personalized recommendations based on your skin
-                                        type and goals
-                                    </p>
+                                    <p className='text-gray-600 text-lg'>{t('home.aiBanner.description')}</p>
                                 </div>
                             </div>
                             <motion.button
@@ -61,7 +60,7 @@ export function AIBanner() {
                                 }}
                                 className='flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl whitespace-nowrap'
                             >
-                                Start Skin Quiz
+                                {t('home.aiBanner.startQuiz')}
                                 <ArrowRightIcon className='w-5 h-5' />
                             </motion.button>
                         </div>

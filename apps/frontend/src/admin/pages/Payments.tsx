@@ -15,6 +15,7 @@ import {
 import { PaymentDetailsModal } from '../components/modals/PaymentDetailsModal';
 import { RefundModal } from '../components/modals/RefundModal';
 import { Toast } from '../components/Toast';
+import { useTranslation } from 'react-i18next';
 const revenueData = [
     {
         name: 'Mon',
@@ -95,6 +96,7 @@ const transactions = [
     },
 ];
 export function Payments() {
+    const { t } = useTranslation('common');
     const [selectedTransaction, setSelectedTransaction] = useState<string | null>(null);
     const [refundTransaction, setRefundTransaction] = useState<string | null>(null);
     const [toast, setToast] = useState<{
@@ -103,7 +105,7 @@ export function Payments() {
     } | null>(null);
     const handleRefundConfirm = () => {
         setToast({
-            message: 'Refund processed successfully',
+            message: t('admin.payments.refundProcessed'),
             type: 'success',
         });
         setRefundTransaction(null);
@@ -112,7 +114,7 @@ export function Payments() {
     const handleExportReport = () => {
         console.log('📊 Mock: Exporting payments report');
         setToast({
-            message: 'Đang xuất báo cáo thanh toán... (Mocked)',
+            message: t('admin.payments.exportingReport'),
             type: 'success',
         });
     };
@@ -120,23 +122,23 @@ export function Payments() {
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold text-gray-800'>Payments & Transactions</h1>
-                    <p className='text-gray-600 mt-1'>Track revenue and manage transactions</p>
+                    <h1 className='text-3xl font-bold text-gray-800'>{t('admin.payments.title')}</h1>
+                    <p className='text-gray-600 mt-1'>{t('admin.payments.subtitle')}</p>
                 </div>
                 <button
                     onClick={handleExportReport}
                     className='px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm flex items-center gap-2'
                 >
                     <DownloadIcon className='w-5 h-5' />
-                    Export Report
+                    {t('admin.payments.exportReport')}
                 </button>
             </div>
             <div className='bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-4 border border-orange-200'>
                 <div className='flex items-center gap-2'>
                     <AlertTriangleIcon className='w-5 h-5 text-orange-600' />
                     <p className='text-sm text-gray-700'>
-                        <span className='font-semibold'>AI Alert:</span> Unusual refund activity detected this week. 3
-                        refunds vs. usual 0-1.
+                        <span className='font-semibold'>{t('admin.payments.aiAlert')}:</span>{' '}
+                        {t('admin.payments.aiAlertText')}
                     </p>
                 </div>
             </div>
@@ -306,8 +308,8 @@ export function Payments() {
                                                 transaction.status === 'paid'
                                                     ? 'bg-green-100 text-green-700'
                                                     : transaction.status === 'pending'
-                                                      ? 'bg-yellow-100 text-yellow-700'
-                                                      : 'bg-red-100 text-red-700'
+                                                    ? 'bg-yellow-100 text-yellow-700'
+                                                    : 'bg-red-100 text-red-700'
                                             }`}
                                         >
                                             {transaction.status}

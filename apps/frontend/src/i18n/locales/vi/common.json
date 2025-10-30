@@ -275,7 +275,96 @@
         "contact": "Liên hệ",
         "dashboard": "Bảng điều khiển",
         "myBookings": "Lịch hẹn",
-        "myProfile": "Hồ sơ"
+        "myProfile": "Hồ sơ",
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký",
+        "signOut": "Đăng xuất",
+        "myAccount": "Tài khoản của tôi",
+        "adminDashboard": "Bảng điều khiển Admin"
+    },
+    "home": {
+        "hero": {
+            "badge": "Giải pháp làm đẹp AI",
+            "title1": "Vẻ đẹp gặp gỡ",
+            "title2": "Trí tuệ",
+            "description": "Nền tảng đặt lịch chăm sóc da và thẩm mỹ được hỗ trợ bởi AI. Trải nghiệm các liệu trình làm đẹp cá nhân hóa được hỗ trợ bởi công nghệ tiên tiến.",
+            "bookAppointment": "Đặt lịch hẹn",
+            "viewServices": "Xem dịch vụ",
+            "askAI": "Hỏi AI về làn da của bạn",
+            "askAIDesc": "Nhận đề xuất cá nhân hóa",
+            "beautyTreatment": "Liệu trình làm đẹp",
+            "skincare": "Chăm sóc da"
+        },
+        "aiBanner": {
+            "title": "Không chắc liệu trình nào phù hợp với bạn?",
+            "description": "Thử tư vấn viên làm đẹp AI của chúng tôi để nhận đề xuất cá nhân hóa dựa trên loại da và mục tiêu của bạn",
+            "startQuiz": "Bắt đầu Quiz Da"
+        },
+        "bookingWidget": {
+            "title": "Đặt lịch nhanh",
+            "aiAssist": "Để AI chọn giờ tốt nhất",
+            "service": "Dịch vụ",
+            "branch": "Chi nhánh",
+            "date": "Ngày",
+            "time": "Giờ",
+            "selectService": "Chọn dịch vụ",
+            "selectBranch": "Chọn chi nhánh",
+            "selectDate": "Chọn ngày",
+            "selectTime": "Chọn giờ",
+            "confirmWithAI": "Xác nhận với AI Assistant",
+            "confirmBooking": "Xác nhận đặt lịch",
+            "fillAllFields": "Vui lòng điền đầy đủ thông tin",
+            "redirecting": "Đang chuyển đến trang đặt lịch...",
+            "services": {
+                "facial": "Chăm sóc da mặt",
+                "laser": "Triệt lông Laser",
+                "botox": "Botox & Filler",
+                "analysis": "Phân tích da"
+            },
+            "branches": {
+                "downtown": "Chi nhánh Trung tâm",
+                "westside": "Chi nhánh Tây",
+                "eastside": "Chi nhánh Đông"
+            }
+        },
+        "testimonials": {
+            "title": "Câu chuyện Khách hàng",
+            "subtitle": "Hơn {{count}} khách hàng hài lòng tin tưởng chúng tôi trong hành trình làm đẹp của họ",
+            "subtitleDefault": "Hơn 10,000 khách hàng hài lòng tin tưởng chúng tôi trong hành trình làm đẹp của họ",
+            "loading": "Đang tải đánh giá...",
+            "error": "Không thể tải đánh giá. Vui lòng thử lại sau.",
+            "retry": "Thử lại",
+            "noReviews": "Chưa có đánh giá nào",
+            "verifiedClient": "Khách hàng đã xác minh",
+            "reply": "Phản hồi",
+            "viewAll": "Xem tất cả {{count}} đánh giá"
+        },
+        "branches": {
+            "title": "Chi Nhánh Của Chúng Tôi",
+            "subtitle": "Ghé thăm chúng tôi tại các chi nhánh tiện lợi",
+            "loading": "Đang tải thông tin chi nhánh...",
+            "error": "Không thể tải thông tin chi nhánh. Vui lòng thử lại sau.",
+            "viewDetails": "Xem chi tiết"
+        },
+        "services": {
+            "title": "Dịch Vụ Của Chúng Tôi",
+            "subtitle": "Trải nghiệm các dịch vụ chăm sóc sắc đẹp hàng đầu với công nghệ AI tiên tiến",
+            "loading": "Đang tải dịch vụ...",
+            "error": "Không thể tải dịch vụ. Vui lòng thử lại sau.",
+            "viewAll": "Xem Tất Cả Dịch Vụ"
+        }
+    },
+    "footer": {
+        "tagline": "Nơi vẻ đẹp gặp gỡ trí tuệ. Trải nghiệm tương lai của chăm sóc thẩm mỹ với các liệu trình được hỗ trợ bởi AI và giải pháp chăm sóc da cá nhân hóa.",
+        "contactUs": "Liên hệ với chúng tôi",
+        "email": "Email: hello@beautyai.com",
+        "phone": "Điện thoại: (555) 123-4567",
+        "hours": "Giờ làm việc: Thứ 2-Thứ 7, 9AM-7PM",
+        "quickLinks": "Liên kết nhanh",
+        "aboutUs": "Về chúng tôi",
+        "privacyPolicy": "Chính sách bảo mật",
+        "termsOfService": "Điều khoản dịch vụ",
+        "copyright": "© 2024 BeautyAI Clinic. Bảo lưu mọi quyền."
     },
     "admin": {
         "portal": "Cổng quản trị",
@@ -366,7 +455,24 @@
             "actions": "Thao tác",
             "viewDetails": "Xem chi tiết",
             "aiInsight": "Thông tin AI",
-            "aiInsightText": "Khách hàng với 5+ lượt thăm có xu hướng dùng dịch vụ cao cấp hơn"
+            "aiInsightText": "Khách hàng với 5+ lượt thăm có xu hướng dùng dịch vụ cao cấp hơn",
+            "addCustomer": "Thêm khách hàng",
+            "customer": "Khách hàng",
+            "contact": "Liên hệ",
+            "totalBookings": "Tổng lượt đặt",
+            "membership": "Hội viên",
+            "retention": "Tỷ lệ giữ chân",
+            "status": "Trạng thái",
+            "active": "Đang hoạt động",
+            "inactive": "Không hoạt động",
+            "allStatus": "Tất cả trạng thái",
+            "allTiers": "Tất cả cấp độ",
+            "new": "Mới",
+            "highRetention": "Tỷ lệ giữ chân cao: 88%",
+            "customerAdded": "Đã thêm khách hàng thành công!",
+            "customerUpdated": "Đã cập nhật khách hàng thành công!",
+            "customerDeleted": "Đã xóa khách hàng thành công!",
+            "confirmDelete": "Bạn có chắc chắn muốn xóa khách hàng này?"
         },
         "staff": {
             "title": "Quản lý nhân viên",
@@ -383,7 +489,15 @@
             "onBreak": "Nghỉ giải lao",
             "offDuty": "Không trực",
             "aiTip": "Mẹo AI",
-            "aiTipText": "Xem xét tăng giờ cho nhân viên đánh giá cao vào cuối tuần để tối ưu doanh thu"
+            "aiTipText": "Nhấp \"Tạo tiểu sử\" khi thêm chuyên viên để tự động tạo mô tả chuyên nghiệp",
+            "available": "Có sẵn",
+            "onLeave": "Đang nghỉ",
+            "viewSchedule": "Xem lịch",
+            "staffAdded": "Đã thêm chuyên viên thành công!",
+            "staffDeleted": "Đã xóa chuyên viên \"{{name}}\"!",
+            "confirmDelete": "Bạn có chắc chắn muốn xóa chuyên viên \"{{name}}\"?",
+            "editInProgress": "Chức năng chỉnh sửa \"{{name}}\" đang được phát triển...",
+            "viewingSchedule": "Đang xem lịch của \"{{name}}\"..."
         },
         "payments": {
             "title": "Quản lý thanh toán",
@@ -407,7 +521,21 @@
             "paid": "Đã thanh toán",
             "pending": "Chờ xử lý",
             "refunded": "Đã hoàn tiền",
-            "refund": "Hoàn tiền"
+            "refund": "Hoàn tiền",
+            "exportReport": "Xuất báo cáo",
+            "exportingReport": "Đang xuất báo cáo thanh toán...",
+            "aiAlert": "Cảnh báo AI",
+            "aiAlertText": "Phát hiện hoạt động hoàn tiền bất thường trong tuần này. 3 hoàn tiền so với thường 0-1.",
+            "revenueThisWeek": "Doanh thu tuần này",
+            "averageTransaction": "Giao dịch trung bình",
+            "pendingPayments": "Thanh toán chờ xử lý",
+            "reventueTrend": "Xu hướng doanh thu",
+            "paymentMethods": "Phương thức thanh toán",
+            "recentTransactions": "Giao dịch gần đây",
+            "allStatus": "Tất cả trạng thái",
+            "viewDetails": "Xem chi tiết",
+            "processRefund": "Xử lý hoàn tiền",
+            "refundProcessed": "Đã xử lý hoàn tiền thành công"
         },
         "reviews": {
             "title": "Quản lý đánh giá",

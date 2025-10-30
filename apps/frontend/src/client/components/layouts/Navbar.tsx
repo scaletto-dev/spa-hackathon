@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SparklesIcon, MenuIcon, XIcon, LogOutIcon, LayoutDashboardIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../auth/useAuth';
 import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
 export function Navbar() {
+    const { t } = useTranslation('common');
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -13,31 +15,31 @@ export function Navbar() {
     const { isAuthenticated, user, logout } = useAuth();
     const navLinks = [
         {
-            name: 'Home',
+            name: t('nav.home'),
             path: '/',
         },
         {
-            name: 'Services',
+            name: t('nav.services'),
             path: '/services',
         },
         {
-            name: 'Reviews',
+            name: t('nav.reviews'),
             path: '/reviews',
         },
         {
-            name: 'Book',
+            name: t('nav.book'),
             path: '/booking',
         },
         {
-            name: 'Locations',
+            name: t('nav.locations'),
             path: '/branches',
         },
         {
-            name: 'Blog',
+            name: t('nav.blog'),
             path: '/blog',
         },
         {
-            name: 'Contact',
+            name: t('nav.contact'),
             path: '/contact',
         },
     ];
@@ -123,13 +125,13 @@ export function Navbar() {
                                 to='/login'
                                 className='px-4 py-2 text-gray-700 hover:text-pink-600 font-medium transition-colors text-sm'
                             >
-                                Sign In
+                                {t('nav.signIn')}
                             </Link>
                             <Link
                                 to='/register'
                                 className='px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow text-sm'
                             >
-                                Sign Up
+                                {t('nav.signUp')}
                             </Link>
                         </>
                     ) : (
@@ -167,7 +169,7 @@ export function Navbar() {
                                         >
                                             <LayoutDashboardIcon className='w-4 h-4' />
                                             <span className='text-sm'>
-                                                {user?.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
+                                                {user?.role === 'admin' ? t('nav.adminDashboard') : t('nav.myAccount')}
                                             </span>
                                         </button>
 
@@ -176,7 +178,7 @@ export function Navbar() {
                                             className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-red-600 hover:bg-red-50 transition-colors'
                                         >
                                             <LogOutIcon className='w-4 h-4' />
-                                            <span className='text-sm'>Sign Out</span>
+                                            <span className='text-sm'>{t('nav.signOut')}</span>
                                         </button>
                                     </motion.div>
                                 )}
@@ -230,14 +232,14 @@ export function Navbar() {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className='flex items-center justify-center px-6 py-2.5 border-2 border-pink-500 text-pink-600 rounded-full font-medium hover:bg-pink-50 transition-colors'
                                     >
-                                        Sign In
+                                        {t('nav.signIn')}
                                     </Link>
                                     <Link
                                         to='/register'
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className='flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg'
                                     >
-                                        Sign Up
+                                        {t('nav.signUp')}
                                     </Link>
                                 </>
                             ) : (
@@ -259,7 +261,7 @@ export function Navbar() {
                                         className='flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-pink-200 text-gray-800 rounded-full font-medium'
                                     >
                                         <LayoutDashboardIcon className='w-4 h-4' />
-                                        {user?.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
+                                        {user?.role === 'admin' ? t('nav.adminDashboard') : t('nav.myAccount')}
                                     </button>
                                     <button
                                         onClick={() => {
@@ -269,7 +271,7 @@ export function Navbar() {
                                         className='flex items-center justify-center gap-2 px-6 py-2.5 border-2 border-red-300 text-red-600 rounded-full font-medium hover:bg-red-50'
                                     >
                                         <LogOutIcon className='w-4 h-4' />
-                                        Sign Out
+                                        {t('nav.signOut')}
                                     </button>
                                 </>
                             )}

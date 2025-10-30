@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { SparklesIcon, MessageCircleIcon } from 'lucide-react';
 import { useChatWidget } from '../../../contexts/ChatWidgetContext';
+import { useTranslation } from 'react-i18next';
 
 export function Hero() {
     const navigate = useNavigate();
     const { openChat } = useChatWidget();
+    const { t } = useTranslation('common');
 
     return (
         <section className='relative w-full min-h-screen flex items-center overflow-hidden'>
@@ -54,19 +56,16 @@ export function Hero() {
                 >
                     <div className='inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-md rounded-full border border-pink-200/50 shadow-lg'>
                         <SparklesIcon className='w-4 h-4 text-pink-500' />
-                        <span className='text-sm font-medium text-gray-700'>AI-Powered Beauty Solutions</span>
+                        <span className='text-sm font-medium text-gray-700'>{t('home.hero.badge')}</span>
                     </div>
                     <h1 className='text-6xl md:text-7xl font-bold leading-tight'>
                         <span className='bg-gradient-to-r from-pink-500 via-purple-500 to-rose-500 bg-clip-text text-transparent'>
-                            Beauty meets
+                            {t('home.hero.title1')}
                         </span>
                         <br />
-                        <span className='text-gray-800'>Intelligence</span>
+                        <span className='text-gray-800'>{t('home.hero.title2')}</span>
                     </h1>
-                    <p className='text-xl text-gray-600 leading-relaxed max-w-lg'>
-                        AI-driven skincare and aesthetic booking platform. Experience personalized beauty treatments
-                        powered by cutting-edge technology.
-                    </p>
+                    <p className='text-xl text-gray-600 leading-relaxed max-w-lg'>{t('home.hero.description')}</p>
                     <div className='flex flex-col sm:flex-row gap-4'>
                         <motion.button
                             onClick={() => navigate('/booking')}
@@ -90,7 +89,7 @@ export function Hero() {
                                     duration: 0.3,
                                 }}
                             />
-                            <span className='relative z-10'>Book an Appointment</span>
+                            <span className='relative z-10'>{t('home.hero.bookAppointment')}</span>
                         </motion.button>
                         <motion.button
                             onClick={() => navigate('/services')}
@@ -102,7 +101,7 @@ export function Hero() {
                             }}
                             className='px-8 py-4 bg-white/80 backdrop-blur-md text-gray-700 rounded-full font-semibold border-2 border-pink-200 shadow-lg hover:bg-white transition-colors'
                         >
-                            View Services
+                            {t('home.hero.viewServices')}
                         </motion.button>
                     </div>
                     {/* AI Assistant Orb */}
@@ -139,8 +138,8 @@ export function Hero() {
                             <MessageCircleIcon className='w-6 h-6 text-white' />
                         </motion.div>
                         <div>
-                            <p className='text-sm font-medium text-gray-800'>Ask AI about your skin</p>
-                            <p className='text-xs text-gray-500'>Get personalized recommendations</p>
+                            <p className='text-sm font-medium text-gray-800'>{t('home.hero.askAI')}</p>
+                            <p className='text-xs text-gray-500'>{t('home.hero.askAIDesc')}</p>
                         </div>
                     </motion.div>
                 </motion.div>
@@ -175,7 +174,7 @@ export function Hero() {
                         >
                             <img
                                 src='https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=600&fit=crop'
-                                alt='Beauty treatment'
+                                alt={t('home.hero.beautyTreatment')}
                                 className='w-full h-full object-cover'
                             />
                         </motion.div>
@@ -193,7 +192,7 @@ export function Hero() {
                         >
                             <img
                                 src='https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=600&fit=crop'
-                                alt='Skincare'
+                                alt={t('home.hero.skincare')}
                                 className='w-full h-full object-cover'
                             />
                         </motion.div>

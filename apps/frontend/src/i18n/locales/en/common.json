@@ -275,7 +275,97 @@
         "contact": "Contact",
         "dashboard": "Dashboard",
         "myBookings": "My Bookings",
-        "myProfile": "My Profile"
+        "myProfile": "My Profile",
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "signOut": "Sign Out",
+        "myAccount": "My Account",
+        "adminDashboard": "Admin Dashboard"
+    },
+    "home": {
+        "hero": {
+            "badge": "AI-Powered Beauty Solutions",
+            "title1": "Beauty meets",
+            "title2": "Intelligence",
+            "description": "AI-driven skincare and aesthetic booking platform. Experience personalized beauty treatments powered by cutting-edge technology.",
+            "bookAppointment": "Book an Appointment",
+            "viewServices": "View Services",
+            "askAI": "Ask AI about your skin",
+            "askAIDesc": "Get personalized recommendations",
+            "beautyTreatment": "Beauty treatment",
+            "skincare": "Skincare"
+        },
+        "aiBanner": {
+            "title": "Unsure which treatment fits you?",
+            "description": "Try our AI beauty consultant for personalized recommendations based on your skin type and goals",
+            "startQuiz": "Start Skin Quiz"
+        },
+        "bookingWidget": {
+            "title": "Quick Booking",
+            "aiAssist": "Let AI choose the best time",
+            "service": "Service",
+            "branch": "Branch",
+            "date": "Date",
+            "time": "Time",
+            "selectService": "Select service",
+            "selectBranch": "Select branch",
+            "selectDate": "Select date",
+            "selectTime": "Select time",
+            "confirmWithAI": "Confirm with AI Assistant",
+            "confirmBooking": "Confirm Booking",
+            "fillAllFields": "Please fill in all fields",
+            "redirecting": "Redirecting to booking page...",
+            "services": {
+                "facial": "Facial Treatments",
+                "laser": "Laser Hair Removal",
+                "botox": "Botox & Fillers",
+                "analysis": "Skin Analysis"
+            },
+            "branches": {
+                "downtown": "Downtown Branch",
+                "westside": "Westside Branch",
+                "eastside": "Eastside Branch"
+            }
+        },
+        "testimonials": {
+            "title": "Client Stories",
+            "subtitle": "Over {{count}}+ satisfied clients trust us with their beauty journey",
+            "subtitleDefault": "Over 10,000 satisfied clients trust us with their beauty journey",
+            "loading": "Loading reviews...",
+            "error": "Unable to load reviews. Please try again later.",
+            "retry": "Retry",
+            "noReviews": "No reviews yet",
+            "verifiedClient": "Verified Client",
+            "reply": "Reply",
+            "viewAll": "View all {{count}} reviews"
+        },
+        "branches": {
+            "title": "Our Branches",
+            "subtitle": "Visit us at our convenient locations",
+            "loading": "Loading branch information...",
+            "error": "Unable to load branch information. Please try again later.",
+            "viewDetails": "View Details"
+        },
+        "services": {
+            "title": "Our Services",
+            "subtitle": "Experience premium beauty care services with advanced AI technology",
+            "loading": "Loading services...",
+            "error": "Unable to load services. Please try again later.",
+            "viewAll": "View All Services"
+        }
+    },
+    "footer": {
+        "tagline": "Where beauty meets intelligence. Experience the future of aesthetic care with our AI-powered treatments and personalized skincare solutions.",
+        "contactUs": "Contact Us",
+        "email": "Email: hello@beautyai.com",
+        "phone": "Phone: (555) 123-4567",
+        "hours": "Hours: Mon-Sat, 9AM-7PM",
+        "quickLinks": "Quick Links",
+        "aboutUs": "About Us",
+        "services": "Services",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service",
+        "copyright": "© 2024 BeautyAI Clinic. All rights reserved."
     },
     "admin": {
         "portal": "Admin Portal",
@@ -366,7 +456,24 @@
             "actions": "Actions",
             "viewDetails": "View Details",
             "aiInsight": "AI Insight",
-            "aiInsightText": "Customers with 5+ visits tend to book premium services more often"
+            "aiInsightText": "Customers with 5+ visits tend to book premium services more often",
+            "addCustomer": "Add Customer",
+            "customer": "Customer",
+            "contact": "Contact",
+            "totalBookings": "Total Bookings",
+            "membership": "Membership",
+            "retention": "Retention",
+            "status": "Status",
+            "active": "Active",
+            "inactive": "Inactive",
+            "allStatus": "All Status",
+            "allTiers": "All Tiers",
+            "new": "New",
+            "highRetention": "High Retention: 88%",
+            "customerAdded": "Customer added successfully!",
+            "customerUpdated": "Customer updated successfully!",
+            "customerDeleted": "Customer deleted successfully!",
+            "confirmDelete": "Are you sure you want to delete this customer?"
         },
         "staff": {
             "title": "Staff Management",
@@ -383,7 +490,15 @@
             "onBreak": "On Break",
             "offDuty": "Off Duty",
             "aiTip": "AI Tip",
-            "aiTipText": "Consider increasing hours for high-rated staff on weekends to maximize revenue"
+            "aiTipText": "Click \"Generate Bio\" when adding a therapist to automatically create a professional description",
+            "available": "Available",
+            "onLeave": "On Leave",
+            "viewSchedule": "View Schedule",
+            "staffAdded": "Therapist added successfully!",
+            "staffDeleted": "Staff member \"{{name}}\" deleted!",
+            "confirmDelete": "Are you sure you want to delete staff member \"{{name}}\"?",
+            "editInProgress": "Edit feature for \"{{name}}\" is under development...",
+            "viewingSchedule": "Viewing schedule for \"{{name}}\"..."
         },
         "payments": {
             "title": "Payments Management",
@@ -407,7 +522,21 @@
             "paid": "Paid",
             "pending": "Pending",
             "refunded": "Refunded",
-            "refund": "Refund"
+            "refund": "Refund",
+            "exportReport": "Export Report",
+            "exportingReport": "Exporting payments report...",
+            "aiAlert": "AI Alert",
+            "aiAlertText": "Unusual refund activity detected this week. 3 refunds vs. usual 0-1.",
+            "revenueThisWeek": "Revenue This Week",
+            "averageTransaction": "Average Transaction",
+            "pendingPayments": "Pending Payments",
+            "reventueTrend": "Revenue Trend",
+            "paymentMethods": "Payment Methods",
+            "recentTransactions": "Recent Transactions",
+            "allStatus": "All Status",
+            "viewDetails": "View Details",
+            "processRefund": "Process Refund",
+            "refundProcessed": "Refund processed successfully"
         },
         "reviews": {
             "title": "Reviews Management",
