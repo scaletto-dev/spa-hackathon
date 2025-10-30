@@ -1,4 +1,4 @@
-import { Express } from "express";
+import { Express, Router } from "express";
 import healthRoutes from "./health.routes";
 import servicesRoutes from "./services.routes";
 import branchesRoutes from "./branches.routes";
@@ -10,6 +10,7 @@ import reviewsRoutes from "./reviews.routes";
 import blogRoutes from "./blog.routes";
 import userRoutes from "./user.routes";
 import bookingRoutes from "./booking.routes";
+import { configureAdminRoutes } from "./admin";
 
 /**
  * Configure all application routes
@@ -21,6 +22,7 @@ import bookingRoutes from "./booking.routes";
  * - /api/v1/branches - Branch location routes
  * - /api/v1/auth - Authentication routes (with rate limiting)
  * - /api/v1/user - User profile management routes (requires authentication)
+ * - /api/v1/admin - Admin management routes (requires admin authentication)
  * - /api/v1/bookings - Booking management routes
  * - /api/v1/availability - Availability check routes
  * - /api/v1/blog - Blog post routes
@@ -42,4 +44,9 @@ export function configureRoutes(app: Express): void {
    app.use('/api/v1/user', userRoutes);
    app.use('/api/v1/blog', blogRoutes);
    app.use('/api/v1/bookings', bookingRoutes);
+   
+   // Admin routes
+   const adminRouter = Router();
+   configureAdminRoutes(adminRouter);
+   app.use('/api/v1/admin', adminRouter);
 }

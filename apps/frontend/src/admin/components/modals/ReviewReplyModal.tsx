@@ -2,16 +2,18 @@ import { useState } from 'react';
 import { XIcon, SparklesIcon, SendIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { Textarea } from '../../../components/ui';
+import { adminReviewsAPI } from '../../../api/adapters/admin';
 
 interface ReviewReplyModalProps {
     isOpen: boolean;
     onClose: () => void;
-    reviewId: number;
+    reviewId: number | string;
     onSuccess?: () => void;
 }
 
 export function ReviewReplyModal({ isOpen, onClose, reviewId, onSuccess }: ReviewReplyModalProps) {
     const [reply, setReply] = useState('');
+    const [loading, setLoading] = useState(false);
 
     if (!isOpen) return null;
 
@@ -27,7 +29,7 @@ export function ReviewReplyModal({ isOpen, onClose, reviewId, onSuccess }: Revie
         toast.info('Đã tạo câu trả lời bằng AI');
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // Validation
         if (!reply.trim()) {
             toast.error('Vui lòng nhập nội dung trả lời');
@@ -42,14 +44,20 @@ export function ReviewReplyModal({ isOpen, onClose, reviewId, onSuccess }: Revie
             return;
         }
 
-        // Mock: Simulate reply submission
-        console.log(`📬 Mock: Replied to review #${reviewId}:`, reply);
-        toast.success('Đã gửi phản hồi thành công! (Mocked)');
+        try {
+            setLoading(true);
+            await adminReviewsAPI.addResponse(String(reviewId), reply);
+            toast.success('Đã gửi phản hồi thành công!');
 
-        // Reset
-        setReply('');
-        onSuccess?.();
-        onClose();
+            // Reset
+            setReply('');
+            onSuccess?.();
+            onClose();
+        } catch (err: any) {
+            toast.error(err.message || 'Có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
     };
     return (
         <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
@@ -108,15 +116,17 @@ export function ReviewReplyModal({ isOpen, onClose, reviewId, onSuccess }: Revie
                     <button
                         onClick={onClose}
                         className='flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors'
+                        disabled={loading}
                     >
                         Hủy
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm flex items-center justify-center gap-2'
+                        disabled={loading}
+                        className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50'
                     >
                         <SendIcon className='w-4 h-4' />
-                        Gửi phản hồi
+                        {loading ? 'Đang gửi...' : 'Gửi phản hồi'}
                     </button>
                 </div>
             </div>

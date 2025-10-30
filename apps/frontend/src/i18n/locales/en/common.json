@@ -363,6 +363,8 @@
         "latest": "Latest",
         "highestRating": "Highest Rating",
         "sortBy": "Sort by",
+        "showingRating": "Showing rating",
+        "clearFilter": "Clear filter",
         "loading": "Loading reviews...",
         "noReviews": "No reviews found",
         "viewAll": "View all reviews",
