@@ -3,114 +3,117 @@
  * Handles all authentication-related API calls to backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+import axios from 'axios';
+import axiosInstance from '../utils/axios';
+import type {
+  RegisterRequest,
+  RegisterResponse,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  LoginRequest,
+  LoginResponse,
+  LogoutResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+} from '../types/auth';
 
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  fullName: string;
-  phone?: string;
-}
+export const authApi = {
+  /**
+   * Register a new user with email OTP verification
+   */
+  register: async (data: RegisterRequest): Promise<RegisterResponse> => {
+    try {
+      const response = await axiosInstance.post('/api/v1/auth/register', data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Registration failed');
+      }
+      throw error;
+    }
+  },
 
-export interface RegisterResponse {
-  success: boolean;
-  message: string;
-}
+  /**
+   * Verify OTP code and complete registration/login
+   */
+  verifyOtp: async (data: VerifyOtpRequest): Promise<VerifyOtpResponse> => {
+    try {
+      const response = await axiosInstance.post('/api/v1/auth/verify-otp', data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'OTP verification failed');
+      }
+      throw error;
+    }
+  },
 
-export interface VerifyOtpRequest {
-  email: string;
-  otp: string;
-}
+  /**
+   * Login with email and password
+   */
+  login: async (data: LoginRequest): Promise<LoginResponse> => {
+    try {
+      const response = await axiosInstance.post('/api/v1/auth/login', data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Login failed');
+      }
+      throw error;
+    }
+  },
 
-export interface AuthUser {
-  id: string;
-  email: string;
-  fullName: string;
-  phone: string;
-  role: string;
-  emailVerified: boolean;
-}
+  /**
+   * Logout current user
+   * Token is automatically added by axios interceptor
+   */
+  logout: async (): Promise<LogoutResponse> => {
+    try {
+      const response = await axiosInstance.post('/api/v1/auth/logout');
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Logout failed');
+      }
+      throw error;
+    }
+  },
 
-export interface AuthSession {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-  expiresAt: number;
-}
+  /**
+   * Refresh access token using refresh token
+   */
+  refreshToken: async (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
+    try {
+      const response = await axiosInstance.post('/api/v1/auth/refresh', data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Token refresh failed');
+      }
+      throw error;
+    }
+  },
+};
 
-export interface VerifyOtpResponse {
-  success: boolean;
-  user: AuthUser;
-  session: AuthSession;
-}
+// Re-export types for convenience
+export type {
+  RegisterRequest,
+  RegisterResponse,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  LoginRequest,
+  LoginResponse,
+  LogoutResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  AuthUser,
+  AuthSession,
+} from '../types/auth';
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  success: boolean;
-  user: AuthUser;
-  session: AuthSession;
-}
-
-/**
- * Register a new user with email OTP verification
- */
-export async function register(data: RegisterRequest): Promise<RegisterResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Registration failed');
-  }
-
-  return response.json();
-}
-
-/**
- * Verify OTP code and complete registration/login
- */
-export async function verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/verify-otp`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'OTP verification failed');
-  }
-
-  return response.json();
-}
-
-/**
- * Login with email and password
- */
-export async function login(data: LoginRequest): Promise<LoginResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Login failed');
-  }
-
-  return response.json();
-}
+// Export legacy functions for backward compatibility
+// TODO: Remove these and update all imports to use authApi object
+export const register = authApi.register;
+export const verifyOtp = authApi.verifyOtp;
+export const login = authApi.login;
+export const logout = authApi.logout;
+export const refreshToken = authApi.refreshToken;

@@ -15,20 +15,52 @@ import { BranchDTO, BranchWithServicesDTO, ServiceDTO } from '../types/branch';
 
 export class BranchService {
   /**
-   * Get all branches
+   * Get all branches with pagination
    * 
    * @param includeServices - Whether to include services in the response
-   * @returns Array of branches with optional services
+   * @param page - Page number (1-indexed)
+   * @param limit - Maximum number of branches to return per page
+   * @returns Paginated branches with metadata
    */
-  async getAllBranches(includeServices: boolean = false): Promise<BranchDTO[] | BranchWithServicesDTO[]> {
-    const branches = await prisma.branch.findMany({
+  async getAllBranches(
+    includeServices: boolean = false, 
+    page: number = 1, 
+    limit?: number
+  ): Promise<{
+    data: BranchDTO[] | BranchWithServicesDTO[];
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }> {
+    // Get total count
+    const total = await prisma.branch.count({
+      where: {
+        active: true,
+      },
+    });
+
+    // Calculate pagination
+    const skip = limit ? (page - 1) * limit : 0;
+    const totalPages = limit ? Math.ceil(total / limit) : 1;
+    
+    const queryOptions: any = {
       where: {
         active: true,
       },
       orderBy: {
         name: 'asc',
       },
-    });
+    };
+    
+    if (limit) {
+      queryOptions.take = limit;
+      queryOptions.skip = skip;
+    }
+    
+    const branches = await prisma.branch.findMany(queryOptions);
 
     if (includeServices) {
       // Get all active services for each branch
@@ -42,7 +74,7 @@ export class BranchService {
         },
       });
 
-      return branches.map((branch) => ({
+      const data = branches.map((branch) => ({
         id: branch.id,
         name: branch.name,
         slug: branch.slug,
@@ -59,9 +91,19 @@ export class BranchService {
         updatedAt: branch.updatedAt.toISOString(),
         services: allServices.map((service) => this.mapServiceToDTO(service)),
       }));
+
+      return {
+        data,
+        meta: {
+          total,
+          page,
+          limit: limit || total,
+          totalPages,
+        },
+      };
     }
 
-    return branches.map((branch) => ({
+    const data = branches.map((branch) => ({
       id: branch.id,
       name: branch.name,
       slug: branch.slug,
@@ -77,6 +119,16 @@ export class BranchService {
       createdAt: branch.createdAt.toISOString(),
       updatedAt: branch.updatedAt.toISOString(),
     }));
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit: limit || total,
+        totalPages,
+      },
+    };
   }
 
   /**

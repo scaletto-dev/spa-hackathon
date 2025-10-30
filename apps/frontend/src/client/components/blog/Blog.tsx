@@ -1,40 +1,88 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRightIcon, CalendarIcon } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { blogApi } from '../../../services/blogApi';
+import { BlogPost, BlogPostBackend } from '../../../types/blog';
 
-const articles = [
-    {
-        id: 1,
-        slug: 'ai-revolutionizing-skincare',
-        image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=400&fit=crop',
-        category: 'AI Technology',
-        title: 'How AI is Revolutionizing Skincare Analysis',
-        date: 'March 15, 2024',
-        excerpt:
-            'Discover how artificial intelligence is transforming the way we understand and treat skin conditions.',
-    },
-    {
-        id: 2,
-        slug: 'top-aesthetic-treatments-2024',
-        image: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&h=400&fit=crop',
-        category: 'Beauty Trends',
-        title: 'Top 5 Aesthetic Treatments for 2024',
-        date: 'March 10, 2024',
-        excerpt: 'Explore the most popular and effective beauty treatments that are trending this year.',
-    },
-    {
-        id: 3,
-        slug: 'new-branch-opening-downtown',
-        image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=400&fit=crop',
-        category: 'Clinic News',
-        title: 'New Branch Opening Downtown',
-        date: 'March 5, 2024',
-        excerpt: 'We are excited to announce the opening of our newest location in the heart of downtown.',
-    },
-];
+// Helper function to calculate read time
+const calculateReadTime = (content: string): string => {
+    const wordsPerMinute = 200;
+    const words = content.split(/\s+/).length;
+    const minutes = Math.ceil(words / wordsPerMinute);
+    return `${minutes} min read`;
+};
+
+// Transform backend data to frontend format
+const transformBlogPost = (backendPost: BlogPostBackend): BlogPost => {
+    return {
+        id: backendPost.id,
+        title: backendPost.title,
+        slug: backendPost.slug,
+        excerpt: backendPost.excerpt,
+        image: backendPost.featuredImage,
+        author: backendPost.author.fullName,
+        date: backendPost.publishedAt 
+            ? new Date(backendPost.publishedAt).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+              })
+            : new Date(backendPost.createdAt).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+              }),
+        category: backendPost.category.name,
+        readTime: calculateReadTime(backendPost.content),
+    };
+};
 
 export function Blog() {
     const navigate = useNavigate();
+    const [articles, setArticles] = useState<BlogPost[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                setLoading(true);
+                const response = await blogApi.getAllPosts({ page: 1, limit: 3 });
+                // Transform backend data to frontend format
+                const transformedArticles = response.data.map(transformBlogPost);
+                setArticles(transformedArticles);
+            } catch (err) {
+                console.error('Error fetching blog posts:', err);
+                setError('Failed to load articles');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchArticles();
+    }, []);
+
+    if (loading) {
+        return (
+            <section className='w-full py-24 px-6'>
+                <div className='max-w-7xl mx-auto text-center'>
+                    <div className='text-gray-600'>Loading articles...</div>
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className='w-full py-24 px-6'>
+                <div className='max-w-7xl mx-auto text-center'>
+                    <div className='text-red-600'>{error}</div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className='w-full py-24 px-6'>
             <div className='max-w-7xl mx-auto'>
@@ -65,61 +113,76 @@ export function Blog() {
                     </p>
                 </motion.div>
                 <div className='grid md:grid-cols-3 gap-8'>
-                    {articles.map((article, index) => (
-                        <motion.div
-                            key={article.id}
-                            initial={{
-                                opacity: 0,
-                                y: 30,
-                            }}
-                            whileInView={{
-                                opacity: 1,
-                                y: 0,
-                            }}
-                            viewport={{
-                                once: true,
-                            }}
-                            transition={{
-                                duration: 0.6,
-                                delay: index * 0.1,
-                            }}
-                            whileHover={{
-                                y: -10,
-                            }}
-                            onClick={() => navigate(`/blog/${article.slug}`)}
-                            data-testid={`blog-card-${article.id}`}
-                            className='group cursor-pointer'
-                        >
-                            <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl overflow-hidden hover:shadow-2xl transition-all'>
-                                <div className='relative h-56 overflow-hidden'>
-                                    <img
-                                        src={article.image}
-                                        alt={article.title}
-                                        className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
-                                    />
-                                    <div className='absolute top-4 left-4'>
-                                        <span className='px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-sm font-medium text-pink-600'>
-                                            {article.category}
-                                        </span>
+                    {articles.length === 0 ? (
+                        <div className='col-span-3 text-center text-gray-600'>
+                            No articles available yet
+                        </div>
+                    ) : (
+                        articles.map((article, index) => (
+                            <motion.div
+                                key={article.id}
+                                initial={{
+                                    opacity: 0,
+                                    y: 30,
+                                }}
+                                whileInView={{
+                                    opacity: 1,
+                                    y: 0,
+                                }}
+                                viewport={{
+                                    once: true,
+                                }}
+                                transition={{
+                                    duration: 0.6,
+                                    delay: index * 0.1,
+                                }}
+                                whileHover={{
+                                    y: -10,
+                                }}
+                                onClick={() => navigate(`/blog/${article.slug}`)}
+                                data-testid={`blog-card-${article.id}`}
+                                className='group cursor-pointer'
+                            >
+                                <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl overflow-hidden hover:shadow-2xl transition-all'>
+                                    <div className='relative h-56 overflow-hidden'>
+                                        <img
+                                            src={article.image}
+                                            alt={article.title}
+                                            className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
+                                        />
+                                        <div className='absolute top-4 left-4'>
+                                            <span className='px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-sm font-medium text-pink-600'>
+                                                {article.category}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className='p-6'>
+                                        <div className='flex items-center gap-4 text-sm text-gray-500 mb-3'>
+                                            <div className='flex items-center gap-2'>
+                                                <CalendarIcon className='w-4 h-4' />
+                                                {article.date}
+                                            </div>
+                                            <div className='flex items-center gap-2'>
+                                                <Clock className='w-4 h-4' />
+                                                {article.readTime}
+                                            </div>
+                                        </div>
+                                        <h3 className='text-xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors'>
+                                            {article.title}
+                                        </h3>
+                                        <p className='text-gray-600 mb-4 line-clamp-2'>{article.excerpt}</p>
+                                        <div className='flex items-center justify-between'>
+                                            <span className='text-sm text-gray-500'>By {article.author}</span>
+                                            <div className='flex items-center gap-2 text-pink-600 font-medium'>
+                                                Read More
+                                                <ArrowRightIcon className='w-4 h-4 group-hover:translate-x-2 transition-transform' />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className='p-6'>
-                                    <div className='flex items-center gap-2 text-sm text-gray-500 mb-3'>
-                                        <CalendarIcon className='w-4 h-4' />
-                                        {article.date}
-                                    </div>
-                                    <h3 className='text-xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors'>
-                                        {article.title}
-                                    </h3>
-                                    <p className='text-gray-600 mb-4 line-clamp-2'>{article.excerpt}</p>
-                                    <div className='flex items-center gap-2 text-pink-600 font-medium'>
-                                        Read More
-                                        <ArrowRightIcon className='w-4 h-4 group-hover:translate-x-2 transition-transform' />
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        ))
+                    )}
                 </div>
             </div>
         </section>

@@ -9,14 +9,18 @@ export interface ServiceDTO {
    name: string;
    slug: string;
    description: string;
+   longDescription: string | null;
    excerpt: string;
    duration: number;
    price: string; // Decimal returned as string
    categoryId: string;
    categoryName?: string; // Optional for includes
    images: string[];
+   benefits: string[];
    featured: boolean;
    active: boolean;
+   beforeAfterPhotos: string[];
+   faqs: Array<{ question: string; answer: string }> | null;
    createdAt: string;
    updatedAt: string;
 }

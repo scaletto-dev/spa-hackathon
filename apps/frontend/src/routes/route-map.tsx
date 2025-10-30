@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouteObject, Navigate } from 'react-router-dom';
 import { RootErrorBoundary, Pending } from './RootBoundary';
 import { RequireRole } from './guards/RequireRole';
+import { GuestRoute } from './guards/GuestRoute';
 import { ScrollToTop } from '../client/components/ScrollToTop';
 
 // Lazy load layouts
@@ -161,13 +162,16 @@ export const routes: RouteObject[] = [
     },
 
     // Auth Routes (Standalone - No Layout)
+    // Protected by GuestRoute: redirects authenticated users to dashboard
     {
         path: '/login',
         element: (
             <RootErrorBoundary>
-                <Suspense fallback={<Pending />}>
-                    <LoginPageOTP />
-                </Suspense>
+                <GuestRoute>
+                    <Suspense fallback={<Pending />}>
+                        <LoginPageOTP />
+                    </Suspense>
+                </GuestRoute>
             </RootErrorBoundary>
         ),
     },
@@ -175,9 +179,11 @@ export const routes: RouteObject[] = [
         path: '/register',
         element: (
             <RootErrorBoundary>
-                <Suspense fallback={<Pending />}>
-                    <RegisterPageOTP />
-                </Suspense>
+                <GuestRoute>
+                    <Suspense fallback={<Pending />}>
+                        <RegisterPageOTP />
+                    </Suspense>
+                </GuestRoute>
             </RootErrorBoundary>
         ),
     },
@@ -185,9 +191,11 @@ export const routes: RouteObject[] = [
         path: '/admin/login',
         element: (
             <RootErrorBoundary>
-                <Suspense fallback={<Pending />}>
-                    <AdminLoginPage />
-                </Suspense>
+                <GuestRoute>
+                    <Suspense fallback={<Pending />}>
+                        <AdminLoginPage />
+                    </Suspense>
+                </GuestRoute>
             </RootErrorBoundary>
         ),
     },

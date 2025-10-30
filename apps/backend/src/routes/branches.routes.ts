@@ -11,10 +11,14 @@ const router = Router();
 
 /**
  * GET /api/v1/branches
- * Get all branches
+ * Get all branches with pagination
  * 
  * Query Parameters:
+ * - page: number (optional, default: 1) - Page number
+ * - limit: number (optional, 1-100) - Maximum number of branches per page
  * - includeServices: 'true' | 'false' (optional) - Include services in response
+ * 
+ * Response includes meta object with pagination info
  */
 router.get('/', branchController.getAllBranches.bind(branchController));
 

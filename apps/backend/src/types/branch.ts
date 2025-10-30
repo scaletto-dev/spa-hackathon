@@ -43,6 +43,18 @@ export interface BranchWithServicesDTO extends BranchDTO {
 
 export interface GetBranchesQueryParams {
   includeServices?: string; // 'true' | 'false'
+  limit?: string; // Number of branches to return
+  page?: string; // Page number for pagination
+}
+
+export interface BranchesListResponse {
+  data: BranchDTO[] | BranchWithServicesDTO[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export interface GetBranchServicesQueryParams {
