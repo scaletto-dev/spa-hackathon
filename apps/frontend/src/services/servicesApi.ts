@@ -5,8 +5,8 @@
 
 import axios from 'axios';
 import { 
-  Service, 
-  ServiceCategory,
+  Service,
+  ServiceWithCategory,
   ServicesResponse, 
   ServiceParams, 
   ServiceDetailResponse,
@@ -43,16 +43,16 @@ export const servicesApi = {
   },
 
   /**
-   * Get a single service by ID or slug
+   * Get a single service by ID with full category details
    */
-  getServiceById: async (id: string): Promise<Service> => {
+  getServiceById: async (id: string): Promise<ServiceWithCategory> => {
     const { data } = await axios.get(`${API_URL}/api/v1/services/${id}`);
     return data.data;
   },
 };
 
 // Re-export types for convenience
-export type { Service, ServiceCategory, ServicesResponse, ServiceParams, ServiceDetailResponse };
+export type { Service, ServiceWithCategory, ServicesResponse, ServiceParams, ServiceDetailResponse };
 
 // Re-export format utilities for convenience
 export { formatPrice, formatDuration, formatOperatingHours } from '../utils/format';

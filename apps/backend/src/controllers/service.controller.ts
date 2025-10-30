@@ -53,7 +53,8 @@ export class ServiceController {
 
   /**
    * GET /api/v1/services/:id
-   * Get a single service by ID
+   * Get a single service by ID or slug
+   * Automatically detects if parameter is UUID (ID) or slug
    */
   async getServiceById(
     req: Request<{ id: string }>,
@@ -63,7 +64,13 @@ export class ServiceController {
     try {
       const { id } = req.params;
 
-      const service = await serviceService.getServiceById(id);
+      // Check if parameter is a UUID (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+      // Fetch by ID or slug accordingly
+      const service = isUUID
+        ? await serviceService.getServiceById(id)
+        : await serviceService.getServiceBySlug(id);
 
       const response: SuccessResponse<typeof service> = {
         success: true,

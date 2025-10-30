@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import authController from '../controllers/auth.controller';
 import { registrationRateLimiter, authRateLimiter } from '../config/rateLimits';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -45,5 +46,38 @@ router.post('/verify-otp', authRateLimiter, authController.verifyOtp.bind(authCo
  * Rate limit: 5 requests per minute per IP
  */
 router.post('/login', authRateLimiter, authController.login.bind(authController));
+
+/**
+ * POST /api/v1/auth/change-password
+ * Change password for authenticated user
+ * 
+ * Body: { currentPassword, newPassword }
+ * Response: { success: true, message: "Password changed successfully" }
+ * 
+ * Requires: Authentication
+ */
+router.post('/change-password', authenticate, authController.changePassword.bind(authController));
+
+/**
+ * POST /api/v1/auth/forgot-password
+ * Send password reset email
+ * 
+ * Body: { email }
+ * Response: { success: true, message: "If an account exists with this email, a password reset link has been sent" }
+ * 
+ * Rate limit: 5 requests per minute per IP
+ */
+router.post('/forgot-password', authRateLimiter, authController.forgotPassword.bind(authController));
+
+/**
+ * POST /api/v1/auth/reset-password
+ * Reset password using token from email
+ * 
+ * Body: { token, newPassword }
+ * Response: { success: true, message: "Password reset successfully" }
+ * 
+ * Rate limit: 5 requests per minute per IP
+ */
+router.post('/reset-password', authRateLimiter, authController.resetPassword.bind(authController));
 
 export default router;
