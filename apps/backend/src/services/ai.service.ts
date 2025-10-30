@@ -121,7 +121,7 @@ class AIService {
     }
 
     /**
-     * Chat Widget - Main conversation handler
+     * Chat Widget - Main conversation handler with Function Calling
      */
     async chat(message: string, sessionId: string, context?: ChatContext): Promise<ChatResponse> {
         const startTime = Date.now();
@@ -135,86 +135,127 @@ class AIService {
 
             logger.info(`Chat request received: "${message.substring(0, 100)}"`);
 
-            // Quick intent handling: if user asks to "see services" or similar,
-            // return a structured, nicely formatted response directly from DB
-            const lowerMessage = message.toLowerCase();
-            if (
-                lowerMessage.includes('dịch vụ') ||
-                lowerMessage.includes('các dịch vụ') ||
-                lowerMessage.includes('services') ||
-                lowerMessage.includes('xem dịch vụ')
-            ) {
-                try {
-                    const services = await prisma.service.findMany({
-                        where: { active: true },
-                        select: { id: true, name: true, price: true, duration: true, description: true },
-                        orderBy: { createdAt: 'desc' },
-                        take: 20,
-                    });
-
-                    const replyLines = services.map((s, index) => {
-                        const price = s.price ? `${Number(s.price).toLocaleString('vi-VN')} VNĐ` : 'Liên hệ';
-                        const duration = s.duration ? `${s.duration} phút` : '';
-                        const desc = s.description ? `\n   ${s.description}` : '';
-                        return `${index + 1}. ${s.name}\n   ⏱ ${duration} | 💰 ${price}${desc}`;
-                    });
-
-                    const reply = `🌟 Các dịch vụ hiện có tại BeautyAI Spa:\n\n${replyLines.join('\n\n')}`;
-
-                    const actions: Array<{
-                        type: 'navigate' | 'book' | 'call';
-                        label: string;
-                        url?: string;
-                        data?: any;
-                    }> = services.slice(0, 3).map((s) => ({
-                        type: 'navigate',
-                        label: `Xem ${s.name}`,
-                        url: `/services/${s.id}`,
-                    }));
-
-                    return {
-                        reply,
-                        suggestions: ['Tôi cần tư vấn thêm', 'Xem dịch vụ', 'Đặt lịch'],
-                        sessionId,
-                        actions,
-                        metadata: {
-                            responseTime: Date.now() - startTime,
-                            confidence: 0.95,
-                            fallbackUsed: false,
+            // Define function declarations for Gemini to call
+            const tools = [
+                {
+                    functionDeclarations: [
+                        {
+                            name: 'getServices',
+                            description:
+                                'Fetch available spa services from database. Use this when user asks about services, treatments, or what we offer.',
+                            parameters: {
+                                type: 'object',
+                                properties: {
+                                    category: {
+                                        type: 'string',
+                                        description: 'Optional category filter (e.g., "Facial", "Massage")',
+                                    },
+                                },
+                            },
                         },
-                    };
-                } catch (dbErr) {
-                    logger.error('Failed to fetch services for quick intent:', dbErr);
-                    // fall through to normal flow and use Gemini/fallback
-                }
-            }
+                        {
+                            name: 'getBranches',
+                            description:
+                                'Fetch branch locations with addresses and operating hours. Use this when user asks about locations, addresses, or where we are.',
+                            parameters: {
+                                type: 'object',
+                                properties: {},
+                            },
+                        },
+                        {
+                            name: 'getServiceDetails',
+                            description:
+                                'Get detailed information about a specific service including price and duration',
+                            parameters: {
+                                type: 'object',
+                                properties: {
+                                    serviceName: {
+                                        type: 'string',
+                                        description: 'Name of the service to look up',
+                                    },
+                                },
+                                required: ['serviceName'],
+                            },
+                        },
+                    ],
+                },
+            ];
 
-            // Build system prompt with real data from database
+            // Build system prompt with conversation history
             const systemPrompt = await this.buildChatSystemPrompt(context);
 
-            // Combine system prompt with user message
-            const fullPrompt = `${systemPrompt}
+            // Add conversation history if available
+            let conversationContext = '';
+            if (context?.previousMessages && context.previousMessages.length > 0) {
+                conversationContext = `\n\nPrevious conversation:\n${context.previousMessages.join('\n')}`;
+            }
+
+            const fullPrompt = `${systemPrompt}${conversationContext}
 
 User: ${message}
 
-Respond in Vietnamese if the user wrote in Vietnamese, English if in English. Be helpful, concise (max 100 words), and friendly.`;
+Instructions:
+- If user asks about services, branches, or specific details, use the available functions to get accurate real-time data
+- Respond in Vietnamese if user wrote in Vietnamese, English if in English
+- Be helpful, concise (max 150 words), warm and professional
+- Remember previous conversation context to provide continuity`;
 
-            logger.info(`Calling Gemini API with message: ${message.substring(0, 50)}...`);
-            logger.info(`Prompt length: ${fullPrompt.length} chars`);
+            logger.info(`Calling Gemini API with function calling enabled`);
 
-            const result = await this.flashModel.generateContent(fullPrompt);
-            logger.info(`Gemini API responded successfully`);
-
-            const response = result.response;
-            logger.info(`Response object:`, {
-                hasText: !!response.text,
-                candidates: response.candidates?.length,
-                promptFeedback: response.promptFeedback,
+            // Call Gemini with function calling
+            const chat = this.flashModel.startChat({
+                tools,
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 800,
+                },
             });
 
+            const result = await chat.sendMessage(fullPrompt);
+            const response = result.response;
+
+            // Check if Gemini wants to call a function
+            const functionCall = response.functionCalls()?.[0];
+
+            if (functionCall) {
+                logger.info(`AI requested function call: ${functionCall.name}`);
+
+                // Execute the requested function
+                const functionResponse = await this.executeFunctionCall(functionCall);
+
+                // Send function result back to Gemini
+                const result2 = await chat.sendMessage([
+                    {
+                        functionResponse: {
+                            name: functionCall.name,
+                            response: functionResponse,
+                        },
+                    },
+                ]);
+
+                const reply = result2.response.text();
+
+                // Extract suggestions and actions
+                const suggestions = this.extractSuggestions(reply, message);
+                const actions = this.extractActions(message, reply);
+
+                return {
+                    reply: reply.trim(),
+                    suggestions,
+                    sessionId,
+                    actions,
+                    metadata: {
+                        responseTime: Date.now() - startTime,
+                        confidence: 0.9,
+                        fallbackUsed: false,
+                    },
+                };
+            }
+
+            // No function call, use direct response
             const reply = response.text();
 
-            // Validate response - Gemini sometimes returns empty
+            // Validate response
             if (!reply || reply.trim() === '') {
                 logger.warn('Gemini returned empty response, using fallback');
                 throw new Error('Empty response from Gemini');
@@ -226,15 +267,13 @@ Respond in Vietnamese if the user wrote in Vietnamese, English if in English. Be
             const suggestions = this.extractSuggestions(reply, message);
             const actions = this.extractActions(message, reply);
 
-            const responseTime = Date.now() - startTime;
-
             return {
                 reply: reply.trim(),
                 suggestions,
                 sessionId,
                 actions,
                 metadata: {
-                    responseTime,
+                    responseTime: Date.now() - startTime,
                     confidence: 0.85,
                     fallbackUsed: false,
                 },
@@ -249,6 +288,137 @@ Respond in Vietnamese if the user wrote in Vietnamese, English if in English. Be
 
             // Fallback to rule-based response
             return this.getFallbackChatResponse(message, sessionId, Date.now() - startTime);
+        }
+    }
+
+    /**
+     * Execute function calls requested by Gemini
+     */
+    private async executeFunctionCall(functionCall: any): Promise<any> {
+        const { name, args } = functionCall;
+
+        try {
+            switch (name) {
+                case 'getServices': {
+                    const categoryFilter = args?.category;
+                    const services = await prisma.service.findMany({
+                        where: {
+                            active: true,
+                            ...(categoryFilter && {
+                                category: {
+                                    name: {
+                                        contains: categoryFilter,
+                                        mode: 'insensitive',
+                                    },
+                                },
+                            }),
+                        },
+                        select: {
+                            id: true,
+                            name: true,
+                            price: true,
+                            duration: true,
+                            description: true,
+                            category: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                        take: 20,
+                        orderBy: { createdAt: 'desc' },
+                    });
+
+                    return {
+                        success: true,
+                        data: services.map((s) => ({
+                            id: s.id,
+                            name: s.name,
+                            category: s.category?.name,
+                            price: s.price ? Number(s.price) : null,
+                            duration: s.duration,
+                            description: s.description,
+                        })),
+                    };
+                }
+
+                case 'getBranches': {
+                    const branches = await prisma.branch.findMany({
+                        where: { active: true },
+                        select: {
+                            id: true,
+                            name: true,
+                            address: true,
+                            phone: true,
+                            email: true,
+                            operatingHours: true,
+                        },
+                    });
+
+                    return {
+                        success: true,
+                        data: branches.map((b) => ({
+                            id: b.id,
+                            name: b.name,
+                            address: b.address,
+                            phone: b.phone,
+                            email: b.email,
+                            operatingHours: b.operatingHours,
+                        })),
+                    };
+                }
+
+                case 'getServiceDetails': {
+                    const serviceName = args?.serviceName;
+                    if (!serviceName) {
+                        return { success: false, error: 'Service name is required' };
+                    }
+
+                    const service = await prisma.service.findFirst({
+                        where: {
+                            active: true,
+                            name: {
+                                contains: serviceName,
+                                mode: 'insensitive',
+                            },
+                        },
+                        select: {
+                            id: true,
+                            name: true,
+                            price: true,
+                            duration: true,
+                            description: true,
+                            category: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                    });
+
+                    if (!service) {
+                        return { success: false, error: 'Service not found' };
+                    }
+
+                    return {
+                        success: true,
+                        data: {
+                            id: service.id,
+                            name: service.name,
+                            category: service.category?.name,
+                            price: service.price ? Number(service.price) : null,
+                            duration: service.duration,
+                            description: service.description,
+                        },
+                    };
+                }
+
+                default:
+                    return { success: false, error: `Unknown function: ${name}` };
+            }
+        } catch (error) {
+            logger.error(`Function call ${name} failed:`, error);
+            return { success: false, error: 'Database query failed' };
         }
     }
 
@@ -509,90 +679,25 @@ Respond ONLY with valid JSON.`;
     // ===== PRIVATE HELPER METHODS =====
 
     private async buildChatSystemPrompt(context?: ChatContext): Promise<string> {
-        // Fetch real data from database
-        const [services, branches] = await Promise.all([
-            prisma.service.findMany({
-                where: { active: true },
-                select: {
-                    id: true,
-                    name: true,
-                    description: true,
-                    price: true,
-                    duration: true,
-                    category: {
-                        select: {
-                            name: true,
-                        },
-                    },
-                },
-                take: 20, // Limit to avoid huge prompts
-            }),
-            prisma.branch.findMany({
-                where: { active: true },
-                select: {
-                    id: true,
-                    name: true,
-                    address: true,
-                    phone: true,
-                    email: true,
-                    operatingHours: true,
-                },
-            }),
-        ]);
+        const basePrompt = `You are a helpful AI assistant for BeautyAI Spa, a luxury beauty and wellness clinic.
 
-        // Format services list
-        const servicesText = services
-            .map((s) => {
-                const price = s.price ? `$${s.price}` : 'Contact for price';
-                const duration = s.duration ? ` (${s.duration} mins)` : '';
-                const category = s.category?.name ? ` [${s.category.name}]` : '';
-                return `- ${s.name}${category}${duration}: ${price}\n  ${s.description || ''}`;
-            })
-            .join('\n');
+Your role:
+- Answer questions about spa services, pricing, treatments, and skincare
+- Help users discover the right services for their needs
+- Provide information about branch locations and operating hours  
+- Guide users through the booking process
+- Remember conversation context and provide personalized responses
 
-        // Format branches list
-        const branchesText = branches
-            .map((b) => {
-                // operatingHours is JSON, parse it
-                let hoursText = 'Mon-Sat 9AM-8PM, Sun 10AM-6PM';
-                try {
-                    if (b.operatingHours && typeof b.operatingHours === 'object') {
-                        const hours = b.operatingHours as any;
-                        hoursText = Object.entries(hours)
-                            .map(([day, time]) => `${day}: ${time}`)
-                            .join(', ');
-                    }
-                } catch (e) {
-                    // Use default if parsing fails
-                }
-
-                const email = b.email ? ` | Email: ${b.email}` : '';
-                return `- ${b.name}: ${b.address}\n  Phone: ${b.phone}${email}\n  Hours: ${hoursText}`;
-            })
-            .join('\n\n');
-
-        const basePrompt = `You are a helpful AI assistant for BeautyAI Spa, a luxury beauty clinic.
-
-Your capabilities:
-- Answer questions about spa services, pricing, and treatments
-- Help users book appointments
-- Provide skincare advice
-- Give information about branch locations and hours
-
-Available Services:
-${servicesText}
-
-Our Branches:
-${branchesText}
-
-Important notes:
-- Always provide accurate pricing from the list above
-- If asked about a service not listed, politely say we don't offer it currently
-- Recommend booking through our website for best availability
-- Be warm, professional, and helpful`;
+Important guidelines:
+- Use the available function calls (getServices, getBranches, getServiceDetails) to fetch real-time accurate data
+- Always call functions when users ask about specific information rather than guessing
+- Be warm, professional, and conversational
+- If asked about something you don't have information about, politely acknowledge and offer alternatives
+- Format prices in VNĐ for Vietnamese, $ for English
+- Encourage users to book appointments when appropriate`;
 
         if (context?.currentPage) {
-            return `${basePrompt}\n\nUser is currently on: ${context.currentPage} page`;
+            return `${basePrompt}\n\nContext: User is currently viewing the ${context.currentPage} page`;
         }
 
         return basePrompt;

@@ -13,6 +13,7 @@ import {
     MapPinIcon,
     BotIcon,
     UsersIcon,
+    Trash2Icon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useChatWidget } from '../../contexts/ChatWidgetContext';
@@ -56,36 +57,65 @@ interface AgentInfo {
     status: 'online' | 'typing' | 'offline';
 }
 
+const STORAGE_KEY_MESSAGES = 'beautyai-chat-messages';
+const STORAGE_KEY_SESSION = 'beautyai-chat-session';
+
 export function GlobalChatWidget() {
     const { t } = useTranslation('common');
     const { isOpen, closeChat, toggleChat } = useChatWidget();
     const location = useLocation();
-    const [sessionId, setSessionId] = useState<string>(`session-${Date.now()}`);
+
+    // Load from localStorage or create new session
+    const [sessionId, setSessionId] = useState<string>(() => {
+        const stored = localStorage.getItem(STORAGE_KEY_SESSION);
+        return stored || `session-${Date.now()}`;
+    });
+
     const [isAITyping, setIsAITyping] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            type: 'bot',
-            text: t('chat.greeting'),
-            timestamp: new Date(),
-            actions: [
-                {
-                    type: 'booking',
-                    label: t('chat.showAvailableSlots'),
-                    action: 'show_slots',
-                },
-                {
-                    type: 'button',
-                    label: t('chat.talkToAgent'),
-                    action: 'request_agent',
-                },
-                {
-                    type: 'link',
-                    label: t('chat.browseServices'),
-                    action: '/services',
-                },
-            ],
-        },
-    ]);
+
+    // Load messages from localStorage or use default greeting
+    const [messages, setMessages] = useState<Message[]>(() => {
+        const stored = localStorage.getItem(STORAGE_KEY_MESSAGES);
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored) as Message[];
+                // Convert timestamp strings back to Date objects
+                return parsed.map((msg) => ({
+                    ...msg,
+                    timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+                }));
+            } catch (e) {
+                console.error('Failed to parse stored messages:', e);
+            }
+        }
+
+        // Default greeting message
+        return [
+            {
+                type: 'bot',
+                text: t('chat.greeting'),
+                timestamp: new Date(),
+                actions: [
+                    {
+                        type: 'booking',
+                        label: t('chat.showAvailableSlots'),
+                        action: 'show_slots',
+                    },
+                    {
+                        type: 'button',
+                        label: t('chat.talkToAgent'),
+                        action: 'request_agent',
+                    },
+                    {
+                        type: 'link',
+                        label: t('chat.browseServices'),
+                        action: '/services',
+                    },
+                ],
+            },
+        ];
+    });
+
     const [input, setInput] = useState('');
     const [showHint, setShowHint] = useState(true);
     const [chatMode, setChatMode] = useState<ChatMode>('ai');
@@ -96,6 +126,16 @@ export function GlobalChatWidget() {
     const [_queuePosition] = useState<number | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Persist messages to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem(STORAGE_KEY_MESSAGES, JSON.stringify(messages));
+    }, [messages]);
+
+    // Persist session ID to localStorage
+    useEffect(() => {
+        localStorage.setItem(STORAGE_KEY_SESSION, sessionId);
+    }, [sessionId]);
 
     // Auto-focus input when chat opens
     useEffect(() => {
@@ -149,11 +189,20 @@ export function GlobalChatWidget() {
             // AI mode - call real AI API
             setIsAITyping(true);
             try {
+                // Extract last 5 messages for context (alternating user/bot)
+                const conversationHistory = messages
+                    .slice(-10) // Last 10 messages (5 exchanges)
+                    .map((msg) => `${msg.type === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
+                    .filter(Boolean);
+
                 const aiResponse = await chatWithAI({
                     message: userInputText,
                     sessionId: sessionId,
                     context: {
                         currentPage: location.pathname,
+                        ...(conversationHistory.length > 0 && {
+                            previousMessages: conversationHistory,
+                        }),
                     },
                 });
 
@@ -383,6 +432,44 @@ export function GlobalChatWidget() {
         }, 2000);
     };
 
+    // Clear chat history and start fresh
+    const clearChat = () => {
+        // Reset to initial greeting
+        const initialMessage: Message = {
+            type: 'bot',
+            text: t('chat.greeting'),
+            timestamp: new Date(),
+            actions: [
+                {
+                    type: 'booking',
+                    label: t('chat.showAvailableSlots'),
+                    action: 'show_slots',
+                },
+                {
+                    type: 'button',
+                    label: t('chat.talkToAgent'),
+                    action: 'request_agent',
+                },
+                {
+                    type: 'link',
+                    label: t('chat.browseServices'),
+                    action: '/services',
+                },
+            ],
+        };
+
+        setMessages([initialMessage]);
+        setSessionId(`session-${Date.now()}`);
+        setChatMode('ai');
+        setAgentInfo(null);
+
+        // Clear from localStorage
+        localStorage.removeItem(STORAGE_KEY_MESSAGES);
+        localStorage.removeItem(STORAGE_KEY_SESSION);
+
+        toast.success('Chat cleared. Starting fresh!');
+    };
+
     // Show booking slots
     const showBookingSlots = (serviceType?: string) => {
         // Switch to booking mode
@@ -605,6 +692,16 @@ export function GlobalChatWidget() {
                                     </div>
                                 </div>
                                 <div className='flex items-center gap-1.5'>
+                                    {/* Clear Chat Button */}
+                                    <button
+                                        onClick={clearChat}
+                                        className='p-2 rounded-full hover:bg-white/20 transition-all duration-200'
+                                        aria-label='Clear chat history'
+                                        title='Clear chat history'
+                                    >
+                                        <Trash2Icon className='w-4 h-4 text-white' />
+                                    </button>
+
                                     {/* Booking Mode Button */}
                                     <button
                                         onClick={() => {
