@@ -7,6 +7,7 @@ export interface GetBlogPostsQueryParams {
     page?: string;
     limit?: string;
     categoryId?: string;
+    search?: string;
 }
 
 export interface BlogPostResponseDto {
@@ -56,4 +57,12 @@ export interface BlogPostDetail extends Omit<BlogPostResponseDto, 'category' | '
     category: NonNullable<BlogPostResponseDto['category']>;
     author: NonNullable<BlogPostResponseDto['author']>;
     relatedPosts: BlogPostListItem[];
+}
+
+export interface BlogCategoryDto {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    postCount: number;
 }

@@ -110,7 +110,7 @@ export class ServiceController {
 
   /**
    * GET /api/v1/services/categories
-   * Get all service categories
+   * Get all service categories with service count
    */
   async getServiceCategories(
     req: Request,
@@ -118,7 +118,7 @@ export class ServiceController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const categories = await categoryService.getAllCategories(false);
+      const categories = await serviceService.getAllCategories();
 
       const response: SuccessResponse<typeof categories> = {
         success: true,

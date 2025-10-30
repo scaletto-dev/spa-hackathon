@@ -206,6 +206,35 @@ export class ServiceService {
   }
 
   /**
+   * Get all service categories with active service count
+   */
+  async getAllCategories() {
+    const categories = await prisma.serviceCategory.findMany({
+      orderBy: { name: 'asc' },
+      include: {
+        _count: {
+          select: {
+            services: {
+              where: {
+                active: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      description: category.description,
+      icon: category.icon,
+      serviceCount: category._count.services,
+    }));
+  }
+
+  /**
    * Map Prisma Service model with category to ServiceWithCategoryDTO
    *
    * @param service - Prisma service object with category relation

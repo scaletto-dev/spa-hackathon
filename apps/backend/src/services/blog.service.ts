@@ -8,20 +8,30 @@ import type { BlogPostResponseDto, BlogPostListItem } from '../types/blog';
  */
 class BlogService {
     /**
-     * Get all published blog posts with pagination
+     * Get all published blog posts with pagination and search
      */
     async getAllPosts(
         page: number = 1,
         limit: number = 6,
-        categoryId?: string
+        categoryId?: string,
+        search?: string
     ) {
         const skip = (page - 1) * limit;
 
         // Build where clause
-        const where = {
+        const where: any = {
             published: true,
             ...(categoryId ? { categoryId } : {}),
         };
+
+        // Add search condition (search in title, excerpt, and content)
+        if (search && search.trim()) {
+            where.OR = [
+                { title: { contains: search.trim(), mode: 'insensitive' } },
+                { excerpt: { contains: search.trim(), mode: 'insensitive' } },
+                { content: { contains: search.trim(), mode: 'insensitive' } },
+            ];
+        }
 
         // Get posts with category and author
         const [posts, total] = await Promise.all([
@@ -148,6 +158,34 @@ class BlogService {
             author: {
                 fullName: post.author.fullName,
             },
+        }));
+    }
+
+    /**
+     * Get all blog categories with post count
+     */
+    async getAllCategories() {
+        const categories = await prisma.blogCategory.findMany({
+            orderBy: { name: 'asc' },
+            include: {
+                _count: {
+                    select: {
+                        posts: {
+                            where: {
+                                published: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return categories.map((category) => ({
+            id: category.id,
+            name: category.name,
+            slug: category.slug,
+            description: category.description,
+            postCount: category._count.posts,
         }));
     }
 }

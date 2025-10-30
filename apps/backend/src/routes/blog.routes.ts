@@ -10,6 +10,15 @@ const router = Router();
  */
 
 /**
+ * GET /api/v1/blog/categories
+ * Get all blog categories with post count
+ * 
+ * Response:
+ * - Array of categories with id, name, slug, description, postCount
+ */
+router.get('/categories', blogController.getAllCategories.bind(blogController));
+
+/**
  * GET /api/v1/blog/posts
  * Get all published blog posts with pagination
  * 

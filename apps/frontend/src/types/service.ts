@@ -4,6 +4,21 @@
  * Types for service-related API responses and data structures
  */
 
+export interface ServiceCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  icon: string | null;
+  serviceCount: number;
+}
+
+export interface ServiceCategoriesResponse {
+  success: boolean;
+  data: ServiceCategory[];
+  timestamp: string;
+}
+
 export interface Service {
   id: string;
   name: string;

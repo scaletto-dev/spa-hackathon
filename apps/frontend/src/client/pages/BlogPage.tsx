@@ -1,11 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import { BlogHero } from '../components/blog/BlogHero';
 import { BlogGrid } from '../components/blog/BlogGrid';
 import { BlogSidebar } from '../components/blog/BlogSidebar';
-const categories = ['All', 'Skincare Tips', 'Laser Technology', 'AI Trends', 'Clinic Updates'];
+import { blogApi, type BlogCategory } from '../../services/blogApi';
+
 export function BlogPage() {
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const [categories, setCategories] = useState<BlogCategory[]>([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                setIsLoadingCategories(true);
+                const data = await blogApi.getAllCategories();
+                setCategories(data);
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+            } finally {
+                setIsLoadingCategories(false);
+            }
+        };
+        fetchCategories();
+    }, []);
+
     return (
         <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24'>
             <div className='max-w-7xl mx-auto px-6 py-12'>
@@ -29,39 +50,68 @@ export function BlogPage() {
                         </span>
                     </h1>
                     <p className='text-xl text-gray-600 max-w-2xl mx-auto'>
-                        Explore the latest in beauty technology, skincare innovations, and clinic updates
-                    </p>
-                </motion.div>
-                <BlogHero />
+                   Explore the latest in beauty technology, skincare innovations, and clinic updates
+               </p>
+           </motion.div>
+           <BlogHero categories={categories} />
+                
+                {/* Categories Filter */}
                 <div className='mt-12 mb-8 flex flex-wrap gap-3 justify-center'>
-                    {categories.map((category) => (
-                        <motion.button
-                            key={category}
-                            whileHover={{
-                                scale: 1.05,
-                            }}
-                            whileTap={{
-                                scale: 0.95,
-                            }}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`px-6 py-2 rounded-full font-medium transition-all ${
-                                selectedCategory === category
-                                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
-                                    : 'bg-white text-gray-700 hover:bg-pink-50 border border-pink-100'
-                            }`}
-                        >
-                            {category}
-                        </motion.button>
-                    ))}
+                    {isLoadingCategories ? (
+                        <div className='flex items-center gap-2 text-gray-500'>
+                            <Loader2 className='w-4 h-4 animate-spin' />
+                            <span>Đang tải danh mục...</span>
+                        </div>
+                    ) : (
+                        <>
+                            <motion.button
+                                key='All'
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setSelectedCategory('All')}
+                                className={`px-6 py-2 rounded-full font-medium transition-all ${
+                                    selectedCategory === 'All'
+                                        ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
+                                        : 'bg-white text-gray-700 hover:bg-pink-50 border border-pink-100'
+                                }`}
+                            >
+                                Tất cả
+                            </motion.button>
+                            {categories.map((category) => (
+                                <motion.button
+                                    key={category.id}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setSelectedCategory(category.id)}
+                                    className={`px-6 py-2 rounded-full font-medium transition-all ${
+                                        selectedCategory === category.id
+                                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
+                                            : 'bg-white text-gray-700 hover:bg-pink-50 border border-pink-100'
+                                    }`}
+                                >
+                                    {category.name} ({category.postCount})
+                                </motion.button>
+                            ))}
+                        </>
+                    )}
                 </div>
-                <div className='grid lg:grid-cols-3 gap-8 mb-20'>
-                    <div className='lg:col-span-2'>
-                        <BlogGrid category={selectedCategory} />
-                    </div>
-                    <div className='space-y-8'>
-                        <BlogSidebar onTopicClick={setSelectedCategory} />
-                    </div>
-                </div>
+
+                       <div className='grid lg:grid-cols-3 gap-8 mb-20'>
+                           <div className='lg:col-span-2'>
+                               <BlogGrid 
+                                   category={selectedCategory} 
+                                   categories={categories}
+                                   searchQuery={searchQuery}
+                               />
+                           </div>
+                           <div className='space-y-8'>
+                               <BlogSidebar
+                                   categories={categories}
+                                   onTopicClick={setSelectedCategory}
+                                   onSearch={setSearchQuery}
+                               />
+                           </div>
+                       </div>
             </div>
         </div>
     );
