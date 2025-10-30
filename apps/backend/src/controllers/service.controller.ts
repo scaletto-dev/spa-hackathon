@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import serviceService from '../services/service.service';
-import categoryService from '../services/category.service';
 import { SuccessResponse } from '../types/api';
 import { ValidationError } from '../utils/errors';
 import { GetServicesQueryParams } from '../types/service';
