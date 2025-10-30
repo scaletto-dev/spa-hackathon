@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CalendarIcon, SparklesIcon, TrendingUpIcon, ClockIcon, MapPinIcon, ArrowRightIcon } from 'lucide-react';
-import { getMemberDashboard, type MemberDashboardData } from '../../../api/adapters/member';
+import { CalendarIcon, SparklesIcon, TrendingUpIcon, ClockIcon, MapPinIcon, ArrowRightIcon, TicketIcon } from 'lucide-react';
+import { getMemberDashboard, type MemberDashboardData, getMemberVouchers } from '../../../api/adapters/member';
 import { useAuth } from '../../../auth/useAuth';
 import { useTranslation } from 'react-i18next';
+import { Voucher } from '../../../api/adapters/voucher';
+import VoucherCard from '../../components/vouchers/VoucherCard';
 
 export default function MemberDashboard() {
     const { user } = useAuth();
     const { t } = useTranslation('common');
     const [dashboardData, setDashboardData] = useState<MemberDashboardData | null>(null);
+    const [vouchers, setVouchers] = useState<Voucher[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -19,8 +22,12 @@ export default function MemberDashboard() {
     const loadDashboardData = async () => {
         try {
             setIsLoading(true);
-            const data = await getMemberDashboard();
+            const [data, memberVouchers] = await Promise.all([
+                getMemberDashboard(),
+                getMemberVouchers(),
+            ]);
             setDashboardData(data);
+            setVouchers(memberVouchers);
         } catch (error) {
             console.error('Failed to load dashboard:', error);
         } finally {
@@ -166,15 +173,34 @@ export default function MemberDashboard() {
                             </div>
                         </div>
 
-                        {/* Special Offers */}
-                        <div className='bg-white rounded-2xl shadow-xl p-6'>
-                            <h3 className='text-xl font-bold text-gray-900 mb-4'>{t('dashboard.specialOffers')}</h3>
-                            <div className='space-y-4'>
-                                {specialOffers.map((offer) => (
-                                    <OfferCard key={offer.id} offer={offer} />
-                                ))}
+                        {/* Vouchers Section */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                            className='bg-white rounded-2xl shadow-xl p-6'
+                        >
+                            <div className='flex items-center justify-between mb-4'>
+                                <h3 className='text-xl font-bold text-gray-900 flex items-center gap-2'>
+                                    <TicketIcon className='w-5 h-5 text-amber-500' />
+                                    {t('voucher.available')}
+                                </h3>
+                                {vouchers.length > 0 && (
+                                    <span className='bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold'>
+                                        {vouchers.length}
+                                    </span>
+                                )}
                             </div>
-                        </div>
+                            <div className='space-y-3'>
+                                {vouchers.length === 0 ? (
+                                    <p className='text-gray-500 text-center py-6'>{t('voucher.noVouchers')}</p>
+                                ) : (
+                                    vouchers.slice(0, 2).map((voucher, idx) => (
+                                        <VoucherCard key={voucher.id} voucher={voucher} delay={0.6 + idx * 0.1} />
+                                    ))
+                                )}
+                            </div>
+                        </motion.div>
                     </motion.div>
                 </div>
             </div>

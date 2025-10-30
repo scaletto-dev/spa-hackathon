@@ -17,8 +17,6 @@ interface RequireRoleProps {
 export function RequireRole({ children, role }: PropsWithChildren<RequireRoleProps>) {
     const { user, isLoading } = useAuth();
 
-    console.log('🔒 RequireRole check:', { role, user, isLoading });
-
     // Wait for auth check to complete
     if (isLoading) {
         console.log('⏳ Auth loading...');

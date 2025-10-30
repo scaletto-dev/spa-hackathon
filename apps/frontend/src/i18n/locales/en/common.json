@@ -187,6 +187,45 @@
         "updateSuccess": "Updated successfully",
         "updateError": "Update error"
     },
+    "profileManagement": {
+        "title": "Personal Information",
+        "updateTheme": "Update Information",
+        "editProfile": "Edit Profile",
+        "backToDashboard": "Back to Dashboard",
+        "fullName": "Full Name",
+        "fullNameLabel": "👤 Full Name",
+        "phone": "Phone Number",
+        "phoneLabel": "📱 Phone Number",
+        "language": "Language",
+        "languageLabel": "🌐 Language",
+        "language_vi": "🇻🇳 Tiếng Việt",
+        "language_en": "🇬🇧 English",
+        "language_ja": "🇯🇵 日本語",
+        "language_zh": "🇨🇳 中文",
+        "email": "Email",
+        "emailLabel": "📧 Email (Cannot be changed)",
+        "emailReadOnly": "Contact support team to change email",
+        "memberSince": "Member Since",
+        "lastUpdated": "Last Updated",
+        "accountInfo": "Account Information",
+        "saveChanges": "Save Changes",
+        "cancel": "Cancel",
+        "enterFullName": "Enter your full name",
+        "enterPhoneNumber": "+84 912 345 678",
+        "selectLanguage": "Select language",
+        "updateSuccess": "Update information successfully!",
+        "updateError": "Failed to update information. Please try again.",
+        "loadingProfile": "Loading information...",
+        "loadError": "Unable to load personal information. Please try again.",
+        "retry": "Retry",
+        "saving": "Saving...",
+        "validation": {
+            "nameRequired": "Please enter your full name",
+            "phoneRequired": "Please enter your phone number",
+            "nameMinLength": "Full name must be at least 2 characters",
+            "invalidPhone": "Invalid phone number"
+        }
+    },
     "auth": {
         "login": "Login",
         "register": "Register",
@@ -296,6 +335,17 @@
         "reset": "Reset",
         "more": "More",
         "less": "Less"
+    },
+    "toast": {
+        "profileUpdated": "Profile updated successfully!",
+        "profileUpdateFailed": "Failed to update profile",
+        "changeSaved": "Changes saved",
+        "changeNotSaved": "Unable to save changes",
+        "tryAgain": "Please try again",
+        "success": "Success!",
+        "error": "An error occurred!",
+        "warning": "Warning!",
+        "info": "Information"
     },
     "contact": {
         "title": "Contact & Support",
@@ -968,5 +1018,21 @@
         "enterValidEmail": "Please enter a valid email address",
         "readFullArticle": "Read Full Article",
         "viewAll": "View All Articles"
+    },
+    "voucher": {
+        "available": "My Vouchers 🎟️",
+        "noVouchers": "No available vouchers",
+        "copy": "Copy code",
+        "copied": "Copied!",
+        "validUntil": "Valid until:",
+        "remaining": "Remaining",
+        "discount": "Discount",
+        "off": "off",
+        "currency": "đ",
+        "minPurchase": "Min. purchase:",
+        "usageLimit": "Usage limit",
+        "apply": "Apply Voucher",
+        "code": "Code"
     }
 }
+
