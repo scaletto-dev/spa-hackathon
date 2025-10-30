@@ -523,11 +523,116 @@
         "closeHint": "Close hint",
         "assistant": "BeautyAI Assistant",
         "aiSupport": "AI-powered support",
+        "liveSupport": "Connected to staff",
         "closeChat": "Close chat",
         "openChat": "Open chat",
         "placeholder": "Type your message...",
         "send": "Send message",
-        "poweredBy": "Powered by BeautyAI Technology"
+        "poweredBy": "Powered by BeautyAI Technology",
+        "messageSent": "Message sent",
+        "bookingIntent": "I can help you book an appointment! What service are you interested in?",
+        "showAvailableSlots": "Show available slots",
+        "talkToAgent": "Talk to a staff member",
+        "viewPricing": "View pricing",
+        "viewBranches": "View branches",
+        "takeQuiz": "Take skin quiz",
+        "connectingAgent": "Would you like to connect with a consultant?",
+        "requestAgent": "Request staff support",
+        "defaultResponse": "Thanks for reaching out! I can help you with services, pricing, or booking an appointment.",
+        "browseServices": "Browse services",
+        "requestingAgent": "Connecting to staff...",
+        "agentConnected": "{{name}} has joined the conversation",
+        "agentGreeting": "Hello! I'm a consultant. How can I help you?",
+        "availableSlots": "Here are available time slots:",
+        "bookingConfirmed": "Booking confirmed!",
+        "bookingSuccess": "Booked {{service}} at {{time}}",
+        "queuePosition": "Queue position: {{position}}",
+        "switchToLive": "Switch to live support",
+        "switchToAI": "Switch to AI Assistant",
+        "switchToBooking": "Switch to booking mode",
+        "switchedToAI": "Switched back to AI Assistant mode",
+        "bookingAssistant": "Booking Assistant",
+        "bookingMode": "Quick booking mode",
+        "faq": {
+            "hours": "Our spa is open Monday - Saturday: 9 AM - 8 PM, Sunday: 10 AM - 6 PM",
+            "pricing": "Service prices range from $80 to $400. Facials $120-$250, Laser treatments $150-$400, Body treatments $300-$600.",
+            "location": "We have 3 locations: Downtown (123 Main St), Westside (456 Oak Ave), Eastside (789 Elm Rd)",
+            "skinAnalysis": "Our AI Skin Analysis uses advanced technology to analyze your skin type, concerns, and recommend personalized treatments."
+        }
+    },
+    "quiz": {
+        "title": "AI Skin Analysis",
+        "analyzing": "Analyzing Your Skin...",
+        "analyzingSubtitle": "Our AI is creating personalized recommendations for you",
+        "questionOf": "Question {{current}} of {{total}}",
+        "previousQuestion": "← Previous Question",
+        "questions": {
+            "q1": {
+                "question": "What is your primary skin concern?",
+                "options": {
+                    "acne": "Acne & Breakouts",
+                    "aging": "Aging & Wrinkles",
+                    "pigmentation": "Pigmentation",
+                    "dryness": "Dryness",
+                    "sensitivity": "Sensitivity"
+                }
+            },
+            "q2": {
+                "question": "What is your skin type?",
+                "options": {
+                    "oily": "Oily",
+                    "dry": "Dry",
+                    "combination": "Combination",
+                    "normal": "Normal",
+                    "sensitive": "Sensitive"
+                }
+            },
+            "q3": {
+                "question": "How often do you experience skin issues?",
+                "options": {
+                    "daily": "Daily",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly",
+                    "occasionally": "Occasionally",
+                    "rarely": "Rarely"
+                }
+            },
+            "q4": {
+                "question": "What is your age range?",
+                "options": {
+                    "18-25": "18-25",
+                    "26-35": "26-35",
+                    "36-45": "36-45",
+                    "46-55": "46-55",
+                    "55+": "55+"
+                }
+            },
+            "q5": {
+                "question": "What are your beauty goals?",
+                "options": {
+                    "clear": "Clear Skin",
+                    "antiAging": "Anti-Aging",
+                    "brightening": "Brightening",
+                    "hydration": "Hydration",
+                    "overall": "Overall Health"
+                }
+            }
+        },
+        "results": {
+            "title": "Your Personalized Results",
+            "subtitle": "Based on your answers, we recommend the following treatments:",
+            "skinType": "Skin Type",
+            "primaryConcern": "Primary Concern",
+            "riskLevel": "Risk Level",
+            "recommendations": "Recommended Services",
+            "tips": "Personalized Skincare Tips",
+            "bookConsultation": "Book Consultation",
+            "retakeQuiz": "Retake Quiz"
+        },
+        "errors": {
+            "analysisFailed": "Failed to analyze. Showing default recommendations.",
+            "pleaseTryAgain": "Please try again later."
+        }
     },
     "admin": {
         "portal": "Admin Portal",

@@ -25,6 +25,7 @@
   "author": "Spa Hackathon Team",
   "license": "MIT",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.18.0",
     "@supabase/supabase-js": "^2.76.1",
     "@types/multer": "^2.0.0",
