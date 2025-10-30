@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { useMemo } from 'react';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import type { Branch } from '../../../types/branch';
 
 interface BranchMapProps {
@@ -38,8 +38,12 @@ const mapOptions = {
 export function BranchMap({ branches, selectedBranch, setSelectedBranch }: BranchMapProps) {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: apiKey,
+    });
+
     // Calculate center based on branches
-    const center = useCallback(() => {
+    const center = useMemo(() => {
         if (selectedBranch && selectedBranch.latitude && selectedBranch.longitude) {
             return {
                 lat: selectedBranch.latitude,
@@ -47,10 +51,11 @@ export function BranchMap({ branches, selectedBranch, setSelectedBranch }: Branc
             };
         }
 
-        if (branches.length > 0 && branches[0].latitude && branches[0].longitude) {
+        const firstBranch = branches[0];
+        if (branches.length > 0 && firstBranch?.latitude && firstBranch?.longitude) {
             return {
-                lat: branches[0].latitude,
-                lng: branches[0].longitude,
+                lat: firstBranch.latitude,
+                lng: firstBranch.longitude,
             };
         }
 
@@ -78,17 +83,54 @@ export function BranchMap({ branches, selectedBranch, setSelectedBranch }: Branc
         );
     }
 
+    if (loadError) {
+        return (
+            <div className='w-full h-[500px] bg-red-100 rounded-3xl shadow-xl flex items-center justify-center'>
+                <div className='text-center p-8'>
+                    <div className='text-6xl mb-4'>⚠️</div>
+                    <h3 className='text-xl font-bold text-red-800 mb-2'>Lỗi tải bản đồ</h3>
+                    <p className='text-red-600'>
+                        Không thể tải Google Maps. Vui lòng kiểm tra API key.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isLoaded) {
+        return (
+            <div className='w-full h-[500px] bg-gray-100 rounded-3xl shadow-xl flex items-center justify-center'>
+                <div className='text-center p-8'>
+                    <div className='animate-spin text-6xl mb-4'>⏳</div>
+                    <p className='text-gray-600'>Đang tải bản đồ...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className='w-full h-[500px] rounded-3xl overflow-hidden shadow-xl'>
-            <LoadScript googleMapsApiKey={apiKey}>
-                <GoogleMap
-                    mapContainerStyle={mapContainerStyle}
-                    center={center()}
-                    zoom={selectedBranch ? 15 : 12}
-                    options={mapOptions}
-                >
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                zoom={selectedBranch ? 15 : 12}
+                options={mapOptions}
+            >
                     {branches.map((branch) => {
                         if (!branch.latitude || !branch.longitude) return null;
+
+                        const isSelected = selectedBranch?.id === branch.id;
+                        
+                        // Create custom pin marker icon as SVG
+                        const markerIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="${isSelected ? 40 : 32}" height="${isSelected ? 50 : 40}" viewBox="0 0 32 40">
+                                <path d="M16 0C9.4 0 4 5.4 4 12c0 8 12 28 12 28s12-20 12-28c0-6.6-5.4-12-12-12z" 
+                                      fill="${isSelected ? '#ec4899' : '#9333ea'}" 
+                                      stroke="#ffffff" 
+                                      stroke-width="2"/>
+                                <circle cx="16" cy="12" r="4" fill="#ffffff"/>
+                            </svg>
+                        `)}`;
 
                         return (
                             <Marker
@@ -98,14 +140,7 @@ export function BranchMap({ branches, selectedBranch, setSelectedBranch }: Branc
                                     lng: branch.longitude,
                                 }}
                                 onClick={() => setSelectedBranch(branch)}
-                                icon={{
-                                    path: window.google.maps.SymbolPath.CIRCLE,
-                                    scale: selectedBranch?.id === branch.id ? 12 : 8,
-                                    fillColor: selectedBranch?.id === branch.id ? '#ec4899' : '#9333ea',
-                                    fillOpacity: 1,
-                                    strokeColor: '#ffffff',
-                                    strokeWeight: 2,
-                                }}
+                                icon={markerIcon}
                             />
                         );
                     })}
@@ -129,8 +164,7 @@ export function BranchMap({ branches, selectedBranch, setSelectedBranch }: Branc
                             </div>
                         </InfoWindow>
                     )}
-                </GoogleMap>
-            </LoadScript>
+            </GoogleMap>
         </div>
     );
 }
