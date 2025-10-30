@@ -4,26 +4,35 @@
  * For real backend API integration
  */
 
-import { useState, useEffect } from 'react';
-import { loadGoogleScript } from '../utils/loadGoogleScript';
+import { useState, useEffect } from "react";
+import { loadGoogleScript } from "../utils/loadGoogleScript";
 
 interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: 'admin' | 'client' | 'staff';
+   id: string;
+   name: string;
+   email: string;
+   role: 'admin' | 'client' | 'staff';
+   avatar?: string;
 }
 
 interface AuthState {
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    user: User | null;
-    login: (credentials: { email: string; password: string }) => Promise<void>;
-    register: (data: { name: string; email: string; password: string }) => Promise<void>;
-    loginWithGoogle: (buttonElementId?: string) => Promise<void>;
-    loginAdmin: (credentials: { email: string; password: string }) => Promise<void>;
-    loginWithGoogleAdmin: (buttonElementId?: string) => Promise<void>;
-    logout: () => void;
+   isAuthenticated: boolean;
+   isLoading: boolean;
+   user: User | null;
+   login: (credentials: { email: string; password: string }) => Promise<void>;
+   register: (data: {
+      name: string;
+      email: string;
+      password: string;
+   }) => Promise<void>;
+   loginWithGoogle: (buttonElementId?: string) => Promise<void>;
+   loginAdmin: (credentials: {
+      email: string;
+      password: string;
+   }) => Promise<void>;
+   loginWithGoogleAdmin: (buttonElementId?: string) => Promise<void>;
+   logout: () => void;
+   updateUser: (updates: Partial<User>) => void;
 }
 
 /**
@@ -31,48 +40,42 @@ interface AuthState {
  * Manages auth state from localStorage
  */
 export function useAuth(): AuthState {
-    const [authState, setAuthState] = useState<{
-        isAuthenticated: boolean;
-        isLoading: boolean;
-        user: User | null;
-    }>({
-        isAuthenticated: false,
-        isLoading: true,
-        user: null,
-    });
+   const [authState, setAuthState] = useState<{
+      isAuthenticated: boolean;
+      isLoading: boolean;
+      user: User | null;
+   }>({
+      isAuthenticated: false,
+      isLoading: true,
+      user: null,
+   });
 
-    useEffect(() => {
-        // Check auth from localStorage (accessToken + user_data)
-        const checkAuth = () => {
-            try {
-                const token = localStorage.getItem('accessToken');
-                const userStr = localStorage.getItem('user_data');
-                if (token && userStr) {
-                    const userData = JSON.parse(userStr);
-                    const user: User = {
-                        id: userData.id,
-                        name: userData.fullName,
-                        email: userData.email,
-                        role: userData.role === 'ADMIN' ? 'admin' : 'client',
-                    };
-                    setAuthState({
-                        isAuthenticated: true,
-                        isLoading: false,
-                        user,
-                    });
-                } else {
-                    setAuthState({
-                        isAuthenticated: false,
-                        isLoading: false,
-                        user: null,
-                    });
-                }
-            } catch {
-                setAuthState({
-                    isAuthenticated: false,
-                    isLoading: false,
-                    user: null,
-                });
+   useEffect(() => {
+      // Check auth from localStorage (accessToken + user_data)
+      const checkAuth = () => {
+         try {
+            const token = localStorage.getItem("accessToken");
+            const userStr = localStorage.getItem("user_data");
+            if (token && userStr) {
+               const userData = JSON.parse(userStr);
+               const user: User = {
+                  id: userData.id,
+                  name: userData.fullName,
+                  email: userData.email,
+                  role: userData.role === "ADMIN" ? "admin" : "client",
+                  avatar: userData.avatar,
+               };
+               setAuthState({
+                  isAuthenticated: true,
+                  isLoading: false,
+                  user,
+               });
+            } else {
+               setAuthState({
+                  isAuthenticated: false,
+                  isLoading: false,
+                  user: null,
+               });
             }
         };
 
@@ -384,134 +387,362 @@ export function useAuth(): AuthState {
                 throw new Error('Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env');
             }
 
-            // Get allowed domains for admin (comma-separated)
-            const allowedDomainsStr = import.meta.env.VITE_GOOGLE_ALLOWED_DOMAINS as string | undefined;
-            const allowedDomains = allowedDomainsStr ? allowedDomainsStr.split(',').map((d) => d.trim()) : [];
+            // Callback when user signs in
+            const handleCredentialResponse = async (
+               response: GoogleCredentialResponse
+            ) => {
+               console.log("✅ Google callback triggered!", response);
 
-            if (allowedDomains.length === 0) {
-                console.warn('VITE_GOOGLE_ALLOWED_DOMAINS not configured. All domains allowed for demo.');
+               try {
+                  // Send credential to backend for verification
+                  const verifyResponse = await fetch("/api/v1/auth/google", {
+                     method: "POST",
+                     headers: { "Content-Type": "application/json" },
+                     body: JSON.stringify({ credential: response.credential }),
+                  });
+
+                  if (!verifyResponse.ok) {
+                     const error = await verifyResponse.json();
+                     throw new Error(
+                        error.message || "Google Sign-In verification failed"
+                     );
+                  }
+
+                  const data = await verifyResponse.json();
+
+                  // Store tokens and user data from backend
+                  localStorage.setItem("accessToken", data.session.accessToken);
+                  if (data.session.refreshToken) {
+                     localStorage.setItem(
+                        "refresh_token",
+                        data.session.refreshToken
+                     );
+                  }
+                  localStorage.setItem("user_data", JSON.stringify(data.user));
+                  localStorage.setItem(
+                     "auth/googleCredential",
+                     response.credential
+                  );
+
+                  // Update auth state
+                  const user: User = {
+                     id: data.user.id,
+                     name: data.user.fullName,
+                     email: data.user.email,
+                     role: data.user.role === "ADMIN" ? "admin" : "client",
+                     avatar: data.user.avatar,
+                  };
+
+                  console.log("✅ User saved from backend:", user);
+
+                  setAuthState({
+                     isAuthenticated: true,
+                     isLoading: false,
+                     user,
+                  });
+                  console.log("✅ Auth state updated");
+
+                  resolve();
+               } catch (error) {
+                  console.error("❌ Error in callback:", error);
+                  reject(error);
+               }
+            };
+
+            // Initialize with FedCM enabled (required for future Google updates)
+            window.google.accounts.id.initialize({
+               client_id: clientId,
+               callback: handleCredentialResponse,
+               auto_select: false, // Don't auto-select previously signed-in user
+               cancel_on_tap_outside: true,
+               // FedCM is now enabled by default - don't disable it
+            });
+
+            // If button element ID provided, render button instead of One Tap
+            if (buttonElementId) {
+               const buttonElement = document.getElementById(buttonElementId);
+               if (!buttonElement) {
+                  reject(
+                     new Error(`Element with id "${buttonElementId}" not found`)
+                  );
+                  return;
+               }
+
+               // Render Google Sign-In button (more reliable than One Tap)
+               window.google.accounts.id.renderButton(buttonElement, {
+                  theme: "outline",
+                  size: "large",
+                  text: "continue_with",
+                  shape: "rectangular",
+                  width: buttonElement.offsetWidth || 300,
+               });
+
+               console.log("Google Sign-In button rendered");
+
+               // Resolve immediately - callback will handle auth when user clicks button
+               resolve();
+            } else {
+               // Fallback: Try One Tap prompt (may be blocked by browser)
+               window.google.accounts.id.prompt((notification) => {
+                  if (notification.isNotDisplayed()) {
+                     const reason = notification.getNotDisplayedReason();
+                     console.warn("Google One Tap not displayed:", reason);
+
+                     // One Tap blocked - suggest using button instead
+                     reject(
+                        new Error(
+                           "Google One Tap is blocked. Please use the Google Sign-In button instead."
+                        )
+                     );
+                  } else if (notification.isSkippedMoment()) {
+                     const reason = notification.getSkippedReason();
+                     if (reason === "user_cancel" || reason === "tap_outside") {
+                        reject(new Error("Sign-in cancelled by user"));
+                     } else {
+                        reject(new Error(`Sign-in skipped: ${reason}`));
+                     }
+                  }
+                  // If displayed successfully, callback will be called
+               });
+            }
+         });
+      } catch (error) {
+         console.error("Google Sign-In error:", error);
+         throw error;
+      }
+   };
+
+   /**
+    * Admin login function
+    * TODO: Replace with real API call (POST /api/admin/auth/login)
+    */
+   const loginAdmin = async (credentials: {
+      email: string;
+      password: string;
+   }): Promise<void> => {
+      if (!credentials.email || !credentials.password) {
+         throw new Error("Email and password are required");
+      }
+
+      // Call backend API
+      const response = await fetch("/api/v1/auth/login", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+         const error = await response.json();
+         throw new Error(error.message || "Admin login failed");
+      }
+
+      const data = await response.json();
+
+      // Store tokens and user data from backend
+      localStorage.setItem("accessToken", data.session.accessToken);
+      if (data.session.refreshToken) {
+         localStorage.setItem("refresh_token", data.session.refreshToken);
+      }
+      localStorage.setItem("user_data", JSON.stringify(data.user));
+
+      // Update auth state
+      const user: User = {
+         id: data.user.id,
+         name: data.user.fullName,
+         email: data.user.email,
+         role: data.user.role === "ADMIN" ? "admin" : "client",
+         avatar: data.user.avatar,
+      };
+
+      setAuthState({
+         isAuthenticated: true,
+         isLoading: false,
+         user,
+      });
+   };
+
+   /**
+    * Admin login with Google (with domain whitelist)
+    * TODO: Send credential to backend for verification (POST /api/admin/auth/google)
+    * Current: Client-side domain check for demo (INSECURE for production)
+    *
+    * Note: This method renders a button in the provided element ID.
+    * Call this function and pass the button container element ID.
+    */
+   const loginWithGoogleAdmin = async (
+      buttonElementId?: string
+   ): Promise<void> => {
+      try {
+         // Load Google Identity Services script
+         await loadGoogleScript();
+
+         const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
+         if (!clientId) {
+            throw new Error(
+               "Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env"
+            );
+         }
+
+         // Get allowed domains for admin (comma-separated)
+         const allowedDomainsStr = import.meta.env
+            .VITE_GOOGLE_ALLOWED_DOMAINS as string | undefined;
+         const allowedDomains = allowedDomainsStr
+            ? allowedDomainsStr.split(",").map((d) => d.trim())
+            : [];
+
+         if (allowedDomains.length === 0) {
+            console.warn(
+               "VITE_GOOGLE_ALLOWED_DOMAINS not configured. All domains allowed for demo."
+            );
+         }
+
+         // Initialize and prompt for Google Sign-In
+         await new Promise<void>((resolve, reject) => {
+            if (!window.google?.accounts?.id) {
+               reject(new Error("Google Identity Services not loaded"));
+               return;
             }
 
-            // Initialize and prompt for Google Sign-In
-            await new Promise<void>((resolve, reject) => {
-                if (!window.google?.accounts?.id) {
-                    reject(new Error('Google Identity Services not loaded'));
-                    return;
-                }
+            // Callback when admin signs in
+            const handleCredentialResponse = async (
+               response: GoogleCredentialResponse
+            ) => {
+               console.log("✅ Google Admin callback triggered!", response);
 
-                // Callback when admin signs in
-                const handleCredentialResponse = async (response: GoogleCredentialResponse) => {
-                    console.log('✅ Google Admin callback triggered!', response);
+               try {
+                  // Send credential to backend for verification
+                  const verifyResponse = await fetch(
+                     "/api/v1/auth/google-admin",
+                     {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                           credential: response.credential,
+                        }),
+                     }
+                  );
 
-                    try {
-                        // Send credential to backend for verification
-                        const verifyResponse = await fetch('/api/v1/auth/google-admin', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ credential: response.credential }),
-                        });
+                  if (!verifyResponse.ok) {
+                     const error = await verifyResponse.json();
+                     throw new Error(
+                        error.message ||
+                           "Admin Google Sign-In verification failed"
+                     );
+                  }
 
-                        if (!verifyResponse.ok) {
-                            const error = await verifyResponse.json();
-                            throw new Error(error.message || 'Admin Google Sign-In verification failed');
-                        }
+                  const data = await verifyResponse.json();
 
-                        const data = await verifyResponse.json();
+                  // Store tokens and user data from backend
+                  localStorage.setItem("accessToken", data.session.accessToken);
+                  if (data.session.refreshToken) {
+                     localStorage.setItem(
+                        "refresh_token",
+                        data.session.refreshToken
+                     );
+                  }
+                  localStorage.setItem("user_data", JSON.stringify(data.user));
+                  localStorage.setItem(
+                     "auth/googleCredential",
+                     response.credential
+                  );
 
-                        // Store tokens and user data from backend
-                        localStorage.setItem('accessToken', data.session.accessToken);
-                        if (data.session.refreshToken) {
-                            localStorage.setItem('refresh_token', data.session.refreshToken);
-                        }
-                        localStorage.setItem('user_data', JSON.stringify(data.user));
-                        localStorage.setItem('auth/googleCredential', response.credential);
+                  // Update auth state
+                  const user: User = {
+                     id: data.user.id,
+                     name: data.user.fullName,
+                     email: data.user.email,
+                     role: data.user.role === "ADMIN" ? "admin" : "client",
+                     avatar: data.user.avatar,
+                  };
 
-                        // Update auth state
-                        const user: User = {
-                            id: data.user.id,
-                            name: data.user.fullName,
-                            email: data.user.email,
-                            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
-                        };
+                  console.log("✅ Admin saved from backend:", user);
 
-                        console.log('✅ Admin saved from backend:', user);
+                  setAuthState({
+                     isAuthenticated: true,
+                     isLoading: false,
+                     user,
+                  });
+                  console.log("✅ Admin auth state updated");
 
-                        setAuthState({
-                            isAuthenticated: true,
-                            isLoading: false,
-                            user,
-                        });
-                        console.log('✅ Admin auth state updated');
+                  resolve();
+               } catch (error) {
+                  console.error("❌ Error in admin callback:", error);
+                  reject(error);
+               }
+            };
 
-                        resolve();
-                    } catch (error) {
-                        console.error('❌ Error in admin callback:', error);
-                        reject(error);
-                    }
-                };
-
-                // Initialize with FedCM enabled
-                window.google.accounts.id.initialize({
-                    client_id: clientId,
-                    callback: handleCredentialResponse,
-                    auto_select: false,
-                    cancel_on_tap_outside: true,
-                });
-
-                // If button element ID provided, render button
-                if (buttonElementId) {
-                    const buttonElement = document.getElementById(buttonElementId);
-                    if (!buttonElement) {
-                        reject(new Error(`Element with id "${buttonElementId}" not found`));
-                        return;
-                    }
-
-                    // Render Google Sign-In button for admin
-                    window.google.accounts.id.renderButton(buttonElement, {
-                        theme: 'filled_blue', // Different theme for admin
-                        size: 'large',
-                        text: 'signin_with',
-                        shape: 'rectangular',
-                        width: buttonElement.offsetWidth || 300,
-                    });
-
-                    console.log('Google Admin Sign-In button rendered');
-
-                    // Resolve immediately - callback will handle auth when admin clicks button
-                    resolve();
-                } else {
-                    // Fallback: Try One Tap (may be blocked)
-                    window.google.accounts.id.prompt((notification) => {
-                        if (notification.isNotDisplayed()) {
-                            const reason = notification.getNotDisplayedReason();
-                            console.warn('Google Admin One Tap not displayed:', reason);
-                            reject(new Error('Google One Tap blocked. Please use the sign-in button.'));
-                        } else if (notification.isSkippedMoment()) {
-                            const reason = notification.getSkippedReason();
-                            if (reason === 'user_cancel' || reason === 'tap_outside') {
-                                reject(new Error('Admin sign-in cancelled'));
-                            } else {
-                                reject(new Error(`Admin sign-in skipped: ${reason}`));
-                            }
-                        }
-                    });
-                }
+            // Initialize with FedCM enabled
+            window.google.accounts.id.initialize({
+               client_id: clientId,
+               callback: handleCredentialResponse,
+               auto_select: false,
+               cancel_on_tap_outside: true,
             });
-        } catch (error) {
-            console.error('Google Admin Sign-In error:', error);
-            throw error;
-        }
-    };
 
-    return {
-        ...authState,
-        login,
-        register,
-        loginWithGoogle,
-        loginAdmin,
-        loginWithGoogleAdmin,
-        logout,
-    };
+            // If button element ID provided, render button
+            if (buttonElementId) {
+               const buttonElement = document.getElementById(buttonElementId);
+               if (!buttonElement) {
+                  reject(
+                     new Error(`Element with id "${buttonElementId}" not found`)
+                  );
+                  return;
+               }
+
+               // Render Google Sign-In button for admin
+               window.google.accounts.id.renderButton(buttonElement, {
+                  theme: "filled_blue", // Different theme for admin
+                  size: "large",
+                  text: "signin_with",
+                  shape: "rectangular",
+                  width: buttonElement.offsetWidth || 300,
+               });
+
+               console.log("Google Admin Sign-In button rendered");
+
+               // Resolve immediately - callback will handle auth when admin clicks button
+               resolve();
+            } else {
+               // Fallback: Try One Tap (may be blocked)
+               window.google.accounts.id.prompt((notification) => {
+                  if (notification.isNotDisplayed()) {
+                     const reason = notification.getNotDisplayedReason();
+                     console.warn(
+                        "Google Admin One Tap not displayed:",
+                        reason
+                     );
+                     reject(
+                        new Error(
+                           "Google One Tap blocked. Please use the sign-in button."
+                        )
+                     );
+                  } else if (notification.isSkippedMoment()) {
+                     const reason = notification.getSkippedReason();
+                     if (reason === "user_cancel" || reason === "tap_outside") {
+                        reject(new Error("Admin sign-in cancelled"));
+                     } else {
+                        reject(new Error(`Admin sign-in skipped: ${reason}`));
+                     }
+                  }
+               });
+            }
+         });
+      } catch (error) {
+         console.error("Google Admin Sign-In error:", error);
+         throw error;
+      }
+   };
+
+   return {
+      ...authState,
+      login,
+      register,
+      loginWithGoogle,
+      loginAdmin,
+      loginWithGoogleAdmin,
+      logout,
+      updateUser,
+   };
 }
 
 /**
@@ -551,17 +782,27 @@ export function mockLogin(role: 'admin' | 'client' = 'client') {
  * TODO: Remove after real auth is implemented
  */
 export function mockLogout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user_data');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('auth/googleCredential');
+   localStorage.removeItem("accessToken");
+   localStorage.removeItem("user_data");
+   localStorage.removeItem("refresh_token");
+   localStorage.removeItem("auth/googleCredential");
 
-    console.log('✅ Logged out');
-    window.location.reload();
+   console.log("✅ Logged out");
+   window.location.reload();
 }
 
 // Expose to window for easy console access
-if (typeof window !== 'undefined') {
-    (window as unknown as { mockLogin: typeof mockLogin; mockLogout: typeof mockLogout }).mockLogin = mockLogin;
-    (window as unknown as { mockLogin: typeof mockLogin; mockLogout: typeof mockLogout }).mockLogout = mockLogout;
+if (typeof window !== "undefined") {
+   (
+      window as unknown as {
+         mockLogin: typeof mockLogin;
+         mockLogout: typeof mockLogout;
+      }
+   ).mockLogin = mockLogin;
+   (
+      window as unknown as {
+         mockLogin: typeof mockLogin;
+         mockLogout: typeof mockLogout;
+      }
+   ).mockLogout = mockLogout;
 }
