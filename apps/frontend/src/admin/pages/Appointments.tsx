@@ -4,8 +4,10 @@ import { NewBookingModal } from '../components/modals/NewBookingModal';
 import { Toast } from '../components/Toast';
 import { useAppointments } from '../../hooks/useStore';
 import { toast as toastUtil } from '../../utils/toast';
+import { useTranslation } from 'react-i18next';
 
 export function Appointments() {
+    const { t } = useTranslation('common');
     const { appointments, deleteAppointment, updateAppointment } = useAppointments();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -18,23 +20,23 @@ export function Appointments() {
 
     const handleBookingSuccess = () => {
         setToast({
-            message: 'Booking created successfully!',
+            message: t('admin.appointments.bookingCreated'),
             type: 'success',
         });
-        toastUtil.success('New appointment added successfully!');
+        toastUtil.success(t('admin.appointments.appointmentAdded'));
     };
 
     const handleDeleteAppointment = (id: number, clientName: string) => {
-        if (confirm(`Are you sure you want to cancel appointment for ${clientName}?`)) {
+        if (confirm(t('admin.appointments.confirmCancel', { clientName }))) {
             deleteAppointment(id);
-            toastUtil.success('Appointment cancelled successfully');
+            toastUtil.success(t('admin.appointments.cancelled'));
         }
     };
 
     const handleStatusToggle = (id: number, currentStatus: string) => {
         const newStatus = currentStatus === 'confirmed' ? 'pending' : 'confirmed';
         updateAppointment(id, { status: newStatus as 'confirmed' | 'pending' });
-        toastUtil.success(`Appointment status updated to ${newStatus}`);
+        toastUtil.success(t('admin.appointments.statusUpdated', { status: newStatus }));
     };
 
     // Filter appointments
@@ -51,14 +53,14 @@ export function Appointments() {
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold text-gray-800'>Appointments</h1>
-                    <p className='text-gray-600 mt-1'>Manage all clinic bookings</p>
+                    <h1 className='text-3xl font-bold text-gray-800'>{t('admin.appointments.title')}</h1>
+                    <p className='text-gray-600 mt-1'>{t('admin.appointments.subtitle')}</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className='px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm'
                 >
-                    New Booking
+                    {t('admin.appointments.newBooking')}
                 </button>
             </div>
             <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
@@ -67,8 +69,8 @@ export function Appointments() {
                         <CalendarIcon className='w-4 h-4 text-white' />
                     </div>
                     <p className='text-sm text-gray-700'>
-                        <span className='font-semibold'>AI Prediction:</span> High demand expected between 3-5 PM today.
-                        Consider adjusting staff schedules.
+                        <span className='font-semibold'>{t('admin.appointments.aiPrediction')}:</span>{' '}
+                        {t('admin.appointments.aiPredictionText')}
                     </p>
                 </div>
             </div>
@@ -76,7 +78,7 @@ export function Appointments() {
                 <div className='p-4 border-b border-pink-100 flex items-center gap-4'>
                     <input
                         type='text'
-                        placeholder='Search appointments...'
+                        placeholder={t('admin.appointments.searchPlaceholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className='flex-1 px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'
@@ -86,7 +88,7 @@ export function Appointments() {
                         onChange={(e) => setSelectedBranch(e.target.value)}
                         className='px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'
                     >
-                        <option>All Branches</option>
+                        <option>{t('admin.appointments.allBranches')}</option>
                         <option>Downtown Clinic</option>
                         <option>Westside Center</option>
                     </select>
@@ -95,10 +97,10 @@ export function Appointments() {
                         onChange={(e) => setSelectedStatus(e.target.value)}
                         className='px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'
                     >
-                        <option>All Status</option>
-                        <option>Confirmed</option>
-                        <option>Pending</option>
-                        <option>Completed</option>
+                        <option>{t('admin.appointments.allStatus')}</option>
+                        <option>{t('admin.appointments.statusConfirmed')}</option>
+                        <option>{t('admin.appointments.statusPending')}</option>
+                        <option>{t('admin.appointments.statusCompleted')}</option>
                     </select>
                 </div>
                 <div className='overflow-x-auto'>
@@ -106,25 +108,25 @@ export function Appointments() {
                         <thead className='bg-pink-50/50'>
                             <tr>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Client
+                                    {t('admin.appointments.client')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Service
+                                    {t('admin.appointments.service')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Therapist
+                                    {t('admin.appointments.therapist')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Branch
+                                    {t('admin.appointments.branch')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Date & Time
+                                    {t('admin.appointments.dateTime')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Status
+                                    {t('admin.appointments.status')}
                                 </th>
                                 <th className='px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                    Actions
+                                    {t('admin.appointments.actions')}
                                 </th>
                             </tr>
                         </thead>
@@ -187,8 +189,9 @@ export function Appointments() {
                                     <td className='px-6 py-4'>
                                         <div className='flex items-center gap-2'>
                                             <button
-                                                onClick={() => toastUtil.info('Edit feature coming soon...')}
+                                                onClick={() => toastUtil.info(t('admin.appointments.editComingSoon'))}
                                                 className='p-2 rounded-lg hover:bg-pink-100 transition-colors'
+                                                aria-label={t('common.edit')}
                                             >
                                                 <Edit3Icon className='w-4 h-4 text-gray-600' />
                                             </button>
@@ -197,6 +200,7 @@ export function Appointments() {
                                                     handleDeleteAppointment(appointment.id, appointment.customerName)
                                                 }
                                                 className='p-2 rounded-lg hover:bg-red-100 transition-colors'
+                                                aria-label={t('common.delete')}
                                             >
                                                 <XCircleIcon className='w-4 h-4 text-red-500' />
                                             </button>
