@@ -1,7 +1,7 @@
 /**
  * Authentication adapter
- * TODO: Connect to real auth system when available (Context/Redux/Backend API)
- * Current: Mock implementation for routing guards
+ * Handles auth state from localStorage (accessToken, user_data, refresh_token)
+ * For real backend API integration
  */
 
 import { useState, useEffect } from 'react';
@@ -27,8 +27,8 @@ interface AuthState {
 }
 
 /**
- * Mock auth hook - Replace with real implementation
- * TODO: Integrate with actual auth provider (e.g., AuthContext, Redux, JWT)
+ * Authentication hook
+ * Manages auth state from localStorage
  */
 export function useAuth(): AuthState {
     const [authState, setAuthState] = useState<{
@@ -42,7 +42,7 @@ export function useAuth(): AuthState {
     });
 
     useEffect(() => {
-        // Check auth from localStorage (auth_token + user_data)
+        // Check auth from localStorage (accessToken + user_data)
         const checkAuth = () => {
             try {
                 const token = localStorage.getItem('accessToken');
@@ -80,29 +80,43 @@ export function useAuth(): AuthState {
     }, []);
 
     /**
-     * Mock login function
-     * TODO: Replace with real API call (POST /api/auth/login)
+     * Login function
+     * Calls backend API (POST /api/auth/login)
      */
     const login = async (credentials: { email: string; password: string }): Promise<void> => {
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        // Mock validation - Accept any email/password for demo
-        // TODO: Replace with real API call
         if (!credentials.email || !credentials.password) {
             throw new Error('Email and password are required');
         }
 
-        // Create mock user based on email domain
-        const isAdmin = credentials.email.includes('admin');
+        // Call backend API
+        const response = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Login failed');
+        }
+
+        const data = await response.json();
+        
+        // Store tokens and user data from backend
+        localStorage.setItem('accessToken', data.session.accessToken);
+        if (data.session.refreshToken) {
+            localStorage.setItem('refresh_token', data.session.refreshToken);
+        }
+        localStorage.setItem('user_data', JSON.stringify(data.user));
+
+        // Update auth state
         const user: User = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: credentials.email.split('@')[0] ?? 'User',
-            email: credentials.email,
-            role: isAdmin ? 'admin' : 'client',
+            id: data.user.id,
+            name: data.user.fullName,
+            email: data.user.email,
+            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
         };
 
-        localStorage.setItem('user', JSON.stringify(user));
         setAuthState({
             isAuthenticated: true,
             isLoading: false,
@@ -111,37 +125,43 @@ export function useAuth(): AuthState {
     };
 
     /**
-     * Mock register function
-     * TODO: Replace with real API call (POST /api/auth/register)
+     * Register function
+     * Calls backend API (POST /api/auth/register)
      */
     const register = async (data: { name: string; email: string; password: string }): Promise<void> => {
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Mock validation
-        // TODO: Replace with real API call
         if (!data.name || !data.email || !data.password) {
             throw new Error('All fields are required');
         }
 
-        // Check if user already exists (mock)
-        const existingUserStr = localStorage.getItem('user');
-        if (existingUserStr) {
-            const existingUser = JSON.parse(existingUserStr) as User;
-            if (existingUser.email === data.email) {
-                throw new Error('Email already registered');
-            }
+        // Call backend API
+        const response = await fetch('/api/v1/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Registration failed');
         }
 
-        // Create new user
+        const responseData = await response.json();
+        
+        // Store tokens and user data from backend
+        localStorage.setItem('accessToken', responseData.session.accessToken);
+        if (responseData.session.refreshToken) {
+            localStorage.setItem('refresh_token', responseData.session.refreshToken);
+        }
+        localStorage.setItem('user_data', JSON.stringify(responseData.user));
+
+        // Update auth state
         const user: User = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: data.name,
-            email: data.email,
-            role: 'client', // New users are always clients
+            id: responseData.user.id,
+            name: responseData.user.fullName,
+            email: responseData.user.email,
+            role: responseData.user.role === 'ADMIN' ? 'admin' : 'client',
         };
 
-        localStorage.setItem('user', JSON.stringify(user));
         setAuthState({
             isAuthenticated: true,
             isLoading: false,
@@ -151,7 +171,7 @@ export function useAuth(): AuthState {
 
     /**
      * Logout function
-     * TODO: Replace with real API call (POST /api/auth/logout)
+     * Clears all auth data from localStorage
      */
     const logout = () => {
         // Clear all auth-related data from localStorage
@@ -168,32 +188,8 @@ export function useAuth(): AuthState {
     };
 
     /**
-     * Parse JWT token (client-side only - NOT VERIFIED)
-     * ⚠️ SECURITY: This is for demo purposes only. In production, JWT verification
-     * must happen on the backend to prevent tampering.
-     */
-    const parseJwt = (token: string): GoogleJWTPayload => {
-        try {
-            const base64Url = token.split('.')[1];
-            if (!base64Url) throw new Error('Invalid JWT token');
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(
-                atob(base64)
-                    .split('')
-                    .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                    .join(''),
-            );
-            return JSON.parse(jsonPayload) as GoogleJWTPayload;
-        } catch (error) {
-            console.error('Failed to parse JWT:', error);
-            throw new Error('Invalid Google credential token');
-        }
-    };
-
-    /**
      * Login with Google (using Google Identity Services)
-     * TODO: Send credential to backend for verification (POST /api/auth/google)
-     * Current: Client-side JWT parsing for demo (INSECURE for production)
+     * Sends credential to backend for verification (POST /api/auth/google)
      *
      * Note: This method renders a button in the provided element ID.
      * Call this function and pass the button container element ID.
@@ -216,29 +212,41 @@ export function useAuth(): AuthState {
                 }
 
                 // Callback when user signs in
-                const handleCredentialResponse = (response: GoogleCredentialResponse) => {
+                const handleCredentialResponse = async (response: GoogleCredentialResponse) => {
                     console.log('✅ Google callback triggered!', response);
 
                     try {
-                        // Parse JWT payload (client-side - DEMO ONLY)
-                        // TODO: Send response.credential to backend for verification
-                        const payload = parseJwt(response.credential);
-                        console.log('✅ JWT parsed:', payload);
+                        // Send credential to backend for verification
+                        const verifyResponse = await fetch('/api/v1/auth/google', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ credential: response.credential }),
+                        });
 
-                        // Create user from Google profile
+                        if (!verifyResponse.ok) {
+                            const error = await verifyResponse.json();
+                            throw new Error(error.message || 'Google Sign-In verification failed');
+                        }
+
+                        const data = await verifyResponse.json();
+
+                        // Store tokens and user data from backend
+                        localStorage.setItem('accessToken', data.session.accessToken);
+                        if (data.session.refreshToken) {
+                            localStorage.setItem('refresh_token', data.session.refreshToken);
+                        }
+                        localStorage.setItem('user_data', JSON.stringify(data.user));
+                        localStorage.setItem('auth/googleCredential', response.credential);
+
+                        // Update auth state
                         const user: User = {
-                            id: payload.sub,
-                            name: payload.name,
-                            email: payload.email,
-                            role: 'client', // New Google users default to client role
+                            id: data.user.id,
+                            name: data.user.fullName,
+                            email: data.user.email,
+                            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
                         };
 
-                        // Persist to localStorage (mock)
-                        // TODO: Backend should return JWT token and user data
-                        localStorage.setItem('auth/googleCredential', response.credential);
-                        localStorage.setItem('auth/provider', 'google');
-                        localStorage.setItem('user', JSON.stringify(user));
-                        console.log('✅ User saved to localStorage:', user);
+                        console.log('✅ User saved from backend:', user);
 
                         setAuthState({
                             isAuthenticated: true,
@@ -318,30 +326,39 @@ export function useAuth(): AuthState {
      * TODO: Replace with real API call (POST /api/admin/auth/login)
      */
     const loginAdmin = async (credentials: { email: string; password: string }): Promise<void> => {
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        // Mock validation - Accept any email/password for demo
-        // TODO: Replace with real API call
         if (!credentials.email || !credentials.password) {
             throw new Error('Email and password are required');
         }
 
-        // Mock admin check: email must contain "admin" keyword
-        // TODO: Backend should verify admin role via database/permissions
-        if (!credentials.email.toLowerCase().includes('admin')) {
-            throw new Error('Invalid admin credentials. Access denied.');
+        // Call backend API
+        const response = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Admin login failed');
         }
 
-        // Create mock admin user
+        const data = await response.json();
+        
+        // Store tokens and user data from backend
+        localStorage.setItem('accessToken', data.session.accessToken);
+        if (data.session.refreshToken) {
+            localStorage.setItem('refresh_token', data.session.refreshToken);
+        }
+        localStorage.setItem('user_data', JSON.stringify(data.user));
+
+        // Update auth state
         const user: User = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: credentials.email.split('@')[0] ?? 'Admin',
-            email: credentials.email,
-            role: 'admin', // Set admin role
+            id: data.user.id,
+            name: data.user.fullName,
+            email: data.user.email,
+            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
         };
 
-        localStorage.setItem('user', JSON.stringify(user));
         setAuthState({
             isAuthenticated: true,
             isLoading: false,
@@ -383,41 +400,41 @@ export function useAuth(): AuthState {
                 }
 
                 // Callback when admin signs in
-                const handleCredentialResponse = (response: GoogleCredentialResponse) => {
+                const handleCredentialResponse = async (response: GoogleCredentialResponse) => {
                     console.log('✅ Google Admin callback triggered!', response);
 
                     try {
-                        // Parse JWT payload (client-side - DEMO ONLY)
-                        // TODO: Send response.credential to backend for verification
-                        const payload = parseJwt(response.credential);
-                        console.log('✅ Admin JWT parsed:', payload);
+                        // Send credential to backend for verification
+                        const verifyResponse = await fetch('/api/v1/auth/google-admin', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ credential: response.credential }),
+                        });
 
-                        // Check domain whitelist
-                        const emailDomain = payload.email.split('@')[1];
-                        if (allowedDomains.length > 0 && emailDomain && !allowedDomains.includes(emailDomain)) {
-                            console.error('❌ Domain not allowed:', emailDomain);
-                            reject(
-                                new Error(
-                                    `Admin access requires authorized email domain. Allowed: ${allowedDomains.join(', ')}`,
-                                ),
-                            );
-                            return;
+                        if (!verifyResponse.ok) {
+                            const error = await verifyResponse.json();
+                            throw new Error(error.message || 'Admin Google Sign-In verification failed');
                         }
 
-                        // Create admin user from Google profile
+                        const data = await verifyResponse.json();
+
+                        // Store tokens and user data from backend
+                        localStorage.setItem('accessToken', data.session.accessToken);
+                        if (data.session.refreshToken) {
+                            localStorage.setItem('refresh_token', data.session.refreshToken);
+                        }
+                        localStorage.setItem('user_data', JSON.stringify(data.user));
+                        localStorage.setItem('auth/googleCredential', response.credential);
+
+                        // Update auth state
                         const user: User = {
-                            id: payload.sub,
-                            name: payload.name,
-                            email: payload.email,
-                            role: 'admin', // Set admin role
+                            id: data.user.id,
+                            name: data.user.fullName,
+                            email: data.user.email,
+                            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
                         };
 
-                        // Persist to localStorage (mock)
-                        // TODO: Backend should return JWT token with admin role claim
-                        localStorage.setItem('auth/googleCredential', response.credential);
-                        localStorage.setItem('auth/provider', 'google-admin');
-                        localStorage.setItem('user', JSON.stringify(user));
-                        console.log('✅ Admin saved to localStorage:', user);
+                        console.log('✅ Admin saved from backend:', user);
 
                         setAuthState({
                             isAuthenticated: true,
@@ -513,17 +530,16 @@ export function mockLogin(role: 'admin' | 'client' = 'client') {
         role,
     };
 
-    // Mock token expires in 30 minutes
-    const expiresAt = Date.now() + 30 * 60 * 1000;
-
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('auth/token', 'mock-jwt-token-' + Math.random().toString(36).substr(2, 9));
-    localStorage.setItem('auth/expiresAt', expiresAt.toString());
-    localStorage.setItem('auth/provider', 'mock');
+    // Store in localStorage for backward compatibility
+    localStorage.setItem('user_data', JSON.stringify({
+        id: user.id,
+        email: user.email,
+        fullName: user.name,
+        role: role === 'admin' ? 'ADMIN' : 'MEMBER',
+    }));
+    localStorage.setItem('accessToken', 'mock-token-' + Math.random().toString(36).substr(2, 9));
 
     console.log(`✅ Mock login as ${role}:`, user);
-    console.log(`🕐 Token expires at: ${new Date(expiresAt).toLocaleTimeString()}`);
-
     window.location.reload();
 }
 
@@ -532,10 +548,9 @@ export function mockLogin(role: 'admin' | 'client' = 'client') {
  * TODO: Remove after real auth is implemented
  */
 export function mockLogout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('auth/token');
-    localStorage.removeItem('auth/expiresAt');
-    localStorage.removeItem('auth/provider');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user_data');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('auth/googleCredential');
 
     console.log('✅ Logged out');

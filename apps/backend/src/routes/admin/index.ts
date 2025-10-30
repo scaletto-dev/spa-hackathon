@@ -6,6 +6,7 @@
  */
 
 import { Express, Router } from "express";
+import { authenticate, requireAdmin } from "../../middleware/auth.middleware";
 import adminDashboardController from "../../controllers/admin/admin.dashboard.controller";
 import adminProfileController from "../../controllers/admin/admin.profile.controller";
 import adminCustomersController from "../../controllers/admin/admin.customers.controller";
@@ -20,8 +21,11 @@ import adminContactsController from "../../controllers/admin/admin.contacts.cont
 /**
  * Configure admin routes
  * Base path: /api/v1/admin
+ * All routes require authentication + admin role
  */
 export function configureAdminRoutes(router: Router): void {
+   // Apply authentication and admin authorization to all admin routes
+   router.use(authenticate, requireAdmin);
    // ============================================
    // DASHBOARD ROUTES
    // ============================================
