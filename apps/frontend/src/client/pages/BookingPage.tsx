@@ -10,77 +10,16 @@ import { BookingUserInfo } from '../components/booking/BookingUserInfo';
 import { BookingPayment } from '../components/booking/BookingPayment';
 import { BookingConfirmation } from '../components/booking/BookingConfirmation';
 import { QuickBooking } from '../components/booking/QuickBooking';
-import { BookingData, Service, Branch } from '../components/booking/types';
-
-// Mock data for mapping
-const serviceMap: Record<string, Service> = {
-    facial: {
-        id: 1,
-        title: 'AI Skin Analysis Facial',
-        category: 'Facial',
-        price: '$150',
-        duration: '60 min',
-        image: '/services/facial.jpg',
-    },
-    laser: {
-        id: 3,
-        title: 'Laser Hair Removal',
-        category: 'Laser',
-        price: '$120',
-        duration: '30-90 min',
-        image: '/services/laser.jpg',
-    },
-    botox: {
-        id: 4,
-        title: 'Botox & Fillers',
-        category: 'Injectable',
-        price: '$350',
-        duration: '30 min',
-        image: '/services/botox.jpg',
-    },
-    analysis: {
-        id: 1,
-        title: 'AI Skin Analysis Facial',
-        category: 'Facial',
-        price: '$150',
-        duration: '60 min',
-        image: '/services/facial.jpg',
-    },
-};
-
-const branchMap: Record<string, Branch> = {
-    downtown: {
-        id: 1,
-        name: 'Downtown Clinic',
-        address: '123 Main Street',
-        phone: '(555) 123-4567',
-        hours: '9 AM - 8 PM',
-        image: '/branches/downtown.jpg',
-    },
-    westside: {
-        id: 2,
-        name: 'Westside Center',
-        address: '456 West Avenue',
-        phone: '(555) 234-5678',
-        hours: '9 AM - 8 PM',
-        image: '/branches/westside.jpg',
-    },
-    eastside: {
-        id: 3,
-        name: 'Eastside Spa',
-        address: '789 East Boulevard',
-        phone: '(555) 345-6789',
-        hours: '9 AM - 8 PM',
-        image: '/branches/eastside.jpg',
-    },
-};
+import { BookingData } from '../components/booking/types';
+import { createBooking } from '../../services/bookingApi';
+import { toast } from '../../utils/toast';
 
 export function BookingPage() {
     const { t } = useTranslation('common');
-    const [bookingMode, setBookingMode] = useState('quick'); // 'quick' or 'full'
+    const [bookingMode, setBookingMode] = useState('full'); // Default to 'full' mode
     const [currentStep, setCurrentStep] = useState(1);
     const [bookingData, setBookingData] = useState<BookingData>({
-        service: null,
+        serviceIds: [],
         branch: null,
         therapist: null,
         date: null,
@@ -89,69 +28,54 @@ export function BookingPage() {
         email: '',
         phone: '',
         notes: '',
-        useAI: false,
+        isLoggedIn: false,
         paymentMethod: null,
         promoCode: null,
     });
 
-    // Load data from sessionStorage if coming from home page quick booking
+    // Check if user is logged in
     useEffect(() => {
-        const quickBookingDataStr = sessionStorage.getItem('quickBookingData');
-
-        if (quickBookingDataStr) {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
             try {
-                const quickData = JSON.parse(quickBookingDataStr);
-
-                // Map service and branch strings to objects
-                const mappedService = quickData.service ? serviceMap[quickData.service] : null;
-                const mappedBranch = quickData.branch ? branchMap[quickData.branch] : null;
-
-                const newBookingData = {
-                    service: mappedService || null,
-                    branch: mappedBranch || null,
-                    therapist: null,
-                    date: quickData.date || null,
-                    time: quickData.time || null,
-                    name: '',
-                    email: '',
-                    phone: '',
-                    notes: '',
-                    useAI: quickData.aiAssist || false,
-                    paymentMethod: null,
-                    promoCode: null,
-                };
-
-                setBookingData(newBookingData);
-
-                // Clear sessionStorage after loading
-                sessionStorage.removeItem('quickBookingData');
+                const user = JSON.parse(userStr);
+                setBookingData(prev => ({
+                    ...prev,
+                    isLoggedIn: true,
+                    name: user.fullName || '',
+                    email: user.email || '',
+                    phone: user.phone || '',
+                }));
             } catch (error) {
-                console.error('Failed to load quick booking data:', error);
+                console.error('Failed to load user data:', error);
             }
         }
     }, []);
-    
+
+    // Step order
     const steps = [
-        t('bookings.steps.selectService'),
-        t('bookings.steps.chooseBranch'),
-        t('bookings.steps.pickDateTime'),
-        t('bookings.steps.yourInfo'),
-        t('bookings.steps.payment'),
-        t('bookings.steps.confirm'),
+        'Select Services', // Step 1
+        'Choose Branch',   // Step 2
+        'Pick Date & Time', // Step 3
+        'Your Information', // Step 4
+        'Payment',         // Step 5
+        'Confirmation',     // Step 6
     ];
-    
+
     const handleNextStep = () => {
         if (currentStep < steps.length) {
             setCurrentStep(currentStep + 1);
             window.scrollTo(0, 0);
         }
     };
+
     const handlePrevStep = () => {
         if (currentStep > 1) {
             setCurrentStep(currentStep - 1);
             window.scrollTo(0, 0);
         }
     };
+
     const updateBookingData = (data: Partial<BookingData>) => {
         setBookingData({
             ...bookingData,
@@ -159,28 +83,73 @@ export function BookingPage() {
         });
     };
 
+    const convertTo24HourFormat = (time12h: string): string => {
+        // Convert "9:00 AM" or "2:00 PM" to "09:00" or "14:00"
+        const parts = time12h.split(' ');
+        const timePart = parts[0] || '9:00';
+        const period = parts[1] || 'AM';
+        const timeParts = timePart.split(':').map(Number);
+        let hours = timeParts[0] || 9;
+        const minutes = timeParts[1] || 0;
+        
+        if (period === 'PM' && hours !== 12) {
+            hours += 12;
+        } else if (period === 'AM' && hours === 12) {
+            hours = 0;
+        }
+        
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    };
+
+    const handleSubmitBooking = async () => {
+        try {
+            if (!bookingData.branch || !bookingData.date || !bookingData.time || !bookingData.serviceIds) {
+                toast.error('Thông tin đặt lịch chưa đầy đủ');
+                return;
+            }
+
+            // Build payload according to API spec
+            const payload = {
+                serviceIds: bookingData.serviceIds,
+                branchId: bookingData.branch.id,
+                appointmentDate: bookingData.date, // YYYY-MM-DD format
+                appointmentTime: convertTo24HourFormat(bookingData.time), // Convert to HH:mm format
+                guestName: bookingData.name || '',
+                guestEmail: bookingData.email || '',
+                guestPhone: bookingData.phone || '',
+                notes: bookingData.notes || '',
+                language: 'vi',
+            };
+
+            console.log('Submitting booking with payload:', payload);
+            toast.info('Đang xử lý đặt lịch...');
+            
+            // Call API
+            const response = await createBooking(payload);
+            console.log('Booking created successfully:', response);
+            
+            toast.success(`Đặt lịch thành công! Mã tham chiếu: #${response.referenceNumber}`);
+        } catch (error) {
+            console.error('Error submitting booking:', error);
+            toast.error('Đặt lịch thất bại. Vui lòng thử lại.');
+        }
+    };
+
     // Validation logic for each step
     const canContinue = () => {
         switch (currentStep) {
-            case 1: // Select Service
-                return bookingData.service !== null;
+            case 1: // Select Services - at least one service
+                return bookingData.serviceIds && bookingData.serviceIds.length > 0;
             case 2: // Choose Branch
                 return bookingData.branch !== null;
             case 3: // Pick Date & Time
-                return (bookingData.date !== null && bookingData.time !== null) || bookingData.useAI === true;
+                return bookingData.date !== null && bookingData.time !== null;
             case 4: // Your Info
                 return bookingData.name !== '' && bookingData.email !== '' && bookingData.phone !== '';
-            case 5: // Payment
-                // Must select a payment method
-                if (!bookingData.paymentMethod || bookingData.paymentMethod === '') {
-                    return false;
-                }
-                // If 'clinic' (pay at clinic), no additional details needed
-                if (bookingData.paymentMethod === 'clinic') {
-                    return true;
-                }
-                // For card/ewallet/bank, need payment details to be complete
-                return bookingData.paymentDetailsComplete === true;
+            case 5: // Payment - placeholder validation
+                return true;
+            case 6: // Confirmation - just show it
+                return true;
             default:
                 return true;
         }
@@ -366,6 +335,7 @@ export function BookingPage() {
                                             key='step6'
                                             bookingData={bookingData}
                                             onPrev={handlePrevStep}
+                                            onSubmit={handleSubmitBooking}
                                         />
                                     )}
                                 </AnimatePresence>

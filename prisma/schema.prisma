@@ -61,7 +61,6 @@ model Service {
   updatedAt         DateTime        @updatedAt
   benefits          String[]
   longDescription   String?
-  bookings          Booking[]
   reviews           Review[]
   category          ServiceCategory @relation(fields: [categoryId], references: [id])
 
@@ -92,11 +91,12 @@ model Branch {
 }
 
 /// Booking model - Appointment reservations (supports guest and member bookings)
+/// Now supports multiple services per booking (e.g., package deals, combo services)
 model Booking {
   id                 String        @id @default(uuid())
   referenceNumber    String        @unique
   userId             String?
-  serviceId          String
+  serviceIds         String[]      // Array of service IDs (supports multiple services)
   branchId           String
   appointmentDate    DateTime
   appointmentTime    String
@@ -110,13 +110,11 @@ model Booking {
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
   branch             Branch        @relation(fields: [branchId], references: [id])
-  service            Service       @relation(fields: [serviceId], references: [id])
   user               User?         @relation(fields: [userId], references: [id])
 
   @@index([referenceNumber])
   @@index([appointmentDate])
   @@index([userId])
-  @@index([serviceId])
   @@index([branchId])
   @@index([status])
 }

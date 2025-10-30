@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import { Express, Router } from 'express';
 import healthRoutes from './health.routes';
 import servicesRoutes from './services.routes';
 import branchesRoutes from './branches.routes';
@@ -11,6 +11,8 @@ import blogRoutes from './blog.routes';
 import userRoutes from './user.routes';
 import aiRoutes from './ai.routes';
 import supportRoutes from './support.routes';
+import bookingRoutes from './booking.routes';
+import { configureAdminRoutes } from './admin';
 
 /**
  * Configure all application routes
@@ -22,6 +24,7 @@ import supportRoutes from './support.routes';
  * - /api/v1/branches - Branch location routes
  * - /api/v1/auth - Authentication routes (with rate limiting)
  * - /api/v1/user - User profile management routes (requires authentication)
+ * - /api/v1/admin - Admin management routes (requires admin authentication)
  * - /api/v1/bookings - Booking management routes
  * - /api/v1/availability - Availability check routes
  * - /api/v1/blog - Blog post routes
@@ -32,6 +35,7 @@ import supportRoutes from './support.routes';
 export function configureRoutes(app: Express): void {
     // Health check (no /v1 prefix)
     app.use('/api/health', healthRoutes);
+
     // API v1 routes
     app.use('/api/v1/services', servicesRoutes);
     app.use('/api/v1/categories', categoriesRoutes);
@@ -44,4 +48,10 @@ export function configureRoutes(app: Express): void {
     app.use('/api/v1/blog', blogRoutes);
     app.use('/api/v1/ai', aiRoutes);
     app.use('/api/v1/support', supportRoutes);
+    app.use('/api/v1/bookings', bookingRoutes);
+
+    // Admin routes
+    const adminRouter = Router();
+    configureAdminRoutes(adminRouter);
+    app.use('/api/v1/admin', adminRouter);
 }

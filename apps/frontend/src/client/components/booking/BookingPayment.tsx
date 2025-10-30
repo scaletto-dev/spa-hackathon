@@ -23,7 +23,21 @@ export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev 
             paymentDetailsComplete: isClinic ? true : false,
         });
     };
-    const subtotal = parseFloat(bookingData.service?.price.replace('$', '') || '0');
+    
+    // Calculate total price from selected services or single service
+    let subtotal = 0;
+    if (bookingData.selectedServices && bookingData.selectedServices.length > 0) {
+        subtotal = bookingData.selectedServices.reduce((sum, service) => {
+            const price = typeof service.price === 'number' ? service.price : parseFloat(String(service.price)) || 0;
+            return sum + price;
+        }, 0);
+    } else if (bookingData.service?.price) {
+        const price = typeof bookingData.service.price === 'number' 
+            ? bookingData.service.price 
+            : parseFloat(String(bookingData.service.price)) || 0;
+        subtotal = price;
+    }
+    
     const discount = appliedPromo ? subtotal * 0.1 : 0;
     const tax = (subtotal - discount) * 0.08;
     const total = subtotal - discount + tax;
