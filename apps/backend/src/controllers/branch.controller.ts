@@ -23,12 +23,25 @@ export class BranchController {
   ): Promise<void> {
     try {
       const includeServices = req.query.includeServices === 'true';
+      const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
       
-      const branches = await branchService.getAllBranches(includeServices);
+      // Validate page
+      if (page < 1) {
+        throw new ValidationError('Page must be greater than 0');
+      }
+      
+      // Validate limit if provided
+      if (limit !== undefined && (isNaN(limit) || limit < 1 || limit > 100)) {
+        throw new ValidationError('Limit must be between 1 and 100');
+      }
+      
+      const result = await branchService.getAllBranches(includeServices, page, limit);
 
-      const response: SuccessResponse<typeof branches> = {
+      const response: SuccessResponse<typeof result.data> = {
         success: true,
-        data: branches,
+        data: result.data,
+        meta: result.meta,
         timestamp: new Date().toISOString(),
       };
 

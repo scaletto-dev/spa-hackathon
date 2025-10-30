@@ -13,8 +13,8 @@ export function Branches() {
     const fetchBranches = async () => {
       try {
         setLoading(true);
-        const data = await getAllBranches(3); // Get 3 branches for home page
-        setBranches(data);
+        const response = await getAllBranches({ limit: 3 }); // Get 3 branches for home page
+        setBranches(response.data);
         setError(null);
       } catch (err) {
         console.error('Failed to load branches:', err);
