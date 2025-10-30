@@ -363,6 +363,8 @@
         "latest": "Mới nhất",
         "highestRating": "Xếp hạng cao nhất",
         "sortBy": "Sắp xếp theo",
+        "showingRating": "Hiển thị đánh giá",
+        "clearFilter": "Xóa bộ lọc",
         "loading": "Đang tải đánh giá...",
         "noReviews": "Không tìm thấy đánh giá phù hợp",
         "viewAll": "Xem tất cả đánh giá",

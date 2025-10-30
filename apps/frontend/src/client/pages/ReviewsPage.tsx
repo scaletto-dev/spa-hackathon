@@ -26,48 +26,50 @@ export default function ReviewsPage() {
     const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [sortBy, setSortBy] = useState<'recent' | 'rating'>('recent');
+    const [filterRating, setFilterRating] = useState<number | null>(null);
 
     useEffect(() => {
         loadReviews();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, sortBy]);
+    }, [currentPage, sortBy, filterRating]);
 
     const loadReviews = async () => {
         try {
             setIsLoading(true);
-            
+
             // Fetch reviews with filters
             const response = await reviewsApi.getAllReviews({
                 page: currentPage,
                 limit: 6,
                 sort: sortBy,
+                ...(filterRating && { rating: filterRating }),
             });
-            
+
             setReviews(response.data);
             setTotalPages(response.meta.totalPages);
-            
+
             // Calculate stats from all reviews (fetch all to get accurate stats)
             const allReviewsResponse = await reviewsApi.getAllReviews({
                 page: 1,
                 limit: 100, // Get all reviews for stats
                 sort: 'recent',
             });
-            
+
             const allReviews = allReviewsResponse.data;
             const totalReviews = allReviews.length;
-            
+
             if (totalReviews > 0) {
                 const ratingDistribution = {
-                    1: allReviews.filter(r => r.rating === 1).length,
-                    2: allReviews.filter(r => r.rating === 2).length,
-                    3: allReviews.filter(r => r.rating === 3).length,
-                    4: allReviews.filter(r => r.rating === 4).length,
-                    5: allReviews.filter(r => r.rating === 5).length,
+                    1: allReviews.filter((r) => r.rating === 1).length,
+                    2: allReviews.filter((r) => r.rating === 2).length,
+                    3: allReviews.filter((r) => r.rating === 3).length,
+                    4: allReviews.filter((r) => r.rating === 4).length,
+                    5: allReviews.filter((r) => r.rating === 5).length,
                 };
-                
+
                 const totalRating = allReviews.reduce((sum, r) => sum + r.rating, 0);
                 const averageRating = totalRating / totalReviews;
-                
+
                 setStats({
                     averageRating: Math.round(averageRating * 10) / 10,
                     totalReviews,
@@ -114,9 +116,7 @@ export default function ReviewsPage() {
                     <h1 className='text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4'>
                         {t('reviews.title')}
                     </h1>
-                    <p className='text-lg text-gray-600 mb-6'>
-                        {t('reviews.subtitle')}
-                    </p>
+                    <p className='text-lg text-gray-600 mb-6'>{t('reviews.subtitle')}</p>
                     <button
                         onClick={() => setIsWriteModalOpen(true)}
                         className='inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow'
@@ -157,16 +157,25 @@ export default function ReviewsPage() {
                                 </p>
                             </div>
 
-                            {/* Rating Distribution */}
+                            {/* Rating Distribution - Clickable */}
                             <div className='space-y-2'>
                                 {[5, 4, 3, 2, 1].map((rating) => {
                                     const count =
                                         stats.ratingDistribution[rating as keyof typeof stats.ratingDistribution];
                                     const percentage = getPercentage(count, stats.totalReviews);
+                                    const isSelected = filterRating === rating;
                                     return (
-                                        <div
+                                        <button
                                             key={rating}
-                                            className='w-full flex items-center gap-3 p-2 rounded-lg'
+                                            onClick={() => {
+                                                setFilterRating(isSelected ? null : rating);
+                                                setCurrentPage(1);
+                                            }}
+                                            className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all ${
+                                                isSelected
+                                                    ? 'bg-gradient-to-r from-pink-100 to-purple-100 ring-2 ring-pink-500'
+                                                    : 'hover:bg-gray-50'
+                                            }`}
                                         >
                                             <div className='flex items-center gap-1 w-16'>
                                                 <span className='text-sm font-medium'>{rating}</span>
@@ -179,7 +188,7 @@ export default function ReviewsPage() {
                                                 />
                                             </div>
                                             <span className='text-sm text-gray-600 w-12 text-right'>{count}</span>
-                                        </div>
+                                        </button>
                                     );
                                 })}
                             </div>
@@ -187,8 +196,31 @@ export default function ReviewsPage() {
                     </motion.div>
                 )}
 
-                {/* Sort Bar */}
-                <div className='flex items-center justify-end gap-4 mb-6'>
+                {/* Filter and Sort Bar */}
+                <div className='flex items-center justify-between gap-4 mb-6'>
+                    {/* Active Filter Display */}
+                    <div className='flex items-center gap-2'>
+                        {filterRating && (
+                            <div className='flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded-lg'>
+                                <span className='text-sm font-medium text-gray-700'>{t('reviews.showingRating')}:</span>
+                                <div className='flex items-center gap-1'>
+                                    <span className='text-sm font-bold text-pink-600'>{filterRating}</span>
+                                    <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setFilterRating(null);
+                                        setCurrentPage(1);
+                                    }}
+                                    className='ml-2 text-xs text-gray-600 hover:text-pink-600 underline'
+                                >
+                                    {t('reviews.clearFilter')}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Sort Dropdown */}
                     <div className='flex items-center gap-2'>
                         <span className='text-sm font-medium text-gray-600'>{t('reviews.sortBy')}:</span>
                         <select
@@ -227,7 +259,9 @@ export default function ReviewsPage() {
                                     <img
                                         src={
                                             review.customerAvatar ||
-                                            `https://ui-avatars.com/api/?name=${encodeURIComponent(review.customerName)}&background=ec4899&color=fff`
+                                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                                review.customerName,
+                                            )}&background=ec4899&color=fff`
                                         }
                                         alt={review.customerName}
                                         className='w-12 h-12 rounded-full object-cover'
