@@ -1,35 +1,23 @@
-// Global Chat Widget - Fixed position, appears on all client pages
-import { useState, useEffect, useRef } from 'react';
+/**
+ * Global Chat Widget - Tab-based interface with AI Chat, Live Chat, and Quick Booking
+ * Enhanced with WebSocket support for real-time communication
+ */
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircleIcon, XIcon, SendIcon, SparklesIcon } from 'lucide-react';
+import { MessageCircleIcon, XIcon, SparklesIcon, UsersIcon, CalendarIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useChatWidget } from '../../contexts/ChatWidgetContext';
+import { AIChatTab } from './chat/AIChatTab';
+import { LiveChatTab } from './chat/LiveChatTab';
+import { BookingTab } from './chat/BookingTab';
+
+type TabType = 'ai' | 'live' | 'booking';
 
 export function GlobalChatWidget() {
     const { t } = useTranslation('common');
     const { isOpen, closeChat, toggleChat } = useChatWidget();
-    const [messages, setMessages] = useState<Array<{ type: 'bot' | 'user'; text: string }>>([
-        {
-            type: 'bot',
-            text: t('chat.greeting'),
-        },
-    ]);
-    const [input, setInput] = useState('');
+    const [activeTab, setActiveTab] = useState<TabType>('ai');
     const [showHint, setShowHint] = useState(true);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    // Auto-focus input when chat opens
-    useEffect(() => {
-        if (isOpen && inputRef.current) {
-            setTimeout(() => inputRef.current?.focus(), 100);
-        }
-    }, [isOpen]);
-
-    // Auto-scroll to bottom when new messages
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
 
     // ESC key to close
     useEffect(() => {
@@ -42,55 +30,62 @@ export function GlobalChatWidget() {
         return () => document.removeEventListener('keydown', handleEsc);
     }, [isOpen, closeChat]);
 
-    const handleSend = () => {
-        if (!input.trim()) return;
-
-        // Add user message
-        const userMessage = { type: 'user' as const, text: input };
-        setMessages((prev) => [...prev, userMessage]);
-        setInput('');
-
-        // Simulate bot response after a delay
-        setTimeout(() => {
-            const botMessage = { type: 'bot' as const, text: getBotResponse(input) };
-            setMessages((prev) => [...prev, botMessage]);
-        }, 1000);
+    const getTabColor = () => {
+        switch (activeTab) {
+            case 'live':
+                return 'from-blue-500 to-indigo-500';
+            case 'booking':
+                return 'from-green-500 to-emerald-500';
+            default:
+                return 'from-pink-500 to-purple-500';
+        }
     };
 
-    const getBotResponse = (userInput: string): string => {
-        const input = userInput.toLowerCase();
-
-        if (input.includes('book') || input.includes('appointment')) {
-            return 'I can help you book an appointment! You can visit our booking page or I can assist you with finding the right service. What type of treatment are you interested in?';
+    const getTabIcon = () => {
+        switch (activeTab) {
+            case 'live':
+                return <UsersIcon className='w-7 h-7 text-white' />;
+            case 'booking':
+                return <CalendarIcon className='w-7 h-7 text-white' />;
+            default:
+                return <MessageCircleIcon className='w-7 h-7 text-white' />;
         }
-        if (input.includes('price') || input.includes('cost') || input.includes('fee')) {
-            return 'Our treatment prices vary depending on the service. Facials range from $120 to $250, laser treatments from $150 to $400, and body contouring from $300 to $600. Would you like specific pricing for a particular treatment?';
-        }
-        if (input.includes('location') || input.includes('where') || input.includes('branch')) {
-            return 'We have multiple locations across the city. Our main branches are Downtown, Westside, and Eastside. Would you like details about a specific location?';
-        }
-        if (input.includes('skin') || input.includes('analyze') || input.includes('analysis')) {
-            return 'Our AI Skin Analysis uses advanced technology to analyze your skin type, concerns, and recommend personalized treatments. Would you like to book a skin analysis appointment?';
-        }
-        return 'Thanks for your message! For detailed information about our services, pricing, or to book an appointment, you can navigate to the appropriate section of our website or speak with one of our representatives at (555) 123-4567. (Mocked AI Response)';
     };
 
     return (
         <>
-            {/* Chat toggle button - Always visible */}
+            {/* Chat toggle button */}
             <motion.button
-                className='fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center z-50 hover:shadow-xl transition-shadow'
+                className={`fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center z-50 hover:shadow-xl transition-all duration-300 bg-gradient-to-r ${getTabColor()}`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleChat}
                 data-testid='chat-toggle-button'
                 aria-label={isOpen ? t('chat.closeChat') : t('chat.openChat')}
             >
-                {isOpen ? (
-                    <XIcon className='w-7 h-7 text-white' />
-                ) : (
-                    <MessageCircleIcon className='w-7 h-7 text-white' />
-                )}
+                <AnimatePresence mode='wait'>
+                    {isOpen ? (
+                        <motion.div
+                            key='close'
+                            initial={{ rotate: 0, opacity: 0 }}
+                            animate={{ rotate: 90, opacity: 1 }}
+                            exit={{ rotate: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <XIcon className='w-7 h-7 text-white' />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key='icon'
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            {getTabIcon()}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </motion.button>
 
             {/* Promotional bubble when closed */}
@@ -134,20 +129,38 @@ export function GlobalChatWidget() {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className='fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-[360px] max-w-[90vw] z-40 border border-gray-200 overflow-hidden'
-                        style={{ maxHeight: '60vh' }}
+                        className='fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-[360px] max-w-[90vw] z-40 border border-gray-200 overflow-hidden flex flex-col'
+                        style={{ height: '70vh', maxHeight: '700px', minHeight: '500px' }}
                         data-testid='chat-window'
                     >
-                        {/* Chat header */}
-                        <div className='bg-gradient-to-r from-pink-500 to-purple-500 p-3'>
-                            <div className='flex items-center justify-between'>
+                        {/* Chat header with tabs */}
+                        <div className={`bg-gradient-to-r ${getTabColor()}`}>
+                            <div className='p-3 flex items-center justify-between'>
                                 <div className='flex items-center gap-2'>
                                     <div className='w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center'>
-                                        <SparklesIcon className='w-5 h-5 text-white' />
+                                        {activeTab === 'live' ? (
+                                            <UsersIcon className='w-5 h-5 text-white' />
+                                        ) : activeTab === 'booking' ? (
+                                            <CalendarIcon className='w-5 h-5 text-white' />
+                                        ) : (
+                                            <SparklesIcon className='w-5 h-5 text-white' />
+                                        )}
                                     </div>
                                     <div>
-                                        <h3 className='font-bold text-white text-sm'>{t('chat.assistant')}</h3>
-                                        <p className='text-xs text-white/80'>{t('chat.aiSupport')}</p>
+                                        <h3 className='font-bold text-white text-sm'>
+                                            {activeTab === 'live'
+                                                ? t('chat.liveChat')
+                                                : activeTab === 'booking'
+                                                ? t('chat.quickBooking')
+                                                : t('chat.aiAssistant')}
+                                        </h3>
+                                        <p className='text-xs text-white/80'>
+                                            {activeTab === 'live'
+                                                ? t('chat.talkToRealPerson')
+                                                : activeTab === 'booking'
+                                                ? t('chat.bookInSeconds')
+                                                : t('chat.poweredByAI')}
+                                        </p>
                                     </div>
                                 </div>
                                 <button
@@ -158,65 +171,65 @@ export function GlobalChatWidget() {
                                     <XIcon className='w-5 h-5 text-white' />
                                 </button>
                             </div>
-                        </div>
 
-                        {/* Chat messages - Scrollable area */}
-                        <div
-                            className='overflow-y-auto p-4 bg-gray-50 space-y-3'
-                            style={{ height: 'calc(60vh - 140px)', minHeight: '250px', maxHeight: '400px' }}
-                        >
-                            {messages.map((message, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                            {/* Tab navigation */}
+                            <div className='flex bg-black/10'>
+                                <button
+                                    onClick={() => setActiveTab('ai')}
+                                    className={`flex-1 py-2 px-3 text-xs font-medium transition-all ${
+                                        activeTab === 'ai'
+                                            ? 'bg-white/20 text-white'
+                                            : 'text-white/70 hover:bg-white/10'
+                                    }`}
                                 >
-                                    {message.type === 'bot' && (
-                                        <div className='w-7 h-7 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center mr-2 flex-shrink-0'>
-                                            <SparklesIcon className='w-4 h-4 text-white' />
-                                        </div>
-                                    )}
-                                    <div
-                                        className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                                            message.type === 'user'
-                                                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
-                                                : 'bg-white border border-gray-200 text-gray-800'
-                                        }`}
-                                    >
-                                        {message.text}
+                                    <div className='flex items-center justify-center gap-1'>
+                                        <SparklesIcon className='w-3.5 h-3.5' />
+                                        <span>{t('chat.aiChat')}</span>
                                     </div>
-                                </motion.div>
-                            ))}
-                            <div ref={messagesEndRef} />
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('live')}
+                                    className={`flex-1 py-2 px-3 text-xs font-medium transition-all ${
+                                        activeTab === 'live'
+                                            ? 'bg-white/20 text-white'
+                                            : 'text-white/70 hover:bg-white/10'
+                                    }`}
+                                >
+                                    <div className='flex items-center justify-center gap-1'>
+                                        <UsersIcon className='w-3.5 h-3.5' />
+                                        <span>{t('chat.liveChat')}</span>
+                                    </div>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('booking')}
+                                    className={`flex-1 py-2 px-3 text-xs font-medium transition-all ${
+                                        activeTab === 'booking'
+                                            ? 'bg-white/20 text-white'
+                                            : 'text-white/70 hover:bg-white/10'
+                                    }`}
+                                >
+                                    <div className='flex items-center justify-center gap-1'>
+                                        <CalendarIcon className='w-3.5 h-3.5' />
+                                        <span>{t('chat.booking')}</span>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Chat input */}
-                        <div className='p-3 border-t border-gray-200 bg-white'>
-                            <div className='flex gap-2'>
-                                <input
-                                    ref={inputRef}
-                                    type='text'
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder={t('chat.placeholder')}
-                                    className='flex-1 px-3 py-2 text-sm border-2 border-gray-200 rounded-full focus:outline-none focus:border-pink-300'
-                                    data-testid='chat-input'
-                                />
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={handleSend}
-                                    className='w-9 h-9 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'
-                                    data-testid='chat-send-button'
-                                    aria-label={t('chat.send')}
-                                >
-                                    <SendIcon className='w-4 h-4 text-white' />
-                                </motion.button>
-                            </div>
-                            <p className='text-xs text-gray-500 mt-2 text-center'>{t('chat.poweredBy')}</p>
+                        {/* Tab content */}
+                        <div className='flex-1 flex flex-col overflow-hidden'>
+                            <AIChatTab
+                                isActive={activeTab === 'ai'}
+                                onRequestAgent={() => setActiveTab('live')}
+                                onRequestBooking={() => setActiveTab('booking')}
+                            />
+                            <LiveChatTab isActive={activeTab === 'live'} onSwitchToAI={() => setActiveTab('ai')} />
+                            <BookingTab isActive={activeTab === 'booking'} />
+                        </div>
+
+                        {/* Footer */}
+                        <div className='px-3 py-2 text-center border-t border-gray-200'>
+                            <p className='text-xs text-gray-500'>{t('chat.poweredBy')}</p>
                         </div>
                     </motion.div>
                 )}
