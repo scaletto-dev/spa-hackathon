@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, ScanIcon, ZapIcon, HeartIcon, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getFeaturedServices, formatPrice, formatDuration, type Service } from '../../../services/servicesApi';
+import { getFeaturedServices, formatPrice, type Service } from '../../../services/servicesApi';
 import { Link } from 'react-router-dom';
 
 // Map category names to icons and gradients
@@ -137,7 +137,7 @@ export function Services() {
                                             {/* Duration and Price */}
                                             <div className='flex items-center justify-between pt-4 border-t border-gray-100'>
                                                 <span className='text-sm text-gray-500'>
-                                                    ⏱️ {formatDuration(service.duration)}
+                                                    ⏱️ {service.duration}
                                                 </span>
                                                 <span className='text-lg font-bold text-pink-600'>
                                                     {formatPrice(service.price)}

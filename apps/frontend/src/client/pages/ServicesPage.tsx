@@ -46,6 +46,7 @@ export function ServicesPage() {
                 const response = await servicesApi.getServices({
                     page,
                     limit,
+                    featured: true, // Only show featured services
                     ...(selectedCategory !== 'All' && { categoryId: selectedCategory }),
                 });
                 setServices(response.data);

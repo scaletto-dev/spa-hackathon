@@ -9,6 +9,7 @@ import authRoutes from "./auth.routes";
 import reviewsRoutes from "./reviews.routes";
 import blogRoutes from "./blog.routes";
 import userRoutes from "./user.routes";
+import bookingRoutes from "./booking.routes";
 
 /**
  * Configure all application routes
@@ -40,4 +41,5 @@ export function configureRoutes(app: Express): void {
    app.use('/api/v1/auth', authRoutes);
    app.use('/api/v1/user', userRoutes);
    app.use('/api/v1/blog', blogRoutes);
+   app.use('/api/v1/bookings', bookingRoutes);
 }

@@ -1,22 +1,27 @@
 // Booking flow types
 
 export interface Branch {
-    id: number;
+    id: string;
     name: string;
-    image: string;
     address: string;
     phone: string;
-    hours: string;
+    slug?: string;
+    email?: string;
+    operatingHours?: {
+        dayOfWeek: number;
+        openTime: string;
+        closeTime: string;
+    }[];
 }
 
 export interface Service {
-    id: number;
-    title: string;
-    category: string;
-    price: string; // Format: "$150"
+    id: string;
+    name: string;
+    categoryName: string;
+    price: number;
     duration: string;
-    image: string;
-    description?: string;
+    images: string[];
+    excerpt?: string;
 }
 
 export interface Therapist {
@@ -28,7 +33,9 @@ export interface Therapist {
 }
 
 export interface BookingData {
+    serviceIds?: string[];
     service?: Service | null;
+    selectedServices?: Service[]; // Array of all selected services
     branch?: Branch | null;
     therapist?: Therapist | string | null;
     date?: string | null;
@@ -38,10 +45,12 @@ export interface BookingData {
     email?: string;
     phone?: string;
     notes?: string;
+    isLoggedIn?: boolean;
+    otpVerified?: boolean;
     useAI?: boolean;
     paymentMethod?: string | null;
     promoCode?: string | null;
-    paymentDetailsComplete?: boolean; // For card/ewallet/bank forms
+    paymentDetailsComplete?: boolean;
 }
 
 export interface BookingStepProps {
@@ -54,4 +63,5 @@ export interface BookingStepProps {
 export interface BookingConfirmationProps {
     bookingData: BookingData;
     onPrev: () => void;
+    onSubmit?: () => void;
 }

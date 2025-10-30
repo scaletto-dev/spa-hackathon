@@ -26,7 +26,7 @@ export interface Service {
   description: string;
   longDescription?: string | null;
   excerpt: string;
-  duration: number;
+  duration: number | string; // Can be number or formatted string (e.g., "90 min")
   price: string; // Decimal as string (e.g., "2500000")
   categoryId: string;
   categoryName?: string;

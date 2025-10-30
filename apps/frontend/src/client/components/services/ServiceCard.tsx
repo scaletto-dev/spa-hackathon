@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ClockIcon, ArrowRightIcon, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from '../../../utils/toast';
-import { formatPrice, formatDuration, type Service } from '../../../services/servicesApi';
+import { formatPrice, type Service } from '../../../services/servicesApi';
 
 interface ServiceCardProps {
     service: Service;
@@ -76,7 +76,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
                     <div className='flex items-center justify-between pt-4 border-t border-gray-200'>
                         <div className='flex items-center gap-2 text-gray-700'>
                             <ClockIcon className='w-5 h-5 text-pink-500' />
-                            <span className='font-medium'>{formatDuration(service.duration)}</span>
+                            <span className='font-medium'>{service.duration}</span>
                         </div>
                         <div className='text-2xl font-bold text-gray-800'>{formatPrice(service.price)}</div>
                     </div>
