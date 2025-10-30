@@ -8,6 +8,7 @@ import uploadRoutes from "./upload.routes";
 import authRoutes from "./auth.routes";
 import reviewsRoutes from "./reviews.routes";
 import blogRoutes from "./blog.routes";
+import userRoutes from "./user.routes";
 
 /**
  * Configure all application routes
@@ -18,6 +19,7 @@ import blogRoutes from "./blog.routes";
  * - /api/v1/categories - Service category routes
  * - /api/v1/branches - Branch location routes
  * - /api/v1/auth - Authentication routes (with rate limiting)
+ * - /api/v1/user - User profile management routes (requires authentication)
  * - /api/v1/bookings - Booking management routes
  * - /api/v1/availability - Availability check routes
  * - /api/v1/blog - Blog post routes
@@ -36,5 +38,6 @@ export function configureRoutes(app: Express): void {
    app.use("/api/v1/contact", contactRoutes);
    app.use('/api/v1/upload', uploadRoutes);
    app.use('/api/v1/auth', authRoutes);
+   app.use('/api/v1/user', userRoutes);
    app.use('/api/v1/blog', blogRoutes);
 }

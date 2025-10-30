@@ -245,6 +245,177 @@ class AuthService {
 
     return { user: userData, session: sessionData };
   }
+
+  /**
+   * Change password for authenticated user
+   * Requires current password verification
+   * 
+   * @param userId - User ID from authenticated session
+   * @param currentPassword - Current password for verification
+   * @param newPassword - New password to set
+   * @throws UnauthorizedError if current password is incorrect
+   * @throws ValidationError if new password is invalid
+   */
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    if (!supabase) {
+      throw new Error('Supabase client not configured');
+    }
+
+    // Validate new password
+    if (newPassword.length < 8) {
+      throw new ValidationError('New password must be at least 8 characters');
+    }
+
+    if (newPassword.length > 100) {
+      throw new ValidationError('New password must not exceed 100 characters');
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedError('User not found');
+    }
+
+    // Verify current password by attempting to sign in
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    });
+
+    if (signInError) {
+      logger.warn('Current password verification failed', {
+        userId: user.id,
+        email: user.email,
+      });
+      throw new UnauthorizedError('Current password is incorrect');
+    }
+
+    // Update password in Supabase Auth
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) {
+      logger.error('Password update failed', {
+        error: updateError.message,
+        userId: user.id,
+      });
+      throw new Error(`Password update failed: ${updateError.message}`);
+    }
+
+    logger.info('Password changed successfully', {
+      userId: user.id,
+      email: user.email,
+    });
+  }
+
+  /**
+   * Send password reset email
+   * 
+   * @param email - User's email address
+   * @throws ValidationError if email format is invalid
+   */
+  async forgotPassword(email: string): Promise<void> {
+    if (!supabase) {
+      throw new Error('Supabase client not configured');
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new ValidationError('Invalid email format');
+    }
+
+    // Check if user exists in database
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
+
+    // Always return success even if user doesn't exist (security: don't reveal if email is registered)
+    if (!user) {
+      logger.info('Password reset requested for non-existent email', { email });
+      return;
+    }
+
+    // Send password reset email via Supabase
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password`,
+    });
+
+    if (error) {
+      logger.error('Failed to send password reset email', {
+        error: error.message,
+        email,
+      });
+      throw new Error(`Failed to send password reset email: ${error.message}`);
+    }
+
+    logger.info('Password reset email sent', {
+      userId: user.id,
+      email: user.email,
+    });
+  }
+
+  /**
+   * Reset password using token from email
+   * Note: With Supabase, the token is handled via redirectTo URL
+   * User will be redirected to frontend with access_token in URL
+   * Frontend should extract token and call updateUser with new password
+   * 
+   * @param accessToken - Access token from reset email URL
+   * @param newPassword - New password to set
+   * @throws ValidationError if password is invalid
+   */
+  async resetPassword(accessToken: string, newPassword: string): Promise<void> {
+    if (!supabase) {
+      throw new Error('Supabase client not configured');
+    }
+
+    // Validate new password
+    if (newPassword.length < 8) {
+      throw new ValidationError('Password must be at least 8 characters');
+    }
+
+    if (newPassword.length > 100) {
+      throw new ValidationError('Password must not exceed 100 characters');
+    }
+
+    // Set the session with the access token
+    const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: '', // Not needed for password reset
+    });
+
+    if (sessionError || !sessionData.user) {
+      logger.error('Invalid or expired reset token', { error: sessionError?.message });
+      throw new UnauthorizedError('Invalid or expired reset token');
+    }
+
+    // Update password
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) {
+      logger.error('Password reset failed', {
+        error: updateError.message,
+        userId: sessionData.user.id,
+      });
+      throw new Error(`Password reset failed: ${updateError.message}`);
+    }
+
+    logger.info('Password reset successfully', {
+      userId: sessionData.user.id,
+      email: sessionData.user.email,
+    });
+  }
 }
 
 export default new AuthService();

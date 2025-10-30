@@ -13,12 +13,7 @@ import {
     ArrowRight,
     PenSquare,
 } from 'lucide-react';
-import {
-    getServiceDetail,
-    getRelatedServices,
-    type ServiceDetail,
-    type RelatedService,
-} from '../../api/adapters/services';
+import { servicesApi, type ServiceWithCategory, formatPrice, formatDuration } from '../../services/servicesApi';
 import { WriteReviewModal } from '../components/reviews/WriteReviewModal';
 
 export default function ServiceDetailPage() {
@@ -26,8 +21,8 @@ export default function ServiceDetailPage() {
     const navigate = useNavigate();
     const [isWriteReviewOpen, setIsWriteReviewOpen] = useState(false);
 
-    const [service, setService] = useState<ServiceDetail | null>(null);
-    const [relatedServices, setRelatedServices] = useState<RelatedService[]>([]);
+    const [service, setService] = useState<ServiceWithCategory | null>(null);
+    const [relatedServices, setRelatedServices] = useState<ServiceWithCategory[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -35,19 +30,28 @@ export default function ServiceDetailPage() {
 
     useEffect(() => {
         if (!id) return;
-        loadServiceData(parseInt(id));
+        loadServiceData(id);
     }, [id]);
 
-    const loadServiceData = async (serviceId: number) => {
+    const loadServiceData = async (serviceId: string) => {
         try {
             setIsLoading(true);
             setError(null);
-            const [serviceData, related] = await Promise.all([
-                getServiceDetail(serviceId),
-                getRelatedServices(serviceId),
-            ]);
+            
+            // Fetch service detail
+            const serviceData = await servicesApi.getServiceById(serviceId);
             setService(serviceData);
-            setRelatedServices(related);
+
+            // Fetch related services (same category)
+            if (serviceData.categoryId) {
+                const relatedResponse = await servicesApi.getServices({
+                    categoryId: serviceData.categoryId,
+                    limit: 3,
+                });
+                // Filter out current service
+                const related = relatedResponse.data.filter(s => s.id !== serviceId);
+                setRelatedServices(related.slice(0, 3));
+            }
         } catch (err) {
             setError('Không thể tải thông tin dịch vụ. Vui lòng thử lại.');
             console.error('Load service error:', err);
@@ -63,10 +67,10 @@ export default function ServiceDetailPage() {
                     ? {
                           id: service.id,
                           title: service.name,
-                          category: service.category,
-                          price: `$${service.price}`,
-                          duration: service.duration,
-                          image: service.image,
+                          category: service.category.name,
+                          price: formatPrice(service.price),
+                          duration: formatDuration(service.duration),
+                          image: service.images[0],
                           description: service.description,
                       }
                     : null,
@@ -74,7 +78,7 @@ export default function ServiceDetailPage() {
         });
     };
 
-    const handleRelatedServiceClick = (relatedId: number) => {
+    const handleRelatedServiceClick = (relatedId: string) => {
         navigate(`/services/${relatedId}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -136,7 +140,7 @@ export default function ServiceDetailPage() {
                                 className='w-full h-full object-cover'
                             />
                             <div className='absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full'>
-                                <span className='text-sm font-semibold text-pink-600'>{service.category}</span>
+                                <span className='text-sm font-semibold text-pink-600'>{service.category.name}</span>
                             </div>
                         </motion.div>
 
@@ -173,23 +177,19 @@ export default function ServiceDetailPage() {
                             <p className='text-lg text-gray-600'>{service.excerpt}</p>
                         </div>
 
-                        {/* Rating */}
+                        {/* Rating - Placeholder for now */}
                         <div className='flex items-center gap-4'>
                             <div className='flex items-center gap-1'>
                                 {[...Array(5)].map((_, i) => (
                                     <Star
                                         key={i}
                                         className={`w-5 h-5 ${
-                                            i < Math.floor(service.averageRating)
-                                                ? 'fill-yellow-400 text-yellow-400'
-                                                : 'text-gray-300'
+                                            i < 5 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
                                         }`}
                                     />
                                 ))}
                             </div>
-                            <span className='text-gray-600'>
-                                {service.averageRating} ({service.totalReviews} đánh giá)
-                            </span>
+                            <span className='text-gray-600'>5.0 (Dịch vụ chất lượng)</span>
                         </div>
 
                         {/* Price & Duration */}
@@ -200,7 +200,7 @@ export default function ServiceDetailPage() {
                                 </div>
                                 <div>
                                     <p className='text-sm text-gray-500'>Giá dịch vụ</p>
-                                    <p className='text-2xl font-bold text-gray-900'>${service.price}</p>
+                                    <p className='text-2xl font-bold text-gray-900'>{formatPrice(service.price)}</p>
                                 </div>
                             </div>
                             <div className='w-px h-12 bg-gray-200' />
@@ -210,7 +210,7 @@ export default function ServiceDetailPage() {
                                 </div>
                                 <div>
                                     <p className='text-sm text-gray-500'>Thời gian</p>
-                                    <p className='text-xl font-bold text-gray-900'>{service.duration}</p>
+                                    <p className='text-xl font-bold text-gray-900'>{formatDuration(service.duration)}</p>
                                 </div>
                             </div>
                         </div>
@@ -272,28 +272,15 @@ export default function ServiceDetailPage() {
                 {/* Before/After Photos */}
                 {service.beforeAfterPhotos && service.beforeAfterPhotos.length > 0 && (
                     <div className='bg-white rounded-2xl shadow-xl p-8 mb-8'>
-                        <h2 className='text-2xl font-bold text-gray-900 mb-6'>Kết quả trước & sau</h2>
-                        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                        <h2 className='text-2xl font-bold text-gray-900 mb-6'>Hình ảnh kết quả</h2>
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                             {service.beforeAfterPhotos.map((photo, index) => (
-                                <div key={index} className='space-y-3'>
-                                    <div className='grid grid-cols-2 gap-3'>
-                                        <div>
-                                            <p className='text-sm font-semibold text-gray-600 mb-2'>Trước</p>
-                                            <img
-                                                src={photo.before}
-                                                alt='Before'
-                                                className='w-full h-48 object-cover rounded-lg'
-                                            />
-                                        </div>
-                                        <div>
-                                            <p className='text-sm font-semibold text-gray-600 mb-2'>Sau</p>
-                                            <img
-                                                src={photo.after}
-                                                alt='After'
-                                                className='w-full h-48 object-cover rounded-lg'
-                                            />
-                                        </div>
-                                    </div>
+                                <div key={index} className='rounded-xl overflow-hidden shadow-lg'>
+                                    <img
+                                        src={photo}
+                                        alt={`Kết quả ${index + 1}`}
+                                        className='w-full h-64 object-cover hover:scale-105 transition-transform'
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -341,20 +328,20 @@ export default function ServiceDetailPage() {
                                 >
                                     <div className='relative h-48'>
                                         <img
-                                            src={related.image}
+                                            src={related.images[0]}
                                             alt={related.name}
                                             className='w-full h-full object-cover'
                                         />
                                         <div className='absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-pink-600'>
-                                            {related.category}
+                                            {related.categoryName || 'Dịch vụ'}
                                         </div>
                                     </div>
                                     <div className='p-4'>
                                         <h3 className='font-bold text-gray-900 mb-2'>{related.name}</h3>
                                         <p className='text-sm text-gray-600 mb-3 line-clamp-2'>{related.excerpt}</p>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm text-gray-500'>{related.duration}</span>
-                                            <span className='text-lg font-bold text-pink-600'>${related.price}</span>
+                                            <span className='text-sm text-gray-500'>{formatDuration(related.duration)}</span>
+                                            <span className='text-lg font-bold text-pink-600'>{formatPrice(related.price)}</span>
                                         </div>
                                     </div>
                                 </motion.div>

@@ -76,3 +76,53 @@ export interface LoginResponse {
   user: AuthUserData;
   session: AuthSession;
 }
+
+/**
+ * Change password request body
+ * Requires authentication
+ */
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+/**
+ * Change password response
+ */
+export interface ChangePasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+/**
+ * Forgot password request body
+ * Sends reset email
+ */
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+/**
+ * Forgot password response
+ */
+export interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+/**
+ * Reset password request body
+ * Used when user clicks link from email
+ */
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+}
+
+/**
+ * Reset password response
+ */
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+}

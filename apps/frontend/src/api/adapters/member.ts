@@ -295,3 +295,73 @@ export async function getMemberBookings(params: BookingHistoryParams = {}): Prom
         },
     };
 }
+
+export interface MemberProfile {
+    id: string; // UUID
+    email: string;
+    fullName: string;
+    phone: string;
+    language: 'vi' | 'ja' | 'en' | 'zh';
+    createdAt: string; // ISO 8601
+    updatedAt?: string; // ISO 8601
+}
+
+export interface UpdateProfileParams {
+    fullName: string;
+    phone: string;
+    language?: 'vi' | 'ja' | 'en' | 'zh';
+}
+
+const MOCK_MEMBER_PROFILE: MemberProfile = {
+    id: 'member-uuid-001',
+    email: 'nguyenvana@gmail.com',
+    fullName: 'Nguyễn Văn A',
+    phone: '+84 912 345 678',
+    language: 'vi',
+    createdAt: '2024-06-15T08:30:00Z',
+    updatedAt: '2025-10-20T14:22:00Z',
+};
+
+/**
+ * Fetch member profile information
+ * @returns Member profile data
+ *
+ * TODO API: GET /api/v1/members/profile
+ * Auth: Required (Bearer token)
+ * Response: { data: MemberProfile }
+ */
+export async function getMemberProfile(): Promise<MemberProfile> {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Return a copy to avoid mutations
+    return { ...MOCK_MEMBER_PROFILE };
+}
+
+/**
+ * Update member profile information
+ * @param params - Fields to update (fullName, phone, language)
+ * @returns Updated profile data
+ *
+ * TODO API: PUT /api/v1/members/profile
+ * Auth: Required (Bearer token)
+ * Body: { fullName, phone, language? }
+ * Response: { data: MemberProfile }
+ */
+export async function updateMemberProfile(params: UpdateProfileParams): Promise<MemberProfile> {
+    const { fullName, phone, language } = params;
+
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 700));
+
+    // Update mock data
+    MOCK_MEMBER_PROFILE.fullName = fullName;
+    MOCK_MEMBER_PROFILE.phone = phone;
+    if (language) {
+        MOCK_MEMBER_PROFILE.language = language;
+    }
+    MOCK_MEMBER_PROFILE.updatedAt = new Date().toISOString();
+
+    // Return updated copy
+    return { ...MOCK_MEMBER_PROFILE };
+}
