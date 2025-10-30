@@ -68,23 +68,39 @@ async function main() {
       data: {
         name: 'AI Skin Analysis Facial',
         slug: 'ai-skin-analysis-facial',
-        description: `Experience our revolutionary AI-powered skin analysis facial treatment. Using advanced artificial intelligence technology, we analyze your skin's unique characteristics including hydration levels, wrinkles, dark spots, and pore size. Based on this comprehensive analysis, our expert aestheticians customize a facial treatment specifically for your skin's needs.
+        description: 'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
+        longDescription: `Our AI Skin Analysis Facial combines cutting-edge technology with expert skincare knowledge. Using advanced AI algorithms, we analyze over 1000 facial data points to create a truly personalized treatment plan.
 
-This luxurious treatment includes deep cleansing, gentle exfoliation, targeted serums, facial massage, and a hydrating mask. Perfect for all skin types, this treatment addresses your specific concerns while promoting overall skin health and radiance.`,
+The treatment begins with a comprehensive skin analysis using our state-of-the-art AI scanner. This technology evaluates skin texture, hydration levels, pigmentation, pore size, and signs of aging. Based on this analysis, our skincare experts customize a facial treatment specifically for your skin needs.
+
+The facial includes deep cleansing, gentle exfoliation, extractions if needed, a customized mask, and a relaxing facial massage. We finish with serums and moisturizers selected specifically for your skin type.`,
         excerpt: 'Revolutionary AI-powered skin analysis with customized treatment based on your unique skin characteristics',
         duration: 90,
         price: 2500000, // 2.5M VND
         categoryId: categories[0].id, // Facial
         images: [
           'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800',
-          'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800',
+          'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800',
+          'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800',
+        ],
+        benefits: [
+          'Personalized treatment based on AI analysis',
+          'Over 1000 facial data points analyzed',
+          'Customized product selection',
+          'Visible improvement in skin texture',
+          'Professional skincare recommendations',
+          'Suitable for all skin types',
         ],
         featured: true,
         active: true,
-        beforeAfterPhotos: [],
+        beforeAfterPhotos: [
+          'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400',
+          'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
+        ],
         faqs: [
-          { question: 'How long does the treatment take?', answer: '90 minutes including consultation and analysis' },
-          { question: 'Is it suitable for sensitive skin?', answer: 'Yes, the treatment is customized for all skin types including sensitive skin' },
+          { question: 'How long does the treatment take?', answer: 'The full treatment takes 90 minutes including AI analysis, consultation, and facial treatment.' },
+          { question: 'Is it suitable for sensitive skin?', answer: 'Yes! The AI analysis allows us to customize the treatment for all skin types, including sensitive skin.' },
+          { question: 'How often should I get this treatment?', answer: 'We recommend monthly treatments for optimal results, with quarterly AI re-analysis to track progress.' },
         ],
       },
     }),
@@ -92,19 +108,34 @@ This luxurious treatment includes deep cleansing, gentle exfoliation, targeted s
       data: {
         name: 'Deep Cleansing Facial',
         slug: 'deep-cleansing-facial',
-        description: `Our deep cleansing facial is designed to purify and refresh your skin. This treatment thoroughly cleanses pores, removes impurities, and eliminates blackheads and whiteheads. 
+        description: 'Deep cleansing, exfoliation, and hydration treatment',
+        longDescription: `Our deep cleansing facial is designed to purify and refresh your skin. This treatment thoroughly cleanses pores, removes impurities, and eliminates blackheads and whiteheads.
 
-The treatment includes steam therapy to open pores, professional extraction, antibacterial treatment, and a purifying mask. Ideal for oily and combination skin types prone to breakouts and congestion.`,
+The treatment includes steam therapy to open pores, professional extraction, antibacterial treatment, and a purifying mask. Ideal for oily and combination skin types prone to breakouts and congestion.
+
+Each session is customized to your skin's needs, ensuring optimal results without irritation.`,
         excerpt: 'Thorough pore cleansing treatment to remove impurities and prevent breakouts',
         duration: 60,
         price: 1200000, // 1.2M VND
         categoryId: categories[0].id,
-        images: ['https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800',
+          'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800',
+        ],
+        benefits: [
+          'Instant visible results',
+          'Deep pore cleansing',
+          'Improved skin hydration',
+          'Reduced fine lines and wrinkles',
+          'Even skin tone',
+          'No downtime required',
+        ],
         featured: false,
         active: true,
         beforeAfterPhotos: [],
         faqs: [
           { question: 'How often should I get this treatment?', answer: 'Every 4-6 weeks for best results' },
+          { question: 'Is there any downtime?', answer: 'No downtime! You may have mild redness for 1-2 hours which is completely normal.' },
         ],
       },
     }),
@@ -112,18 +143,35 @@ The treatment includes steam therapy to open pores, professional extraction, ant
       data: {
         name: 'Hydrating Facial',
         slug: 'hydrating-facial',
-        description: `Restore moisture and radiance to dry, dehydrated skin with our intensive hydrating facial. This nourishing treatment uses hyaluronic acid, vitamin E, and botanical extracts to deeply hydrate and plump the skin.
+        description: 'Restore moisture and radiance to dry, dehydrated skin',
+        longDescription: `Restore moisture and radiance to dry, dehydrated skin with our intensive hydrating facial. This nourishing treatment uses hyaluronic acid, vitamin E, and botanical extracts to deeply hydrate and plump the skin.
 
-The treatment includes gentle cleansing, hydrating serum application, relaxing facial massage to boost circulation, and a moisture-rich mask. Your skin will feel soft, supple, and glowing.`,
+The treatment includes gentle cleansing, hydrating serum application, relaxing facial massage to boost circulation, and a moisture-rich mask. Your skin will feel soft, supple, and glowing.
+
+Perfect for those with dry skin, or anyone looking for a moisture boost during harsh weather conditions.`,
         excerpt: 'Intensive moisture treatment for dry and dehydrated skin',
         duration: 75,
         price: 1500000, // 1.5M VND
         categoryId: categories[0].id,
-        images: ['https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=800',
+          'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800',
+        ],
+        benefits: [
+          'Deep hydration with hyaluronic acid',
+          'Plumper, more supple skin',
+          'Improved skin elasticity',
+          'Reduces appearance of fine lines',
+          'Long-lasting moisture',
+          'Glowing complexion',
+        ],
         featured: true,
         active: true,
         beforeAfterPhotos: [],
-        faqs: Prisma.JsonNull,
+        faqs: [
+          { question: 'How long do results last?', answer: 'Results typically last 2-3 weeks with proper at-home care.' },
+          { question: 'Can I wear makeup after?', answer: 'Yes! Your skin will be perfectly prepped for makeup application.' },
+        ],
       },
     }),
 
@@ -132,20 +180,35 @@ The treatment includes gentle cleansing, hydrating serum application, relaxing f
       data: {
         name: 'Laser Hair Removal - Full Body',
         slug: 'laser-hair-removal-full-body',
-        description: `Achieve smooth, hair-free skin with our advanced laser hair removal technology. Our state-of-the-art laser system safely and effectively removes unwanted hair from all body areas.
+        description: 'Advanced laser technology for permanent hair reduction',
+        longDescription: `Achieve smooth, hair-free skin with our advanced laser hair removal technology. Our state-of-the-art laser system safely and effectively removes unwanted hair from all body areas.
 
-The treatment is suitable for all skin tones and provides long-lasting results. Multiple sessions are recommended for optimal results. Each session includes skin assessment, protective eyewear, and post-treatment care.`,
+The treatment is suitable for all skin tones and provides long-lasting results. Multiple sessions are recommended for optimal results. Each session includes skin assessment, protective eyewear, and post-treatment care.
+
+Our experienced technicians ensure a comfortable treatment experience with minimal discomfort.`,
         excerpt: 'Advanced laser technology for permanent hair reduction on all body areas',
         duration: 120,
         price: 5000000, // 5M VND
         categoryId: categories[1].id, // Laser
-        images: ['https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=800',
+          'https://images.unsplash.com/photo-1629201935180-5a5bf3ab22e4?w=800',
+        ],
+        benefits: [
+          'Long-lasting hair reduction (80-95%)',
+          'Suitable for all skin tones',
+          'Safe and FDA-approved technology',
+          'Minimal discomfort with cooling system',
+          'No ingrown hairs',
+          'Smoother skin texture',
+        ],
         featured: true,
         active: true,
         beforeAfterPhotos: [],
         faqs: [
           { question: 'How many sessions are needed?', answer: '6-8 sessions spaced 4-6 weeks apart for best results' },
           { question: 'Is it painful?', answer: 'Most clients describe it as a mild snapping sensation. We use cooling technology for comfort' },
+          { question: 'What should I do before treatment?', answer: 'Shave the area 24 hours before, avoid sun exposure for 4 weeks, and come with clean skin.' },
         ],
       },
     }),
@@ -153,18 +216,35 @@ The treatment is suitable for all skin tones and provides long-lasting results. 
       data: {
         name: 'Laser Skin Rejuvenation',
         slug: 'laser-skin-rejuvenation',
-        description: `Turn back time with our advanced laser skin rejuvenation treatment. This non-invasive procedure uses fractional laser technology to stimulate collagen production, reduce fine lines and wrinkles, improve skin texture, and minimize pores.
+        description: 'Non-invasive laser treatment to reduce wrinkles',
+        longDescription: `Turn back time with our advanced laser skin rejuvenation treatment. This non-invasive procedure uses fractional laser technology to stimulate collagen production, reduce fine lines and wrinkles, improve skin texture, and minimize pores.
 
-The treatment also helps fade age spots, sun damage, and acne scars. Minimal downtime with visible results after just one session.`,
+The treatment also helps fade age spots, sun damage, and acne scars. Minimal downtime with visible results after just one session.
+
+Our advanced laser system delivers precise energy to the skin, triggering natural healing and collagen remodeling for smoother, younger-looking skin.`,
         excerpt: 'Non-invasive laser treatment to reduce wrinkles and improve skin texture',
         duration: 60,
         price: 3500000, // 3.5M VND
         categoryId: categories[1].id,
-        images: ['https://images.unsplash.com/photo-1629201935180-5a5bf3ab22e4?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1629201935180-5a5bf3ab22e4?w=800',
+          'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800',
+        ],
+        benefits: [
+          'Reduces fine lines and wrinkles',
+          'Improves skin texture and tone',
+          'Minimizes pore size',
+          'Fades age spots and sun damage',
+          'Stimulates collagen production',
+          'Minimal downtime',
+        ],
         featured: true,
         active: true,
         beforeAfterPhotos: [],
-        faqs: Prisma.JsonNull,
+        faqs: [
+          { question: 'Is there downtime?', answer: 'Minimal downtime. You may experience redness for 2-3 days, which can be covered with makeup.' },
+          { question: 'When will I see results?', answer: 'Initial results within 1 week, with optimal results developing over 3-6 months as collagen rebuilds.' },
+        ],
       },
     }),
 
@@ -173,34 +253,70 @@ The treatment also helps fade age spots, sun damage, and acne scars. Minimal dow
       data: {
         name: 'Full Body Massage',
         slug: 'full-body-massage',
-        description: `Relax and rejuvenate with our therapeutic full body massage. Our skilled therapists use a combination of Swedish and deep tissue techniques to relieve muscle tension, improve circulation, and promote overall wellness.The treatment includes aromatherapy oils, hot towel therapy, and a scalp massage. Choose from relaxing, therapeutic, or deep tissue pressure.`,
+        description: 'Therapeutic massage to relieve tension and promote relaxation',
+        longDescription: `Relax and rejuvenate with our therapeutic full body massage. Our skilled therapists use a combination of Swedish and deep tissue techniques to relieve muscle tension, improve circulation, and promote overall wellness.
+
+The treatment includes aromatherapy oils, hot towel therapy, and a scalp massage. Choose from relaxing, therapeutic, or deep tissue pressure based on your needs.
+
+Perfect for stress relief, muscle recovery, or simply a moment of complete relaxation.`,
         excerpt: 'Therapeutic massage to relieve tension and promote relaxation',
         duration: 90,
         price: 1800000, // 1.8M VND
         categoryId: categories[2].id, // Body
-        images: ['https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800',
+          'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800',
+        ],
+        benefits: [
+          'Relieves muscle tension and pain',
+          'Improves blood circulation',
+          'Reduces stress and anxiety',
+          'Promotes better sleep',
+          'Boosts immune system',
+          'Increases flexibility',
+        ],
         featured: false,
         active: true,
         beforeAfterPhotos: [],
-        faqs: Prisma.JsonNull,
+        faqs: [
+          { question: 'What pressure levels are available?', answer: 'We offer light (relaxing), medium (therapeutic), and deep tissue pressure. Your therapist will customize based on your preference.' },
+          { question: 'Should I avoid eating before?', answer: 'Yes, we recommend not eating a heavy meal 1-2 hours before your massage.' },
+        ],
       },
     }),
     prisma.service.create({
       data: {
         name: 'Body Scrub & Wrap',
         slug: 'body-scrub-wrap',
-        description: `Indulge in our luxurious body scrub and wrap treatment. This detoxifying treatment begins with a full-body exfoliation using natural scrubs to remove dead skin cells and reveal soft, smooth skin.
+        description: 'Exfoliating body scrub followed by nourishing wrap',
+        longDescription: `Indulge in our luxurious body scrub and wrap treatment. This detoxifying treatment begins with a full-body exfoliation using natural scrubs to remove dead skin cells and reveal soft, smooth skin.
 
-Following the scrub, a nutrient-rich body wrap is applied to nourish and hydrate your skin. The treatment concludes with a moisturizing massage. Your skin will feel silky smooth and deeply nourished.`,
+Following the scrub, a nutrient-rich body wrap is applied to nourish and hydrate your skin. The treatment concludes with a moisturizing massage. Your skin will feel silky smooth and deeply nourished.
+
+Choose from various wrap options: detoxifying seaweed, hydrating coconut, or anti-aging collagen.`,
         excerpt: 'Exfoliating body scrub followed by nourishing wrap for smooth, radiant skin',
         duration: 90,
         price: 2000000, // 2M VND
         categoryId: categories[2].id,
-        images: ['https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800',
+          'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800',
+        ],
+        benefits: [
+          'Removes dead skin cells',
+          'Deeply hydrates skin',
+          'Improves skin texture',
+          'Detoxifies and purifies',
+          'Promotes relaxation',
+          'Leaves skin silky smooth',
+        ],
         featured: false,
         active: true,
         beforeAfterPhotos: [],
-        faqs: Prisma.JsonNull,
+        faqs: [
+          { question: 'How often should I get this treatment?', answer: 'Once a month is ideal for maintaining smooth, healthy skin.' },
+          { question: 'Can I shower after?', answer: 'We recommend waiting 4-6 hours to allow the products to fully absorb into your skin.' },
+        ],
       },
     }),
 
@@ -209,19 +325,35 @@ Following the scrub, a nutrient-rich body wrap is applied to nourish and hydrate
       data: {
         name: 'Collagen Boost Treatment',
         slug: 'collagen-boost-treatment',
-        description: `Restore your skin's youthful firmness with our intensive collagen boost treatment. This advanced anti-aging facial uses peptides, growth factors, and vitamin C to stimulate collagen production and improve skin elasticity.
+        description: 'Advanced anti-aging treatment to boost collagen',
+        longDescription: `Restore your skin's youthful firmness with our intensive collagen boost treatment. This advanced anti-aging facial uses peptides, growth factors, and vitamin C to stimulate collagen production and improve skin elasticity.
 
-The treatment includes microneedling (optional), collagen serum infusion, LED light therapy, and a firming mask. Visible improvement in fine lines, wrinkles, and skin firmness after just one treatment.`,
+The treatment includes microneedling (optional), collagen serum infusion, LED light therapy, and a firming mask. Visible improvement in fine lines, wrinkles, and skin firmness after just one treatment.
+
+Our multi-layered approach targets aging at the cellular level for comprehensive rejuvenation.`,
         excerpt: 'Advanced anti-aging treatment to boost collagen and restore firmness',
         duration: 90,
         price: 3000000, // 3M VND
         categoryId: categories[3].id, // Anti-Aging
-        images: ['https://images.unsplash.com/photo-1595908129746-23a2c7d9ad5a?w=800'],
+        images: [
+          'https://images.unsplash.com/photo-1595908129746-23a2c7d9ad5a?w=800',
+          'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800',
+        ],
+        benefits: [
+          'Stimulates natural collagen production',
+          'Reduces fine lines and wrinkles',
+          'Improves skin firmness and elasticity',
+          'Evens skin tone',
+          'Provides immediate glow',
+          'Long-term anti-aging benefits',
+        ],
         featured: true,
         active: true,
         beforeAfterPhotos: [],
         faqs: [
           { question: 'When will I see results?', answer: 'You will see immediate glow. Optimal results develop over 4-6 weeks as collagen rebuilds' },
+          { question: 'How many treatments are recommended?', answer: 'For best results, we recommend a series of 3-6 treatments spaced 4 weeks apart.' },
+          { question: 'Is microneedling included?', answer: 'Microneedling is optional and can be added for enhanced collagen stimulation. Your aesthetician will recommend based on your skin assessment.' },
         ],
       },
     }),

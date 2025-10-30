@@ -9,16 +9,30 @@ export interface Service {
   name: string;
   slug: string;
   description: string;
+  longDescription?: string | null;
   excerpt: string;
   duration: number;
   price: string; // Decimal as string (e.g., "2500000")
   categoryId: string;
   categoryName?: string;
   images: string[];
+  benefits?: string[];
   featured: boolean;
   active: boolean;
+  beforeAfterPhotos?: string[];
+  faqs?: Array<{ question: string; answer: string }> | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ServiceWithCategory extends Service {
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    icon: string | null;
+  };
 }
 
 export interface ServicesResponse {
@@ -42,7 +56,7 @@ export interface ServiceParams {
 
 export interface ServiceDetailResponse {
   success: boolean;
-  data: Service;
+  data: ServiceWithCategory;
   timestamp: string;
 }
 

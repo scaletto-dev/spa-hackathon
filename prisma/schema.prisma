@@ -48,11 +48,13 @@ model Service {
   name              String
   slug              String          @unique
   description       String
+  longDescription   String?
   excerpt           String
   duration          Int
   price             Decimal         @db.Decimal(10, 2)
   categoryId        String
   images            String[]
+  benefits          String[]
   featured          Boolean         @default(false)
   active            Boolean         @default(true)
   beforeAfterPhotos String[]
