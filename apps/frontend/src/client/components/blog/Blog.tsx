@@ -184,6 +184,23 @@ export function Blog() {
                         ))
                     )}
                 </div>
+
+                {/* View All Blog Posts Button */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className='text-center mt-12'
+                >
+                    <button
+                        onClick={() => navigate('/blog')}
+                        className='inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all'
+                    >
+                        {t('blog.viewAll')}
+                        <ArrowRightIcon className='w-5 h-5' />
+                    </button>
+                </motion.div>
             </div>
         </section>
     );

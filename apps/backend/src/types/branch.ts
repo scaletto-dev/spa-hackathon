@@ -27,10 +27,11 @@ export interface BranchDTO {
   address: string;
   phone: string;
   email: string | null;
-  latitude: string; // Decimal returned as string
-  longitude: string; // Decimal returned as string
+  latitude: number;
+  longitude: number;
   operatingHours: Record<string, any>; // JSON object
   images: string[];
+  image: string; // Primary image for display
   active: boolean;
   description: string | null;
   createdAt: string;

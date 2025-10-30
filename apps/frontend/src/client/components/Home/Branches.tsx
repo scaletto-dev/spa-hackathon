@@ -88,7 +88,7 @@ export function Branches() {
                                 whileHover={{ y: -10 }}
                                 className='group cursor-pointer'
                             >
-                                <Link to={`/branches/${branch.slug}`} className='block h-full'>
+                                <Link to='/branches' className='block h-full'>
                                     <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl overflow-hidden hover:shadow-2xl transition-all h-full'>
                                         <div className='relative h-56 overflow-hidden'>
                                             <img
