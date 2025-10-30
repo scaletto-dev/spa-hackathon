@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../../auth/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { reviewsApi } from '../../../services/reviewsApi';
 
 interface WriteReviewModalProps {
     isOpen: boolean;
     onClose: () => void;
     serviceName?: string;
-    serviceId?: number;
+    serviceId?: string; // Changed from number to string (UUID)
     onSubmitSuccess?: () => void;
 }
 
@@ -19,7 +20,7 @@ export function WriteReviewModal({
     serviceId: _serviceId,
     onSubmitSuccess,
 }: WriteReviewModalProps) {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
@@ -31,16 +32,13 @@ export function WriteReviewModal({
     const [isCheckingBooking, setIsCheckingBooking] = useState(false);
 
     // Check if user has completed booking for this service
-    const checkCompletedBooking = async (_svcId: number) => {
+    const checkCompletedBooking = async (_svcId: string) => {
         try {
             setIsCheckingBooking(true);
-            // Mock API call to check if user has completed booking
-            await new Promise((resolve) => setTimeout(resolve, 800));
-
-            // Mock: Assume user has completed booking for demo purposes
-            // In real implementation: await api.checkCompletedBooking(user.id, _svcId);
-            const hasCompleted = true; // Change to false to test
-            setHasCompletedBooking(hasCompleted);
+            // TODO: Implement API call to check if user has completed booking
+            // For now, allow anyone to write review
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            setHasCompletedBooking(true);
         } catch {
             setHasCompletedBooking(false);
         } finally {
@@ -72,13 +70,27 @@ export function WriteReviewModal({
             return;
         }
 
+        if (!_serviceId) {
+            setError('Không tìm thấy thông tin dịch vụ');
+            return;
+        }
+
+        if (!user) {
+            setError('Không tìm thấy thông tin người dùng');
+            return;
+        }
+
         try {
             setIsSubmitting(true);
 
-            // Mock API call - simulate submission
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-
-            // In real app: await submitReview({ rating, comment, serviceId });
+            // Call API to create review
+            await reviewsApi.createReview({
+                serviceId: _serviceId,
+                customerName: user.fullName || user.email,
+                email: user.email,
+                rating,
+                reviewText: comment.trim(),
+            });
 
             setShowSuccess(true);
 
@@ -87,8 +99,9 @@ export function WriteReviewModal({
                 onSubmitSuccess?.();
                 handleClose();
             }, 2000);
-        } catch {
-            setError('Có lỗi xảy ra. Vui lòng thử lại.');
+        } catch (err: any) {
+            console.error('Submit review error:', err);
+            setError(err.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
         } finally {
             setIsSubmitting(false);
         }
