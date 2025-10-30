@@ -77,10 +77,17 @@ export function useAuth(): AuthState {
                   user: null,
                });
             }
-        };
+         } catch {
+            setAuthState({
+               isAuthenticated: false,
+               isLoading: false,
+               user: null,
+            });
+         }
+      };
 
-        checkAuth();
-    }, []);
+      checkAuth();
+   }, []);
 
     /**
      * Login function
@@ -118,6 +125,7 @@ export function useAuth(): AuthState {
             name: data.user.fullName,
             email: data.user.email,
             role: data.user.role === 'ADMIN' ? 'admin' : 'client',
+            avatar: data.user.avatar,
         };
 
         setAuthState({
@@ -163,6 +171,7 @@ export function useAuth(): AuthState {
             name: responseData.user.fullName,
             email: responseData.user.email,
             role: responseData.user.role === 'ADMIN' ? 'admin' : 'client',
+            avatar: responseData.user.avatar,
         };
 
         setAuthState({
@@ -247,6 +256,7 @@ export function useAuth(): AuthState {
                             name: data.user.fullName,
                             email: data.user.email,
                             role: data.user.role === 'ADMIN' ? 'admin' : 'client',
+                            avatar: data.user.avatar,
                         };
 
                         console.log('✅ User saved from backend:', user);
@@ -360,6 +370,7 @@ export function useAuth(): AuthState {
             name: data.user.fullName,
             email: data.user.email,
             role: data.user.role === 'ADMIN' ? 'admin' : 'client',
+            avatar: data.user.avatar,
         };
 
         setAuthState({
@@ -377,199 +388,7 @@ export function useAuth(): AuthState {
      * Note: This method renders a button in the provided element ID.
      * Call this function and pass the button container element ID.
      */
-    const loginWithGoogleAdmin = async (buttonElementId?: string): Promise<void> => {
-        try {
-            // Load Google Identity Services script
-            await loadGoogleScript();
-
-            const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
-            if (!clientId) {
-                throw new Error('Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env');
-            }
-
-            // Callback when user signs in
-            const handleCredentialResponse = async (
-               response: GoogleCredentialResponse
-            ) => {
-               console.log("✅ Google callback triggered!", response);
-
-               try {
-                  // Send credential to backend for verification
-                  const verifyResponse = await fetch("/api/v1/auth/google", {
-                     method: "POST",
-                     headers: { "Content-Type": "application/json" },
-                     body: JSON.stringify({ credential: response.credential }),
-                  });
-
-                  if (!verifyResponse.ok) {
-                     const error = await verifyResponse.json();
-                     throw new Error(
-                        error.message || "Google Sign-In verification failed"
-                     );
-                  }
-
-                  const data = await verifyResponse.json();
-
-                  // Store tokens and user data from backend
-                  localStorage.setItem("accessToken", data.session.accessToken);
-                  if (data.session.refreshToken) {
-                     localStorage.setItem(
-                        "refresh_token",
-                        data.session.refreshToken
-                     );
-                  }
-                  localStorage.setItem("user_data", JSON.stringify(data.user));
-                  localStorage.setItem(
-                     "auth/googleCredential",
-                     response.credential
-                  );
-
-                  // Update auth state
-                  const user: User = {
-                     id: data.user.id,
-                     name: data.user.fullName,
-                     email: data.user.email,
-                     role: data.user.role === "ADMIN" ? "admin" : "client",
-                     avatar: data.user.avatar,
-                  };
-
-                  console.log("✅ User saved from backend:", user);
-
-                  setAuthState({
-                     isAuthenticated: true,
-                     isLoading: false,
-                     user,
-                  });
-                  console.log("✅ Auth state updated");
-
-                  resolve();
-               } catch (error) {
-                  console.error("❌ Error in callback:", error);
-                  reject(error);
-               }
-            };
-
-            // Initialize with FedCM enabled (required for future Google updates)
-            window.google.accounts.id.initialize({
-               client_id: clientId,
-               callback: handleCredentialResponse,
-               auto_select: false, // Don't auto-select previously signed-in user
-               cancel_on_tap_outside: true,
-               // FedCM is now enabled by default - don't disable it
-            });
-
-            // If button element ID provided, render button instead of One Tap
-            if (buttonElementId) {
-               const buttonElement = document.getElementById(buttonElementId);
-               if (!buttonElement) {
-                  reject(
-                     new Error(`Element with id "${buttonElementId}" not found`)
-                  );
-                  return;
-               }
-
-               // Render Google Sign-In button (more reliable than One Tap)
-               window.google.accounts.id.renderButton(buttonElement, {
-                  theme: "outline",
-                  size: "large",
-                  text: "continue_with",
-                  shape: "rectangular",
-                  width: buttonElement.offsetWidth || 300,
-               });
-
-               console.log("Google Sign-In button rendered");
-
-               // Resolve immediately - callback will handle auth when user clicks button
-               resolve();
-            } else {
-               // Fallback: Try One Tap prompt (may be blocked by browser)
-               window.google.accounts.id.prompt((notification) => {
-                  if (notification.isNotDisplayed()) {
-                     const reason = notification.getNotDisplayedReason();
-                     console.warn("Google One Tap not displayed:", reason);
-
-                     // One Tap blocked - suggest using button instead
-                     reject(
-                        new Error(
-                           "Google One Tap is blocked. Please use the Google Sign-In button instead."
-                        )
-                     );
-                  } else if (notification.isSkippedMoment()) {
-                     const reason = notification.getSkippedReason();
-                     if (reason === "user_cancel" || reason === "tap_outside") {
-                        reject(new Error("Sign-in cancelled by user"));
-                     } else {
-                        reject(new Error(`Sign-in skipped: ${reason}`));
-                     }
-                  }
-                  // If displayed successfully, callback will be called
-               });
-            }
-         });
-      } catch (error) {
-         console.error("Google Sign-In error:", error);
-         throw error;
-      }
-   };
-
-   /**
-    * Admin login function
-    * TODO: Replace with real API call (POST /api/admin/auth/login)
-    */
-   const loginAdmin = async (credentials: {
-      email: string;
-      password: string;
-   }): Promise<void> => {
-      if (!credentials.email || !credentials.password) {
-         throw new Error("Email and password are required");
-      }
-
-      // Call backend API
-      const response = await fetch("/api/v1/auth/login", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-         const error = await response.json();
-         throw new Error(error.message || "Admin login failed");
-      }
-
-      const data = await response.json();
-
-      // Store tokens and user data from backend
-      localStorage.setItem("accessToken", data.session.accessToken);
-      if (data.session.refreshToken) {
-         localStorage.setItem("refresh_token", data.session.refreshToken);
-      }
-      localStorage.setItem("user_data", JSON.stringify(data.user));
-
-      // Update auth state
-      const user: User = {
-         id: data.user.id,
-         name: data.user.fullName,
-         email: data.user.email,
-         role: data.user.role === "ADMIN" ? "admin" : "client",
-         avatar: data.user.avatar,
-      };
-
-      setAuthState({
-         isAuthenticated: true,
-         isLoading: false,
-         user,
-      });
-   };
-
-   /**
-    * Admin login with Google (with domain whitelist)
-    * TODO: Send credential to backend for verification (POST /api/admin/auth/google)
-    * Current: Client-side domain check for demo (INSECURE for production)
-    *
-    * Note: This method renders a button in the provided element ID.
-    * Call this function and pass the button container element ID.
-    */
-   const loginWithGoogleAdmin = async (
+    const loginWithGoogleAdmin = async (
       buttonElementId?: string
    ): Promise<void> => {
       try {
@@ -730,6 +549,40 @@ export function useAuth(): AuthState {
       } catch (error) {
          console.error("Google Admin Sign-In error:", error);
          throw error;
+      }
+   };
+
+   /**
+    * Update user data in state and localStorage
+    * Use this to update user info (like avatar) after profile changes
+    */
+   const updateUser = (updates: Partial<User>) => {
+      if (!authState.user) return;
+
+      const updatedUser = { ...authState.user, ...updates };
+      
+      // Update state
+      setAuthState(prev => ({
+         ...prev,
+         user: updatedUser,
+      }));
+
+      // Update localStorage
+      try {
+         const userStr = localStorage.getItem('user_data');
+         if (userStr) {
+            const userData = JSON.parse(userStr);
+            const updatedUserData = { ...userData };
+            
+            // Map User fields back to backend format
+            if (updates.name) updatedUserData.fullName = updates.name;
+            if (updates.avatar !== undefined) updatedUserData.avatar = updates.avatar;
+            if (updates.email) updatedUserData.email = updates.email;
+            
+            localStorage.setItem('user_data', JSON.stringify(updatedUserData));
+         }
+      } catch (error) {
+         console.error('Failed to update user in localStorage:', error);
       }
    };
 
