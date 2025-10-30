@@ -1177,11 +1177,16 @@
             "forgotPassword": "Forgot password?",
             "login": "Login",
             "loggingIn": "Logging in...",
+            "emailRequired": "Please enter email and password",
+            "loginSuccess": "Login successful!",
+            "loginFailed": "Login failed. Please check your credentials.",
             "features": {
-                "realtime": "Real-time Chat",
+                "realtime": "Real-time chat with customers",
                 "realtimeDesc": "Respond to customers instantly",
-                "ai": "AI Suggestions",
+                "ai": "AI-powered reply suggestions",
                 "aiDesc": "Powered by intelligent AI",
+                "management": "Conversation management",
+                "indicators": "Typing indicators & more",
                 "analytics": "Analytics",
                 "analyticsDesc": "Track support performance"
             }

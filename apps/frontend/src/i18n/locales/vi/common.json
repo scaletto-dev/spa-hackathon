@@ -1176,11 +1176,16 @@
             "forgotPassword": "Quên mật khẩu?",
             "login": "Đăng nhập",
             "loggingIn": "Đang đăng nhập...",
+            "emailRequired": "Vui lòng nhập email và mật khẩu",
+            "loginSuccess": "Đăng nhập thành công!",
+            "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.",
             "features": {
-                "realtime": "Chat thời gian thực",
+                "realtime": "Chat thời gian thực với khách hàng",
                 "realtimeDesc": "Trả lời khách hàng tức thì",
-                "ai": "Gợi ý AI",
+                "ai": "Gợi ý trả lời bằng AI",
                 "aiDesc": "Được hỗ trợ bởi AI thông minh",
+                "management": "Quản lý cuộc trò chuyện",
+                "indicators": "Chỉ báo nhập văn bản & nhiều hơn",
                 "analytics": "Phân tích",
                 "analyticsDesc": "Theo dõi hiệu suất hỗ trợ"
             }

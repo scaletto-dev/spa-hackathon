@@ -1,29 +1,55 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircleIcon, UserIcon, ShieldIcon } from 'lucide-react';
+import { MessageCircleIcon, SparklesIcon, CheckCircleIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../auth/useAuth';
+import { toast } from '../../utils/toast';
 
 /**
  * Support Dashboard Login Page
- * Quick access for support staff
+ * Staff authentication with real login
  */
 export default function SupportLogin() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
+    const { login } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleStaffLogin = () => {
-        // Mock staff login
-        localStorage.setItem(
-            'user_data',
-            JSON.stringify({
-                id: 'staff-1',
-                fullName: 'Support Agent',
-                email: 'support@beautyai.com',
-                role: 'STAFF',
-            }),
-        );
-        localStorage.setItem('accessToken', 'mock-staff-token');
+    const handleStaffLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-        // Navigate to support dashboard
-        navigate('/support-dashboard');
+        if (!email || !password) {
+            toast.error(t('support.login.emailRequired'));
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            await login({ email, password });
+
+            // Check if user has staff role
+            const userData = localStorage.getItem('user_data');
+            if (userData) {
+                const user = JSON.parse(userData);
+                if (user.role === 'STAFF') {
+                    toast.success(t('support.login.loginSuccess'));
+                    navigate('/support-dashboard');
+                } else {
+                    toast.error('Access denied. Staff role required.');
+                    localStorage.removeItem('user_data');
+                    localStorage.removeItem('accessToken');
+                }
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            const errorMessage = error instanceof Error ? error.message : t('support.login.loginFailed');
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -86,44 +112,75 @@ export default function SupportLogin() {
                             transition={{ delay: 0.4 }}
                             className='text-gray-600 text-sm md:text-base'
                         >
-                            Customer service portal
+                            {t('support.login.subtitle')}
                         </motion.p>
                     </div>
 
-                    {/* Login Button - Enhanced */}
-                    <motion.button
+                    {/* Login Form */}
+                    <motion.form
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        whileHover={{ scale: 1.03, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.3)' }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={handleStaffLogin}
-                        className='w-full py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/30 transition-all flex items-center justify-center gap-3 text-base md:text-lg'
+                        onSubmit={handleStaffLogin}
+                        className='space-y-4'
                     >
-                        <UserIcon className='w-5 h-5' />
-                        Quick Login as Staff
-                    </motion.button>
-
-                    {/* Info - Enhanced */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.6 }}
-                        className='mt-6 p-4 bg-gradient-to-r from-blue-50/80 to-purple-50/80 backdrop-blur-sm border border-blue-200/50 rounded-2xl'
-                    >
-                        <div className='flex items-start gap-3'>
-                            <div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0'>
-                                <ShieldIcon className='w-4 h-4 text-blue-600' />
-                            </div>
-                            <div>
-                                <p className='text-sm text-blue-900 font-semibold mb-1'>🚀 Demo Mode</p>
-                                <p className='text-xs text-blue-700 leading-relaxed'>
-                                    This is a mock login for development. In production, connect to your authentication
-                                    system.
-                                </p>
-                            </div>
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                {t('support.login.email')}
+                            </label>
+                            <input
+                                type='email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder={t('support.login.emailPlaceholder')}
+                                disabled={isLoading}
+                                className='w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                                required
+                            />
                         </div>
-                    </motion.div>
+
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                {t('support.login.password')}
+                            </label>
+                            <input
+                                type='password'
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder={t('support.login.passwordPlaceholder')}
+                                disabled={isLoading}
+                                className='w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                                required
+                            />
+                        </div>
+
+                        <motion.button
+                            type='submit'
+                            disabled={isLoading}
+                            whileHover={{
+                                scale: isLoading ? 1 : 1.03,
+                                boxShadow: '0 20px 40px rgba(236, 72, 153, 0.3)',
+                            }}
+                            whileTap={{ scale: isLoading ? 1 : 0.97 }}
+                            className='w-full py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/30 transition-all flex items-center justify-center gap-3 text-base md:text-lg disabled:opacity-50 disabled:cursor-not-allowed'
+                        >
+                            {isLoading ? (
+                                <>
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                                        className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full'
+                                    />
+                                    {t('support.login.loggingIn')}
+                                </>
+                            ) : (
+                                <>
+                                    <MessageCircleIcon className='w-5 h-5' />
+                                    {t('support.login.login')}
+                                </>
+                            )}
+                        </motion.button>
+                    </motion.form>
 
                     {/* Features - Enhanced with Stagger Animation */}
                     <motion.div
@@ -139,10 +196,14 @@ export default function SupportLogin() {
                         </div>
                         <ul className='space-y-2.5'>
                             {[
-                                { text: 'Real-time chat with customers', color: 'pink' },
-                                { text: 'AI-powered reply suggestions', color: 'purple' },
-                                { text: 'Conversation management', color: 'pink' },
-                                { text: 'Typing indicators & more', color: 'purple' },
+                                { text: t('support.login.features.realtime'), icon: CheckCircleIcon, color: 'pink' },
+                                { text: t('support.login.features.ai'), icon: SparklesIcon, color: 'purple' },
+                                { text: t('support.login.features.management'), icon: CheckCircleIcon, color: 'pink' },
+                                {
+                                    text: t('support.login.features.indicators'),
+                                    icon: CheckCircleIcon,
+                                    color: 'purple',
+                                },
                             ].map((feature, index) => (
                                 <motion.li
                                     key={index}
@@ -151,8 +212,8 @@ export default function SupportLogin() {
                                     transition={{ delay: 0.8 + index * 0.1 }}
                                     className='flex items-center gap-3 text-sm text-gray-700 group'
                                 >
-                                    <div
-                                        className={`w-2 h-2 bg-gradient-to-br from-${feature.color}-400 to-${feature.color}-600 rounded-full shadow-sm group-hover:scale-125 transition-transform`}
+                                    <feature.icon
+                                        className={`w-4 h-4 text-${feature.color}-600 group-hover:scale-110 transition-transform`}
                                     />
                                     <span className='group-hover:text-gray-900 transition-colors'>{feature.text}</span>
                                 </motion.li>

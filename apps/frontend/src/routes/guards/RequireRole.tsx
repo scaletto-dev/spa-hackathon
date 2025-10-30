@@ -9,10 +9,14 @@ interface RequireRoleProps {
 /**
  * RequireRole Guard (RBAC)
  * Checks user role matches required role
- * - Admin trying to access client-only page -> redirect to /admin
- * - Client trying to access admin page -> redirect to / (home)
+ *
+ * Redirect Rules:
  * - No user (admin role) -> redirect to /admin/login
+ * - No user (staff role) -> redirect to /support
  * - No user (client role) -> redirect to /login
+ * - Admin trying to access client page -> redirect to /admin
+ * - Client trying to access admin page -> redirect to / (home)
+ * - Non-staff trying to access support -> redirect to / (home)
  */
 export function RequireRole({ children, role }: PropsWithChildren<RequireRoleProps>) {
     const { user, isLoading } = useAuth();
@@ -35,6 +39,9 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
         if (role === 'admin') {
             return <Navigate to='/admin/login' replace />;
         }
+        if (role === 'staff') {
+            return <Navigate to='/support' replace />;
+        }
         return <Navigate to='/login' replace />;
     }
 
@@ -49,6 +56,12 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
         console.log('❌ Admin trying to access client page, redirecting to admin');
         // Admin trying to access client-only page -> redirect to admin dashboard
         return <Navigate to='/admin' replace />;
+    }
+
+    if (role === 'staff' && user.role !== 'staff') {
+        console.log('❌ User is not staff, redirecting to home');
+        // Non-staff trying to access support dashboard -> redirect home
+        return <Navigate to='/' replace />;
     }
 
     console.log('✅ Role check passed, rendering children');
