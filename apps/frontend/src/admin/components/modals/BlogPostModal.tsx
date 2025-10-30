@@ -1,30 +1,106 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { XIcon, UploadIcon, SparklesIcon } from 'lucide-react';
 import { toast } from '../../../utils/toast';
-import { Input, Select, Textarea, FormField } from '../../../components/ui';
+import { Input, Textarea, FormField } from '../../../components/ui';
+import { adminBlogAPI } from '../../../api/adapters/admin';
 
 interface BlogPostModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess?: () => void;
+    post?: any;
+    mode?: 'create' | 'edit';
 }
 
-export function BlogPostModal({ isOpen, onClose, onSuccess }: BlogPostModalProps) {
+export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create' }: BlogPostModalProps) {
+    const [loading, setLoading] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
+    const [featuredImageUrl, setFeaturedImageUrl] = useState<string>('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    
     const [formData, setFormData] = useState({
         title: '',
         excerpt: '',
         content: '',
-        category: 'Skincare',
-        status: 'Draft',
-        image: '',
+        categoryId: 'general',
+        slug: '',
     });
+
+    // Update form data when post prop changes (for edit mode)
+    useEffect(() => {
+        if (post && mode === 'edit') {
+            setFormData({
+                title: post.title || '',
+                excerpt: post.excerpt || '',
+                content: post.content || '',
+                categoryId: post.categoryId || 'general',
+                slug: post.slug || '',
+            });
+            setImagePreview(post.featuredImage || '');
+            setFeaturedImageUrl(post.featuredImage || '');
+        } else {
+            // Reset form for create mode
+            setFormData({
+                title: '',
+                excerpt: '',
+                content: '',
+                categoryId: 'general',
+                slug: '',
+            });
+            setImagePreview('');
+            setFeaturedImageUrl('');
+            setImageFile(null);
+        }
+    }, [post, mode, isOpen]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = () => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error('Kích thước ảnh không được vượt quá 10MB');
+                return;
+            }
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const file = e.dataTransfer.files?.[0];
+        if (file && file.type.startsWith('image/')) {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error('Kích thước ảnh không được vượt quá 10MB');
+                return;
+            }
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            toast.error('Vui lòng chọn file ảnh (PNG, JPG)');
+        }
+    };
+
+    const handleSubmit = async () => {
         // Validation
         if (!formData.title.trim()) {
             toast.error('Vui lòng nhập tiêu đề bài viết');
@@ -39,51 +115,57 @@ export function BlogPostModal({ isOpen, onClose, onSuccess }: BlogPostModalProps
             return;
         }
 
-        // Mock: Simulate blog post creation
-        const newPost = {
-            id: Date.now().toString(),
-            ...formData,
-            author: 'Admin User',
-            publishedDate: new Date().toISOString(),
-            views: 0,
-            likes: 0,
-        };
+        try {
+            setLoading(true);
+            const slug = formData.slug || formData.title.toLowerCase().replace(/\s+/g, '-');
+            
+            // TODO: Implement actual file upload to server
+            // For now, use base64 preview or existing URL
+            const featuredImage = imagePreview || post?.featuredImage || '';
+            
+            if (mode === 'create') {
+                await adminBlogAPI.create({
+                    title: formData.title,
+                    excerpt: formData.excerpt,
+                    content: formData.content,
+                    categoryId: formData.categoryId,
+                    slug: slug,
+                    authorId: 'admin', // Will be set by backend
+                    ...(featuredImage && { featuredImage }),
+                });
+                toast.success('Bài viết đã được tạo thành công!');
+            } else {
+                await adminBlogAPI.update(post.id, {
+                    title: formData.title,
+                    excerpt: formData.excerpt,
+                    content: formData.content,
+                    categoryId: formData.categoryId,
+                    slug: slug,
+                    ...(featuredImage && { featuredImage }),
+                });
+                toast.success('Bài viết đã được cập nhật thành công!');
+            }
 
-        console.log('📝 Mock: Created blog post:', newPost);
-        toast.success(
-            `Bài viết "${formData.title}" đã được ${
-                formData.status === 'Published' ? 'xuất bản' : 'lưu nháp'
-            } thành công! (Mocked)`,
-        );
+            // Reset form
+            setFormData({
+                title: '',
+                excerpt: '',
+                content: '',
+                categoryId: 'general',
+                slug: '',
+            });
 
-        // Reset form
-        setFormData({
-            title: '',
-            excerpt: '',
-            content: '',
-            category: 'Skincare',
-            status: 'Draft',
-            image: '',
-        });
+            // Close modal
+            onClose();
 
-        // Close modal
-        onClose();
-
-        // Callback
-        onSuccess?.();
+            // Callback
+            onSuccess?.();
+        } catch (error: any) {
+            toast.error(error.message || 'Có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
     };
-
-    const categoryOptions = [
-        { value: 'Skincare', label: 'Skincare' },
-        { value: 'Wellness', label: 'Wellness' },
-        { value: 'Hair Care', label: 'Hair Care' },
-        { value: 'Beauty Tips', label: 'Beauty Tips' },
-    ];
-
-    const statusOptions = [
-        { value: 'Draft', label: 'Draft' },
-        { value: 'Published', label: 'Published' },
-    ];
 
     if (!isOpen) return null;
 
@@ -92,7 +174,9 @@ export function BlogPostModal({ isOpen, onClose, onSuccess }: BlogPostModalProps
             <div className='bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in slide-in-from-bottom-4'>
                 {/* Header - Sticky */}
                 <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0'>
-                    <h2 className='text-xl font-bold text-white'>Tạo bài viết mới</h2>
+                    <h2 className='text-xl font-bold text-white'>
+                        {mode === 'edit' ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới'}
+                    </h2>
                     <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
                         <XIcon className='w-6 h-6 text-white' />
                     </button>
@@ -102,10 +186,31 @@ export function BlogPostModal({ isOpen, onClose, onSuccess }: BlogPostModalProps
                 <div className='overflow-y-auto flex-1 p-6 space-y-4'>
                     <div>
                         <label className='block text-sm font-medium text-gray-700 mb-2'>Ảnh đại diện</label>
-                        <div className='border-2 border-dashed border-pink-200 rounded-2xl p-8 text-center hover:border-pink-300 transition-colors cursor-pointer bg-pink-50/30'>
-                            <UploadIcon className='w-8 h-8 text-gray-400 mx-auto mb-2' />
-                            <p className='text-sm text-gray-600'>Click để tải lên hoặc kéo thả</p>
-                            <p className='text-xs text-gray-500 mt-1'>PNG, JPG tối đa 10MB</p>
+                        <input
+                            ref={fileInputRef}
+                            type='file'
+                            accept='image/*'
+                            onChange={handleImageChange}
+                            className='hidden'
+                        />
+                        <div
+                            onClick={() => fileInputRef.current?.click()}
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                            className='border-2 border-dashed border-pink-200 rounded-2xl p-8 text-center hover:border-pink-300 transition-colors cursor-pointer bg-pink-50/30'
+                        >
+                            {imagePreview ? (
+                                <div className='relative'>
+                                    <img src={imagePreview} alt='Preview' className='max-h-48 mx-auto rounded-lg' />
+                                    <p className='text-xs text-gray-500 mt-2'>Click để thay đổi ảnh</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <UploadIcon className='w-8 h-8 text-gray-400 mx-auto mb-2' />
+                                    <p className='text-sm text-gray-600'>Click để tải lên hoặc kéo thả</p>
+                                    <p className='text-xs text-gray-500 mt-1'>PNG, JPG tối đa 10MB</p>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -153,21 +258,27 @@ export function BlogPostModal({ isOpen, onClose, onSuccess }: BlogPostModalProps
                     </div>
 
                     <div className='grid grid-cols-2 gap-4'>
-                        <FormField label='Danh mục' name='category'>
-                            <Select
-                                name='category'
-                                value={formData.category}
-                                onChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
-                                options={categoryOptions}
-                            />
+                        <FormField label='Danh mục' name='categoryId'>
+                            <select
+                                name='categoryId'
+                                value={formData.categoryId}
+                                onChange={handleChange}
+                                className='w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300'
+                            >
+                                <option value='general'>General</option>
+                                <option value='skincare'>Skincare</option>
+                                <option value='wellness'>Wellness</option>
+                                <option value='hair-care'>Hair Care</option>
+                                <option value='beauty-tips'>Beauty Tips</option>
+                            </select>
                         </FormField>
 
-                        <FormField label='Trạng thái' name='status'>
-                            <Select
-                                name='status'
-                                value={formData.status}
-                                onChange={(value) => setFormData((prev) => ({ ...prev, status: value }))}
-                                options={statusOptions}
+                        <FormField label='URL Slug' name='slug'>
+                            <Input
+                                name='slug'
+                                value={formData.slug}
+                                onChange={handleChange}
+                                placeholder='Để trống để auto-generate'
                             />
                         </FormField>
                     </div>
@@ -183,9 +294,10 @@ export function BlogPostModal({ isOpen, onClose, onSuccess }: BlogPostModalProps
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm'
+                        disabled={loading}
+                        className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50'
                     >
-                        {formData.status === 'Published' ? 'Xuất bản' : 'Lưu nháp'}
+                        {loading ? 'Đang xử lý...' : (mode === 'create' ? 'Tạo bài viết' : 'Cập nhật')}
                     </button>
                 </div>
             </div>

@@ -20,13 +20,14 @@ const prisma = global.prisma || new PrismaClient({
   log: process.env.NODE_ENV === 'development' 
     ? ['query', 'error', 'warn'] 
     : ['error'],
+  errorFormat: 'pretty',
 });
 
 if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma;
 }
 
-// Log database connection status
+// Handle connection errors during initialization
 prisma.$connect()
   .then(() => {
     logger.info('✅ Database connected successfully');
@@ -35,5 +36,11 @@ prisma.$connect()
     logger.error('❌ Database connection failed:', error);
     process.exit(1);
   });
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
 
 export default prisma;
