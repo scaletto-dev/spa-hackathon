@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { XIcon } from "lucide-react";
 import { toast } from "../../../utils/toast";
 import { Input, Textarea, FormField } from "../../../components/ui";
@@ -21,14 +21,39 @@ export function BranchModal({
 }: BranchModalProps) {
    const [loading, setLoading] = useState(false);
    const [formData, setFormData] = useState({
-      name: branch?.name || "",
-      slug: branch?.slug || "",
-      address: branch?.address || "",
-      phone: branch?.phone || "",
-      email: branch?.email || "",
-      latitude: branch?.latitude || "0",
-      longitude: branch?.longitude || "0",
+      name: "",
+      slug: "",
+      address: "",
+      phone: "",
+      email: "",
+      latitude: "0",
+      longitude: "0",
    });
+
+   // Update form data when branch changes or modal opens
+   useEffect(() => {
+      if (mode === "edit" && branch) {
+         setFormData({
+            name: branch.name || "",
+            slug: branch.slug || "",
+            address: branch.address || "",
+            phone: branch.phone || "",
+            email: branch.email || "",
+            latitude: branch.latitude?.toString() || "0",
+            longitude: branch.longitude?.toString() || "0",
+         });
+      } else if (mode === "create") {
+         setFormData({
+            name: "",
+            slug: "",
+            address: "",
+            phone: "",
+            email: "",
+            latitude: "0",
+            longitude: "0",
+         });
+      }
+   }, [branch, mode, isOpen]);
 
    const handleChange = (
       e: React.ChangeEvent<

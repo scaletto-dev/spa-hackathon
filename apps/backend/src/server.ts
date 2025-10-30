@@ -1,17 +1,17 @@
-﻿import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import helmet from 'helmet';
-import path from 'path';
-import { corsOptions } from './config/cors';
-import { requestLogger } from './middleware/requestLogger';
-import { notFoundHandler } from './middleware/notFoundHandler';
-import { errorHandler } from './middleware/errorHandler';
-import { configureRoutes } from './routes';
-import logger from './config/logger';
+﻿import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
+import path from "path";
+import { corsOptions } from "./config/cors";
+import { requestLogger } from "./middleware/requestLogger";
+import { notFoundHandler } from "./middleware/notFoundHandler";
+import { errorHandler } from "./middleware/errorHandler";
+import { configureRoutes } from "./routes";
+import logger from "./config/logger";
 
 // Load environment variables from root .env file
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 // Create Express app
 const app = express();
@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 
 /**
  * Middleware Configuration
- * 
+ *
  * CRITICAL: Middleware must be applied in this specific order:
  * 1. helmet() - Security headers (first)
  * 2. cors() - CORS handling
@@ -37,9 +37,9 @@ app.use(helmet());
 // 2. CORS
 app.use(cors(corsOptions));
 
-// 3. Body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// 3. Body parsers with increased limit for large payloads (blog posts, images, etc.)
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // 4. Request logging
 app.use(requestLogger);
@@ -55,11 +55,10 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  logger.info(`🚀 Backend server running on http://localhost:${PORT}`);
-  logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`🔗 Health check: http://localhost:${PORT}/api/health`);
+   logger.info(`🚀 Backend server running on http://localhost:${PORT}`);
+   logger.info(`📝 Environment: ${process.env.NODE_ENV || "development"}`);
+   logger.info(`🔗 Health check: http://localhost:${PORT}/api/health`);
 });
 
 // Export app for testing
 export default app;
-

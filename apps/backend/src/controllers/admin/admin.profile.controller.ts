@@ -19,8 +19,12 @@ class AdminProfileController {
       next: NextFunction
    ): Promise<void> {
       try {
-         // TODO: Get userId from JWT token in req.user
-         const userId = req.body.userId || "admin-id"; // Placeholder
+         // Get userId from authenticated user
+         const userId = (req as any).user?.id;
+
+         if (!userId) {
+            throw new ValidationError("User not authenticated");
+         }
 
          const user = await prisma.user.findUnique({
             where: { id: userId },
@@ -32,6 +36,7 @@ class AdminProfileController {
                role: true,
                emailVerified: true,
                language: true,
+               avatar: true,
                createdAt: true,
                updatedAt: true,
             },
@@ -59,20 +64,30 @@ class AdminProfileController {
       next: NextFunction
    ): Promise<void> {
       try {
-         // TODO: Get userId from JWT token
-         const userId = req.body.userId || "admin-id"; // Placeholder
-         const { fullName, phone, language } = req.body;
+         // Get userId from authenticated user
+         const userId = (req as any).user?.id;
+
+         if (!userId) {
+            throw new ValidationError("User not authenticated");
+         }
+
+         const { fullName, phone, language, avatar } = req.body;
 
          const user = await prisma.user.findUnique({ where: { id: userId } });
          if (!user) throw new NotFoundError("User not found");
 
+         // Build update data object
+         const updateData: any = {};
+         if (fullName !== undefined) updateData.fullName = fullName;
+         if (phone !== undefined) updateData.phone = phone;
+         if (language !== undefined) updateData.language = language;
+         if (avatar !== undefined) updateData.avatar = avatar;
+
+         console.log("📝 Updating profile with data:", updateData);
+
          const updated = await prisma.user.update({
             where: { id: userId },
-            data: {
-               ...(fullName && { fullName }),
-               ...(phone && { phone }),
-               ...(language && { language }),
-            },
+            data: updateData,
             select: {
                id: true,
                email: true,
@@ -80,6 +95,7 @@ class AdminProfileController {
                fullName: true,
                role: true,
                language: true,
+               avatar: true,
                updatedAt: true,
             },
          });
@@ -105,8 +121,13 @@ class AdminProfileController {
       next: NextFunction
    ): Promise<void> {
       try {
-         // TODO: Get userId from JWT token
-         const userId = req.body.userId || "admin-id"; // Placeholder
+         // Get userId from authenticated user
+         const userId = (req as any).user?.id;
+
+         if (!userId) {
+            throw new ValidationError("User not authenticated");
+         }
+
          const { currentPassword, newPassword, confirmPassword } = req.body;
 
          // Validation

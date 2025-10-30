@@ -1,33 +1,154 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
    UserIcon,
    BellIcon,
    ShieldIcon,
    CreditCardIcon,
    GlobeIcon,
+   Camera,
    SparklesIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../auth/useAuth";
 import { adminProfileAPI } from "../../api/adapters/admin";
-import { Toast } from "../components/Toast";
+import { uploadAPI } from "../../api/adapters/upload";
+import { toast } from "../../utils/toast";
+
+interface ProfileData {
+   fullName: string;
+   email: string;
+   phone: string;
+   language: string;
+   avatar?: string;
+}
 
 export function Settings() {
    const { t } = useTranslation("common");
+   const { updateUser } = useAuth();
    const [activeTab, setActiveTab] = useState("profile");
+   const [profileData, setProfileData] = useState<ProfileData>({
+      fullName: "",
+      email: "",
+      phone: "",
+      language: "vi",
+      avatar: "",
+   });
    const [passwordData, setPasswordData] = useState({
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
    });
    const [loading, setLoading] = useState(false);
-   const [toast, setToast] = useState<{
-      message: string;
-      type: "success" | "error" | "warning";
-   } | null>(null);
+   const [uploading, setUploading] = useState(false);
+   const [profileLoading, setProfileLoading] = useState(true);
+
+   // Load profile data
+   useEffect(() => {
+      loadProfile();
+   }, []);
+
+   const loadProfile = async () => {
+      try {
+         setProfileLoading(true);
+         const response = await adminProfileAPI.getProfile();
+         console.log("📥 Profile API response:", response);
+
+         // Extract data from response (might be wrapped in .data)
+         const data = response.data || response;
+         console.log("👤 Profile data:", data);
+
+         setProfileData({
+            fullName: data.fullName || "",
+            email: data.email || "",
+            phone: data.phone || "",
+            language: data.language || "vi",
+            avatar: data.avatar || "",
+         });
+      } catch (error: any) {
+         console.error("Profile load error:", error);
+         toast.error(error.message || "Không thể tải thông tin profile");
+      } finally {
+         setProfileLoading(false);
+      }
+   };
+
+   const handleProfileChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+   ) => {
+      const { name, value } = e.target;
+      setProfileData((prev) => ({ ...prev, [name]: value }));
+   };
 
    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
       setPasswordData((prev) => ({ ...prev, [name]: value }));
+   };
+
+   const handleAvatarUpload = async (
+      e: React.ChangeEvent<HTMLInputElement>
+   ) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      // Validate
+      if (!file.type.startsWith("image/")) {
+         toast.error("Vui lòng chọn file ảnh hợp lệ");
+         return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+         toast.error("Kích thước file không được vượt quá 5MB");
+         return;
+      }
+
+      try {
+         setUploading(true);
+
+         // Upload image to Supabase
+         const imageUrl = await uploadAPI.uploadImage(file, "profile");
+         console.log("📷 Uploaded image URL:", imageUrl);
+
+         // Update state immediately for UI feedback
+         setProfileData((prev) => ({ ...prev, avatar: imageUrl }));
+
+         // Auto-save to backend
+         await adminProfileAPI.updateProfile({
+            avatar: imageUrl,
+         });
+
+         // Update user context to refresh header avatar
+         updateUser({ avatar: imageUrl });
+
+         toast.success("Cập nhật avatar thành công!");
+
+         // Reload profile to confirm
+         await loadProfile();
+      } catch (error: any) {
+         console.error("Avatar upload error:", error);
+         toast.error(error.message || "Upload ảnh thất bại");
+      } finally {
+         setUploading(false);
+      }
+   };
+
+   const handleSaveProfile = async () => {
+      try {
+         setLoading(true);
+         const updateData: any = {
+            fullName: profileData.fullName,
+            phone: profileData.phone,
+            language: profileData.language,
+         };
+         if (profileData.avatar) {
+            updateData.avatar = profileData.avatar;
+         }
+         await adminProfileAPI.updateProfile(updateData);
+         toast.success("Cập nhật thông tin thành công!");
+      } catch (error: any) {
+         toast.error(error.message || "Có lỗi xảy ra");
+      } finally {
+         setLoading(false);
+      }
    };
 
    const handleChangePassword = async () => {
@@ -37,30 +158,24 @@ export function Settings() {
          !passwordData.newPassword ||
          !passwordData.confirmPassword
       ) {
-         setToast({ message: "Vui lòng điền đầy đủ thông tin", type: "error" });
+         toast.error("Vui lòng điền đầy đủ thông tin");
          return;
       }
 
       if (passwordData.newPassword !== passwordData.confirmPassword) {
-         setToast({
-            message: "Mật khẩu mới và xác nhận không khớp",
-            type: "error",
-         });
+         toast.error("Mật khẩu mới và xác nhận không khớp");
          return;
       }
 
       if (passwordData.newPassword.length < 8) {
-         setToast({
-            message: "Mật khẩu mới phải có ít nhất 8 ký tự",
-            type: "error",
-         });
+         toast.error("Mật khẩu mới phải có ít nhất 8 ký tự");
          return;
       }
 
       try {
          setLoading(true);
          await adminProfileAPI.changePassword(passwordData);
-         setToast({ message: "Đổi mật khẩu thành công!", type: "success" });
+         toast.success("Đổi mật khẩu thành công!");
          // Reset form
          setPasswordData({
             currentPassword: "",
@@ -68,7 +183,7 @@ export function Settings() {
             confirmPassword: "",
          });
       } catch (error: any) {
-         setToast({ message: error.message || "Có lỗi xảy ra", type: "error" });
+         toast.error(error.message || "Có lỗi xảy ra");
       } finally {
          setLoading(false);
       }
@@ -139,66 +254,125 @@ export function Settings() {
                         <h2 className="text-xl font-semibold text-gray-800">
                            {t("settings.profileSettings")}
                         </h2>
-                        <div className="flex items-center gap-6">
-                           <img
-                              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
-                              alt="Profile"
-                              className="w-24 h-24 rounded-full border-4 border-pink-200"
-                           />
-                           <div>
-                              <button className="px-4 py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-lg text-sm font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm">
-                                 {t("settings.changePhoto")}
+
+                        {profileLoading ? (
+                           <div className="flex items-center justify-center py-12">
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                           </div>
+                        ) : (
+                           <>
+                              {/* Avatar Upload */}
+                              <div className="flex items-center gap-6">
+                                 <div className="relative">
+                                    <img
+                                       src={
+                                          profileData.avatar ||
+                                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
+                                       }
+                                       alt="Profile"
+                                       className="w-24 h-24 rounded-full border-4 border-pink-200 object-cover"
+                                    />
+                                    {uploading && (
+                                       <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+                                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                                       </div>
+                                    )}
+                                 </div>
+                                 <div>
+                                    <label className="px-4 py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-lg text-sm font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm cursor-pointer inline-flex items-center gap-2">
+                                       <Camera className="w-4 h-4" />
+                                       {uploading
+                                          ? "Đang upload..."
+                                          : t("settings.changePhoto")}
+                                       <input
+                                          type="file"
+                                          className="hidden"
+                                          accept="image/*"
+                                          onChange={handleAvatarUpload}
+                                          disabled={uploading}
+                                       />
+                                    </label>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                       JPG, PNG hoặc WebP. Tối đa 5MB.
+                                    </p>
+                                 </div>
+                              </div>
+
+                              {/* Full Name */}
+                              <div>
+                                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Họ và tên
+                                 </label>
+                                 <input
+                                    type="text"
+                                    name="fullName"
+                                    value={profileData.fullName}
+                                    onChange={handleProfileChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30"
+                                 />
+                              </div>
+
+                              {/* Email (readonly) */}
+                              <div>
+                                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    {t("settings.email")}
+                                 </label>
+                                 <input
+                                    type="email"
+                                    value={profileData.email}
+                                    readOnly
+                                    className="w-full px-4 py-2 rounded-lg border border-pink-100 bg-gray-100 text-gray-600 cursor-not-allowed"
+                                 />
+                                 <p className="text-xs text-gray-500 mt-1">
+                                    Email không thể thay đổi
+                                 </p>
+                              </div>
+
+                              {/* Phone */}
+                              <div>
+                                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Số điện thoại
+                                 </label>
+                                 <input
+                                    type="tel"
+                                    name="phone"
+                                    value={profileData.phone}
+                                    onChange={handleProfileChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30"
+                                 />
+                              </div>
+
+                              {/* Language */}
+                              <div>
+                                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Ngôn ngữ
+                                 </label>
+                                 <select
+                                    name="language"
+                                    value={profileData.language}
+                                    onChange={(e) =>
+                                       setProfileData((prev) => ({
+                                          ...prev,
+                                          language: e.target.value,
+                                       }))
+                                    }
+                                    className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30">
+                                    <option value="vi">Tiếng Việt</option>
+                                    <option value="en">English</option>
+                                 </select>
+                              </div>
+
+                              {/* Save Button */}
+                              <button
+                                 onClick={handleSaveProfile}
+                                 disabled={loading}
+                                 className="px-6 py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-lg font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50">
+                                 {loading
+                                    ? "Đang lưu..."
+                                    : t("settings.saveChanges")}
                               </button>
-                              <p className="text-xs text-gray-500 mt-2">
-                                 {t("settings.photoFormat")}
-                              </p>
-                           </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                           <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                 {t("settings.firstName")}
-                              </label>
-                              <input
-                                 type="text"
-                                 defaultValue="Admin"
-                                 className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30"
-                              />
-                           </div>
-                           <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                 {t("settings.lastName")}
-                              </label>
-                              <input
-                                 type="text"
-                                 defaultValue="User"
-                                 className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30"
-                              />
-                           </div>
-                        </div>
-                        <div>
-                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                              {t("settings.email")}
-                           </label>
-                           <input
-                              type="email"
-                              defaultValue="admin@beautyclinic.com"
-                              className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30"
-                           />
-                        </div>
-                        <div>
-                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                              {t("settings.bio")}
-                           </label>
-                           <textarea
-                              rows={4}
-                              defaultValue={t("settings.bioDefault")}
-                              className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30 resize-none"
-                           />
-                        </div>
-                        <button className="px-6 py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-lg font-medium hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm">
-                           {t("settings.saveChanges")}
-                        </button>
+                           </>
+                        )}
                      </div>
                   )}
                   {activeTab === "notifications" && (
@@ -441,13 +615,6 @@ export function Settings() {
                </div>
             </div>
          </div>
-         {toast && (
-            <Toast
-               message={toast.message}
-               type={toast.type}
-               onClose={() => setToast(null)}
-            />
-         )}
       </div>
    );
 }
