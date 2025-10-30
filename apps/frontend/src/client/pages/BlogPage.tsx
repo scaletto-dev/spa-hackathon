@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BlogHero } from '../components/blog/BlogHero';
 import { BlogGrid } from '../components/blog/BlogGrid';
 import { BlogSidebar } from '../components/blog/BlogSidebar';
 import { blogApi, type BlogCategory } from '../../services/blogApi';
 
 export function BlogPage() {
+    const { t } = useTranslation('common');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [categories, setCategories] = useState<BlogCategory[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
@@ -46,21 +48,19 @@ export function BlogPage() {
                 >
                     <h1 className='text-4xl md:text-5xl font-bold mb-4'>
                         <span className='bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
-                            Blog & Insights
+                            {t('blog.title')}
                         </span>
                     </h1>
-                    <p className='text-xl text-gray-600 max-w-2xl mx-auto'>
-                   Explore the latest in beauty technology, skincare innovations, and clinic updates
-               </p>
-           </motion.div>
-           <BlogHero categories={categories} />
-                
+                    <p className='text-xl text-gray-600 max-w-2xl mx-auto'>{t('blog.subtitle')}</p>
+                </motion.div>
+                <BlogHero categories={categories} />
+
                 {/* Categories Filter */}
                 <div className='mt-12 mb-8 flex flex-wrap gap-3 justify-center'>
                     {isLoadingCategories ? (
                         <div className='flex items-center gap-2 text-gray-500'>
                             <Loader2 className='w-4 h-4 animate-spin' />
-                            <span>Đang tải danh mục...</span>
+                            <span>{t('blog.loadingCategories')}</span>
                         </div>
                     ) : (
                         <>
@@ -75,7 +75,7 @@ export function BlogPage() {
                                         : 'bg-white text-gray-700 hover:bg-pink-50 border border-pink-100'
                                 }`}
                             >
-                                Tất cả
+                                {t('blog.allCategories')}
                             </motion.button>
                             {categories.map((category) => (
                                 <motion.button
@@ -96,22 +96,18 @@ export function BlogPage() {
                     )}
                 </div>
 
-                       <div className='grid lg:grid-cols-3 gap-8 mb-20'>
-                           <div className='lg:col-span-2'>
-                               <BlogGrid 
-                                   category={selectedCategory} 
-                                   categories={categories}
-                                   searchQuery={searchQuery}
-                               />
-                           </div>
-                           <div className='space-y-8'>
-                               <BlogSidebar
-                                   categories={categories}
-                                   onTopicClick={setSelectedCategory}
-                                   onSearch={setSearchQuery}
-                               />
-                           </div>
-                       </div>
+                <div className='grid lg:grid-cols-3 gap-8 mb-20'>
+                    <div className='lg:col-span-2'>
+                        <BlogGrid category={selectedCategory} categories={categories} searchQuery={searchQuery} />
+                    </div>
+                    <div className='space-y-8'>
+                        <BlogSidebar
+                            categories={categories}
+                            onTopicClick={setSelectedCategory}
+                            onSearch={setSearchQuery}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

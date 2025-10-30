@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeftIcon, CalendarIcon, UserIcon, Clock, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { blogApi } from '../../services/blogApi';
 import { BlogPostDetail } from '../../types/blog';
 
 export function BlogDetailPage() {
+    const { t, i18n } = useTranslation('common');
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
     const [post, setPost] = useState<BlogPostDetail | null>(null);
@@ -24,21 +26,22 @@ export function BlogDetailPage() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (err) {
                 console.error('Failed to load blog post:', err);
-                setError('Không thể tải bài viết. Vui lòng thử lại sau.');
+                setError(t('blog.failedToLoad'));
             } finally {
                 setLoading(false);
             }
         };
 
         fetchPost();
-    }, [slug]);
+    }, [slug, t]);
 
     const formatDate = (dateString: string | null) => {
         if (!dateString) return '';
-        return new Date(dateString).toLocaleDateString('vi-VN', {
+        const locale = i18n.language === 'vi' ? 'vi-VN' : 'en-US';
+        return new Date(dateString).toLocaleDateString(locale, {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
         });
     };
 
@@ -46,7 +49,7 @@ export function BlogDetailPage() {
         const wordsPerMinute = 200;
         const wordCount = content.split(/\s+/).length;
         const minutes = Math.ceil(wordCount / wordsPerMinute);
-        return `${minutes} phút đọc`;
+        return `${minutes} ${t('blog.readTime')}`;
     };
 
     if (loading) {
@@ -61,12 +64,12 @@ export function BlogDetailPage() {
         return (
             <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center pt-24'>
                 <div className='text-center max-w-md'>
-                    <p className='text-red-600 mb-4'>{error || 'Không tìm thấy bài viết'}</p>
+                    <p className='text-red-600 mb-4'>{error || t('blog.postNotFound')}</p>
                     <button
                         onClick={() => navigate('/blog')}
                         className='px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition-opacity'
                     >
-                        Quay lại Blog
+                        {t('blog.backToBlog')}
                     </button>
                 </div>
             </div>
@@ -84,7 +87,7 @@ export function BlogDetailPage() {
                     className='flex items-center gap-2 text-gray-600 hover:text-pink-600 mb-8 transition-colors'
                 >
                     <ArrowLeftIcon className='w-5 h-5' />
-                    <span>Quay lại Blog</span>
+                    <span>{t('blog.backToBlog')}</span>
                 </motion.button>
 
                 {/* Featured Image - Full Width */}
@@ -94,13 +97,9 @@ export function BlogDetailPage() {
                     transition={{ duration: 0.6 }}
                     className='relative aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl mb-12'
                 >
-                    <img
-                        src={post.featuredImage}
-                        alt={post.title}
-                        className='w-full h-full object-cover'
-                    />
+                    <img src={post.featuredImage} alt={post.title} className='w-full h-full object-cover' />
                     <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent' />
-                    
+
                     {/* Category Badge */}
                     <div className='absolute top-6 left-6'>
                         <span className='px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full text-sm font-semibold shadow-lg'>
@@ -135,21 +134,19 @@ export function BlogDetailPage() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className='bg-white/80 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 md:p-12'
                     >
-                    {/* Title */}
-                    <h1 className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight'>
-                        {post.title}
-                    </h1>
+                        {/* Title */}
+                        <h1 className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight'>
+                            {post.title}
+                        </h1>
 
-                    {/* Excerpt */}
-                    <div className='bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6 mb-8 border-l-4 border-pink-500'>
-                        <p className='text-lg text-gray-800 leading-relaxed italic'>
-                            {post.excerpt}
-                        </p>
-                    </div>
+                        {/* Excerpt */}
+                        <div className='bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6 mb-8 border-l-4 border-pink-500'>
+                            <p className='text-lg text-gray-800 leading-relaxed italic'>{post.excerpt}</p>
+                        </div>
 
-                    {/* Content */}
-                    <div className='prose prose-lg max-w-none'>
-                        <style>{`
+                        {/* Content */}
+                        <div className='prose prose-lg max-w-none'>
+                            <style>{`
                             .blog-content h1 { 
                                 font-size: 2em; 
                                 font-weight: bold; 
@@ -214,24 +211,24 @@ export function BlogDetailPage() {
                                 margin: 1.5em 0;
                             }
                         `}</style>
-                        <div 
-                            className='blog-content'
-                            dangerouslySetInnerHTML={{ 
-                                __html: post.content
-                                    .replace(/\n\n/g, '</p><p>')
-                                    .replace(/\n/g, '<br />')
-                                    .replace(/^/, '<p>')
-                                    .replace(/$/, '</p>')
-                                    .replace(/# (.*?)(\n|<br \/>)/g, '<h1>$1</h1>')
-                                    .replace(/## (.*?)(\n|<br \/>)/g, '<h2>$1</h2>')
-                                    .replace(/### (.*?)(\n|<br \/>)/g, '<h3>$1</h3>')
-                                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                                    .replace(/- (.*?)(<br \/>|<\/p>)/g, '<li>$1</li>')
-                            }}
-                        />
-                    </div>
-                </motion.article>
+                            <div
+                                className='blog-content'
+                                dangerouslySetInnerHTML={{
+                                    __html: post.content
+                                        .replace(/\n\n/g, '</p><p>')
+                                        .replace(/\n/g, '<br />')
+                                        .replace(/^/, '<p>')
+                                        .replace(/$/, '</p>')
+                                        .replace(/# (.*?)(\n|<br \/>)/g, '<h1>$1</h1>')
+                                        .replace(/## (.*?)(\n|<br \/>)/g, '<h2>$1</h2>')
+                                        .replace(/### (.*?)(\n|<br \/>)/g, '<h3>$1</h3>')
+                                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                        .replace(/- (.*?)(<br \/>|<\/p>)/g, '<li>$1</li>'),
+                                }}
+                            />
+                        </div>
+                    </motion.article>
                 </div>
 
                 {/* Related Posts */}
@@ -244,9 +241,9 @@ export function BlogDetailPage() {
                     >
                         <div className='text-center mb-10'>
                             <h2 className='text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2'>
-                                Bài viết liên quan
+                                {t('blog.relatedPosts')}
                             </h2>
-                            <p className='text-gray-600'>Khám phá thêm những bài viết thú vị khác</p>
+                            <p className='text-gray-600'>{t('blog.exploreMorePosts')}</p>
                         </div>
                         <div className='grid md:grid-cols-3 gap-8'>
                             {post.relatedPosts.map((relatedPost, index) => (
@@ -276,9 +273,7 @@ export function BlogDetailPage() {
                                         <h3 className='text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-pink-600 transition-colors mb-2 min-h-[3.5rem]'>
                                             {relatedPost.title}
                                         </h3>
-                                        <p className='text-sm text-gray-600 line-clamp-2 mb-3'>
-                                            {relatedPost.excerpt}
-                                        </p>
+                                        <p className='text-sm text-gray-600 line-clamp-2 mb-3'>{relatedPost.excerpt}</p>
                                         <div className='flex items-center gap-2 text-xs text-gray-500'>
                                             <CalendarIcon className='w-3 h-3' />
                                             <span>{formatDate(relatedPost.publishedAt)}</span>

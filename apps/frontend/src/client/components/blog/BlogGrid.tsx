@@ -2,15 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CalendarIcon, UserIcon, ArrowRightIcon, Loader2, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { blogApi, type BlogCategory } from '../../../services/blogApi';
 import { BlogPostBackend } from '../../../types/blog';
-
-const calculateReadTime = (content: string): string => {
-    const wordsPerMinute = 200;
-    const wordCount = content.split(/\s+/).length;
-    const minutes = Math.ceil(wordCount / wordsPerMinute);
-    return `${minutes} phút đọc`;
-};
 
 interface BlogGridProps {
     category: string;
@@ -20,12 +14,20 @@ interface BlogGridProps {
 
 export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation('common');
     const [posts, setPosts] = useState<BlogPostBackend[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 6;
+
+    const calculateReadTime = (content: string): string => {
+        const wordsPerMinute = 200;
+        const wordCount = content.split(/\s+/).length;
+        const minutes = Math.ceil(wordCount / wordsPerMinute);
+        return `${minutes} ${t('blog.readTime')}`;
+    };
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -42,13 +44,13 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
                 setTotalPages(response.meta.totalPages);
             } catch (err) {
                 console.error('Failed to load blog posts:', err);
-                setError('Không thể tải bài viết. Vui lòng thử lại sau.');
+                setError(t('blog.failedToLoad'));
             } finally {
                 setIsLoading(false);
             }
         };
         fetchPosts();
-    }, [category, page, searchQuery]);
+    }, [category, page, searchQuery, t]);
 
     // Reset page when category or search changes
     useEffect(() => {
@@ -56,16 +58,17 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
     }, [category, searchQuery]);
 
     const getCategoryName = (categoryId: string) => {
-        const cat = categories.find(c => c.id === categoryId);
-        return cat?.name || 'Chưa phân loại';
+        const cat = categories.find((c) => c.id === categoryId);
+        return cat?.name || t('blog.uncategorized');
     };
 
     const formatDate = (dateString: string | null) => {
-        if (!dateString) return 'Chưa xuất bản';
-        return new Date(dateString).toLocaleDateString('vi-VN', {
+        if (!dateString) return t('blog.notPublished');
+        const locale = i18n.language === 'vi' ? 'vi-VN' : 'en-US';
+        return new Date(dateString).toLocaleDateString(locale, {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
         });
     };
 
@@ -73,7 +76,7 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
         return (
             <div className='flex flex-col items-center justify-center py-20'>
                 <Loader2 className='w-12 h-12 text-pink-500 animate-spin mb-4' />
-                <p className='text-gray-600'>Đang tải bài viết...</p>
+                <p className='text-gray-600'>{t('blog.loadingPosts')}</p>
             </div>
         );
     }
@@ -89,7 +92,7 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
     if (posts.length === 0) {
         return (
             <div className='bg-gray-50 rounded-2xl p-12 text-center'>
-                <p className='text-gray-600 text-lg'>Không tìm thấy bài viết nào trong danh mục này.</p>
+                <p className='text-gray-600 text-lg'>{t('blog.noPosts')}</p>
             </div>
         );
     }
@@ -130,7 +133,7 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
                                 <div className='flex items-center justify-between pt-4 border-t border-gray-100'>
                                     <div className='flex items-center gap-2 text-sm text-gray-500'>
                                         <UserIcon className='w-4 h-4' />
-                                        <span>{article.author?.fullName || 'Tác giả'}</span>
+                                        <span>{article.author?.fullName || t('blog.author')}</span>
                                     </div>
                                     <div className='flex items-center gap-2 text-sm text-gray-500'>
                                         <CalendarIcon className='w-4 h-4' />
@@ -143,7 +146,7 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
                                         <span>{calculateReadTime(article.content)}</span>
                                     </div>
                                     <div className='flex items-center gap-2 text-pink-600 font-medium'>
-                                        Đọc thêm
+                                        {t('blog.readMore')}
                                         <ArrowRightIcon className='w-4 h-4 group-hover:translate-x-2 transition-transform' />
                                     </div>
                                 </div>
@@ -157,13 +160,13 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
             {totalPages > 1 && (
                 <div className='flex justify-center items-center gap-2 mt-8'>
                     <button
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={page === 1}
                         className='p-2 rounded-lg border border-gray-300 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
                     >
                         <ChevronLeft className='w-5 h-5' />
                     </button>
-                    
+
                     <div className='flex gap-2'>
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                             <button
@@ -181,7 +184,7 @@ export function BlogGrid({ category, categories, searchQuery }: BlogGridProps) {
                     </div>
 
                     <button
-                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                         disabled={page === totalPages}
                         className='p-2 rounded-lg border border-gray-300 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
                     >

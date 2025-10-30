@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { SearchIcon, MailIcon, TagIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from '../../../utils/toast';
 import { BlogCategory } from '../../../types/blog';
 
@@ -11,21 +12,22 @@ interface BlogSidebarProps {
 }
 
 export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarProps) {
+    const { t } = useTranslation('common');
     const [email, setEmail] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
         if (!email) {
-            toast.error('Vui lòng nhập địa chỉ email');
+            toast.error(t('blog.enterEmail'));
             return;
         }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            toast.error('Vui lòng nhập địa chỉ email hợp lệ');
+            toast.error(t('blog.enterValidEmail'));
             return;
         }
         // Mock subscription
-        toast.success('Đăng ký nhận tin thành công!');
+        toast.success(t('blog.subscribeSuccess'));
         setEmail('');
     };
 
@@ -43,7 +45,7 @@ export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarP
                         <SearchIcon className='w-5 h-5 text-gray-400' />
                         <input
                             type='text'
-                            placeholder='Tìm kiếm bài viết...'
+                            placeholder={t('blog.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -55,7 +57,7 @@ export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarP
                             onClick={handleSearch}
                             className='px-4 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg text-sm hover:opacity-90 transition-opacity'
                         >
-                            Tìm kiếm
+                            {t('blog.search')}
                         </button>
                         {searchQuery && (
                             <button
@@ -65,7 +67,7 @@ export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarP
                                 }}
                                 className='px-4 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition-colors'
                             >
-                                Xóa
+                                {t('blog.clear')}
                             </button>
                         )}
                     </div>
@@ -73,7 +75,7 @@ export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarP
                 <div className='space-y-2'>
                     <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
                         <TagIcon className='w-5 h-5 text-pink-500' />
-                        Danh mục
+                        {t('blog.categories')}
                     </h3>
                     <div className='flex flex-wrap gap-2 mt-3'>
                         {categories.map((category) => (
@@ -98,15 +100,13 @@ export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarP
                 className='bg-gradient-to-r from-pink-500 via-purple-500 to-rose-500 rounded-3xl p-1'
             >
                 <div className='bg-white rounded-3xl p-6'>
-                    <h3 className='text-lg font-semibold text-gray-800 mb-3'>Subscribe to Newsletter</h3>
-                    <p className='text-gray-600 text-sm mb-4'>
-                        Get the latest beauty tips and exclusive offers directly to your inbox
-                    </p>
+                    <h3 className='text-lg font-semibold text-gray-800 mb-3'>{t('blog.subscribeNewsletter')}</h3>
+                    <p className='text-gray-600 text-sm mb-4'>{t('blog.newsletterDescription')}</p>
                     <div className='relative mb-4'>
                         <MailIcon className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
                         <input
                             type='email'
-                            placeholder='Your email address'
+                            placeholder={t('blog.emailPlaceholder')}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className='w-full pl-10 pr-4 py-3 bg-pink-50 rounded-xl border-2 border-pink-100 focus:outline-none focus:border-pink-300'
@@ -122,7 +122,7 @@ export function BlogSidebar({ categories, onTopicClick, onSearch }: BlogSidebarP
                         }}
                         className='w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium'
                     >
-                        Subscribe
+                        {t('blog.subscribe')}
                     </motion.button>
                 </div>
             </motion.div>

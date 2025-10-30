@@ -2,19 +2,20 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRightIcon, CalendarIcon, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { blogApi } from '../../../services/blogApi';
 import { BlogPost, BlogPostBackend } from '../../../types/blog';
 
-// Helper function to calculate read time
-const calculateReadTime = (content: string): string => {
-    const wordsPerMinute = 200;
-    const words = content.split(/\s+/).length;
-    const minutes = Math.ceil(words / wordsPerMinute);
-    return `${minutes} min read`;
-};
-
 // Transform backend data to frontend format
-const transformBlogPost = (backendPost: BlogPostBackend): BlogPost => {
+const transformBlogPost = (backendPost: BlogPostBackend, t: (key: string) => string): BlogPost => {
+    // Helper function to calculate read time
+    const calculateReadTime = (content: string): string => {
+        const wordsPerMinute = 200;
+        const words = content.split(/\s+/).length;
+        const minutes = Math.ceil(words / wordsPerMinute);
+        return `${minutes} ${t('blog.minRead')}`;
+    };
+
     return {
         id: backendPost.id,
         title: backendPost.title,
@@ -22,16 +23,16 @@ const transformBlogPost = (backendPost: BlogPostBackend): BlogPost => {
         excerpt: backendPost.excerpt,
         image: backendPost.featuredImage,
         author: backendPost.author.fullName,
-        date: backendPost.publishedAt 
-            ? new Date(backendPost.publishedAt).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
+        date: backendPost.publishedAt
+            ? new Date(backendPost.publishedAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
               })
-            : new Date(backendPost.createdAt).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
+            : new Date(backendPost.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
               }),
         category: backendPost.category.name,
         readTime: calculateReadTime(backendPost.content),
@@ -40,6 +41,7 @@ const transformBlogPost = (backendPost: BlogPostBackend): BlogPost => {
 
 export function Blog() {
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
     const [articles, setArticles] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -50,24 +52,24 @@ export function Blog() {
                 setLoading(true);
                 const response = await blogApi.getAllPosts({ page: 1, limit: 3 });
                 // Transform backend data to frontend format
-                const transformedArticles = response.data.map(transformBlogPost);
+                const transformedArticles = response.data.map((post) => transformBlogPost(post, t));
                 setArticles(transformedArticles);
             } catch (err) {
                 console.error('Error fetching blog posts:', err);
-                setError('Failed to load articles');
+                setError(t('blog.failedToLoad'));
             } finally {
                 setLoading(false);
             }
         };
 
         fetchArticles();
-    }, []);
+    }, [t]);
 
     if (loading) {
         return (
             <section className='w-full py-24 px-6'>
                 <div className='max-w-7xl mx-auto text-center'>
-                    <div className='text-gray-600'>Loading articles...</div>
+                    <div className='text-gray-600'>{t('blog.loadingPosts')}</div>
                 </div>
             </section>
         );
@@ -105,18 +107,14 @@ export function Blog() {
                 >
                     <h2 className='text-5xl font-bold mb-4'>
                         <span className='bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
-                            Insights & News
+                            {t('blog.insightsAndNews')}
                         </span>
                     </h2>
-                    <p className='text-gray-600 text-lg'>
-                        Stay updated with the latest in beauty technology and skincare trends
-                    </p>
+                    <p className='text-gray-600 text-lg'>{t('blog.stayUpdated')}</p>
                 </motion.div>
                 <div className='grid md:grid-cols-3 gap-8'>
                     {articles.length === 0 ? (
-                        <div className='col-span-3 text-center text-gray-600'>
-                            No articles available yet
-                        </div>
+                        <div className='col-span-3 text-center text-gray-600'>{t('blog.noPostsAvailable')}</div>
                     ) : (
                         articles.map((article, index) => (
                             <motion.div
@@ -172,9 +170,11 @@ export function Blog() {
                                         </h3>
                                         <p className='text-gray-600 mb-4 line-clamp-2'>{article.excerpt}</p>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm text-gray-500'>By {article.author}</span>
+                                            <span className='text-sm text-gray-500'>
+                                                {t('blog.by')} {article.author}
+                                            </span>
                                             <div className='flex items-center gap-2 text-pink-600 font-medium'>
-                                                Read More
+                                                {t('blog.readMore')}
                                                 <ArrowRightIcon className='w-4 h-4 group-hover:translate-x-2 transition-transform' />
                                             </div>
                                         </div>
