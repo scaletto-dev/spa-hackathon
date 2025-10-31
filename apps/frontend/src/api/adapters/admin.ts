@@ -19,7 +19,7 @@ const getAuthToken = () => {
    return token || "";
 };
 
-// Helper for API requests
+// Helper for API requests with auto 401 handling
 const apiCall = async (method: string, endpoint: string, body?: any) => {
    const url = `${ADMIN_API}${endpoint}`;
    const headers: HeadersInit = {
@@ -40,7 +40,22 @@ const apiCall = async (method: string, endpoint: string, body?: any) => {
 
    if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error || `API Error: ${response.status}`);
+      const errorMessage = error.error || `API Error: ${response.status}`;
+
+      // Auto-redirect on 401 Unauthorized
+      if (response.status === 401) {
+         // Clear auth data
+         localStorage.removeItem("accessToken");
+         localStorage.removeItem("user_data");
+         localStorage.removeItem("refresh_token");
+
+         // Redirect to admin login
+         window.location.href = "/admin/login";
+
+         throw new Error("401: Unauthorized - Session expired");
+      }
+
+      throw new Error(errorMessage);
    }
 
    return response.json();
@@ -50,8 +65,22 @@ const apiCall = async (method: string, endpoint: string, body?: any) => {
 
 export const adminDashboardAPI = {
    // GET /dashboard/stats
-   getStats: async () => {
-      return apiCall("GET", "/dashboard/stats");
+   // Query params: ?period=week|month|year|today|custom&from=ISO_DATE&to=ISO_DATE
+   getStats: async (params?: {
+      period?: string;
+      from?: string;
+      to?: string;
+   }) => {
+      let endpoint = "/dashboard/stats";
+      if (params) {
+         const queryParams = new URLSearchParams();
+         if (params.period) queryParams.append("period", params.period);
+         if (params.from) queryParams.append("from", params.from);
+         if (params.to) queryParams.append("to", params.to);
+         const queryString = queryParams.toString();
+         if (queryString) endpoint += `?${queryString}`;
+      }
+      return apiCall("GET", endpoint);
    },
 };
 
@@ -236,14 +265,15 @@ export const adminAppointmentsAPI = {
 
    // POST /appointments
    create: async (data: {
-      serviceId: string;
+      serviceIds: string[];
       branchId: string;
       appointmentDate: string;
       appointmentTime: string;
-      guestName: string;
-      guestEmail: string;
-      guestPhone: string;
+      guestName?: string;
+      guestEmail?: string;
+      guestPhone?: string;
       notes?: string;
+      userId?: string;
    }) => {
       return apiCall("POST", "/appointments", data);
    },
@@ -455,6 +485,86 @@ export const adminContactsAPI = {
    },
 };
 
+// Payments API
+export const adminPaymentsAPI = {
+   // GET /payments?page=1&limit=10&status=COMPLETED&paymentType=ATM
+   getAll: async (
+      page: number = 1,
+      limit: number = 10,
+      filters?: { status?: string; paymentType?: string }
+   ) => {
+      const params = new URLSearchParams({
+         page: page.toString(),
+         limit: limit.toString(),
+         ...(filters?.status && { status: filters.status }),
+         ...(filters?.paymentType && { paymentType: filters.paymentType }),
+      });
+      return apiCall("GET", `/payments?${params.toString()}`);
+   },
+
+   // GET /payments/stats
+   getStats: async () => {
+      return apiCall("GET", "/payments/stats");
+   },
+
+   // GET /payments/:id
+   getById: async (id: string) => {
+      return apiCall("GET", `/payments/${id}`);
+   },
+
+   // POST /payments
+   create: async (data: {
+      bookingId: string;
+      amount: number;
+      currency?: string;
+      paymentType?: string;
+      status?: string;
+      transactionId?: string;
+      notes?: string;
+   }) => {
+      return apiCall("POST", "/payments", data);
+   },
+
+   // PATCH /payments/:id/status
+   updateStatus: async (id: string, status: string) => {
+      return apiCall("PATCH", `/payments/${id}/status`, { status });
+   },
+
+   // DELETE /payments/:id
+   delete: async (id: string) => {
+      return apiCall("DELETE", `/payments/${id}`);
+   },
+};
+
+// Upload API
+export const uploadAPI = {
+   // POST /upload/image?folder=blog
+   uploadImage: async (
+      file: File,
+      folder: "blog" | "branches" | "profile" | "service" = "blog"
+   ) => {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const url = `${API_BASE_URL}/api/v1/upload/image?folder=${folder}`;
+      const response = await fetch(url, {
+         method: "POST",
+         headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+         },
+         body: formData,
+      });
+
+      if (!response.ok) {
+         const error = await response.json();
+         throw new Error(error.message || "Upload failed");
+      }
+
+      const result = await response.json();
+      return result.data.url; // Return the uploaded image URL
+   },
+};
+
 // Export all APIs
 export default {
    customers: adminCustomersAPI,
@@ -465,4 +575,5 @@ export default {
    blog: adminBlogAPI,
    categories: adminCategoriesAPI,
    contacts: adminContactsAPI,
+   payments: adminPaymentsAPI,
 };

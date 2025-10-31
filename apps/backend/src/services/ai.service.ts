@@ -634,44 +634,88 @@ Return ONLY valid JSON:
      */
     async generateBlog(topic: string, keywords: string[]): Promise<any> {
         try {
-            const prompt = `Write a professional blog post for a luxury spa website.
+            const prompt = `You are a professional content writer for a luxury spa website.
 
-Topic: ${topic}
-Keywords to include: ${keywords.join(', ')}
-Target audience: 25-45 year old women interested in skincare
-Tone: Professional but warm and approachable
-Length: 800-1000 words
-Language: Vietnamese
+TASK: Generate a blog post in Vietnamese about: "${topic}"
 
-Structure:
-1. Engaging headline
-2. Introduction (hook the reader)
-3. Main content (3-4 sections with subheadings)
-4. Practical tips
+KEYWORDS TO INCLUDE: ${keywords.join(', ')}
+
+TARGET AUDIENCE: Women aged 25-45 interested in beauty and skincare
+TONE: Professional, warm, approachable
+LENGTH: 800-1000 words
+
+STRUCTURE:
+1. Catchy headline (Vietnamese)
+2. Engaging introduction 
+3. Main content with 3-4 sections (use <h2> tags for section headings)
+4. Practical tips section
 5. Call-to-action
-6. SEO meta description (max 160 chars)
+6. SEO meta description (max 160 characters)
 
-Format as JSON:
+CRITICAL: You MUST respond with ONLY a valid JSON object in this EXACT format:
 {
-  "title": "headline",
-  "content": "full HTML content",
-  "metaDescription": "SEO description",
-  "excerpt": "short excerpt"
+  "title": "Your catchy Vietnamese headline here",
+  "content": "<p>Full HTML content with proper tags...</p>",
+  "metaDescription": "SEO description max 160 chars",
+  "excerpt": "Brief 150-200 character summary"
 }
 
-Respond ONLY with valid JSON.`;
+Do NOT include any text before or after the JSON.
+Do NOT wrap in markdown code blocks.
+Do NOT add explanations.
+ONLY return the JSON object.`;
 
-            const result = await this.proModel.generateContent(prompt);
-            const responseText = result.response.text();
+            logger.info(`Generating blog for topic: ${topic}`);
 
+            const result = await this.proModel.generateContent({
+                contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                generationConfig: {
+                    temperature: 0.8,
+                    topP: 0.95,
+                    topK: 40,
+                    maxOutputTokens: 8192,
+                    responseMimeType: 'application/json',
+                },
+            });
+
+            let responseText = result.response.text();
+
+            // Remove markdown code blocks if present
+            responseText = responseText
+                .replace(/```json\n?/g, '')
+                .replace(/```\n?/g, '')
+                .trim();
+
+            // Try to extract JSON from response
             const jsonMatch = responseText.match(/\{[\s\S]*\}/);
             if (!jsonMatch) {
-                throw new Error('No JSON in response');
+                logger.error('AI response does not contain valid JSON:', responseText.substring(0, 200));
+
+                // Fallback: Create structured response from text
+                return {
+                    title: topic,
+                    content: `<p>${responseText.replace(/\n/g, '</p><p>')}</p>`,
+                    metaDescription: `${topic} - Hướng dẫn chăm sóc spa chuyên nghiệp`,
+                    excerpt: responseText.substring(0, 200) + '...',
+                };
             }
 
-            return JSON.parse(jsonMatch[0]);
-        } catch (error) {
+            const parsedData = JSON.parse(jsonMatch[0]);
+
+            // Validate required fields
+            if (!parsedData.title || !parsedData.content) {
+                throw new Error('Missing required fields in AI response');
+            }
+
+            return parsedData;
+        } catch (error: any) {
             logger.error('Blog generation failed:', error);
+
+            // If JSON parsing failed, return error with more context
+            if (error.message?.includes('JSON')) {
+                throw new Error('AI response format error. Please try again with simpler keywords.');
+            }
+
             throw new Error('Unable to generate blog. Please try again.');
         }
     }

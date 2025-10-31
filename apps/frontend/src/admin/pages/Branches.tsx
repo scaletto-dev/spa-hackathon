@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MapPinIcon, PhoneIcon, ClockIcon, Edit3Icon, TrendingUpIcon, PlusIcon, Trash2Icon, SearchIcon, FilterIcon } from 'lucide-react';
 import { adminBranchesAPI } from '../../api/adapters/admin';
 import { useAdminList } from '../../hooks/useAdmin';
@@ -11,11 +11,7 @@ export function Branches() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Branches');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
-  const { data: branches = [], loading, fetch } = useAdminList(adminBranchesAPI.getAll);
-
-  useEffect(() => {
-    fetch();
-  }, []);
+  const { data: branches = [], loading, fetch, page, limit, total, goToPage, setPageSize } = useAdminList(adminBranchesAPI.getAll);
 
   const handleBranchSuccess = () => {
     setIsModalOpen(false);
@@ -161,6 +157,51 @@ export function Branches() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!loading && branches.length > 0 && (
+        <div className='flex items-center justify-between p-4 border-t border-blue-100 bg-blue-50/30'>
+          <div className='flex items-center gap-2'>
+            <span className='text-sm text-gray-700'>Items per page:</span>
+            <select
+              value={limit}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className='px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+
+          <div className='flex flex-1 items-center justify-center gap-4'>
+            <button
+              onClick={() => goToPage(page - 1)}
+              disabled={page === 1}
+              className='px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium'
+            >
+              Previous
+            </button>
+
+            <div className='text-sm text-gray-600 min-w-max'>
+              Page <span className='font-semibold'>{page}</span> of <span className='font-semibold'>{Math.ceil(total / limit)}</span>
+            </div>
+
+            <button
+              onClick={() => goToPage(page + 1)}
+              disabled={page >= Math.ceil(total / limit)}
+              className='px-4 py-2 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium'
+            >
+              Next
+            </button>
+          </div>
+
+          <div className='text-sm text-gray-500'>
+            {((page - 1) * limit) + 1} - {Math.min(page * limit, total)} of {total}
+          </div>
         </div>
       )}
       <BranchModal 

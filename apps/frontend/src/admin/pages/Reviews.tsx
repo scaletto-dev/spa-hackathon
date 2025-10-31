@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
    StarIcon,
    ThumbsUpIcon,
@@ -25,18 +25,12 @@ export function Reviews() {
       data: reviews = [],
       loading,
       fetch,
+      page,
+      limit,
+      total,
+      goToPage,
+      setPageSize,
    } = useAdminList(adminReviewsAPI.getAll);
-
-   useEffect(() => {
-      console.log("Reviews - Fetching data...");
-      fetch().then(() => {
-         console.log("Reviews - Data fetched:", reviews);
-      });
-   }, [fetch]);
-
-   useEffect(() => {
-      console.log("Reviews - Current reviews state:", reviews);
-   }, [reviews]);
 
    const handleReplySuccess = () => {
       setSelectedReview(null);
@@ -74,17 +68,6 @@ export function Reviews() {
       } catch (err: any) {
          setToast({ message: err.message, type: "error" });
       }
-   };
-   const getSentimentColor = (rating: number) => {
-      if (rating >= 4) return "bg-green-100 text-green-700";
-      if (rating === 3) return "bg-yellow-100 text-yellow-700";
-      return "bg-red-100 text-red-700";
-   };
-
-   const getSentimentText = (rating: number) => {
-      if (rating >= 4) return "positive";
-      if (rating === 3) return "neutral";
-      return "negative";
    };
 
    // Filter reviews based on search and filters
@@ -206,6 +189,30 @@ export function Reviews() {
             </div>
          </div>
 
+         {/* AI Sentiment Dashboard */}
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+               {/* <SentimentDashboard period='month' /> */}
+               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-100">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                     Sentiment Analysis
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                     AI-powered sentiment analysis coming soon...
+                  </p>
+               </div>
+            </div>
+            <div className="space-y-4">
+               <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg p-6 text-white">
+                  <h3 className="font-semibold mb-2">💡 AI Tip</h3>
+                  <p className="text-sm opacity-90">
+                     Phân tích sentiment giúp bạn hiểu rõ cảm xúc khách hàng và
+                     cải thiện dịch vụ tốt hơn.
+                  </p>
+               </div>
+            </div>
+         </div>
+
          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-pink-100 flex items-center gap-4">
                <input
@@ -254,37 +261,21 @@ export function Reviews() {
                                  "?"}
                            </div>
                            <div className="flex-1">
-                              <div className="flex items-start justify-between mb-2">
-                                 <div>
-                                    <h4 className="font-semibold text-gray-800">
-                                       {review.customerName || "Guest"}
-                                    </h4>
-                                    <p className="text-xs text-gray-500">
-                                       {new Date(
-                                          review.createdAt
-                                       ).toLocaleDateString()}{" "}
-                                       • {review.service?.name || "Service"}
-                                    </p>
-                                 </div>
-                                 <div className="flex items-center gap-2">
-                                    <span
-                                       className={`text-xs px-2 py-1 rounded-full ${getSentimentColor(
-                                          review.rating
-                                       )}`}>
-                                       {getSentimentText(review.rating)}
-                                    </span>
-                                    <div className="flex items-center gap-1">
-                                       {[...Array(5)].map((_, i) => (
-                                          <StarIcon
-                                             key={i}
-                                             className={`w-4 h-4 ${
-                                                i < review.rating
-                                                   ? "text-yellow-400 fill-yellow-400"
-                                                   : "text-gray-300"
-                                             }`}
-                                          />
-                                       ))}
-                                    </div>
+                              <div className="flex items-center justify-between mb-2">
+                                 <h3 className="font-semibold text-gray-800">
+                                    {review.customerName || "Guest"}
+                                 </h3>
+                                 <div className="flex items-center gap-1">
+                                    {[...Array(5)].map((_, i) => (
+                                       <StarIcon
+                                          key={i}
+                                          className={`w-4 h-4 ${
+                                             i < review.rating
+                                                ? "fill-yellow-400 text-yellow-400"
+                                                : "text-gray-300"
+                                          }`}
+                                       />
+                                    ))}
                                  </div>
                               </div>
                               <p className="text-sm text-gray-700 mb-3">
@@ -349,6 +340,54 @@ export function Reviews() {
                         </div>
                      </div>
                   ))}
+               </div>
+            )}
+
+            {/* Pagination */}
+            {!loading && reviews.length > 0 && (
+               <div className="flex items-center justify-between p-4 border-t border-pink-100 bg-pink-50/30">
+                  <div className="flex items-center gap-2">
+                     <span className="text-sm text-gray-700">
+                        Items per page:
+                     </span>
+                     <select
+                        value={limit}
+                        onChange={(e) => setPageSize(Number(e.target.value))}
+                        className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                     </select>
+                  </div>
+
+                  <div className="flex flex-1 items-center justify-center gap-4">
+                     <button
+                        onClick={() => goToPage(page - 1)}
+                        disabled={page === 1}
+                        className="px-4 py-2 rounded-lg border border-gray-300 hover:border-pink-500 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium">
+                        Previous
+                     </button>
+
+                     <div className="text-sm text-gray-600 min-w-max">
+                        Page <span className="font-semibold">{page}</span> of{" "}
+                        <span className="font-semibold">
+                           {Math.ceil(total / limit)}
+                        </span>
+                     </div>
+
+                     <button
+                        onClick={() => goToPage(page + 1)}
+                        disabled={page >= Math.ceil(total / limit)}
+                        className="px-4 py-2 rounded-lg border border-gray-300 hover:border-pink-500 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium">
+                        Next
+                     </button>
+                  </div>
+
+                  <div className="text-sm text-gray-500">
+                     {(page - 1) * limit + 1} - {Math.min(page * limit, total)}{" "}
+                     of {total}
+                  </div>
                </div>
             )}
          </div>
