@@ -1,29 +1,33 @@
 import { Request, Response, NextFunction } from 'express';
-import categoryService from '../services/category.service';
-import { SuccessResponse } from '../types/api';
-import { ValidationError } from '../utils/errors';
-import { GetCategoriesQueryParams, GetCategoryServicesQueryParams } from '../types/category';
+import categoryService from '@/services/category.service';
+import { SuccessResponse } from '@/types/api';
+import { GetCategoriesQuery, GetCategoryParams, GetCategoryServicesQuery } from '@/validators/category.validator';
+import logger from '@/config/logger';
 
 /**
  * Category Controller
  * 
  * Handles HTTP requests for category endpoints.
- * Validates input, calls service layer, and formats responses.
+ * All request validation is performed by Zod middleware before reaching these handlers.
+ * Controllers can assume valid, typed data from request.
  */
 
 export class CategoryController {
   /**
    * GET /api/v1/categories
    * Get all service categories
+   * 
+   * Query params are validated and typed by middleware before reaching this handler.
    */
   async getAllCategories(
-    req: Request<{}, {}, {}, GetCategoriesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const includeServices = req.query.includeServices === 'true';
-      
+      // Middleware validated and transformed req.query
+      const { includeServices } = req.query as unknown as GetCategoriesQuery;
+
       const categories = await categoryService.getAllCategories(includeServices);
 
       const response: SuccessResponse<typeof categories> = {
@@ -41,15 +45,18 @@ export class CategoryController {
   /**
    * GET /api/v1/categories/:id
    * Get a single category by ID with optional services
+   * 
+   * Path params and query params are validated and typed by middleware.
    */
   async getCategoryById(
-    req: Request<{ id: string }, {}, {}, GetCategoriesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
-      const includeServices = req.query.includeServices === 'true';
+      // Middleware validated params and query
+      const { id } = req.params as unknown as GetCategoryParams;
+      const { includeServices } = req.query as unknown as GetCategoriesQuery;
 
       const category = await categoryService.getCategoryById(id, includeServices);
 
@@ -68,25 +75,21 @@ export class CategoryController {
   /**
    * GET /api/v1/categories/:id/services
    * Get all services in a specific category with pagination
+   * 
+   * Path params and query params are validated by middleware.
+   * No manual parseInt() or validation needed - middleware already did it.
    */
   async getCategoryServices(
-    req: Request<{ id: string }, {}, {}, GetCategoryServicesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
-      const page = parseInt(req.query.page || '1', 10);
-      const limit = parseInt(req.query.limit || '20', 10);
+      // Middleware validated and coerced types
+      const { id } = req.params as unknown as GetCategoryParams;
+      const { page, limit } = req.query as unknown as GetCategoryServicesQuery;
 
-      // Validation
-      if (page < 1) {
-        throw new ValidationError('Page must be greater than 0');
-      }
-      if (limit < 1 || limit > 100) {
-        throw new ValidationError('Limit must be between 1 and 100');
-      }
-
+      // No need for parseInt() or validation - middleware already handled it
       const result = await categoryService.getCategoryServices(id, page, limit);
 
       const response: SuccessResponse<typeof result.services> = {
