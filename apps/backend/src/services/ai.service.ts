@@ -69,7 +69,7 @@ class AIService {
 
     constructor() {
         try {
-            const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyDuPRKf5aFq5nSrxmK5dZ5QECNexDeqlDA';
+            const apiKey = process.env.GEMINI_API_KEY;
             if (!apiKey) {
                 logger.error('GEMINI_API_KEY not found in environment variables!');
                 throw new Error('GEMINI_API_KEY is required');
