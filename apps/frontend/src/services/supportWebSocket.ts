@@ -93,7 +93,7 @@ class SupportWebSocketService {
 
         this.conversationId = conversationId;
         this.socket.emit('conversation:join', { conversationId });
-        console.log('í³¥ Joined conversation:', conversationId);
+        console.log('ï¿½ï¿½ï¿½ Joined conversation:', conversationId);
     }
 
     /**
@@ -104,7 +104,7 @@ class SupportWebSocketService {
 
         this.socket.emit('conversation:leave', { conversationId });
         this.conversationId = null;
-        console.log('í³¤ Left conversation:', conversationId);
+        console.log('ï¿½ï¿½ï¿½ Left conversation:', conversationId);
     }
 
     /**
