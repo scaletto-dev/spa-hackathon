@@ -10,8 +10,11 @@ const ADMIN_API = `${API_BASE_URL}/api/v1/admin`;
 
 // Helper to get auth token
 const getAuthToken = () => {
+   // Check for accessToken (standard auth token) or adminToken (legacy)
    const token =
+      localStorage.getItem("accessToken") ||
       localStorage.getItem("adminToken") ||
+      sessionStorage.getItem("accessToken") ||
       sessionStorage.getItem("adminToken");
    return token || "";
 };
@@ -65,6 +68,7 @@ export const adminProfileAPI = {
       fullName?: string;
       phone?: string;
       language?: string;
+      avatar?: string;
    }) => {
       return apiCall("PUT", "/profile", data);
    },

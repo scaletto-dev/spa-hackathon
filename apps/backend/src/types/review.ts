@@ -8,8 +8,10 @@ export interface GetReviewsQueryParams {
     serviceId?: string;
     page?: string;
     limit?: string;
-    sort?: 'recent' | 'rating' | 'helpful';
     rating?: string;
+    sort?: 'recent' | 'rating' | 'helpful';
+    sortBy?: 'date' | 'rating';
+    sortOrder?: 'asc' | 'desc';
 }
 
 export interface CreateReviewDto {

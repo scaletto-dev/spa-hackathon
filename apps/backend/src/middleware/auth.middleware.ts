@@ -231,3 +231,47 @@ export function requireRole(...allowedRoles: string[]) {
   };
 }
 
+/**
+ * Admin authorization middleware
+ * Checks if user has ADMIN or SUPER_ADMIN role
+ * Must be used AFTER authenticate middleware
+ * 
+ * Usage: router.get('/admin', authenticate, requireAdmin, controller)
+ */
+export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
+  if (!req.user) {
+    res.status(401).json({
+      success: false,
+      error: 'Unauthorized',
+      message: 'Authentication required',
+    });
+    return;
+  }
+
+  const adminRoles = ['ADMIN', 'SUPER_ADMIN'];
+  
+  if (!adminRoles.includes(req.user.role)) {
+    logger.warn('Admin access denied', {
+      userId: req.user.id,
+      userEmail: req.user.email,
+      userRole: req.user.role,
+      endpoint: `${req.method} ${req.path}`,
+    });
+
+    res.status(403).json({
+      success: false,
+      error: 'Forbidden',
+      message: 'Admin access required',
+    });
+    return;
+  }
+
+  logger.debug('Admin access granted', {
+    userId: req.user.id,
+    userEmail: req.user.email,
+    userRole: req.user.role,
+  });
+
+  next();
+}
+

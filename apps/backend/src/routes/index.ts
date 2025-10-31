@@ -30,7 +30,7 @@ import { configureAdminRoutes } from './admin';
  * - /api/v1/availability - Availability check routes
  * - /api/v1/blog - Blog post routes
  * - /api/v1/upload - Image upload routes (with rate limiting)
- * 
+ *
  * @param app - Express application instance
  */
 export function configureRoutes(app: Express): void {

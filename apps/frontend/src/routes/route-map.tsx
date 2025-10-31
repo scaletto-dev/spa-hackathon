@@ -44,6 +44,12 @@ const AdminReviews = lazy(() => import('../admin/pages/Reviews'));
 const AdminBlog = lazy(() => import('../admin/pages/Blog'));
 const Settings = lazy(() => import('../admin/pages/Settings'));
 
+// Lazy load support dashboard pages
+const SupportLayout = lazy(() => import('../support/layouts/SupportLayout'));
+const ConversationList = lazy(() => import('../support/pages/ConversationList'));
+const ChatRoom = lazy(() => import('../support/pages/ChatRoom'));
+const SupportLogin = lazy(() => import('../support/pages/SupportLogin'));
+
 /**
  * Route Configuration
  * Using React Router v6 with createBrowserRouter
@@ -235,6 +241,50 @@ export const routes: RouteObject[] = [
                 element: (
                     <Suspense fallback={<Pending />}>
                         <ProfileManagement />
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+
+    // Support Login (Public)
+    {
+        path: '/support',
+        element: (
+            <RootErrorBoundary>
+                <Suspense fallback={<Pending />}>
+                    <SupportLogin />
+                </Suspense>
+            </RootErrorBoundary>
+        ),
+    },
+
+    // Support Dashboard Routes (Protected - Requires Staff Role)
+    {
+        path: '/support-dashboard',
+        element: (
+            <RootErrorBoundary>
+                <Suspense fallback={<Pending />}>
+                    <RequireRole role='staff'>
+                        <SupportLayout />
+                    </RequireRole>
+                </Suspense>
+            </RootErrorBoundary>
+        ),
+        children: [
+            {
+                index: true,
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <ConversationList />
+                    </Suspense>
+                ),
+            },
+            {
+                path: 'chat/:conversationId',
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <ChatRoom />
                     </Suspense>
                 ),
             },

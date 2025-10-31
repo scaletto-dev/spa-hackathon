@@ -49,11 +49,6 @@ export function Sidebar({ onClose }: SidebarProps) {
             label: t('admin.nav.customers'),
         },
         {
-            path: '/admin/staff',
-            icon: UserIcon,
-            label: t('admin.nav.staff'),
-        },
-        {
             path: '/admin/payments',
             icon: CreditCardIcon,
             label: t('admin.nav.payments'),
