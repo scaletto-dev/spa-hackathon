@@ -73,6 +73,8 @@ npm install
 npx prisma db pull --schema=apps/backend/src/prisma/schema.prisma
 
 npx prisma generate --schema=apps/backend/src/prisma/schema.prisma
+
+npm run dev
 ```
 
 **Note!!!!:**
@@ -94,6 +96,7 @@ Member:
 Email: getsdtfree4@gmail.com
 Password: baolol123
 ```
+
 
 ## 🔧 Environment Setup (Đã cấu hình sẵn)
 
@@ -198,20 +201,6 @@ VITE_GOOGLE_ALLOWED_DOMAINS=gmail.com,yourcompany.com
 2. Create new project
 3. Get credentials from Settings
 
-### Run Migrations
-
-```bash
-cd apps/backend
-
-# Generate Prisma Client
-npx prisma generate
-
-# Run migrations
-npx prisma migrate dev
-
-# Seed data
-npx prisma db seed
-```
 
 **Expected:** 13 tables created with sample data
 
