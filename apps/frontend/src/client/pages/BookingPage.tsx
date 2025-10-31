@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZapIcon, ListIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { BookingProgress } from '../components/booking/BookingProgress';
 import { BookingServiceSelect } from '../components/booking/BookingServiceSelect';
 import { BookingBranchSelect } from '../components/booking/BookingBranchSelect';
@@ -16,6 +17,7 @@ import { toast } from '../../utils/toast';
 
 export function BookingPage() {
     const { t } = useTranslation('common');
+    const location = useLocation();
     const [bookingMode, setBookingMode] = useState('full'); // Default to 'full' mode
     const [currentStep, setCurrentStep] = useState(1);
     const [bookingData, setBookingData] = useState<BookingData>({
@@ -51,6 +53,95 @@ export function BookingPage() {
             }
         }
     }, []);
+
+    // Parse URL params from chat widget redirect
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const source = params.get('source');
+
+        if (source === 'chat-booking' || source === 'chat-widget') {
+            const name = params.get('name');
+            const phone = params.get('phone');
+            const email = params.get('email');
+            const date = params.get('date');
+            const time = params.get('time');
+            const serviceId = params.get('service');
+            const branchId = params.get('branch');
+
+            // Load service and branch details
+            const loadChatBookingData = async () => {
+                try {
+                    let branchObj = null;
+                    let serviceObj = null;
+                    let serviceIds: string[] = [];
+
+                    // Load branch object if branchId provided
+                    if (branchId) {
+                        try {
+                            const { getBranchById } = await import('../../services/bookingApi');
+                            branchObj = await getBranchById(branchId);
+                        } catch (err) {
+                            console.error('Failed to load branch:', err);
+                        }
+                    }
+
+                    // Load service object if serviceId provided
+                    if (serviceId) {
+                        try {
+                            const { getServiceById } = await import('../../services/servicesApi');
+                            serviceObj = await getServiceById(serviceId);
+                            serviceIds = [serviceId];
+                        } catch (err) {
+                            console.error('Failed to load service:', err);
+                        }
+                    }
+
+                    // Pre-fill booking data with actual objects
+                    const updates: Partial<BookingData> = {
+                        ...(name && { name }),
+                        ...(phone && { phone }),
+                        ...(email && { email }),
+                        ...(date && { date }),
+                        ...(time && { time }),
+                        ...(serviceIds.length > 0 && { serviceIds }),
+                        ...(branchObj && { branch: branchObj }),
+                    };
+
+                    // Map ServiceWithCategory to Service format
+                    if (serviceObj) {
+                        updates.service = {
+                            id: serviceObj.id,
+                            name: serviceObj.name,
+                            categoryName: serviceObj.categoryName || 'General',
+                            price:
+                                typeof serviceObj.price === 'string' ? parseFloat(serviceObj.price) : serviceObj.price,
+                            duration: String(serviceObj.duration),
+                            images: serviceObj.images || [],
+                            excerpt: serviceObj.excerpt,
+                        };
+                    }
+
+                    setBookingData((prev) => ({ ...prev, ...updates }));
+
+                    // Show welcome toast
+                    if (source === 'chat-booking') {
+                        toast.success(t('bookings.chatPreFilled') || '✅ Thông tin đã được điền sẵn từ chat!');
+                    } else if (source === 'chat-widget') {
+                        toast.info(t('bookings.aiSuggested') || '✨ AI đã chọn thời gian tốt nhất cho bạn!');
+                    }
+
+                    // Skip to step 4 (User Info) if we have all pre-filled data
+                    if (serviceId && branchId && date && time) {
+                        setCurrentStep(4);
+                    }
+                } catch (error) {
+                    console.error('Failed to load chat booking data:', error);
+                }
+            };
+
+            loadChatBookingData();
+        }
+    }, [location.search, t]);
 
     // Step order with i18n
     const steps = [
@@ -119,7 +210,8 @@ export function BookingPage() {
                 guestPhone: bookingData.phone || '',
                 notes: bookingData.notes || '',
                 language: 'vi',
-                paymentType: (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
+                paymentType:
+                    (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
             };
 
             console.log('Submitting booking with payload:', payload);
