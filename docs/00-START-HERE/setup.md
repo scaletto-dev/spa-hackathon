@@ -69,11 +69,33 @@ cd spa-hackathon
 
 # Install tất cả dependencies
 npm install
+
+npx prisma db pull --schema=apps/backend/src/prisma/schema.prisma
+
+npx prisma generate --schema=apps/backend/src/prisma/schema.prisma
 ```
+
+**Note!!!!:**
+
+For corporate networks, if you see a “database connection failed” message, enable Cloudflare DNS (1.1.1.1).
 
 ---
 
-## 🔧 Environment Setup
+## 👤 Demo Credentials
+
+### Tài khoản có sẵn
+
+```
+Admin:
+Email: doanhaiduydev@gmail.com
+Password: haiduy10
+
+Member:
+Email: getsdtfree4@gmail.com
+Password: baolol123
+```
+
+## 🔧 Environment Setup (Đã cấu hình sẵn)
 
 **✅ Đã cấu hình sẵn** - Các file environment đã được cấu hình sẵn trong source code:
 
@@ -273,18 +295,14 @@ npx prisma generate
 
 ---
 
-## 👤 Demo Credentials
-
-### Tài khoản có sẵn
+### Thẻ Test VNPay (Sandbox)
 
 ```
-Admin:
-Email: doanhaiduydev@gmail.com
-Password: haiduy10
-
-Member:
-Email: getsdtfree4@gmail.com
-Password: baolol123
+Ngân hàng: NCB
+Số thẻ: 9704198526191432198
+Tên chủ thẻ: NGUYEN VAN A
+Ngày phát hành: 07/15
+Mật khẩu OTP: 123456
 ```
 
 ### 🌟 Khuyến nghị: Đăng ký tài khoản mới

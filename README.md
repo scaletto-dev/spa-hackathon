@@ -110,7 +110,9 @@ For corporate networks, if you see a “database connection failed” message, e
 
 ---
 
-## ��� Demo Accounts
+## 👤 Demo Accounts
+
+### Tài khoản Website
 
 ```
 Admin:
@@ -122,7 +124,17 @@ Email: getsdtfree4@gmail.com
 Password: baolol123
 ```
 
-**��� Tip:** Register a new account with your real email to test full booking flow with email notifications!
+### Thẻ Test VNPay (Sandbox)
+
+```
+Ngân hàng: NCB
+Số thẻ: 9704198526191432198
+Tên chủ thẻ: NGUYEN VAN A
+Ngày phát hành: 07/15
+Mật khẩu OTP: 123456
+```
+
+**👉 Tip:** Register a new account with your real email to test full booking flow with email notifications!
 
 ---
 
