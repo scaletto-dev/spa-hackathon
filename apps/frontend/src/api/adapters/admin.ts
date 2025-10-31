@@ -50,8 +50,18 @@ const apiCall = async (method: string, endpoint: string, body?: any) => {
 
 export const adminDashboardAPI = {
    // GET /dashboard/stats
-   getStats: async () => {
-      return apiCall("GET", "/dashboard/stats");
+   // Query params: ?period=week|month|year|today|custom&from=ISO_DATE&to=ISO_DATE
+   getStats: async (params?: { period?: string; from?: string; to?: string }) => {
+      let endpoint = "/dashboard/stats";
+      if (params) {
+         const queryParams = new URLSearchParams();
+         if (params.period) queryParams.append("period", params.period);
+         if (params.from) queryParams.append("from", params.from);
+         if (params.to) queryParams.append("to", params.to);
+         const queryString = queryParams.toString();
+         if (queryString) endpoint += `?${queryString}`;
+      }
+      return apiCall("GET", endpoint);
    },
 };
 
@@ -236,14 +246,15 @@ export const adminAppointmentsAPI = {
 
    // POST /appointments
    create: async (data: {
-      serviceId: string;
+      serviceIds: string[];
       branchId: string;
       appointmentDate: string;
       appointmentTime: string;
-      guestName: string;
-      guestEmail: string;
-      guestPhone: string;
+      guestName?: string;
+      guestEmail?: string;
+      guestPhone?: string;
       notes?: string;
+      userId?: string;
    }) => {
       return apiCall("POST", "/appointments", data);
    },

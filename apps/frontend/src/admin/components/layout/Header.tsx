@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
    SearchIcon,
    BellIcon,
-   BotIcon,
    ChevronDownIcon,
    LogOutIcon,
    UserIcon,
@@ -92,14 +91,6 @@ export function Header({ onMenuClick }: HeaderProps) {
          <div className="flex items-center gap-2 md:gap-4">
             {/* Language Switcher */}
             <LanguageSwitcher />
-
-            {/* AI Assistant Button - Hidden on small mobile */}
-            <button
-               onClick={() => toast.info("AI Assistant feature coming soon!")}
-               className="hidden md:flex relative p-2 rounded-full hover:bg-pink-50 transition-colors group">
-               <BotIcon className="w-5 h-5 text-purple-400 group-hover:text-purple-500" />
-               <span className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full animate-pulse" />
-            </button>
 
             {/* Notifications Dropdown */}
             <div className="relative" ref={notifRef}>
