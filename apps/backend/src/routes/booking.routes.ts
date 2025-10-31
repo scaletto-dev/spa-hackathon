@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import bookingController from '../controllers/booking.controller';
-import { authenticate } from '../middleware/auth.middleware';
+import { authenticate, optionalAuthenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -43,7 +43,7 @@ const router = Router();
  *   "guestPhone": "+84912345678"
  * }
  */
-router.post('/', bookingController.createBooking);
+router.post('/', optionalAuthenticate, bookingController.createBooking);
 
 /**
  * GET /api/v1/bookings/stats

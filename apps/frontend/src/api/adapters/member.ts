@@ -1,10 +1,11 @@
 /**
- * Member Dashboard API Adapter (MOCK)
- * TODO: Replace with real API integration when backend is ready
- * All functions return mock data shaped according to expected API responses
+ * Member Dashboard API Adapter
+ * Real API integration with backend
  */
 
-// ============= Types =============
+import axiosInstance from '../../utils/axios';
+
+const API_BASE = '/api/v1';
 
 export interface BookingSummary {
     id: string;
@@ -208,40 +209,31 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
     },
 ];
 
-// ============= API Functions (MOCK) =============
+// ============= API Functions =============
 
 /**
  * Fetch member dashboard overview data
- * @returns Dashboard data with stats, upcoming bookings, and offers
+ * @returns Dashboard data with stats and upcoming bookings
  *
- * TODO API: GET /api/v1/members/dashboard
+ * GET /api/v1/members/dashboard
  * Auth: Required (Bearer token)
  * Response: { data: MemberDashboardData }
  */
 export async function getMemberDashboard(): Promise<MemberDashboardData> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    return {
-        stats: {
-            totalBookings: 12,
-            upcomingBookings: 3,
-            completedBookings: 9,
-            memberPoints: 450,
-        },
-        upcomingBookings: MOCK_UPCOMING_BOOKINGS,
-        specialOffers: MOCK_SPECIAL_OFFERS,
-    };
+    try {
+        const response = await axiosInstance.get(`${API_BASE}/members/dashboard`);
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch member dashboard:', error);
+        throw error;
+    }
 }
 
 /**
  * Quick action: Book new appointment
  * Redirects to booking page with pre-filled member data
- *
- * TODO API: Member data auto-fill from GET /api/v1/members/profile
  */
 export function quickBookAppointment(): void {
-    // Client-side navigation, no API call needed
     window.location.href = '/booking';
 }
 
@@ -250,50 +242,28 @@ export function quickBookAppointment(): void {
  * @param params - Query parameters for filtering and pagination
  * @returns Paginated booking history
  *
- * TODO API: GET /api/v1/members/bookings?page&limit&status&dateFrom&dateTo
+ * GET /api/v1/members/bookings?page&limit&status&dateFrom&dateTo
  * Auth: Required (Bearer token)
  * Response: { data: BookingSummary[], meta: PaginationMeta }
  */
 export async function getMemberBookings(params: BookingHistoryParams = {}): Promise<BookingHistoryResponse> {
-    const { page = 1, limit = 10, status = 'all', dateFrom, dateTo } = params;
+    try {
+        const queryParams = new URLSearchParams();
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.status) queryParams.append('status', params.status);
+        if (params.dateFrom) queryParams.append('dateFrom', params.dateFrom);
+        if (params.dateTo) queryParams.append('dateTo', params.dateTo);
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    // Filter bookings by status
-    let filteredBookings = [...MOCK_ALL_BOOKINGS];
-
-    if (status !== 'all') {
-        filteredBookings = filteredBookings.filter((b) => b.status === status);
+        const response = await axiosInstance.get(`${API_BASE}/members/bookings?${queryParams.toString()}`);
+        return {
+            data: response.data.data,
+            meta: response.data.meta,
+        };
+    } catch (error) {
+        console.error('Failed to fetch member bookings:', error);
+        throw error;
     }
-
-    // Filter by date range
-    if (dateFrom) {
-        filteredBookings = filteredBookings.filter((b) => new Date(b.appointmentDate) >= new Date(dateFrom));
-    }
-    if (dateTo) {
-        filteredBookings = filteredBookings.filter((b) => new Date(b.appointmentDate) <= new Date(dateTo));
-    }
-
-    // Sort by date (newest first)
-    filteredBookings.sort((a, b) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime());
-
-    // Calculate pagination
-    const total = filteredBookings.length;
-    const totalPages = Math.ceil(total / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedData = filteredBookings.slice(startIndex, endIndex);
-
-    return {
-        data: paginatedData,
-        meta: {
-            page,
-            limit,
-            total,
-            totalPages,
-        },
-    };
 }
 
 export interface MemberProfile {
@@ -327,40 +297,18 @@ export interface UpdateProfileParams {
  * Fetch member profile information
  * @returns Member profile data
  *
- * API: GET /api/v1/user/profile
+ * API: GET /api/v1/members/profile
  * Auth: Required (Bearer token)
- * Response: { success, data: UserProfileDTO, timestamp }
+ * Response: { success, data: MemberProfile, timestamp }
  */
 export async function getMemberProfile(): Promise<MemberProfile> {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-        throw new Error('Authentication required. Please login again.');
+    try {
+        const response = await axiosInstance.get(`${API_BASE}/members/profile`);
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch member profile:', error);
+        throw error;
     }
-
-    const response = await fetch('/api/v1/user/profile', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch profile');
-    }
-
-    const data = await response.json();
-    
-    return {
-        id: data.data.id,
-        email: data.data.email,
-        fullName: data.data.fullName,
-        phone: data.data.phone,
-        language: data.data.language || 'vi',
-        createdAt: data.data.createdAt,
-        updatedAt: data.data.updatedAt,
-    };
 }
 
 /**
@@ -368,42 +316,19 @@ export async function getMemberProfile(): Promise<MemberProfile> {
  * @param params - Fields to update (fullName, phone, language)
  * @returns Updated profile data
  *
- * API: PUT /api/v1/user/profile
+ * API: PATCH /api/v1/members/profile
  * Auth: Required (Bearer token)
  * Body: { fullName?, phone?, language? }
- * Response: { success, data: UserProfileDTO, message, timestamp }
+ * Response: { success, data: MemberProfile, timestamp }
  */
 export async function updateMemberProfile(params: UpdateProfileParams): Promise<MemberProfile> {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-        throw new Error('Authentication required. Please login again.');
+    try {
+        const response = await axiosInstance.patch(`${API_BASE}/members/profile`, params);
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to update member profile:', error);
+        throw error;
     }
-
-    const response = await fetch('/api/v1/user/profile', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update profile');
-    }
-
-    const data = await response.json();
-    
-    return {
-        id: data.data.id,
-        email: data.data.email,
-        fullName: data.data.fullName,
-        phone: data.data.phone,
-        language: data.data.language || 'vi',
-        createdAt: data.data.createdAt,
-        updatedAt: data.data.updatedAt,
-    };
 }
 
 // ============= Voucher Types & Mock Data =============

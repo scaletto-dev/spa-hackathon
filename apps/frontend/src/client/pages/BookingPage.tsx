@@ -108,21 +108,30 @@ export function BookingPage() {
                 return;
             }
 
+            // Check if user is logged in
+            const accessToken = localStorage.getItem('accessToken');
+            const isLoggedIn = !!accessToken;
+
             // Build payload according to API spec
-            const payload = {
+            const payload: any = {
                 serviceIds: bookingData.serviceIds,
                 branchId: bookingData.branch.id,
                 appointmentDate: bookingData.date, // YYYY-MM-DD format
                 appointmentTime: convertTo24HourFormat(bookingData.time), // Convert to HH:mm format
-                guestName: bookingData.name || '',
-                guestEmail: bookingData.email || '',
-                guestPhone: bookingData.phone || '',
                 notes: bookingData.notes || '',
                 language: 'vi',
                 paymentType: (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
             };
 
+            // Only add guest fields if NOT logged in
+            if (!isLoggedIn) {
+                payload.guestName = bookingData.name || '';
+                payload.guestEmail = bookingData.email || '';
+                payload.guestPhone = bookingData.phone || '';
+            }
+
             console.log('Submitting booking with payload:', payload);
+            console.log('Is logged in:', isLoggedIn);
             toast.info('Đang xử lý đặt lịch...');
 
             // Call API
