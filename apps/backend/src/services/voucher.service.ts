@@ -1,12 +1,7 @@
-/**
- * Voucher Service
- *
- * Handles business logic for voucher management
- */
-
-import prisma from '../lib/prisma';
-import { NotFoundError, ValidationError } from '../utils/errors';
+import { NotFoundError } from '@/utils/errors';
 import { Decimal } from '@prisma/client/runtime/library';
+import { voucherRepository } from '@/repositories/voucher.repository';
+import { VoucherDTO } from '@/types/voucher';
 
 class VoucherService {
     /**
@@ -14,242 +9,190 @@ class VoucherService {
      * Filters by current date validity
      */
     async getActiveVouchers() {
-        try {
-            const now = new Date();
-
-            const vouchers = await prisma.voucher.findMany({
-                where: {
-                    isActive: true,
-                    validFrom: {
-                        lte: now,
-                    },
-                    validUntil: {
-                        gte: now,
-                    },
-                },
-                orderBy: {
-                    createdAt: 'desc',
-                },
-            });
-
-            return vouchers;
-        } catch (error) {
-            throw error;
-        }
+        const vouchers = await voucherRepository.findActive();
+        return vouchers.map(toVoucherDTO);
     }
 
     /**
      * Get voucher by code
      */
     async getVoucherByCode(code: string) {
-        try {
-            const voucher = await prisma.voucher.findUnique({
-                where: { code: code.toUpperCase() },
-            });
+        const voucher = await voucherRepository.findByCode(code.toUpperCase());
 
-            if (!voucher) {
-                throw new NotFoundError('Voucher not found');
-            }
-
-            return voucher;
-        } catch (error) {
-            throw error;
+        if (!voucher) {
+            throw new NotFoundError('Voucher not found');
         }
+
+        return toVoucherDTO(voucher);
     }
 
     /**
      * Validate voucher and calculate discount
      */
     async validateVoucher(code: string, purchaseAmount: number) {
-        try {
-            const voucher = await prisma.voucher.findUnique({
-                where: { code: code.toUpperCase() },
-            });
+        const voucher = await voucherRepository.findByCode(code.toUpperCase());
 
-            if (!voucher) {
-                return {
-                    valid: false,
-                    message: 'Voucher not found',
-                };
-            }
-
-            // Check if voucher is active
-            if (!voucher.isActive) {
-                return {
-                    valid: false,
-                    message: 'Voucher is not active',
-                };
-            }
-
-            // Check expiration
-            const now = new Date();
-            if (now < new Date(voucher.validFrom) || now > new Date(voucher.validUntil)) {
-                return {
-                    valid: false,
-                    message: 'Voucher is expired or not yet valid',
-                };
-            }
-
-            // Check usage limit
-            if (voucher.usageLimit && voucher.usageCount >= voucher.usageLimit) {
-                return {
-                    valid: false,
-                    message: 'Voucher usage limit reached',
-                };
-            }
-
-            // Check minimum purchase amount
-            if (voucher.minPurchaseAmount && new Decimal(purchaseAmount).lt(new Decimal(voucher.minPurchaseAmount))) {
-                return {
-                    valid: false,
-                    message: `Minimum purchase amount is ${voucher.minPurchaseAmount}`,
-                };
-            }
-
-            // Calculate discount
-            let discount: number;
-            if (voucher.discountType === 'PERCENTAGE') {
-                discount = (purchaseAmount * Number(voucher.discountValue)) / 100;
-            } else {
-                discount = Number(voucher.discountValue);
-            }
-
-            // Apply max discount limit
-            if (voucher.maxDiscountAmount && discount > Number(voucher.maxDiscountAmount)) {
-                discount = Number(voucher.maxDiscountAmount);
-            }
-
+        if (!voucher) {
             return {
-                valid: true,
-                discount,
-                message: 'Voucher is valid',
+                valid: false,
+                message: 'Voucher not found',
             };
-        } catch (error) {
-            throw error;
         }
+
+        // Check if voucher is active
+        if (!voucher.isActive) {
+            return {
+                valid: false,
+                message: 'Voucher is not active',
+            };
+        }
+
+        // Check expiration
+        const now = new Date();
+        if (now < new Date(voucher.validFrom) || now > new Date(voucher.validUntil)) {
+            return {
+                valid: false,
+                message: 'Voucher is expired or not yet valid',
+            };
+        }
+
+        // Check usage limit
+        if (voucher.usageLimit && voucher.usageCount >= voucher.usageLimit) {
+            return {
+                valid: false,
+                message: 'Voucher usage limit reached',
+            };
+        }
+
+        // Check minimum purchase amount
+        if (voucher.minPurchaseAmount && new Decimal(purchaseAmount).lt(new Decimal(voucher.minPurchaseAmount))) {
+            return {
+                valid: false,
+                message: `Minimum purchase amount is ${voucher.minPurchaseAmount}`,
+            };
+        }
+
+        // Calculate discount
+        let discount: number;
+        if (voucher.discountType === 'PERCENTAGE') {
+            discount = (purchaseAmount * Number(voucher.discountValue)) / 100;
+        } else {
+            discount = Number(voucher.discountValue);
+        }
+
+        // Apply max discount limit
+        if (voucher.maxDiscountAmount && discount > Number(voucher.maxDiscountAmount)) {
+            discount = Number(voucher.maxDiscountAmount);
+        }
+
+        // Increment usage count
+        await voucherRepository.incrementUsageCount(voucher.id);
+
+        return {
+            valid: true,
+            discount,
+            message: 'Voucher is valid',
+        };
     }
 
     /**
      * Get all vouchers with pagination (admin)
      */
     async getAllVouchers(page: number = 1, limit: number = 10) {
-        try {
-            const skip = (page - 1) * limit;
+        const result = await voucherRepository.findAllWithPagination(page, limit);
 
-            const [vouchers, total] = await Promise.all([
-                prisma.voucher.findMany({
-                    skip,
-                    take: limit,
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
-                }),
-                prisma.voucher.count(),
-            ]);
-
-            const totalPages = Math.ceil(total / limit);
-
-            return {
-                data: vouchers,
-                meta: {
-                    total,
-                    page,
-                    limit,
-                    totalPages,
-                },
-            };
-        } catch (error) {
-            throw error;
-        }
+        return {
+            data: result.vouchers.map(toVoucherDTO),
+            meta: {
+                total: result.total,
+                page,
+                limit,
+                totalPages: result.totalPages,
+            },
+        };
     }
 
     /**
      * Create new voucher (admin)
      */
     async createVoucher(data: any) {
-        try {
-            // Validate input
-            if (!data.code || !data.title || !data.discountType || data.discountValue === undefined) {
-                throw new ValidationError('Missing required fields');
-            }
+        // Note: Validation happens at route level via Zod schema
+        const voucher = await voucherRepository.create({
+            code: data.code.toUpperCase(),
+            title: data.title,
+            description: data.description,
+            discountType: data.discountType,
+            discountValue: data.discountValue,
+            minPurchaseAmount: data.minPurchaseAmount || 0,
+            maxDiscountAmount: data.maxDiscountAmount,
+            usageLimit: data.usageLimit,
+            validFrom: new Date(data.validFrom),
+            validUntil: new Date(data.validUntil),
+            isActive: data.isActive !== false,
+        });
 
-            const voucher = await prisma.voucher.create({
-                data: {
-                    code: data.code.toUpperCase(),
-                    title: data.title,
-                    description: data.description,
-                    discountType: data.discountType,
-                    discountValue: data.discountValue,
-                    minPurchaseAmount: data.minPurchaseAmount || 0,
-                    maxDiscountAmount: data.maxDiscountAmount,
-                    usageLimit: data.usageLimit,
-                    validFrom: new Date(data.validFrom),
-                    validUntil: new Date(data.validUntil),
-                    isActive: data.isActive !== false,
-                },
-            });
-
-            return voucher;
-        } catch (error) {
-            throw error;
-        }
+        return toVoucherDTO(voucher);
     }
 
     /**
      * Update voucher (admin)
      */
     async updateVoucher(id: string, data: any) {
-        try {
-            const voucher = await prisma.voucher.findUnique({
-                where: { id },
-            });
+        const voucher = await voucherRepository.findById(id);
 
-            if (!voucher) {
-                throw new NotFoundError('Voucher not found');
-            }
-
-            const updated = await prisma.voucher.update({
-                where: { id },
-                data: {
-                    ...(data.title && { title: data.title }),
-                    ...(data.description !== undefined && { description: data.description }),
-                    ...(data.discountType && { discountType: data.discountType }),
-                    ...(data.discountValue !== undefined && { discountValue: data.discountValue }),
-                    ...(data.minPurchaseAmount !== undefined && { minPurchaseAmount: data.minPurchaseAmount }),
-                    ...(data.maxDiscountAmount !== undefined && { maxDiscountAmount: data.maxDiscountAmount }),
-                    ...(data.usageLimit !== undefined && { usageLimit: data.usageLimit }),
-                    ...(data.validFrom && { validFrom: new Date(data.validFrom) }),
-                    ...(data.validUntil && { validUntil: new Date(data.validUntil) }),
-                    ...(data.isActive !== undefined && { isActive: data.isActive }),
-                },
-            });
-
-            return updated;
-        } catch (error) {
-            throw error;
+        if (!voucher) {
+            throw new NotFoundError('Voucher not found');
         }
+
+        const updated = await voucherRepository.update(id, {
+            ...(data.title && { title: data.title }),
+            ...(data.description !== undefined && { description: data.description }),
+            ...(data.discountType && { discountType: data.discountType }),
+            ...(data.discountValue !== undefined && { discountValue: data.discountValue }),
+            ...(data.minPurchaseAmount !== undefined && { minPurchaseAmount: data.minPurchaseAmount }),
+            ...(data.maxDiscountAmount !== undefined && { maxDiscountAmount: data.maxDiscountAmount }),
+            ...(data.usageLimit !== undefined && { usageLimit: data.usageLimit }),
+            ...(data.validFrom && { validFrom: new Date(data.validFrom) }),
+            ...(data.validUntil && { validUntil: new Date(data.validUntil) }),
+            ...(data.isActive !== undefined && { isActive: data.isActive }),
+        });
+
+        return toVoucherDTO(updated);
     }
 
     /**
      * Delete voucher (admin)
      */
     async deleteVoucher(id: string) {
-        try {
-            const voucher = await prisma.voucher.findUnique({
-                where: { id },
-            });
+        const voucher = await voucherRepository.findById(id);
 
-            if (!voucher) {
-                throw new NotFoundError('Voucher not found');
-            }
-
-            await prisma.voucher.delete({
-                where: { id },
-            });
-        } catch (error) {
-            throw error;
+        if (!voucher) {
+            throw new NotFoundError('Voucher not found');
         }
+
+        await voucherRepository.delete(id);
     }
 }
+
+/**
+ * Maps Prisma Voucher to VoucherDTO
+ */
+const toVoucherDTO = (voucher: any): VoucherDTO => ({
+    id: voucher.id,
+    code: voucher.code,
+    title: voucher.title,
+    description: voucher.description,
+    discountType: voucher.discountType,
+    discountValue: String(voucher.discountValue),
+    minPurchaseAmount: voucher.minPurchaseAmount ? String(voucher.minPurchaseAmount) : null,
+    maxDiscountAmount: voucher.maxDiscountAmount ? String(voucher.maxDiscountAmount) : null,
+    usageLimit: voucher.usageLimit,
+    usageCount: voucher.usageCount,
+    isActive: voucher.isActive,
+    validFrom: new Date(voucher.validFrom),
+    validUntil: new Date(voucher.validUntil),
+    createdAt: new Date(voucher.createdAt),
+    updatedAt: new Date(voucher.updatedAt),
+});
 
 export default new VoucherService();

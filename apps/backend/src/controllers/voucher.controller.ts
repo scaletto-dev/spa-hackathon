@@ -6,14 +6,8 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import voucherService from '../services/voucher.service';
-import { SuccessResponse } from '../types/api';
-import { ValidationError } from '../utils/errors';
-
-interface ValidateVoucherQuery {
-    code: string;
-    purchaseAmount: number;
-}
+import voucherService from '@/services/voucher.service';
+import { SuccessResponse } from '@/types/api';
 
 export class VoucherController {
     /**
@@ -69,18 +63,15 @@ export class VoucherController {
     /**
      * POST /api/v1/vouchers/validate
      * Validate voucher code and calculate discount
+     * Note: Validation middleware ensures code and purchaseAmount are present
      */
     async validateVoucher(
-        req: Request<{}, {}, ValidateVoucherQuery>,
+        req: Request,
         res: Response,
         next: NextFunction
     ): Promise<void> {
         try {
             const { code, purchaseAmount } = req.body;
-
-            if (!code || !purchaseAmount) {
-                throw new ValidationError('Code and purchase amount are required');
-            }
 
             const result = await voucherService.validateVoucher(code, purchaseAmount);
 
