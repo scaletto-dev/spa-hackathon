@@ -41,7 +41,8 @@
     "socket.io": "^4.8.1",
     "triple-beam": "^1.4.1",
     "winston": "^3.18.3",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "vnpay": "^2.4.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

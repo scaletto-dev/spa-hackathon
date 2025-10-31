@@ -1,20 +1,27 @@
 /**
  * Payment Routes
- * 
+ *
  * Defines all payment API endpoints
  */
 
 import { Router } from 'express';
 import paymentController from '../controllers/payment.controller';
+import vnpayRoutes from './vnpay.routes';
 
 const router = Router();
+
+/**
+ * VNPay payment routes
+ * All VNPay routes are prefixed with /vnpay
+ */
+router.use('/vnpay', vnpayRoutes);
 
 /**
  * POST /api/v1/payments
  * Create a new payment
  */
 router.post('/', (req, res, next) => {
-  paymentController.createPayment(req, res, next);
+    paymentController.createPayment(req, res, next);
 });
 
 /**
@@ -22,7 +29,7 @@ router.post('/', (req, res, next) => {
  * Get payment by ID
  */
 router.get('/:id', (req, res, next) => {
-  paymentController.getPayment(req, res, next);
+    paymentController.getPayment(req, res, next);
 });
 
 /**
@@ -30,7 +37,7 @@ router.get('/:id', (req, res, next) => {
  * Update payment status
  */
 router.patch('/:id/status', (req, res, next) => {
-  paymentController.updatePaymentStatus(req, res, next);
+    paymentController.updatePaymentStatus(req, res, next);
 });
 
 /**
@@ -39,7 +46,7 @@ router.patch('/:id/status', (req, res, next) => {
  * Note: This is mounted at /api/v1/payments/bookings/:bookingId
  */
 router.get('/bookings/:bookingId', (req, res, next) => {
-  paymentController.getPaymentsByBooking(req, res, next);
+    paymentController.getPaymentsByBooking(req, res, next);
 });
 
 /**
@@ -47,7 +54,7 @@ router.get('/bookings/:bookingId', (req, res, next) => {
  * Get payment statistics
  */
 router.get('/admin/stats', (req, res, next) => {
-  paymentController.getPaymentStats(req, res, next);
+    paymentController.getPaymentStats(req, res, next);
 });
 
 export default router;

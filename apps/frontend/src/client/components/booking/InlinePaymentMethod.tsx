@@ -12,28 +12,32 @@ interface InlinePaymentMethodProps {
 
 const paymentMethods = [
     {
-        id: 'card',
-        label: 'Card',
+        id: 'vnpay',
+        label: 'VNPay',
         icon: CreditCardIcon,
-        recommended: false,
+        recommended: true,
+        disabled: false,
     },
     {
         id: 'ewallet',
         label: 'E-Wallet',
         icon: WalletIcon,
-        recommended: true,
+        recommended: false,
+        disabled: true, // Coming soon
     },
     {
         id: 'bank',
         label: 'Transfer',
         icon: BuildingIcon,
         recommended: false,
+        disabled: true, // Coming soon
     },
     {
         id: 'clinic',
         label: 'At Clinic',
         icon: BanknoteIcon,
         recommended: false,
+        disabled: false,
     },
 ];
 export function InlinePaymentMethod({
@@ -71,6 +75,9 @@ export function InlinePaymentMethod({
 
         let isComplete = false;
         switch (selectedMethod) {
+            case 'vnpay':
+                isComplete = true; // No details needed, will redirect to VNPay
+                break;
             case 'card':
                 isComplete =
                     cardData.number.replace(/\s/g, '').length >= 16 &&
@@ -139,7 +146,7 @@ export function InlinePaymentMethod({
                 className='mb-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200/50'
             >
                 <p className='text-xs text-gray-700'>
-                    ✨ <span className='font-medium'>Fastest method:</span> e-wallet payment
+                    ✨ <span className='font-medium'>Fastest method:</span> VNPay online payment
                 </p>
             </motion.div>
             {/* Payment Method Grid */}
@@ -148,23 +155,42 @@ export function InlinePaymentMethod({
                     <motion.button
                         key={method.id}
                         whileHover={{
-                            scale: 1.05,
+                            scale: method.disabled ? 1 : 1.05,
                         }}
                         whileTap={{
-                            scale: 0.95,
+                            scale: method.disabled ? 1 : 0.95,
                         }}
-                        onClick={() => onSelect(method.id)}
-                        className={`relative p-3 rounded-xl border-2 transition-all ${selectedMethod === method.id ? 'border-pink-500 bg-pink-50' : 'border-gray-200 bg-white'}`}
+                        onClick={() => !method.disabled && onSelect(method.id)}
+                        disabled={method.disabled}
+                        className={`relative p-3 rounded-xl border-2 transition-all ${
+                            method.disabled
+                                ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
+                                : selectedMethod === method.id
+                                ? 'border-pink-500 bg-pink-50'
+                                : 'border-gray-200 bg-white'
+                        }`}
                     >
                         <method.icon
-                            className={`w-5 h-5 mx-auto mb-1 ${selectedMethod === method.id ? 'text-pink-600' : 'text-gray-400'}`}
+                            className={`w-5 h-5 mx-auto mb-1 ${
+                                method.disabled
+                                    ? 'text-gray-300'
+                                    : selectedMethod === method.id
+                                    ? 'text-pink-600'
+                                    : 'text-gray-400'
+                            }`}
                         />
                         <p
-                            className={`text-xs font-medium ${selectedMethod === method.id ? 'text-pink-600' : 'text-gray-600'}`}
+                            className={`text-xs font-medium ${
+                                method.disabled
+                                    ? 'text-gray-400'
+                                    : selectedMethod === method.id
+                                    ? 'text-pink-600'
+                                    : 'text-gray-600'
+                            }`}
                         >
                             {method.label}
                         </p>
-                        {method.recommended && (
+                        {method.recommended && !method.disabled && (
                             <div className='absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full' />
                         )}
                     </motion.button>
@@ -172,6 +198,38 @@ export function InlinePaymentMethod({
             </div>
             {/* Payment Method Details */}
             <AnimatePresence mode='wait'>
+                {/* VNPay Payment */}
+                {selectedMethod === 'vnpay' && (
+                    <motion.div
+                        key='vnpay'
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className='mb-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200'
+                    >
+                        <div className='flex items-start gap-3'>
+                            <CreditCardIcon className='w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5' />
+                            <div>
+                                <p className='text-sm font-medium text-gray-800 mb-2'>VNPay Secure Payment</p>
+                                <p className='text-xs text-gray-600 mb-2'>
+                                    You will be redirected to VNPay payment gateway to complete your transaction.
+                                </p>
+                                <div className='flex flex-wrap gap-2 mt-2'>
+                                    <span className='text-xs bg-white px-2 py-1 rounded-md text-gray-600'>
+                                        ATM Cards
+                                    </span>
+                                    <span className='text-xs bg-white px-2 py-1 rounded-md text-gray-600'>
+                                        Visa/Mastercard
+                                    </span>
+                                    <span className='text-xs bg-white px-2 py-1 rounded-md text-gray-600'>
+                                        Internet Banking
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+
                 {/* Card Payment Form */}
                 {selectedMethod === 'card' && (
                     <motion.div

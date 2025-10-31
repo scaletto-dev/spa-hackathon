@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SparklesIcon, MenuIcon, XIcon, LogOutIcon, LayoutDashboardIcon } from 'lucide-react';
+import { SparklesIcon, MenuIcon, XIcon, LogOutIcon, LayoutDashboardIcon, UserIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../auth/useAuth';
 import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
@@ -173,6 +173,30 @@ export function Navbar() {
                                             </span>
                                         </button>
 
+                                        {user?.role === 'admin' && (
+                                            <button
+                                                onClick={() => {
+                                                    setIsUserMenuOpen(false);
+                                                    navigate('/dashboard');
+                                                }}
+                                                className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-gray-700 hover:bg-pink-50 transition-colors'
+                                            >
+                                                <LayoutDashboardIcon className='w-4 h-4' />
+                                                <span className='text-sm'>{t('nav.clientDashboard')}</span>
+                                            </button>
+                                        )}
+
+                                        <button
+                                            onClick={() => {
+                                                setIsUserMenuOpen(false);
+                                                navigate('/dashboard/profile');
+                                            }}
+                                            className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-gray-700 hover:bg-pink-50 transition-colors'
+                                        >
+                                            <UserIcon className='w-4 h-4' />
+                                            <span className='text-sm'>{t('nav.myProfile') || 'My Profile'}</span>
+                                        </button>
+
                                         <button
                                             onClick={handleLogout}
                                             className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-red-600 hover:bg-red-50 transition-colors'
@@ -262,6 +286,28 @@ export function Navbar() {
                                     >
                                         <LayoutDashboardIcon className='w-4 h-4' />
                                         {user?.role === 'admin' ? t('nav.adminDashboard') : t('nav.myAccount')}
+                                    </button>
+                                    {user?.role === 'admin' && (
+                                        <button
+                                            onClick={() => {
+                                                navigate('/dashboard');
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className='flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-purple-200 text-gray-800 rounded-full font-medium'
+                                        >
+                                            <LayoutDashboardIcon className='w-4 h-4' />
+                                            {t('nav.clientDashboard')}
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            navigate('/dashboard/profile');
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className='flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-full font-medium'
+                                    >
+                                        <UserIcon className='w-4 h-4' />
+                                        {t('nav.myProfile') || 'My Profile'}
                                     </button>
                                     <button
                                         onClick={() => {

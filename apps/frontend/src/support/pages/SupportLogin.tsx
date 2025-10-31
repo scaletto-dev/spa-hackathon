@@ -34,7 +34,8 @@ export default function SupportLogin() {
             const userData = localStorage.getItem('user_data');
             if (userData) {
                 const user = JSON.parse(userData);
-                if (user.role === 'STAFF' || user.role === 'admin') {
+                const roleUpper = user.role.toUpperCase();
+                if (roleUpper === 'STAFF' || roleUpper === 'ADMIN' || roleUpper === 'SUPER_ADMIN') {
                     toast.success(t('support.login.loginSuccess'));
                     navigate('/support-dashboard');
                 } else {
