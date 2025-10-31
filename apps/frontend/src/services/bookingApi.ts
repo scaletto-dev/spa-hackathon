@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 
-const API_BASE = 'http://localhost:3000/api/v1';
+const API_BASE = '/api/v1';
 
 export interface FeaturedService {
   id: string;
@@ -59,7 +59,7 @@ export interface OTPVerificationPayload {
 // Get featured services for step 1
 export const getFeaturedServices = async (): Promise<FeaturedService[]> => {
   try {
-    const response = await axios.get(`${API_BASE}/services?featured=true`);
+    const response = await axiosInstance.get(`${API_BASE}/services?featured=true`);
     return response.data.data || [];
   } catch (error) {
     console.error('Failed to fetch featured services:', error);
@@ -70,7 +70,7 @@ export const getFeaturedServices = async (): Promise<FeaturedService[]> => {
 // Get all branches for step 2
 export const getBranches = async (): Promise<Branch[]> => {
   try {
-    const response = await axios.get(`${API_BASE}/branches`);
+    const response = await axiosInstance.get(`${API_BASE}/branches`);
     return response.data.data || [];
   } catch (error) {
     console.error('Failed to fetch branches:', error);
@@ -81,7 +81,7 @@ export const getBranches = async (): Promise<Branch[]> => {
 // Get branch details including operating hours
 export const getBranchById = async (branchId: string): Promise<Branch> => {
   try {
-    const response = await axios.get(`${API_BASE}/branches/${branchId}`);
+    const response = await axiosInstance.get(`${API_BASE}/branches/${branchId}`);
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch branch details:', error);
@@ -92,7 +92,7 @@ export const getBranchById = async (branchId: string): Promise<Branch> => {
 // Verify OTP for step 5
 export const verifyOTP = async (payload: OTPVerificationPayload): Promise<{ valid: boolean }> => {
   try {
-    const response = await axios.post(`${API_BASE}/bookings/verify-otp`, payload);
+    const response = await axiosInstance.post(`${API_BASE}/bookings/verify-otp`, payload);
     return response.data.data || { valid: false };
   } catch (error) {
     console.error('Failed to verify OTP:', error);
@@ -103,7 +103,7 @@ export const verifyOTP = async (payload: OTPVerificationPayload): Promise<{ vali
 // Send OTP to email
 export const sendOTP = async (email: string): Promise<{ sent: boolean }> => {
   try {
-    const response = await axios.post(`${API_BASE}/bookings/send-otp`, { email });
+    const response = await axiosInstance.post(`${API_BASE}/bookings/send-otp`, { email });
     return response.data.data || { sent: false };
   } catch (error) {
     console.error('Failed to send OTP:', error);
@@ -114,7 +114,7 @@ export const sendOTP = async (email: string): Promise<{ sent: boolean }> => {
 // Create booking for step 6
 export const createBooking = async (payload: CreateBookingPayload): Promise<BookingResponse> => {
   try {
-    const response = await axios.post(`${API_BASE}/bookings`, payload);
+    const response = await axiosInstance.post(`${API_BASE}/bookings`, payload);
     return response.data.data;
   } catch (error) {
     console.error('Failed to create booking:', error);
@@ -125,7 +125,7 @@ export const createBooking = async (payload: CreateBookingPayload): Promise<Book
 // Send booking confirmation email
 export const sendBookingConfirmationEmail = async (bookingId: string, email: string): Promise<any> => {
   try {
-    const response = await axios.post(`${API_BASE}/bookings/${bookingId}/send-confirmation`, { email });
+    const response = await axiosInstance.post(`${API_BASE}/bookings/${bookingId}/send-confirmation`, { email });
     return response.data;
   } catch (error) {
     console.error('Failed to send booking confirmation email:', error);
@@ -136,7 +136,7 @@ export const sendBookingConfirmationEmail = async (bookingId: string, email: str
 // Get booking by reference number (for confirmation page)
 export const getBookingByReference = async (referenceNumber: string): Promise<any> => {
   try {
-    const response = await axios.get(`${API_BASE}/bookings/${referenceNumber}`);
+    const response = await axiosInstance.get(`${API_BASE}/bookings/${referenceNumber}`);
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch booking:', error);
@@ -166,7 +166,7 @@ export const createPayment = async (
   notes?: string
 ): Promise<PaymentResponse> => {
   try {
-    const response = await axios.post(`${API_BASE}/payments`, {
+    const response = await axiosInstance.post(`${API_BASE}/payments`, {
       bookingId,
       amount,
       paymentType,
@@ -182,7 +182,7 @@ export const createPayment = async (
 // Get payment by ID
 export const getPaymentById = async (paymentId: string): Promise<PaymentResponse> => {
   try {
-    const response = await axios.get(`${API_BASE}/payments/${paymentId}`);
+    const response = await axiosInstance.get(`${API_BASE}/payments/${paymentId}`);
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch payment:', error);
@@ -193,7 +193,7 @@ export const getPaymentById = async (paymentId: string): Promise<PaymentResponse
 // Get all payments for a booking
 export const getPaymentsByBooking = async (bookingId: string): Promise<PaymentResponse[]> => {
   try {
-    const response = await axios.get(`${API_BASE}/payments/bookings/${bookingId}`);
+    const response = await axiosInstance.get(`${API_BASE}/payments/bookings/${bookingId}`);
     return response.data.data || [];
   } catch (error) {
     console.error('Failed to fetch payments:', error);
@@ -208,7 +208,7 @@ export const updatePaymentStatus = async (
   transactionId?: string
 ): Promise<PaymentResponse> => {
   try {
-    const response = await axios.patch(`${API_BASE}/payments/${paymentId}/status`, {
+    const response = await axiosInstance.patch(`${API_BASE}/payments/${paymentId}/status`, {
       status,
       transactionId,
     });

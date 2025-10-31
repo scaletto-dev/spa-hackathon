@@ -193,14 +193,6 @@ export function RegisterPageOTP() {
                 otp: otpCode,
             });
 
-            // Store session
-            localStorage.setItem('accessToken', response.session.accessToken);
-            localStorage.setItem('refreshToken', response.session.refreshToken);
-            localStorage.setItem('user', JSON.stringify(response.user));
-
-            toast.show(t('auth.accountCreatedSuccess'), 'success');
-            setStep('success');
-
             // Redirect after showing success
             setTimeout(() => {
                 navigate('/dashboard', { replace: true });

@@ -13,6 +13,7 @@ import aiRoutes from './ai.routes';
 import supportRoutes from './support.routes';
 import bookingRoutes from './booking.routes';
 import paymentRoutes from './payments';
+import memberRoutes from './member.routes';
 import { configureAdminRoutes } from './admin';
 
 /**
@@ -25,6 +26,7 @@ import { configureAdminRoutes } from './admin';
  * - /api/v1/branches - Branch location routes
  * - /api/v1/auth - Authentication routes (with rate limiting)
  * - /api/v1/user - User profile management routes (requires authentication)
+ * - /api/v1/members - Member dashboard and booking history routes (requires authentication)
  * - /api/v1/vouchers - Voucher routes (public validation and retrieval)
  * - /api/v1/admin - Admin management routes (requires admin authentication)
  * - /api/v1/bookings - Booking management routes
@@ -47,6 +49,7 @@ export function configureRoutes(app: Express): void {
     app.use('/api/v1/upload', uploadRoutes);
     app.use('/api/v1/auth', authRoutes);
     app.use('/api/v1/user', userRoutes);
+    app.use('/api/v1/members', memberRoutes);
     app.use('/api/v1/blog', blogRoutes);
     app.use('/api/v1/ai', aiRoutes);
     app.use('/api/v1/support', supportRoutes);
