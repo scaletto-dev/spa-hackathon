@@ -9,6 +9,7 @@ import {
    SearchIcon,
    FilterIcon,
 } from "lucide-react";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { BlogPostModal } from "../components/modals/BlogPostModal";
 import { Toast } from "../components/Toast";
 import { adminBlogAPI } from "../../api/adapters/admin";
@@ -141,14 +142,16 @@ export function Blog() {
                   className="w-full pl-10 pr-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
                />
             </div>
-            <select
+            <CustomDropdown
                value={statusFilter}
-               onChange={(e) => setStatusFilter(e.target.value)}
-               className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-               <option>All Posts</option>
-               <option>Published</option>
-               <option>Draft</option>
-            </select>
+               onChange={setStatusFilter}
+               color="blue"
+               options={[
+                  { value: "All Posts", label: "All Posts" },
+                  { value: "Published", label: "Published", icon: "✓" },
+                  { value: "Draft", label: "Draft", icon: "📝" },
+               ]}
+            />
             <button className="p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors">
                <FilterIcon className="w-5 h-5 text-gray-600" />
             </button>
