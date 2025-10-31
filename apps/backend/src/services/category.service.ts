@@ -9,52 +9,6 @@ import { Service, ServiceCategory } from '@prisma/client';
  * Business logic layer for service category operations.
  * Uses CategoryRepository for data access, focuses on business logic and transformation.
  */
-
-// Type helpers
-type CategoryWithCount = ServiceCategory & { _count: { services: number }; services?: Service[] };
-
-/**
- * Transform Prisma Service to ServiceDTO
- */
-const toServiceDTO = (service: Service): ServiceDTO => ({
-  id: service.id,
-  name: service.name,
-  slug: service.slug,
-  description: service.description,
-  excerpt: service.excerpt,
-  duration: service.duration,
-  price: service.price.toString(),
-  categoryId: service.categoryId,
-  images: service.images as string[],
-  featured: service.featured,
-  active: service.active,
-  createdAt: service.createdAt.toISOString(),
-  updatedAt: service.updatedAt.toISOString(),
-});
-
-/**
- * Transform Prisma ServiceCategory to CategoryDTO
- */
-const toCategoryDTO = (category: CategoryWithCount): CategoryDTO => ({
-  id: category.id,
-  name: category.name,
-  slug: category.slug,
-  description: category.description,
-  serviceCount: category._count.services,
-  displayOrder: category.displayOrder,
-  icon: category.icon,
-  createdAt: category.createdAt.toISOString(),
-  updatedAt: category.updatedAt.toISOString(),
-});
-
-/**
- * Transform Prisma ServiceCategory with services to CategoryWithServicesDTO
- */
-const toCategoryWithServicesDTO = (category: CategoryWithCount): CategoryWithServicesDTO => ({
-  ...toCategoryDTO(category),
-  services: (category.services || []).map(toServiceDTO),
-});
-
 export class CategoryService {
   /**
    * Get all service categories
@@ -116,5 +70,50 @@ export class CategoryService {
     };
   }
 }
+
+// Type helpers
+type CategoryWithCount = ServiceCategory & { _count: { services: number }; services?: Service[] };
+
+/**
+ * Transform Prisma Service to ServiceDTO
+ */
+const toServiceDTO = (service: Service): ServiceDTO => ({
+  id: service.id,
+  name: service.name,
+  slug: service.slug,
+  description: service.description,
+  excerpt: service.excerpt,
+  duration: service.duration,
+  price: service.price.toString(),
+  categoryId: service.categoryId,
+  images: service.images as string[],
+  featured: service.featured,
+  active: service.active,
+  createdAt: service.createdAt.toISOString(),
+  updatedAt: service.updatedAt.toISOString(),
+});
+
+/**
+ * Transform Prisma ServiceCategory to CategoryDTO
+ */
+const toCategoryDTO = (category: CategoryWithCount): CategoryDTO => ({
+  id: category.id,
+  name: category.name,
+  slug: category.slug,
+  description: category.description,
+  serviceCount: category._count.services,
+  displayOrder: category.displayOrder,
+  icon: category.icon,
+  createdAt: category.createdAt.toISOString(),
+  updatedAt: category.updatedAt.toISOString(),
+});
+
+/**
+ * Transform Prisma ServiceCategory with services to CategoryWithServicesDTO
+ */
+const toCategoryWithServicesDTO = (category: CategoryWithCount): CategoryWithServicesDTO => ({
+  ...toCategoryDTO(category),
+  services: (category.services || []).map(toServiceDTO),
+});
 
 export default new CategoryService();

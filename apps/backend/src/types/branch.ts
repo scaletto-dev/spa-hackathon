@@ -1,9 +1,14 @@
 /**
- * Branch Type Definitions
- * 
- * DTO types for branch/location API responses
+ * Branch Type Definitions & DTOs
+ *
+ * Defines types for branch requests, responses, and database entities.
+ * Following clean architecture pattern: types → validators → repository → service → controller
  */
 
+/**
+ * Service DTO (referenced by branch)
+ * Minimal service info when included with branch
+ */
 export interface ServiceDTO {
   id: string;
   name: string;
@@ -11,7 +16,7 @@ export interface ServiceDTO {
   description: string;
   excerpt: string;
   duration: number;
-  price: string; // Decimal returned as string
+  price: string;
   categoryId: string;
   images: string[];
   featured: boolean;
@@ -20,6 +25,10 @@ export interface ServiceDTO {
   updatedAt: string;
 }
 
+/**
+ * Branch DTO
+ * Main branch data transfer object
+ */
 export interface BranchDTO {
   id: string;
   name: string;
@@ -29,25 +38,27 @@ export interface BranchDTO {
   email: string | null;
   latitude: number;
   longitude: number;
-  operatingHours: Record<string, any>; // JSON object
+  operatingHours: Record<string, any>;
   images: string[];
-  image: string; // Primary image for display
+  image: string;
   active: boolean;
   description: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
+/**
+ * Branch with Services DTO
+ * Extended branch with service list
+ */
 export interface BranchWithServicesDTO extends BranchDTO {
   services: ServiceDTO[];
 }
 
-export interface GetBranchesQueryParams {
-  includeServices?: string; // 'true' | 'false'
-  limit?: string; // Number of branches to return
-  page?: string; // Page number for pagination
-}
-
+/**
+ * Branches List Response DTO
+ * Paginated list of branches
+ */
 export interface BranchesListResponse {
   data: BranchDTO[] | BranchWithServicesDTO[];
   meta: {
@@ -58,7 +69,18 @@ export interface BranchesListResponse {
   };
 }
 
-export interface GetBranchServicesQueryParams {
-  page?: string;
-  limit?: string;
+/**
+ * Branch Services Response DTO
+ * Services available at a branch with pagination
+ */
+export interface BranchServicesResponse {
+  branchId: string;
+  branchName: string;
+  data: ServiceDTO[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
