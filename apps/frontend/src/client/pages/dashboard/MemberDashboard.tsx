@@ -1,8 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CalendarIcon, SparklesIcon, TrendingUpIcon, ClockIcon, MapPinIcon, ArrowRightIcon, TicketIcon } from 'lucide-react';
-import { getMemberDashboard, type MemberDashboardData, getMemberVouchers } from '../../../api/adapters/member';
+import {
+    CalendarIcon,
+    SparklesIcon,
+    TrendingUpIcon,
+    ClockIcon,
+    MapPinIcon,
+    ArrowRightIcon,
+    TicketIcon,
+} from 'lucide-react';
+import {
+    getMemberDashboard,
+    type MemberDashboardData,
+    getMemberVouchers,
+} from '../../../api/adapters/member';
 import { useAuth } from '../../../auth/useAuth';
 import { useTranslation } from 'react-i18next';
 import { Voucher } from '../../../api/adapters/voucher';
@@ -37,10 +49,10 @@ export default function MemberDashboard() {
 
     if (isLoading) {
         return (
-            <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center pt-20'>
-                <div className='text-center'>
-                    <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto'></div>
-                    <p className='mt-4 text-gray-600'>{t('common.loading')}</p>
+            <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center pt-20">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">{t('common.loading')}</p>
                 </div>
             </div>
         );
@@ -48,8 +60,8 @@ export default function MemberDashboard() {
 
     if (!dashboardData) {
         return (
-            <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center pt-20'>
-                <p className='text-gray-600'>{t('common.error')}</p>
+            <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center pt-20">
+                <p className="text-gray-600">{t('common.error')}</p>
             </div>
         );
     }
@@ -57,81 +69,89 @@ export default function MemberDashboard() {
     const { stats, upcomingBookings, specialOffers } = dashboardData;
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 px-4 pt-24'>
-            <div className='max-w-7xl mx-auto'>
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 px-4 pt-24">
+            <div className="max-w-7xl mx-auto">
                 {/* Welcome Header */}
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className='mb-8'>
-                    <h1 className='text-4xl font-bold text-gray-900 mb-2'>
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8"
+                >
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
                         {t('dashboard.welcome')}, {user?.name || 'Member'}! 👋
                     </h1>
-                    <p className='text-gray-600'>{t('dashboard.overview')}</p>
+                    <p className="text-gray-600">{t('dashboard.overview')}</p>
                 </motion.div>
 
                 {/* Stats Cards */}
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10'>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                     <StatsCard
-                        icon={<CalendarIcon className='w-6 h-6' />}
+                        icon={<CalendarIcon className="w-6 h-6" />}
                         label={t('dashboard.totalBookings')}
                         value={stats.totalBookings}
-                        color='pink'
+                        color="pink"
                         delay={0}
                     />
                     <StatsCard
-                        icon={<ClockIcon className='w-6 h-6' />}
+                        icon={<ClockIcon className="w-6 h-6" />}
                         label={t('dashboard.upcoming')}
                         value={stats.upcomingBookings}
-                        color='purple'
+                        color="purple"
                         delay={0.1}
                     />
                     <StatsCard
-                        icon={<TrendingUpIcon className='w-6 h-6' />}
+                        icon={<TrendingUpIcon className="w-6 h-6" />}
                         label={t('dashboard.completed')}
                         value={stats.completedBookings}
-                        color='blue'
+                        color="blue"
                         delay={0.2}
                     />
                     <StatsCard
-                        icon={<SparklesIcon className='w-6 h-6' />}
+                        icon={<SparklesIcon className="w-6 h-6" />}
                         label={t('dashboard.memberPoints')}
                         value={stats.memberPoints}
-                        color='amber'
+                        color="amber"
                         delay={0.3}
                     />
                 </div>
 
-                <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Upcoming Bookings Section */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className='lg:col-span-2'
+                        className="lg:col-span-2"
                     >
-                        <div className='bg-white rounded-2xl shadow-xl p-6'>
-                            <div className='flex items-center justify-between mb-6'>
-                                <h2 className='text-2xl font-bold text-gray-900'>{t('dashboard.upcomingAppointments')}</h2>
+                        <div className="bg-white rounded-2xl shadow-xl p-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-2xl font-bold text-gray-900">
+                                    {t('dashboard.upcomingAppointments')}
+                                </h2>
                                 <Link
-                                    to='/dashboard/bookings'
-                                    className='text-pink-500 hover:text-pink-600 font-medium flex items-center gap-1 transition-colors'
+                                    to="/dashboard/bookings"
+                                    className="text-pink-500 hover:text-pink-600 font-medium flex items-center gap-1 transition-colors"
                                 >
                                     {t('dashboard.viewAll')}
-                                    <ArrowRightIcon className='w-4 h-4' />
+                                    <ArrowRightIcon className="w-4 h-4" />
                                 </Link>
                             </div>
 
                             {upcomingBookings.length === 0 ? (
-                                <div className='text-center py-12'>
-                                    <CalendarIcon className='w-16 h-16 text-gray-300 mx-auto mb-4' />
-                                    <p className='text-gray-500 mb-4'>{t('dashboard.noUpcomingAppointments')}</p>
+                                <div className="text-center py-12">
+                                    <CalendarIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                    <p className="text-gray-500 mb-4">
+                                        {t('dashboard.noUpcomingAppointments')}
+                                    </p>
                                     <Link
-                                        to='/booking'
-                                        className='inline-block px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold hover:shadow-lg transition-shadow'
+                                        to="/booking"
+                                        className="inline-block px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold hover:shadow-lg transition-shadow"
                                     >
                                         {t('dashboard.bookNow')}
                                     </Link>
                                 </div>
                             ) : (
-                                <div className='space-y-4'>
+                                <div className="space-y-4">
                                     {upcomingBookings.map((booking) => (
                                         <BookingCard key={booking.id} booking={booking} />
                                     ))}
@@ -145,28 +165,30 @@ export default function MemberDashboard() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className='space-y-6'
+                        className="space-y-6"
                     >
                         {/* Quick Actions */}
                         {/* Quick Actions */}
-                        <div className='bg-white rounded-2xl shadow-xl p-6'>
-                            <h3 className='text-xl font-bold text-gray-900 mb-4'>{t('dashboard.quickActions')}</h3>
-                            <div className='space-y-3'>
+                        <div className="bg-white rounded-2xl shadow-xl p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">
+                                {t('dashboard.quickActions')}
+                            </h3>
+                            <div className="space-y-3">
                                 <Link
-                                    to='/booking'
-                                    className='block w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold text-center hover:shadow-lg transition-shadow'
+                                    to="/booking"
+                                    className="block w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold text-center hover:shadow-lg transition-shadow"
                                 >
                                     {t('dashboard.bookNewAppointment')}
                                 </Link>
                                 <Link
-                                    to='/dashboard/profile'
-                                    className='block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors'
+                                    to="/dashboard/profile"
+                                    className="block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors"
                                 >
                                     {t('dashboard.editProfile')}
                                 </Link>
                                 <Link
-                                    to='/dashboard/bookings'
-                                    className='block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors'
+                                    to="/dashboard/bookings"
+                                    className="block w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center hover:bg-gray-200 transition-colors"
                                 >
                                     {t('dashboard.viewBookingHistory')}
                                 </Link>
@@ -178,26 +200,34 @@ export default function MemberDashboard() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6 }}
-                            className='bg-white rounded-2xl shadow-xl p-6'
+                            className="bg-white rounded-2xl shadow-xl p-6"
                         >
-                            <div className='flex items-center justify-between mb-4'>
-                                <h3 className='text-xl font-bold text-gray-900 flex items-center gap-2'>
-                                    <TicketIcon className='w-5 h-5 text-amber-500' />
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                    <TicketIcon className="w-5 h-5 text-amber-500" />
                                     {t('voucher.available')}
                                 </h3>
                                 {vouchers.length > 0 && (
-                                    <span className='bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold'>
+                                    <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">
                                         {vouchers.length}
                                     </span>
                                 )}
                             </div>
-                            <div className='space-y-3'>
+                            <div className="space-y-3">
                                 {vouchers.length === 0 ? (
-                                    <p className='text-gray-500 text-center py-6'>{t('voucher.noVouchers')}</p>
+                                    <p className="text-gray-500 text-center py-6">
+                                        {t('voucher.noVouchers')}
+                                    </p>
                                 ) : (
-                                    vouchers.slice(0, 2).map((voucher, idx) => (
-                                        <VoucherCard key={voucher.id} voucher={voucher} delay={0.6 + idx * 0.1} />
-                                    ))
+                                    vouchers
+                                        .slice(0, 2)
+                                        .map((voucher, idx) => (
+                                            <VoucherCard
+                                                key={voucher.id}
+                                                voucher={voucher}
+                                                delay={0.6 + idx * 0.1}
+                                            />
+                                        ))
                                 )}
                             </div>
                         </motion.div>
@@ -234,11 +264,15 @@ function StatsCard({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay }}
-            className='bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow'
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow"
         >
-            <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${colorClasses} text-white mb-4`}>{icon}</div>
-            <p className='text-gray-600 text-sm mb-1'>{label}</p>
-            <p className='text-3xl font-bold text-gray-900'>{value}</p>
+            <div
+                className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${colorClasses} text-white mb-4`}
+            >
+                {icon}
+            </div>
+            <p className="text-gray-600 text-sm mb-1">{label}</p>
+            <p className="text-3xl font-bold text-gray-900">{value}</p>
         </motion.div>
     );
 }
@@ -257,27 +291,27 @@ function BookingCard({ booking }: { booking: MemberDashboardData['upcomingBookin
     };
 
     return (
-        <div className='flex gap-4 p-4 border border-gray-200 rounded-xl hover:border-pink-300 hover:shadow-md transition-all'>
+        <div className="flex gap-4 p-4 border border-gray-200 rounded-xl hover:border-pink-300 hover:shadow-md transition-all">
             {booking.serviceImage && (
                 <img
                     src={booking.serviceImage}
                     alt={booking.serviceName}
-                    className='w-20 h-20 rounded-lg object-cover'
+                    className="w-20 h-20 rounded-lg object-cover"
                 />
             )}
-            <div className='flex-1 min-w-0'>
-                <h4 className='font-semibold text-gray-900 mb-1 truncate'>{booking.serviceName}</h4>
-                <div className='flex items-center gap-2 text-sm text-gray-600 mb-1'>
-                    <MapPinIcon className='w-4 h-4 flex-shrink-0' />
-                    <span className='truncate'>{booking.branchName}</span>
+            <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-gray-900 mb-1 truncate">{booking.serviceName}</h4>
+                <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                    <MapPinIcon className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{booking.branchName}</span>
                 </div>
-                <div className='flex items-center gap-2 text-sm text-gray-600'>
-                    <ClockIcon className='w-4 h-4 flex-shrink-0' />
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <ClockIcon className="w-4 h-4 flex-shrink-0" />
                     <span>
                         {formatDate(booking.appointmentDate)} • {booking.appointmentTime}
                     </span>
                 </div>
-                <p className='text-xs text-gray-500 mt-1'>Ref: {booking.referenceNumber}</p>
+                <p className="text-xs text-gray-500 mt-1">Ref: {booking.referenceNumber}</p>
             </div>
         </div>
     );
@@ -288,21 +322,25 @@ function OfferCard({ offer }: { offer: MemberDashboardData['specialOffers'][0] }
     const { t, i18n } = useTranslation('common');
     const formatDate = (isoDate: string) => {
         const date = new Date(isoDate);
-        return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { month: 'short', day: 'numeric' });
+        return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
+            month: 'short',
+            day: 'numeric',
+        });
     };
 
     return (
-        <div className='p-4 border border-pink-200 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50'>
-            <div className='flex items-start justify-between mb-2'>
-                <h4 className='font-semibold text-gray-900 flex-1'>{offer.title}</h4>
-                <span className='text-pink-600 font-bold text-lg'>{offer.discountPercent}%</span>
+        <div className="p-4 border border-pink-200 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50">
+            <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold text-gray-900 flex-1">{offer.title}</h4>
+                <span className="text-pink-600 font-bold text-lg">{offer.discountPercent}%</span>
             </div>
-            <p className='text-sm text-gray-600 mb-2'>{offer.description}</p>
-            <p className='text-xs text-gray-500'>{t('dashboard.validUntil')} {formatDate(offer.validUntil)}</p>
+            <p className="text-sm text-gray-600 mb-2">{offer.description}</p>
+            <p className="text-xs text-gray-500">
+                {t('dashboard.validUntil')} {formatDate(offer.validUntil)}
+            </p>
         </div>
     );
 }
-
 
 export interface MemberProfile {
     id: string; // UUID

@@ -6,259 +6,271 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import prisma from '../../lib/prisma';
+import prisma from '@/config/database';
 import { ValidationError, NotFoundError } from '../../utils/errors';
 
 class AdminBlogController {
-    /**
-     * GET /api/v1/admin/blog/posts
-     * Get all blog posts with pagination
-     */
-    async getAllPosts(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 10;
-            const published = req.query.published as string;
-            const categoryId = req.query.categoryId as string;
-            const skip = (page - 1) * limit;
+  /**
+   * GET /api/v1/admin/blog/posts
+   * Get all blog posts with pagination
+   */
+  async getAllPosts(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const published = req.query.published as string;
+      const categoryId = req.query.categoryId as string;
+      const skip = (page - 1) * limit;
 
-            const where: any = {};
-            if (published !== undefined) where.published = published === 'true';
-            if (categoryId) where.categoryId = categoryId;
+      const where: any = {};
+      if (published !== undefined) where.published = published === 'true';
+      if (categoryId) where.categoryId = categoryId;
 
-            const [posts, total] = await Promise.all([
-                prisma.blogPost.findMany({
-                    where,
-                    skip,
-                    take: limit,
-                    include: {
-                        author: { select: { id: true, fullName: true, email: true } },
-                        category: true,
-                    },
-                    orderBy: { createdAt: 'desc' },
-                }),
-                prisma.blogPost.count({ where }),
-            ]);
+      const [posts, total] = await Promise.all([
+        prisma.blogPost.findMany({
+          where,
+          skip,
+          take: limit,
+          include: {
+            author: { select: { id: true, fullName: true, email: true } },
+            category: true,
+          },
+          orderBy: { createdAt: 'desc' },
+        }),
+        prisma.blogPost.count({ where }),
+      ]);
 
-            res.status(200).json({
-                success: true,
-                data: posts,
-                pagination: { page, limit, total, pages: Math.ceil(total / limit) },
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        data: posts,
+        pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * GET /api/v1/admin/blog/posts/:id
-     * Get blog post details by ID
-     */
-    async getPostById(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const id = req.params.id as string;
-            if (!id) throw new ValidationError('Post ID is required');
+  /**
+   * GET /api/v1/admin/blog/posts/:id
+   * Get blog post details by ID
+   */
+  async getPostById(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new ValidationError('Post ID is required');
 
-            const post = await prisma.blogPost.findUnique({
-                where: { id },
-                include: { author: true, category: true },
-            });
+      const post = await prisma.blogPost.findUnique({
+        where: { id },
+        include: { author: true, category: true },
+      });
 
-            if (!post) throw new NotFoundError('Blog post not found');
+      if (!post) throw new NotFoundError('Blog post not found');
 
-            res.status(200).json({
-                success: true,
-                data: post,
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        data: post,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * POST /api/v1/admin/blog/posts
-     * Create a new blog post
-     */
-    async createPost(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { title, slug, content, excerpt, featuredImage, categoryId, language = 'vi' } = req.body;
+  /**
+   * POST /api/v1/admin/blog/posts
+   * Create a new blog post
+   */
+  async createPost(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {
+        title,
+        slug,
+        content,
+        excerpt,
+        featuredImage,
+        categoryId,
+        language = 'vi',
+      } = req.body;
 
-            if (!title || !slug || !content || !excerpt || !categoryId) {
-                throw new ValidationError('Missing required fields: title, slug, content, excerpt, categoryId');
-            }
+      if (!title || !slug || !content || !excerpt || !categoryId) {
+        throw new ValidationError(
+          'Missing required fields: title, slug, content, excerpt, categoryId'
+        );
+      }
 
-            // Get authorId from authenticated user
-            const authorId = req.user?.id;
-            if (!authorId) {
-                throw new ValidationError('User not authenticated');
-            }
+      // Get authorId from authenticated user
+      const authorId = req.user?.id;
+      if (!authorId) {
+        throw new ValidationError('User not authenticated');
+      }
 
-            const existingSlug = await prisma.blogPost.findUnique({
-                where: { slug },
-            });
-            if (existingSlug) throw new ValidationError('Post slug already exists');
+      const existingSlug = await prisma.blogPost.findUnique({
+        where: { slug },
+      });
+      if (existingSlug) throw new ValidationError('Post slug already exists');
 
-            // Find category by ID or slug
-            let category = await prisma.blogCategory.findFirst({
-                where: {
-                    OR: [{ id: categoryId }, { slug: categoryId }],
-                },
-            });
+      // Find category by ID or slug
+      let category = await prisma.blogCategory.findFirst({
+        where: {
+          OR: [{ id: categoryId }, { slug: categoryId }],
+        },
+      });
 
-            // If no category found, use the first available category
-            if (!category) {
-                category = await prisma.blogCategory.findFirst();
-                if (!category) {
-                    throw new ValidationError('No blog categories available. Please create a category first.');
-                }
-            }
-
-            const post = await prisma.blogPost.create({
-                data: {
-                    title,
-                    slug,
-                    content,
-                    excerpt,
-                    featuredImage: featuredImage || '/images/default-blog-image.jpg',
-                    categoryId: category.id,
-                    authorId,
-                    language,
-                    published: false,
-                },
-            });
-
-            res.status(201).json({
-                success: true,
-                data: post,
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
+      // If no category found, use the first available category
+      if (!category) {
+        category = await prisma.blogCategory.findFirst();
+        if (!category) {
+          throw new ValidationError(
+            'No blog categories available. Please create a category first.'
+          );
         }
+      }
+
+      const post = await prisma.blogPost.create({
+        data: {
+          title,
+          slug,
+          content,
+          excerpt,
+          featuredImage: featuredImage || '/images/default-blog-image.jpg',
+          categoryId: category.id,
+          authorId,
+          language,
+          published: false,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        data: post,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * PUT /api/v1/admin/blog/posts/:id
-     * Update blog post details
-     */
-    async updatePost(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const id = req.params.id as string;
-            if (!id) throw new ValidationError('Post ID is required');
+  /**
+   * PUT /api/v1/admin/blog/posts/:id
+   * Update blog post details
+   */
+  async updatePost(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new ValidationError('Post ID is required');
 
-            const post = await prisma.blogPost.findUnique({ where: { id } });
-            if (!post) throw new NotFoundError('Blog post not found');
+      const post = await prisma.blogPost.findUnique({ where: { id } });
+      if (!post) throw new NotFoundError('Blog post not found');
 
-            if (req.body.slug && req.body.slug !== post.slug) {
-                const existingSlug = await prisma.blogPost.findUnique({
-                    where: { slug: req.body.slug },
-                });
-                if (existingSlug) throw new ValidationError('Post slug already exists');
-            }
+      if (req.body.slug && req.body.slug !== post.slug) {
+        const existingSlug = await prisma.blogPost.findUnique({
+          where: { slug: req.body.slug },
+        });
+        if (existingSlug) throw new ValidationError('Post slug already exists');
+      }
 
-            const updated = await prisma.blogPost.update({
-                where: { id },
-                data: {
-                    ...(req.body.title && { title: req.body.title }),
-                    ...(req.body.slug && { slug: req.body.slug }),
-                    ...(req.body.content && { content: req.body.content }),
-                    ...(req.body.excerpt && { excerpt: req.body.excerpt }),
-                    ...(req.body.featuredImage && {
-                        featuredImage: req.body.featuredImage,
-                    }),
-                    ...(req.body.categoryId && { categoryId: req.body.categoryId }),
-                },
-            });
+      const updated = await prisma.blogPost.update({
+        where: { id },
+        data: {
+          ...(req.body.title && { title: req.body.title }),
+          ...(req.body.slug && { slug: req.body.slug }),
+          ...(req.body.content && { content: req.body.content }),
+          ...(req.body.excerpt && { excerpt: req.body.excerpt }),
+          ...(req.body.featuredImage && {
+            featuredImage: req.body.featuredImage,
+          }),
+          ...(req.body.categoryId && { categoryId: req.body.categoryId }),
+        },
+      });
 
-            res.status(200).json({
-                success: true,
-                data: updated,
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        data: updated,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * DELETE /api/v1/admin/blog/posts/:id
-     * Delete a blog post
-     */
-    async deletePost(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const id = req.params.id as string;
-            if (!id) throw new ValidationError('Post ID is required');
+  /**
+   * DELETE /api/v1/admin/blog/posts/:id
+   * Delete a blog post
+   */
+  async deletePost(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new ValidationError('Post ID is required');
 
-            const post = await prisma.blogPost.findUnique({ where: { id } });
-            if (!post) throw new NotFoundError('Blog post not found');
+      const post = await prisma.blogPost.findUnique({ where: { id } });
+      if (!post) throw new NotFoundError('Blog post not found');
 
-            await prisma.blogPost.delete({ where: { id } });
+      await prisma.blogPost.delete({ where: { id } });
 
-            res.status(200).json({
-                success: true,
-                message: 'Blog post deleted successfully',
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        message: 'Blog post deleted successfully',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * PATCH /api/v1/admin/blog/posts/:id/publish
-     * Publish a blog post
-     */
-    async publishPost(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const id = req.params.id as string;
-            if (!id) throw new ValidationError('Post ID is required');
+  /**
+   * PATCH /api/v1/admin/blog/posts/:id/publish
+   * Publish a blog post
+   */
+  async publishPost(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new ValidationError('Post ID is required');
 
-            const post = await prisma.blogPost.findUnique({ where: { id } });
-            if (!post) throw new NotFoundError('Blog post not found');
+      const post = await prisma.blogPost.findUnique({ where: { id } });
+      if (!post) throw new NotFoundError('Blog post not found');
 
-            const updated = await prisma.blogPost.update({
-                where: { id },
-                data: { published: true, publishedAt: new Date() },
-            });
+      const updated = await prisma.blogPost.update({
+        where: { id },
+        data: { published: true, publishedAt: new Date() },
+      });
 
-            res.status(200).json({
-                success: true,
-                data: updated,
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        data: updated,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * PATCH /api/v1/admin/blog/posts/:id/unpublish
-     * Unpublish a blog post
-     */
-    async unpublishPost(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const id = req.params.id as string;
-            if (!id) throw new ValidationError('Post ID is required');
+  /**
+   * PATCH /api/v1/admin/blog/posts/:id/unpublish
+   * Unpublish a blog post
+   */
+  async unpublishPost(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new ValidationError('Post ID is required');
 
-            const post = await prisma.blogPost.findUnique({ where: { id } });
-            if (!post) throw new NotFoundError('Blog post not found');
+      const post = await prisma.blogPost.findUnique({ where: { id } });
+      if (!post) throw new NotFoundError('Blog post not found');
 
-            const updated = await prisma.blogPost.update({
-                where: { id },
-                data: { published: false, publishedAt: null },
-            });
+      const updated = await prisma.blogPost.update({
+        where: { id },
+        data: { published: false, publishedAt: null },
+      });
 
-            res.status(200).json({
-                success: true,
-                data: updated,
-                timestamp: new Date().toISOString(),
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        data: updated,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 }
 
 export default new AdminBlogController();

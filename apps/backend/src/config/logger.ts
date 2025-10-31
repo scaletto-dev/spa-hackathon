@@ -2,11 +2,11 @@ import winston from 'winston';
 
 /**
  * Winston Logger Configuration
- * 
+ *
  * Provides structured logging with multiple transports:
  * - Console: All environments with colorized output in development
  * - File: Production only with JSON format for log aggregation
- * 
+ *
  * Log Levels (most to least severe): error, warn, info, http, debug
  */
 

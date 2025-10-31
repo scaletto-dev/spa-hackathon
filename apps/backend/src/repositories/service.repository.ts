@@ -1,6 +1,6 @@
 /**
  * Service Repository
- * 
+ *
  * Data access layer for services.
  * Encapsulates all Prisma queries related to services.
  * Extends BaseRepository for common CRUD operations.
@@ -54,10 +54,7 @@ class ServiceRepository extends BaseRepository<any> {
                 },
           },
         },
-        orderBy: [
-          { featured: 'desc' },
-          { name: 'asc' },
-        ],
+        orderBy: [{ featured: 'desc' }, { name: 'asc' }],
         skip: (page - 1) * limit,
         take: limit,
       }),

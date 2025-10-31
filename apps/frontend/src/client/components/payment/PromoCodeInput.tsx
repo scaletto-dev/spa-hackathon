@@ -10,7 +10,12 @@ interface PromoCodeInputProps {
     setAppliedPromo: (promo: string | null) => void;
 }
 
-export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppliedPromo }: PromoCodeInputProps) {
+export function PromoCodeInput({
+    promoCode,
+    setPromoCode,
+    appliedPromo,
+    setAppliedPromo,
+}: PromoCodeInputProps) {
     const { t } = useTranslation('common');
     const [error, setError] = useState('');
     const [isApplying, setIsApplying] = useState(false);
@@ -38,7 +43,9 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
     };
     return (
         <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>{t('payment.promoCode')}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('payment.promoCode')}
+            </label>
             {appliedPromo ? (
                 <motion.div
                     initial={{
@@ -49,30 +56,30 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
                         opacity: 1,
                         scale: 1,
                     }}
-                    className='flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-200'
+                    className="flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-200"
                 >
-                    <div className='flex-1 flex items-center gap-2'>
-                        <CheckIcon className='w-5 h-5 text-green-600' />
+                    <div className="flex-1 flex items-center gap-2">
+                        <CheckIcon className="w-5 h-5 text-green-600" />
                         <div>
-                            <p className='font-medium text-gray-800'>{appliedPromo}</p>
-                            <p className='text-sm text-gray-600'>{t('payment.discountApplied')}</p>
+                            <p className="font-medium text-gray-800">{appliedPromo}</p>
+                            <p className="text-sm text-gray-600">{t('payment.discountApplied')}</p>
                         </div>
                     </div>
-                    <button onClick={handleRemove} className='text-gray-400 hover:text-gray-600'>
-                        <XIcon className='w-5 h-5' />
+                    <button onClick={handleRemove} className="text-gray-400 hover:text-gray-600">
+                        <XIcon className="w-5 h-5" />
                     </button>
                 </motion.div>
             ) : (
                 <div>
-                    <div className='flex gap-2'>
-                        <div className='relative flex-1'>
-                            <TagIcon className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
+                    <div className="flex gap-2">
+                        <div className="relative flex-1">
+                            <TagIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
-                                type='text'
+                                type="text"
                                 value={promoCode}
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 onKeyPress={(e) => e.key === 'Enter' && handleApply()}
-                                placeholder='Enter code'
+                                placeholder="Enter code"
                                 className={`w-full pl-10 pr-4 py-3 bg-white/80 border-2 ${
                                     error ? 'border-red-300' : 'border-pink-100'
                                 } rounded-2xl focus:outline-none focus:border-pink-300 transition-colors`}
@@ -111,13 +118,13 @@ export function PromoCodeInput({ promoCode, setPromoCode, appliedPromo, setAppli
                                     opacity: 0,
                                     y: -10,
                                 }}
-                                className='mt-2 text-sm text-red-500'
+                                className="mt-2 text-sm text-red-500"
                             >
                                 {error}
                             </motion.p>
                         )}
                     </AnimatePresence>
-                    <p className='mt-2 text-xs text-gray-500'>Try: BEAUTY10, FIRST20, or SAVE15</p>
+                    <p className="mt-2 text-xs text-gray-500">Try: BEAUTY10, FIRST20, or SAVE15</p>
                 </div>
             )}
         </div>

@@ -101,11 +101,7 @@ class BranchRepository extends BaseRepository<any> {
    * Get services available at a branch (paginated)
    * Currently returns all active services (no direct branch-service relationship)
    */
-  async findBranchServices(
-    branchId: string,
-    page: number = 1,
-    limit: number = 20
-  ) {
+  async findBranchServices(branchId: string, page: number = 1, limit: number = 20) {
     // Verify branch exists
     const branch = await prisma.branch.findUnique({
       where: {

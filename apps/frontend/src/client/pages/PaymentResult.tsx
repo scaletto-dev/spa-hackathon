@@ -84,46 +84,48 @@ export function PaymentResult() {
 
     if (isVerifying) {
         return (
-            <div className='min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4'>
+            <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center p-4">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className='text-center'
+                    className="text-center"
                 >
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        className='w-16 h-16 mx-auto mb-4'
+                        className="w-16 h-16 mx-auto mb-4"
                     >
-                        <LoaderIcon className='w-16 h-16 text-pink-500' />
+                        <LoaderIcon className="w-16 h-16 text-pink-500" />
                     </motion.div>
-                    <h2 className='text-2xl font-bold text-gray-800 mb-2'>Đang xác thực thanh toán...</h2>
-                    <p className='text-gray-600'>Vui lòng đợi trong giây lát</p>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                        Đang xác thực thanh toán...
+                    </h2>
+                    <p className="text-gray-600">Vui lòng đợi trong giây lát</p>
                 </motion.div>
             </div>
         );
     }
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24 pb-12'>
-            <div className='max-w-3xl mx-auto px-6'>
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24 pb-12">
+            <div className="max-w-3xl mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8'
+                    className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8"
                 >
                     {/* Success or Failure Icon */}
-                    <div className='text-center mb-8'>
+                    <div className="text-center mb-8">
                         {result?.isSuccess ? (
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ type: 'spring', stiffness: 200 }}
-                                className='inline-block'
+                                className="inline-block"
                             >
-                                <div className='w-24 h-24 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-xl shadow-green-500/30'>
-                                    <CheckCircleIcon className='w-14 h-14 text-white' />
+                                <div className="w-24 h-24 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-xl shadow-green-500/30">
+                                    <CheckCircleIcon className="w-14 h-14 text-white" />
                                 </div>
                             </motion.div>
                         ) : (
@@ -131,10 +133,10 @@ export function PaymentResult() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ type: 'spring', stiffness: 200 }}
-                                className='inline-block'
+                                className="inline-block"
                             >
-                                <div className='w-24 h-24 mx-auto bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-xl shadow-red-500/30'>
-                                    <XCircleIcon className='w-14 h-14 text-white' />
+                                <div className="w-24 h-24 mx-auto bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-xl shadow-red-500/30">
+                                    <XCircleIcon className="w-14 h-14 text-white" />
                                 </div>
                             </motion.div>
                         )}
@@ -154,7 +156,7 @@ export function PaymentResult() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}
-                            className='text-gray-600 text-lg'
+                            className="text-gray-600 text-lg"
                         >
                             {result?.message}
                         </motion.p>
@@ -166,35 +168,39 @@ export function PaymentResult() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4 }}
-                            className='space-y-4 mb-8'
+                            className="space-y-4 mb-8"
                         >
-                            <div className='bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6'>
-                                <h3 className='text-lg font-semibold text-gray-800 mb-4'>Thông tin thanh toán</h3>
-                                <div className='space-y-3'>
+                            <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                    Thông tin thanh toán
+                                </h3>
+                                <div className="space-y-3">
                                     {result.transactionNo && (
-                                        <div className='flex justify-between items-center py-2 border-b border-gray-200'>
-                                            <span className='text-gray-600'>Mã giao dịch:</span>
-                                            <span className='font-semibold text-gray-800'>{result.transactionNo}</span>
+                                        <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                                            <span className="text-gray-600">Mã giao dịch:</span>
+                                            <span className="font-semibold text-gray-800">
+                                                {result.transactionNo}
+                                            </span>
                                         </div>
                                     )}
                                     {result.amount && (
-                                        <div className='flex justify-between items-center py-2 border-b border-gray-200'>
-                                            <span className='text-gray-600'>Số tiền:</span>
-                                            <span className='font-semibold text-gray-800'>
+                                        <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                                            <span className="text-gray-600">Số tiền:</span>
+                                            <span className="font-semibold text-gray-800">
                                                 {result.amount.toLocaleString('vi-VN')} VNĐ
                                             </span>
                                         </div>
                                     )}
                                     {bookingDetails && (
                                         <>
-                                            <div className='flex justify-between items-center py-2 border-b border-gray-200'>
-                                                <span className='text-gray-600'>Mã đặt lịch:</span>
-                                                <span className='font-semibold text-gray-800'>
+                                            <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                                                <span className="text-gray-600">Mã đặt lịch:</span>
+                                                <span className="font-semibold text-gray-800">
                                                     #{bookingDetails.referenceNumber}
                                                 </span>
                                             </div>
-                                            <div className='flex justify-between items-center py-2'>
-                                                <span className='text-gray-600'>Trạng thái:</span>
+                                            <div className="flex justify-between items-center py-2">
+                                                <span className="text-gray-600">Trạng thái:</span>
                                                 <span
                                                     className={`px-3 py-1 rounded-full text-sm font-semibold ${
                                                         result.isSuccess
@@ -202,7 +208,9 @@ export function PaymentResult() {
                                                             : 'bg-red-100 text-red-700'
                                                     }`}
                                                 >
-                                                    {result.isSuccess ? 'Đã thanh toán' : 'Thất bại'}
+                                                    {result.isSuccess
+                                                        ? 'Đã thanh toán'
+                                                        : 'Thất bại'}
                                                 </span>
                                             </div>
                                         </>
@@ -217,13 +225,13 @@ export function PaymentResult() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className='flex flex-col sm:flex-row gap-4'
+                        className="flex flex-col sm:flex-row gap-4"
                     >
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => navigate('/')}
-                            className='flex-1 px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all'
+                            className="flex-1 px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all"
                         >
                             Về trang chủ
                         </motion.button>
@@ -231,11 +239,15 @@ export function PaymentResult() {
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                onClick={() => navigate(`/booking/confirmation?ref=${bookingDetails.referenceNumber}`)}
-                                className='flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/30 hover:shadow-xl transition-all'
+                                onClick={() =>
+                                    navigate(
+                                        `/booking/confirmation?ref=${bookingDetails.referenceNumber}`
+                                    )
+                                }
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/30 hover:shadow-xl transition-all"
                             >
                                 Xem chi tiết đặt lịch
-                                <ArrowRightIcon className='w-5 h-5' />
+                                <ArrowRightIcon className="w-5 h-5" />
                             </motion.button>
                         )}
                         {!result?.isSuccess && (
@@ -243,10 +255,10 @@ export function PaymentResult() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => navigate('/booking')}
-                                className='flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/30 hover:shadow-xl transition-all'
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/30 hover:shadow-xl transition-all"
                             >
                                 Đặt lịch lại
-                                <ArrowRightIcon className='w-5 h-5' />
+                                <ArrowRightIcon className="w-5 h-5" />
                             </motion.button>
                         )}
                     </motion.div>

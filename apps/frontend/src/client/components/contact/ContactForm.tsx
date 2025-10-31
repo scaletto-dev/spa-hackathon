@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserIcon, MailIcon, PhoneIcon, SendIcon, MessageSquareIcon, Loader2, CheckCircle2 } from 'lucide-react';
+import {
+    UserIcon,
+    MailIcon,
+    PhoneIcon,
+    SendIcon,
+    MessageSquareIcon,
+    Loader2,
+    CheckCircle2,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from '../../../utils/toast';
 import { FormField, Input, Textarea, Select } from '../../../components/ui';
@@ -82,7 +90,7 @@ export function ContactForm() {
 
             setIsSubmitted(true);
             toast.success(response.message || t('contact.successToast'));
-            
+
             // Reset form after 3 seconds
             setTimeout(() => {
                 setFormData({
@@ -95,7 +103,9 @@ export function ContactForm() {
             }, 3000);
         } catch (error) {
             console.error('Failed to submit contact form:', error);
-            const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || t('contact.submitError');
+            const errorMessage =
+                (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+                t('contact.submitError');
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -114,20 +124,22 @@ export function ContactForm() {
             transition={{
                 duration: 0.6,
             }}
-            className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 md:p-10'
+            className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 md:p-10"
         >
-            <div className='flex items-center gap-3 mb-6'>
-                <div className='w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center'>
-                    <MessageSquareIcon className='w-6 h-6 text-white' />
+            <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <MessageSquareIcon className="w-6 h-6 text-white" />
                 </div>
-                <h2 className='text-2xl md:text-3xl font-bold text-gray-800'>{t('contact.sendMessage')}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                    {t('contact.sendMessage')}
+                </h2>
             </div>
-            <p className='text-gray-600 mb-8'>{t('contact.formDescription')}</p>
+            <p className="text-gray-600 mb-8">{t('contact.formDescription')}</p>
 
-            <AnimatePresence mode='wait'>
+            <AnimatePresence mode="wait">
                 {isSubmitted ? (
                     <motion.div
-                        key='success'
+                        key="success"
                         initial={{
                             opacity: 0,
                             scale: 0.9,
@@ -140,7 +152,7 @@ export function ContactForm() {
                             opacity: 0,
                             scale: 0.9,
                         }}
-                        className='bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-8 md:p-12 text-center border border-green-200'
+                        className="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-8 md:p-12 text-center border border-green-200"
                     >
                         <motion.div
                             initial={{ scale: 0 }}
@@ -150,12 +162,14 @@ export function ContactForm() {
                                 stiffness: 200,
                                 damping: 15,
                             }}
-                            className='w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg'
+                            className="w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
                         >
-                            <CheckCircle2 className='w-10 h-10 text-white' />
+                            <CheckCircle2 className="w-10 h-10 text-white" />
                         </motion.div>
-                        <h3 className='text-2xl font-bold text-gray-800 mb-3'>{t('contact.messageSentSuccess')}</h3>
-                        <p className='text-gray-600 mb-6 max-w-md mx-auto'>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                            {t('contact.messageSentSuccess')}
+                        </h3>
+                        <p className="text-gray-600 mb-6 max-w-md mx-auto">
                             {t('contact.messageSentDescription')}
                         </p>
                         <motion.button
@@ -166,24 +180,29 @@ export function ContactForm() {
                                 scale: 0.95,
                             }}
                             onClick={() => setIsSubmitted(false)}
-                            className='px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow'
+                            className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow"
                         >
                             {t('contact.sendAnother')}
                         </motion.button>
                     </motion.div>
                 ) : (
                     <motion.form
-                        key='form'
+                        key="form"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onSubmit={handleSubmit}
                     >
-                        <div className='space-y-6'>
-                            <div className='grid md:grid-cols-2 gap-6'>
-                                <FormField label={t('contact.yourName')} name='name' error={errors.name} required>
+                        <div className="space-y-6">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <FormField
+                                    label={t('contact.yourName')}
+                                    name="name"
+                                    error={errors.name}
+                                    required
+                                >
                                     <Input
-                                        name='name'
+                                        name="name"
                                         value={formData.name}
                                         onChange={handleChange}
                                         leftIcon={UserIcon}
@@ -192,35 +211,48 @@ export function ContactForm() {
                                     />
                                 </FormField>
 
-                                <FormField label={t('contact.emailAddress')} name='email' error={errors.email} required>
+                                <FormField
+                                    label={t('contact.emailAddress')}
+                                    name="email"
+                                    error={errors.email}
+                                    required
+                                >
                                     <Input
-                                        type='email'
-                                        name='email'
+                                        type="email"
+                                        name="email"
                                         value={formData.email}
                                         onChange={handleChange}
                                         leftIcon={MailIcon}
-                                        placeholder='your.email@example.com'
+                                        placeholder="your.email@example.com"
                                         disabled={isSubmitting}
                                     />
                                 </FormField>
                             </div>
 
-                            <div className='grid md:grid-cols-2 gap-6'>
-                                <FormField label={t('contact.phoneNumber')} name='phone' helpText={t('contact.phoneOptional')}>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <FormField
+                                    label={t('contact.phoneNumber')}
+                                    name="phone"
+                                    helpText={t('contact.phoneOptional')}
+                                >
                                     <Input
-                                        type='tel'
-                                        name='phone'
+                                        type="tel"
+                                        name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
                                         leftIcon={PhoneIcon}
-                                        placeholder='0912 345 678'
+                                        placeholder="0912 345 678"
                                         disabled={isSubmitting}
                                     />
                                 </FormField>
 
-                                <FormField label={t('contact.messageTypeLabel')} name='messageType' required>
+                                <FormField
+                                    label={t('contact.messageTypeLabel')}
+                                    name="messageType"
+                                    required
+                                >
                                     <Select
-                                        name='messageType'
+                                        name="messageType"
                                         value={formData.messageType}
                                         onChange={handleMessageTypeChange}
                                         options={messageTypeOptions}
@@ -229,9 +261,14 @@ export function ContactForm() {
                                 </FormField>
                             </div>
 
-                            <FormField label={t('contact.messageContent')} name='message' error={errors.message} required>
+                            <FormField
+                                label={t('contact.messageContent')}
+                                name="message"
+                                error={errors.message}
+                                required
+                            >
                                 <Textarea
-                                    name='message'
+                                    name="message"
                                     value={formData.message}
                                     onChange={handleChange}
                                     placeholder={t('contact.messagePlaceholder')}
@@ -243,9 +280,10 @@ export function ContactForm() {
                             </FormField>
                         </div>
 
-                        <div className='flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-200'>
-                            <p className='text-sm text-gray-500'>
-                                <span className='text-pink-500 font-medium'>*</span> {t('contact.requiredFields')}
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-200">
+                            <p className="text-sm text-gray-500">
+                                <span className="text-pink-500 font-medium">*</span>{' '}
+                                {t('contact.requiredFields')}
                             </p>
                             <motion.button
                                 whileHover={{
@@ -254,18 +292,18 @@ export function ContactForm() {
                                 whileTap={{
                                     scale: isSubmitting ? 1 : 0.95,
                                 }}
-                                type='submit'
+                                type="submit"
                                 disabled={isSubmitting}
-                                className='px-8 py-3.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl hover:shadow-2xl transition-shadow flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed'
+                                className="px-8 py-3.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-xl hover:shadow-2xl transition-shadow flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                             >
                                 {isSubmitting ? (
                                     <>
-                                        <Loader2 className='w-5 h-5 animate-spin' />
+                                        <Loader2 className="w-5 h-5 animate-spin" />
                                         {t('contact.sending')}
                                     </>
                                 ) : (
                                     <>
-                                        <SendIcon className='w-5 h-5' />
+                                        <SendIcon className="w-5 h-5" />
                                         {t('contact.sendMessageBtn')}
                                     </>
                                 )}

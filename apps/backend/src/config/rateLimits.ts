@@ -2,17 +2,17 @@ import rateLimit from 'express-rate-limit';
 
 /**
  * Rate Limiter Configurations
- * 
+ *
  * Protects API endpoints from abuse by limiting the number of requests
  * from a single IP address within a time window.
  */
 
 /**
  * Auth Rate Limiter
- * 
+ *
  * Applied to authentication endpoints (/api/v1/auth/*)
  * Limit: 5 requests per minute per IP
- * 
+ *
  * Prevents brute force attacks on OTP verification and login endpoints.
  */
 export const authRateLimiter = rateLimit({
@@ -33,10 +33,10 @@ export const authRateLimiter = rateLimit({
 
 /**
  * General Rate Limiter
- * 
+ *
  * Applied to all other public endpoints
  * Limit: 100 requests per minute per IP
- * 
+ *
  * Prevents API scraping and abuse while allowing normal usage.
  */
 export const generalRateLimiter = rateLimit({
@@ -57,10 +57,10 @@ export const generalRateLimiter = rateLimit({
 
 /**
  * Contact Form Rate Limiter
- * 
+ *
  * Applied to contact form submission endpoint (/api/v1/contact)
  * Limit: 3 requests per hour per IP
- * 
+ *
  * Prevents spam and abuse of contact form while allowing legitimate inquiries.
  */
 export const contactFormRateLimiter = rateLimit({
@@ -82,10 +82,10 @@ export const contactFormRateLimiter = rateLimit({
 
 /**
  * Upload Image Rate Limiter
- * 
+ *
  * Applied to image upload endpoint (/api/v1/upload/image)
  * Limit: 10 requests per hour per IP
- * 
+ *
  * Prevents abuse of storage resources while allowing normal image uploads.
  */
 export const uploadImageRateLimiter = rateLimit({
@@ -107,10 +107,10 @@ export const uploadImageRateLimiter = rateLimit({
 
 /**
  * Registration Rate Limiter
- * 
+ *
  * Applied to registration endpoint (/api/v1/auth/register)
  * Limit: 3 requests per hour per IP
- * 
+ *
  * Prevents spam registration attempts while allowing legitimate sign-ups.
  */
 export const registrationRateLimiter = rateLimit({

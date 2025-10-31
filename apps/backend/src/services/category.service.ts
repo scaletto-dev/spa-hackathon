@@ -5,18 +5,20 @@ import { Service, ServiceCategory } from '@prisma/client';
 
 /**
  * Category Service
- * 
+ *
  * Business logic layer for service category operations.
  * Uses CategoryRepository for data access, focuses on business logic and transformation.
  */
 export class CategoryService {
   /**
    * Get all service categories
-   * 
+   *
    * @param includeServices - Whether to include services in the response
    * @returns Array of categories with optional services
    */
-  async getAllCategories(includeServices: boolean = false): Promise<CategoryDTO[] | CategoryWithServicesDTO[]> {
+  async getAllCategories(
+    includeServices: boolean = false
+  ): Promise<CategoryDTO[] | CategoryWithServicesDTO[]> {
     const categories = includeServices
       ? await categoryRepository.findAllWithServices()
       : await categoryRepository.findAllWithCount();
@@ -28,13 +30,16 @@ export class CategoryService {
 
   /**
    * Get a single category by ID
-   * 
+   *
    * @param id - Category ID
    * @param includeServices - Whether to include services
    * @returns Category with optional services
    * @throws NotFoundError if category not found
    */
-  async getCategoryById(id: string, includeServices: boolean = false): Promise<CategoryDTO | CategoryWithServicesDTO> {
+  async getCategoryById(
+    id: string,
+    includeServices: boolean = false
+  ): Promise<CategoryDTO | CategoryWithServicesDTO> {
     const category = includeServices
       ? await categoryRepository.findByIdWithServices(id, true)
       : await categoryRepository.findById(id);
@@ -50,7 +55,7 @@ export class CategoryService {
 
   /**
    * Get services for a specific category
-   * 
+   *
    * @param categoryId - Category ID
    * @param page - Page number (1-indexed)
    * @param limit - Number of items per page

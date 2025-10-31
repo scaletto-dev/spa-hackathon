@@ -8,7 +8,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { UserIcon, MailIcon, CheckCircleIcon, ArrowLeftIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
+import {
+    UserIcon,
+    MailIcon,
+    CheckCircleIcon,
+    ArrowLeftIcon,
+    EyeIcon,
+    EyeOffIcon,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { register, verifyOtp } from '../../services/authApi';
 import { toast } from '../../utils/toast';
@@ -128,7 +135,8 @@ export function RegisterPageOTP() {
             setStep('otp');
             setResendCooldown(60); // 60 second cooldown
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : t('auth.registrationFailed');
+            const errorMessage =
+                error instanceof Error ? error.message : t('auth.registrationFailed');
             toast.show(errorMessage, 'error');
             setErrors({ email: errorMessage });
         } finally {
@@ -198,7 +206,8 @@ export function RegisterPageOTP() {
                 navigate('/dashboard', { replace: true });
             }, 1500);
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : t('auth.verificationFailed');
+            const errorMessage =
+                error instanceof Error ? error.message : t('auth.verificationFailed');
             toast.show(errorMessage, 'error');
             setErrors({ otp: errorMessage });
         } finally {
@@ -222,7 +231,8 @@ export function RegisterPageOTP() {
             setOtp(['', '', '', '', '', '']);
             otpInputs.current[0]?.focus();
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : t('auth.failedResendCode');
+            const errorMessage =
+                error instanceof Error ? error.message : t('auth.failedResendCode');
             toast.show(errorMessage, 'error');
         } finally {
             setIsSubmitting(false);
@@ -230,62 +240,75 @@ export function RegisterPageOTP() {
     };
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 flex items-center justify-center p-4'>
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className='w-full max-w-md'
+                className="w-full max-w-md"
             >
-                <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8'>
+                <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8">
                     {/* Step 1: Registration Form */}
                     {step === 'form' && (
                         <>
-                            <div className='text-center mb-8'>
-                                <h1 className='text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
+                            <div className="text-center mb-8">
+                                <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                                     {t('auth.createAccount')}
                                 </h1>
-                                <p className='text-gray-600 mt-2'>{t('auth.joinUs')}</p>
+                                <p className="text-gray-600 mt-2">{t('auth.joinUs')}</p>
                             </div>
 
-                            <form onSubmit={handleFormSubmit} className='space-y-5'>
+                            <form onSubmit={handleFormSubmit} className="space-y-5">
                                 {/* Full Name */}
                                 <div>
-                                    <label htmlFor='fullName' className='block text-sm font-medium text-gray-700 mb-2'>
-                                        {t('auth.fullName')} <span className='text-red-500'>*</span>
+                                    <label
+                                        htmlFor="fullName"
+                                        className="block text-sm font-medium text-gray-700 mb-2"
+                                    >
+                                        {t('auth.fullName')} <span className="text-red-500">*</span>
                                     </label>
-                                    <div className='relative'>
-                                        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                            <UserIcon className='h-5 w-5 text-gray-400' />
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <UserIcon className="h-5 w-5 text-gray-400" />
                                         </div>
                                         <input
-                                            type='text'
-                                            id='fullName'
-                                            name='fullName'
+                                            type="text"
+                                            id="fullName"
+                                            name="fullName"
                                             value={formData.fullName}
                                             onChange={handleFormChange}
                                             className={`block w-full pl-10 pr-3 py-3 border ${
-                                                errors.fullName ? 'border-red-300' : 'border-pink-100'
+                                                errors.fullName
+                                                    ? 'border-red-300'
+                                                    : 'border-pink-100'
                                             } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
                                             placeholder={t('auth.namePlaceholder')}
                                         />
                                     </div>
-                                    {errors.fullName && <p className='mt-1 text-sm text-red-600'>{errors.fullName}</p>}
+                                    {errors.fullName && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.fullName}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Email */}
                                 <div>
-                                    <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-2'>
-                                        {t('auth.emailAddress')} <span className='text-red-500'>*</span>
+                                    <label
+                                        htmlFor="email"
+                                        className="block text-sm font-medium text-gray-700 mb-2"
+                                    >
+                                        {t('auth.emailAddress')}{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
-                                    <div className='relative'>
-                                        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                            <MailIcon className='h-5 w-5 text-gray-400' />
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <MailIcon className="h-5 w-5 text-gray-400" />
                                         </div>
                                         <input
-                                            type='email'
-                                            id='email'
-                                            name='email'
+                                            type="email"
+                                            id="email"
+                                            name="email"
                                             value={formData.email}
                                             onChange={handleFormChange}
                                             className={`block w-full pl-10 pr-3 py-3 border ${
@@ -294,98 +317,119 @@ export function RegisterPageOTP() {
                                             placeholder={t('auth.emailPlaceholder')}
                                         />
                                     </div>
-                                    {errors.email && <p className='mt-1 text-sm text-red-600'>{errors.email}</p>}
+                                    {errors.email && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                                    )}
                                 </div>
 
                                 {/* Password */}
                                 <div>
-                                    <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-2'>
-                                        {t('auth.password')} <span className='text-red-500'>*</span>
+                                    <label
+                                        htmlFor="password"
+                                        className="block text-sm font-medium text-gray-700 mb-2"
+                                    >
+                                        {t('auth.password')} <span className="text-red-500">*</span>
                                     </label>
-                                    <div className='relative'>
-                                        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                            <UserIcon className='h-5 w-5 text-gray-400' />
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <UserIcon className="h-5 w-5 text-gray-400" />
                                         </div>
                                         <input
                                             type={showPassword ? 'text' : 'password'}
-                                            id='password'
-                                            name='password'
+                                            id="password"
+                                            name="password"
                                             value={formData.password}
                                             onChange={handleFormChange}
                                             className={`block w-full pl-10 pr-12 py-3 border ${
-                                                errors.password ? 'border-red-300' : 'border-pink-100'
+                                                errors.password
+                                                    ? 'border-red-300'
+                                                    : 'border-pink-100'
                                             } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
                                             placeholder={t('auth.minCharacters')}
                                         />
                                         <button
-                                            type='button'
+                                            type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className='absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600'
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                                         >
                                             {showPassword ? (
-                                                <EyeOffIcon className='h-5 w-5' />
+                                                <EyeOffIcon className="h-5 w-5" />
                                             ) : (
-                                                <EyeIcon className='h-5 w-5' />
+                                                <EyeIcon className="h-5 w-5" />
                                             )}
                                         </button>
                                     </div>
-                                    {errors.password && <p className='mt-1 text-sm text-red-600'>{errors.password}</p>}
+                                    {errors.password && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.password}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Confirm Password */}
                                 <div>
                                     <label
-                                        htmlFor='confirmPassword'
-                                        className='block text-sm font-medium text-gray-700 mb-2'
+                                        htmlFor="confirmPassword"
+                                        className="block text-sm font-medium text-gray-700 mb-2"
                                     >
-                                        {t('auth.confirmPassword')} <span className='text-red-500'>*</span>
+                                        {t('auth.confirmPassword')}{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
-                                    <div className='relative'>
-                                        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                            <CheckCircleIcon className='h-5 w-5 text-gray-400' />
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <CheckCircleIcon className="h-5 w-5 text-gray-400" />
                                         </div>
                                         <input
                                             type={showConfirmPassword ? 'text' : 'password'}
-                                            id='confirmPassword'
-                                            name='confirmPassword'
+                                            id="confirmPassword"
+                                            name="confirmPassword"
                                             value={formData.confirmPassword}
                                             onChange={handleFormChange}
                                             className={`block w-full pl-10 pr-12 py-3 border ${
-                                                errors.confirmPassword ? 'border-red-300' : 'border-pink-100'
+                                                errors.confirmPassword
+                                                    ? 'border-red-300'
+                                                    : 'border-pink-100'
                                             } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
                                             placeholder={t('auth.confirmPasswordPlaceholder')}
                                         />
                                         <button
-                                            type='button'
-                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                            className='absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600'
+                                            type="button"
+                                            onClick={() =>
+                                                setShowConfirmPassword(!showConfirmPassword)
+                                            }
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                                         >
                                             {showConfirmPassword ? (
-                                                <EyeOffIcon className='h-5 w-5' />
+                                                <EyeOffIcon className="h-5 w-5" />
                                             ) : (
-                                                <EyeIcon className='h-5 w-5' />
+                                                <EyeIcon className="h-5 w-5" />
                                             )}
                                         </button>
                                     </div>
                                     {errors.confirmPassword && (
-                                        <p className='mt-1 text-sm text-red-600'>{errors.confirmPassword}</p>
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.confirmPassword}
+                                        </p>
                                     )}
                                 </div>
 
                                 {/* Submit Button */}
                                 <button
-                                    type='submit'
+                                    type="submit"
                                     disabled={isSubmitting}
-                                    className='w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? t('auth.sendingCode') : t('auth.createAccount')}
                                 </button>
                             </form>
 
-                            <div className='mt-6 text-center'>
-                                <p className='text-sm text-gray-600'>
+                            <div className="mt-6 text-center">
+                                <p className="text-sm text-gray-600">
                                     {t('auth.alreadyHaveAccount')}{' '}
-                                    <Link to='/login' className='text-pink-600 hover:text-pink-700 font-semibold'>
+                                    <Link
+                                        to="/login"
+                                        className="text-pink-600 hover:text-pink-700 font-semibold"
+                                    >
                                         {t('auth.signIn')}
                                     </Link>
                                 </p>
@@ -398,45 +442,54 @@ export function RegisterPageOTP() {
                         <>
                             <button
                                 onClick={() => setStep('form')}
-                                className='mb-6 flex items-center text-gray-600 hover:text-gray-800'
+                                className="mb-6 flex items-center text-gray-600 hover:text-gray-800"
                             >
-                                <ArrowLeftIcon className='h-4 w-4 mr-1' />
+                                <ArrowLeftIcon className="h-4 w-4 mr-1" />
                                 {t('auth.back')}
                             </button>
 
-                            <div className='text-center mb-8'>
-                                <h1 className='text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
+                            <div className="text-center mb-8">
+                                <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                                     {t('auth.verifyYourEmail')}
                                 </h1>
-                                <p className='text-gray-600 mt-2'>{t('auth.sentCodeTo')}</p>
-                                <p className='text-gray-800 font-semibold'>{formData.email}</p>
+                                <p className="text-gray-600 mt-2">{t('auth.sentCodeTo')}</p>
+                                <p className="text-gray-800 font-semibold">{formData.email}</p>
                             </div>
 
-                            <div className='space-y-6'>
+                            <div className="space-y-6">
                                 {/* OTP Input */}
                                 <div>
-                                    <label className='block text-sm font-medium text-gray-700 mb-3 text-center'>
+                                    <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
                                         {t('auth.enterVerificationCode')}
                                     </label>
-                                    <div className='flex gap-2 justify-center' onPaste={handleOtpPaste}>
+                                    <div
+                                        className="flex gap-2 justify-center"
+                                        onPaste={handleOtpPaste}
+                                    >
                                         {otp.map((digit, index) => (
                                             <input
                                                 key={index}
                                                 ref={(el) => (otpInputs.current[index] = el)}
-                                                type='text'
-                                                inputMode='numeric'
+                                                type="text"
+                                                inputMode="numeric"
                                                 maxLength={1}
                                                 value={digit}
-                                                onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                onChange={(e) =>
+                                                    handleOtpChange(index, e.target.value)
+                                                }
                                                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
                                                 className={`w-12 h-14 text-center text-2xl font-bold border ${
-                                                    errors.otp ? 'border-red-300' : 'border-pink-100'
+                                                    errors.otp
+                                                        ? 'border-red-300'
+                                                        : 'border-pink-100'
                                                 } rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/50`}
                                             />
                                         ))}
                                     </div>
                                     {errors.otp && (
-                                        <p className='mt-2 text-sm text-red-600 text-center'>{errors.otp}</p>
+                                        <p className="mt-2 text-sm text-red-600 text-center">
+                                            {errors.otp}
+                                        </p>
                                     )}
                                 </div>
 
@@ -444,17 +497,17 @@ export function RegisterPageOTP() {
                                 <button
                                     onClick={handleVerifyOtp}
                                     disabled={isSubmitting || otp.join('').length !== 6}
-                                    className='w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? t('auth.verifying') : t('auth.verifyCode')}
                                 </button>
 
                                 {/* Resend Code */}
-                                <div className='text-center'>
+                                <div className="text-center">
                                     <button
                                         onClick={handleResendCode}
                                         disabled={resendCooldown > 0 || isSubmitting}
-                                        className='text-sm text-pink-600 hover:text-pink-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed'
+                                        className="text-sm text-pink-600 hover:text-pink-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {resendCooldown > 0
                                             ? t('auth.resendCodeWith', { seconds: resendCooldown })
@@ -467,16 +520,18 @@ export function RegisterPageOTP() {
 
                     {/* Step 3: Success */}
                     {step === 'success' && (
-                        <div className='text-center py-8'>
+                        <div className="text-center py-8">
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ type: 'spring', duration: 0.5 }}
                             >
-                                <CheckCircleIcon className='h-20 w-20 text-green-500 mx-auto mb-4' />
+                                <CheckCircleIcon className="h-20 w-20 text-green-500 mx-auto mb-4" />
                             </motion.div>
-                            <h1 className='text-3xl font-bold text-gray-800 mb-2'>{t('auth.accountCreatedSuccess')}</h1>
-                            <p className='text-gray-600'>{t('auth.redirectingDashboard')}</p>
+                            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                                {t('auth.accountCreatedSuccess')}
+                            </h1>
+                            <p className="text-gray-600">{t('auth.redirectingDashboard')}</p>
                         </div>
                     )}
                 </div>

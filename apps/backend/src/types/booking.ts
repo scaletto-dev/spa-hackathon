@@ -1,6 +1,6 @@
 /**
  * Booking Type Definitions
- * 
+ *
  * Defines types for booking requests, responses, and database entities.
  */
 
@@ -18,10 +18,10 @@ export interface CreateBookingRequest {
   appointmentTime: string; // HH:mm format
   notes?: string;
   language?: string; // Default: 'vi'
-  
+
   // For member bookings (if userId is provided in auth context)
   // userId is extracted from JWT token
-  
+
   // For guest bookings
   guestName?: string;
   guestEmail?: string;
@@ -61,20 +61,24 @@ export interface BookingResponse {
   cancellationReason?: string;
   createdAt: string;
   updatedAt: string;
-  
+
   // Related data (populated from routes)
-  services: Array<{
-    id: string;
-    name: string;
-    duration: number;
-    price: number;
-  }> | undefined;
-  branch: {
-    id: string;
-    name: string;
-    address: string;
-    phone: string;
-  } | undefined;
+  services:
+    | Array<{
+        id: string;
+        name: string;
+        duration: number;
+        price: number;
+      }>
+    | undefined;
+  branch:
+    | {
+        id: string;
+        name: string;
+        address: string;
+        phone: string;
+      }
+    | undefined;
 
   // Payment information
   payment?: {
@@ -95,7 +99,7 @@ export interface ListBookingsQueryParams {
   limit?: string;
   status?: BookingStatus;
   startDate?: string; // ISO 8601 format
-  endDate?: string;   // ISO 8601 format
+  endDate?: string; // ISO 8601 format
 }
 
 /**

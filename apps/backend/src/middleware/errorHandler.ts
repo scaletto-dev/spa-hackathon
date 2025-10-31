@@ -18,12 +18,7 @@ import { ApiError } from '../utils/errors';
  *
  * IMPORTANT: This middleware MUST be registered last in the middleware chain.
  */
-export function errorHandler(
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function errorHandler(err: any, req: Request, res: Response, next: NextFunction): void {
   // Log the error
   logger.error(err.message, {
     url: req.originalUrl,

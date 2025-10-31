@@ -43,7 +43,9 @@ export class ContactService {
   /**
    * Create a new contact submission
    */
-  async createContactSubmission(data: CreateContactSubmissionRequest): Promise<ContactSubmissionDTO> {
+  async createContactSubmission(
+    data: CreateContactSubmissionRequest
+  ): Promise<ContactSubmissionDTO> {
     // Map API messageType to Prisma enum
     const messageTypeMap: Record<string, string> = {
       general_inquiry: 'GENERAL_INQUIRY',

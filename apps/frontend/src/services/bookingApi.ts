@@ -123,9 +123,15 @@ export const createBooking = async (payload: CreateBookingPayload): Promise<Book
 };
 
 // Send booking confirmation email
-export const sendBookingConfirmationEmail = async (bookingId: string, email: string): Promise<any> => {
+export const sendBookingConfirmationEmail = async (
+    bookingId: string,
+    email: string
+): Promise<any> => {
     try {
-        const response = await axiosInstance.post(`${API_BASE}/bookings/${bookingId}/send-confirmation`, { email });
+        const response = await axiosInstance.post(
+            `${API_BASE}/bookings/${bookingId}/send-confirmation`,
+            { email }
+        );
         return response.data;
     } catch (error) {
         console.error('Failed to send booking confirmation email:', error);
@@ -163,7 +169,7 @@ export const createPayment = async (
     bookingId: string,
     amount: number,
     paymentType: string,
-    notes?: string,
+    notes?: string
 ): Promise<PaymentResponse> => {
     try {
         const response = await axiosInstance.post(`${API_BASE}/payments`, {
@@ -205,7 +211,7 @@ export const getPaymentsByBooking = async (bookingId: string): Promise<PaymentRe
 export const updatePaymentStatus = async (
     paymentId: string,
     status: string,
-    transactionId?: string,
+    transactionId?: string
 ): Promise<PaymentResponse> => {
     try {
         const response = await axiosInstance.patch(`${API_BASE}/payments/${paymentId}/status`, {
@@ -242,9 +248,14 @@ export interface VNPayReturnResult {
 }
 
 // Create VNPay payment URL
-export const createVNPayPaymentUrl = async (request: VNPayPaymentUrlRequest): Promise<VNPayPaymentUrlResponse> => {
+export const createVNPayPaymentUrl = async (
+    request: VNPayPaymentUrlRequest
+): Promise<VNPayPaymentUrlResponse> => {
     try {
-        const response = await axiosInstance.post(`${API_BASE}/payments/vnpay/create-payment-url`, request);
+        const response = await axiosInstance.post(
+            `${API_BASE}/payments/vnpay/create-payment-url`,
+            request
+        );
         return response.data.data;
     } catch (error) {
         console.error('Failed to create VNPay payment URL:', error);
@@ -253,9 +264,13 @@ export const createVNPayPaymentUrl = async (request: VNPayPaymentUrlRequest): Pr
 };
 
 // Verify VNPay return URL
-export const verifyVNPayReturn = async (query: Record<string, string>): Promise<VNPayReturnResult> => {
+export const verifyVNPayReturn = async (
+    query: Record<string, string>
+): Promise<VNPayReturnResult> => {
     try {
-        const response = await axiosInstance.get(`${API_BASE}/payments/vnpay/return`, { params: query });
+        const response = await axiosInstance.get(`${API_BASE}/payments/vnpay/return`, {
+            params: query,
+        });
         return response.data.data;
     } catch (error) {
         console.error('Failed to verify VNPay return:', error);

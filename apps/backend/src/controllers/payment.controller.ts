@@ -1,6 +1,6 @@
 /**
  * Payment Service
- * 
+ *
  * Handles business logic for payment operations including:
  * - Creating payments
  * - Updating payment status
@@ -45,9 +45,7 @@ export class PaymentController {
 
       // Validate required fields
       if (!bookingId || !amount || !paymentType) {
-        throw new ValidationError(
-          'Missing required fields: bookingId, amount, paymentType'
-        );
+        throw new ValidationError('Missing required fields: bookingId, amount, paymentType');
       }
 
       if (amount <= 0) {
@@ -78,11 +76,7 @@ export class PaymentController {
    * GET /api/v1/payments/:id
    * Get payment by ID
    */
-  async getPayment(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getPayment(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
 
@@ -109,11 +103,7 @@ export class PaymentController {
    * GET /api/v1/bookings/:bookingId/payments
    * Get all payments for a booking
    */
-  async getPaymentsByBooking(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getPaymentsByBooking(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { bookingId } = req.params;
 
@@ -179,11 +169,7 @@ export class PaymentController {
    * GET /api/v1/payments/stats
    * Get payment statistics
    */
-  async getPaymentStats(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getPaymentStats(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const stats = await paymentService.getPaymentStats();
 

@@ -40,8 +40,10 @@ const therapists: Therapist[] = [
 export function TherapistSelector({ selectedTherapist, onSelect }: TherapistSelectorProps) {
     return (
         <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>Select Therapist (Optional)</label>
-            <div className='grid md:grid-cols-2 gap-3'>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Therapist (Optional)
+            </label>
+            <div className="grid md:grid-cols-2 gap-3">
                 {therapists.map((therapist) => (
                     <motion.div
                         key={therapist.id}
@@ -54,7 +56,7 @@ export function TherapistSelector({ selectedTherapist, onSelect }: TherapistSele
                         onClick={() => onSelect(therapist)}
                         className={`relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${typeof selectedTherapist !== 'string' && selectedTherapist?.id === therapist.id ? 'border-pink-500 bg-pink-50' : 'border-gray-200 bg-white hover:border-pink-200'}`}
                     >
-                        <div className='flex items-center gap-3'>
+                        <div className="flex items-center gap-3">
                             <div
                                 className={`w-10 h-10 rounded-full flex items-center justify-center ${therapist.recommended ? 'bg-gradient-to-br from-pink-400 to-purple-500' : 'bg-gray-100'}`}
                             >
@@ -62,17 +64,21 @@ export function TherapistSelector({ selectedTherapist, onSelect }: TherapistSele
                                     className={`w-5 h-5 ${therapist.recommended ? 'text-white' : 'text-gray-400'}`}
                                 />
                             </div>
-                            <div className='flex-1'>
-                                <div className='flex items-center gap-2'>
-                                    <p className='font-medium text-gray-800'>{therapist.name}</p>
-                                    {therapist.recommended && <SparklesIcon className='w-4 h-4 text-pink-500' />}
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                    <p className="font-medium text-gray-800">{therapist.name}</p>
+                                    {therapist.recommended && (
+                                        <SparklesIcon className="w-4 h-4 text-pink-500" />
+                                    )}
                                 </div>
-                                <p className='text-xs text-gray-600'>{therapist.specialty}</p>
-                                {therapist.rating && <p className='text-xs text-gray-500'>⭐ {therapist.rating}</p>}
+                                <p className="text-xs text-gray-600">{therapist.specialty}</p>
+                                {therapist.rating && (
+                                    <p className="text-xs text-gray-500">⭐ {therapist.rating}</p>
+                                )}
                             </div>
                         </div>
                         {therapist.recommended && (
-                            <div className='absolute -top-2 -right-2 px-2 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-medium rounded-full'>
+                            <div className="absolute -top-2 -right-2 px-2 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-medium rounded-full">
                                 AI Pick
                             </div>
                         )}
@@ -89,7 +95,7 @@ export function TherapistSelector({ selectedTherapist, onSelect }: TherapistSele
                         opacity: 1,
                         y: 0,
                     }}
-                    className='mt-2 text-sm text-pink-600'
+                    className="mt-2 text-sm text-pink-600"
                 >
                     ✨ Recommended: {selectedTherapist.name} specializes in your selected treatment
                 </motion.p>

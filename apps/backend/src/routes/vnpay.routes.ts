@@ -19,7 +19,7 @@ const router = Router();
  * - locale (optional) - 'vn' or 'en', default 'vn'
  */
 router.post('/create-payment-url', (req, res, next) => {
-    vnpayController.createPaymentUrl(req, res, next);
+  vnpayController.createPaymentUrl(req, res, next);
 });
 
 /**
@@ -28,7 +28,7 @@ router.post('/create-payment-url', (req, res, next) => {
  * This endpoint is called when customer is redirected back from VNPay
  */
 router.get('/return', (req, res, next) => {
-    vnpayController.handleReturn(req, res, next);
+  vnpayController.handleReturn(req, res, next);
 });
 
 /**
@@ -37,7 +37,7 @@ router.get('/return', (req, res, next) => {
  * This endpoint is called by VNPay server to confirm payment
  */
 router.get('/ipn', (req, res, next) => {
-    vnpayController.handleIPN(req, res, next);
+  vnpayController.handleIPN(req, res, next);
 });
 
 /**
@@ -45,7 +45,7 @@ router.get('/ipn', (req, res, next) => {
  * Get payment status for a booking
  */
 router.get('/status/:bookingId', (req, res, next) => {
-    vnpayController.getPaymentStatus(req, res, next);
+  vnpayController.getPaymentStatus(req, res, next);
 });
 
 export default router;

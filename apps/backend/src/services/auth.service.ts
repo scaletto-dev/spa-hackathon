@@ -120,7 +120,9 @@ class AuthService {
    * @returns User data and session tokens
    * @throws ValidationError if OTP is invalid
    */
-  async verifyOtp(data: VerifyOtpRequestDTO): Promise<{ user: AuthUserDTO; session: AuthSessionDTO }> {
+  async verifyOtp(
+    data: VerifyOtpRequestDTO
+  ): Promise<{ user: AuthUserDTO; session: AuthSessionDTO }> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }

@@ -1,6 +1,6 @@
 /**
  * Payment Service
- * 
+ *
  * Handles business logic for payment operations including:
  * - Creating payments
  * - Updating payment status
@@ -42,9 +42,7 @@ class PaymentService {
   /**
    * Create a new payment
    */
-  async createPayment(
-    createPaymentDto: CreatePaymentRequest
-  ): Promise<PaymentResponse> {
+  async createPayment(createPaymentDto: CreatePaymentRequest): Promise<PaymentResponse> {
     try {
       const { bookingId, amount, paymentType, notes } = createPaymentDto;
 

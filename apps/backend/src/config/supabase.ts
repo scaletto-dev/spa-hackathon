@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Supabase Client Configuration
@@ -11,13 +11,12 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL;
 // Use SERVICE_ROLE_KEY for backend operations to bypass RLS policies
-const supabaseKey =
-   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-   console.warn(
-      "⚠️ Supabase credentials not configured. Storage and Auth features will be disabled."
-   );
+  console.warn(
+    '⚠️ Supabase credentials not configured. Storage and Auth features will be disabled.'
+  );
 }
 
 /**
@@ -28,17 +27,17 @@ if (!supabaseUrl || !supabaseKey) {
  * This allows full access to storage buckets and database operations
  */
 export const supabase: SupabaseClient | null =
-   supabaseUrl && supabaseKey
-      ? createClient(supabaseUrl, supabaseKey, {
-           auth: {
-              autoRefreshToken: true,
-              persistSession: false, // Backend doesn't need to persist sessions
-              detectSessionInUrl: false,
-           },
-        })
-      : null;
+  supabaseUrl && supabaseKey
+    ? createClient(supabaseUrl, supabaseKey, {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: false, // Backend doesn't need to persist sessions
+          detectSessionInUrl: false,
+        },
+      })
+    : null;
 
 /**
  * Storage bucket name for images
  */
-export const STORAGE_BUCKET = "images";
+export const STORAGE_BUCKET = 'images';

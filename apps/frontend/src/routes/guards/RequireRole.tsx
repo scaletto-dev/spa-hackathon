@@ -25,8 +25,8 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
     if (isLoading) {
         console.log('⏳ Auth loading...');
         return (
-            <div className='flex items-center justify-center min-h-screen'>
-                <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500'></div>
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
             </div>
         );
     }
@@ -35,19 +35,19 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
     if (!user) {
         console.log('❌ No user, redirecting to login');
         if (role === 'admin') {
-            return <Navigate to='/admin/login' replace />;
+            return <Navigate to="/admin/login" replace />;
         }
         if (role === 'staff') {
-            return <Navigate to='/support' replace />;
+            return <Navigate to="/support" replace />;
         }
-        return <Navigate to='/login' replace />;
+        return <Navigate to="/login" replace />;
     }
 
     // Role mismatch handling
     if (role === 'admin' && user.role !== 'admin') {
         console.log('❌ User is not admin, redirecting to home');
         // Client trying to access admin area -> redirect home
-        return <Navigate to='/' replace />;
+        return <Navigate to="/" replace />;
     }
 
     if (role === 'client' && user.role === 'admin') {
@@ -60,7 +60,7 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
         console.log('❌ User is not staff or admin, redirecting to home');
         // Non-staff and non-admin trying to access support dashboard -> redirect home
         // Admin and staff can both access support dashboard
-        return <Navigate to='/' replace />;
+        return <Navigate to="/" replace />;
     }
 
     console.log('✅ Role check passed, rendering children');

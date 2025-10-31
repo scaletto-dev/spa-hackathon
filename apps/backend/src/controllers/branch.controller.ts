@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import branchService from '@/services/branch.service';
 import { SuccessResponse } from '@/types/api';
-import { GetBranchesQuery, GetBranchParams, GetBranchServicesQuery } from '@/validators/branch.validator';
+import {
+  GetBranchesQuery,
+  GetBranchParams,
+  GetBranchServicesQuery,
+} from '@/validators/branch.validator';
 
 /**
  * Branch Controller
@@ -16,20 +20,16 @@ export class BranchController {
    * GET /api/v1/branches
    * Get all branches
    */
-  async getAllBranches(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getAllBranches(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and coerced types (stored in req.validatedQuery)
-      const { page = 1, limit = 20, includeServices } = (req as any).validatedQuery as GetBranchesQuery;
+      const {
+        page = 1,
+        limit = 20,
+        includeServices,
+      } = (req as any).validatedQuery as GetBranchesQuery;
 
-      const result = await branchService.getAllBranches(
-        includeServices ?? false,
-        page,
-        limit
-      );
+      const result = await branchService.getAllBranches(includeServices ?? false, page, limit);
 
       const response: SuccessResponse<typeof result.data> = {
         success: true,
@@ -48,11 +48,7 @@ export class BranchController {
    * GET /api/v1/branches/:id
    * Get a single branch by ID with optional services
    */
-  async getBranchById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getBranchById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and coerced types (stored in req.validatedParams and req.validatedQuery)
       const { id } = (req as any).validatedParams as GetBranchParams;
@@ -76,11 +72,7 @@ export class BranchController {
    * GET /api/v1/branches/:id/services
    * Get all services available at a specific branch with pagination
    */
-  async getBranchServices(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getBranchServices(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and coerced types (stored in req.validatedParams and req.validatedQuery)
       const { id } = (req as any).validatedParams as GetBranchParams;

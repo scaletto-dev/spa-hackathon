@@ -52,7 +52,7 @@ export function Toggle({
                         stiffness: 500,
                         damping: 30,
                     }}
-                    className='absolute top-1 w-4 h-4 bg-white rounded-full shadow-md'
+                    className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-md"
                 />
             </div>
 
@@ -68,12 +68,12 @@ export function Toggle({
             )}
 
             <input
-                type='checkbox'
+                type="checkbox"
                 name={name}
                 checked={checked}
                 onChange={(e) => onChange(e.target.checked)}
                 disabled={disabled}
-                className='sr-only'
+                className="sr-only"
             />
         </label>
     );

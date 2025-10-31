@@ -26,7 +26,7 @@ i18n
         fallbackLng: 'vi', // Default language
         defaultNS: 'common',
         ns: ['common'],
-        
+
         detection: {
             // Order of language detection
             order: ['localStorage', 'navigator'],

@@ -1,6 +1,6 @@
 /**
  * Reviews API Client
- * 
+ *
  * API functions for fetching and managing reviews/testimonials
  */
 
@@ -73,19 +73,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
  * Fetch public reviews with filters and pagination
  * @param params - Query parameters for filtering and pagination
  * @returns Paginated reviews with stats
- * 
+ *
  * API: GET /api/v1/reviews?page&limit&serviceId&rating&sortBy&sortOrder
  * Auth: Public
  */
 export async function getReviews(params: ReviewsParams = {}): Promise<ReviewsResponse> {
-    const {
-        page = 1,
-        limit = 6,
-        serviceId,
-        rating,
-        sortBy = 'date',
-        sortOrder = 'desc'
-    } = params;
+    const { page = 1, limit = 6, serviceId, rating, sortBy = 'date', sortOrder = 'desc' } = params;
 
     // Build query params
     const queryParams = new URLSearchParams();
@@ -112,7 +105,7 @@ export async function getReviews(params: ReviewsParams = {}): Promise<ReviewsRes
  * Get a single review by ID
  * @param id Review ID
  * @returns Single review details
- * 
+ *
  * API: GET /api/v1/reviews/:id
  * Auth: Public
  */
@@ -131,7 +124,7 @@ export async function getReviewById(id: string): Promise<Review> {
  * Submit a new review
  * @param data Review data
  * @returns Created review
- * 
+ *
  * API: POST /api/v1/reviews
  * Auth: Required
  */
@@ -163,7 +156,7 @@ export async function createReview(data: {
  * Get service rating statistics
  * @param serviceId Service ID
  * @returns Rating statistics
- * 
+ *
  * API: GET /api/v1/reviews/service/:serviceId/rating
  * Auth: Public
  */

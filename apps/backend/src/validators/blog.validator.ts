@@ -11,11 +11,7 @@ import { z } from 'zod';
  * Query parameters for listing blog posts
  */
 export const getBlogPostsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1, 'Page must be at least 1')
-    .default(1),
+  page: z.coerce.number().int().min(1, 'Page must be at least 1').default(1),
   limit: z.coerce
     .number()
     .int()

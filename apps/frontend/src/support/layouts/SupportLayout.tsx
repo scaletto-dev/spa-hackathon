@@ -9,7 +9,7 @@ import { SocketProvider } from '../../contexts/SocketContext';
 function SupportLayout() {
     return (
         <SocketProvider>
-            <div className='h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-50 via-white to-lavender-50'>
+            <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-50 via-white to-lavender-50">
                 <Outlet />
             </div>
         </SocketProvider>

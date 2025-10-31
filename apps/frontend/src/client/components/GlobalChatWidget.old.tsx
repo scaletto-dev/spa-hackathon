@@ -219,7 +219,10 @@ export function GlobalChatWidget() {
 
                 // Convert AI response to Message format
                 const actions = aiResponse.actions?.map((action) => ({
-                    type: (action.type === 'navigate' ? 'link' : 'button') as 'button' | 'booking' | 'link',
+                    type: (action.type === 'navigate' ? 'link' : 'button') as
+                        | 'button'
+                        | 'booking'
+                        | 'link',
                     label: action.label,
                     action: action.url || action.type,
                     data: action.data,
@@ -547,55 +550,55 @@ export function GlobalChatWidget() {
                     chatMode === 'live'
                         ? 'bg-gradient-to-r from-blue-500 to-indigo-500'
                         : chatMode === 'booking'
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-                        : 'bg-gradient-to-r from-pink-500 to-purple-500'
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                          : 'bg-gradient-to-r from-pink-500 to-purple-500'
                 }`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleChat}
-                data-testid='chat-toggle-button'
+                data-testid="chat-toggle-button"
                 aria-label={isOpen ? t('chat.closeChat') : t('chat.openChat')}
             >
-                <AnimatePresence mode='wait'>
+                <AnimatePresence mode="wait">
                     {isOpen ? (
                         <motion.div
-                            key='close'
+                            key="close"
                             initial={{ rotate: 0, opacity: 0 }}
                             animate={{ rotate: 90, opacity: 1 }}
                             exit={{ rotate: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <XIcon className='w-7 h-7 text-white' />
+                            <XIcon className="w-7 h-7 text-white" />
                         </motion.div>
                     ) : chatMode === 'booking' ? (
                         <motion.div
-                            key='booking'
+                            key="booking"
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <CalendarIcon className='w-7 h-7 text-white' />
+                            <CalendarIcon className="w-7 h-7 text-white" />
                         </motion.div>
                     ) : chatMode === 'live' ? (
                         <motion.div
-                            key='live'
+                            key="live"
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <UsersIcon className='w-7 h-7 text-white' />
+                            <UsersIcon className="w-7 h-7 text-white" />
                         </motion.div>
                     ) : (
                         <motion.div
-                            key='ai'
+                            key="ai"
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <MessageCircleIcon className='w-7 h-7 text-white' />
+                            <MessageCircleIcon className="w-7 h-7 text-white" />
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -608,16 +611,16 @@ export function GlobalChatWidget() {
                         initial={{ opacity: 0, scale: 0.8, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                        className='fixed bottom-24 right-6 bg-white rounded-xl p-3 shadow-lg max-w-xs z-40 hidden md:block'
+                        className="fixed bottom-24 right-6 bg-white rounded-xl p-3 shadow-lg max-w-xs z-40 hidden md:block"
                     >
-                        <div className='flex items-start gap-3'>
-                            <div className='w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'>
-                                <SparklesIcon className='w-5 h-5 text-white' />
+                        <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <SparklesIcon className="w-5 h-5 text-white" />
                             </div>
-                            <div className='flex-1'>
-                                <p className='text-sm text-gray-800'>{t('chat.needHelp')}</p>
+                            <div className="flex-1">
+                                <p className="text-sm text-gray-800">{t('chat.needHelp')}</p>
                                 <button
-                                    className='text-xs text-pink-600 font-medium mt-1 hover:text-pink-700'
+                                    className="text-xs text-pink-600 font-medium mt-1 hover:text-pink-700"
                                     onClick={toggleChat}
                                 >
                                     {t('chat.startChat')}
@@ -625,10 +628,10 @@ export function GlobalChatWidget() {
                             </div>
                             <button
                                 onClick={() => setShowHint(false)}
-                                className='flex-shrink-0 p-1 hover:bg-gray-100 rounded-full transition-colors'
+                                className="flex-shrink-0 p-1 hover:bg-gray-100 rounded-full transition-colors"
                                 aria-label={t('chat.closeHint')}
                             >
-                                <XIcon className='w-4 h-4 text-gray-400' />
+                                <XIcon className="w-4 h-4 text-gray-400" />
                             </button>
                         </div>
                     </motion.div>
@@ -642,9 +645,9 @@ export function GlobalChatWidget() {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className='fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-[360px] max-w-[90vw] z-40 border border-gray-200 overflow-hidden'
+                        className="fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-[360px] max-w-[90vw] z-40 border border-gray-200 overflow-hidden"
                         style={{ maxHeight: '60vh' }}
-                        data-testid='chat-window'
+                        data-testid="chat-window"
                     >
                         {/* Chat header */}
                         <div
@@ -652,54 +655,56 @@ export function GlobalChatWidget() {
                                 chatMode === 'live'
                                     ? 'bg-gradient-to-r from-blue-500 to-indigo-500'
                                     : chatMode === 'booking'
-                                    ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-                                    : 'bg-gradient-to-r from-pink-500 to-purple-500'
+                                      ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                                      : 'bg-gradient-to-r from-pink-500 to-purple-500'
                             }`}
                         >
-                            <div className='flex items-center justify-between'>
-                                <div className='flex items-center gap-2'>
-                                    <div className='w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center relative'>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center relative">
                                         {chatMode === 'booking' ? (
-                                            <CalendarIcon className='w-5 h-5 text-white' />
+                                            <CalendarIcon className="w-5 h-5 text-white" />
                                         ) : chatMode === 'live' ? (
                                             <>
-                                                <UserIcon className='w-5 h-5 text-white' />
+                                                <UserIcon className="w-5 h-5 text-white" />
                                                 {agentInfo?.status === 'online' && (
-                                                    <span className='absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full' />
+                                                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full" />
                                                 )}
                                             </>
                                         ) : (
-                                            <SparklesIcon className='w-5 h-5 text-white' />
+                                            <SparklesIcon className="w-5 h-5 text-white" />
                                         )}
                                     </div>
                                     <div>
-                                        <h3 className='font-bold text-white text-sm'>
+                                        <h3 className="font-bold text-white text-sm">
                                             {chatMode === 'booking'
                                                 ? t('chat.bookingAssistant')
                                                 : chatMode === 'live' && agentInfo
-                                                ? agentInfo.name
-                                                : t('chat.assistant')}
+                                                  ? agentInfo.name
+                                                  : t('chat.assistant')}
                                         </h3>
-                                        <p className='text-xs text-white/80'>
+                                        <p className="text-xs text-white/80">
                                             {chatMode === 'booking'
                                                 ? t('chat.bookingMode')
                                                 : chatMode === 'live'
-                                                ? t('chat.liveSupport')
-                                                : _queuePosition
-                                                ? t('chat.queuePosition', { position: _queuePosition })
-                                                : t('chat.aiSupport')}
+                                                  ? t('chat.liveSupport')
+                                                  : _queuePosition
+                                                    ? t('chat.queuePosition', {
+                                                          position: _queuePosition,
+                                                      })
+                                                    : t('chat.aiSupport')}
                                         </p>
                                     </div>
                                 </div>
-                                <div className='flex items-center gap-1.5'>
+                                <div className="flex items-center gap-1.5">
                                     {/* Clear Chat Button */}
                                     <button
                                         onClick={clearChat}
-                                        className='p-2 rounded-full hover:bg-white/20 transition-all duration-200'
-                                        aria-label='Clear chat history'
-                                        title='Clear chat history'
+                                        className="p-2 rounded-full hover:bg-white/20 transition-all duration-200"
+                                        aria-label="Clear chat history"
+                                        title="Clear chat history"
                                     >
-                                        <Trash2Icon className='w-4 h-4 text-white' />
+                                        <Trash2Icon className="w-4 h-4 text-white" />
                                     </button>
 
                                     {/* Booking Mode Button */}
@@ -712,41 +717,57 @@ export function GlobalChatWidget() {
                                             }
                                         }}
                                         className={`p-2 rounded-full transition-all duration-200 ${
-                                            chatMode === 'booking' ? 'bg-white/30' : 'hover:bg-white/20'
+                                            chatMode === 'booking'
+                                                ? 'bg-white/30'
+                                                : 'hover:bg-white/20'
                                         }`}
                                         aria-label={
-                                            chatMode === 'booking' ? t('chat.switchToAI') : t('chat.switchToBooking')
+                                            chatMode === 'booking'
+                                                ? t('chat.switchToAI')
+                                                : t('chat.switchToBooking')
                                         }
                                         title={
-                                            chatMode === 'booking' ? t('chat.switchToAI') : t('chat.switchToBooking')
+                                            chatMode === 'booking'
+                                                ? t('chat.switchToAI')
+                                                : t('chat.switchToBooking')
                                         }
                                     >
-                                        <CalendarIcon className='w-5 h-5 text-white' />
+                                        <CalendarIcon className="w-5 h-5 text-white" />
                                     </button>
 
                                     {/* Live Agent Mode Button */}
                                     <button
                                         onClick={toggleChatMode}
                                         className={`p-2 rounded-full transition-all duration-200 ${
-                                            chatMode === 'live' ? 'bg-white/30' : 'hover:bg-white/20'
+                                            chatMode === 'live'
+                                                ? 'bg-white/30'
+                                                : 'hover:bg-white/20'
                                         }`}
-                                        aria-label={chatMode === 'live' ? t('chat.switchToAI') : t('chat.switchToLive')}
-                                        title={chatMode === 'live' ? t('chat.switchToAI') : t('chat.switchToLive')}
+                                        aria-label={
+                                            chatMode === 'live'
+                                                ? t('chat.switchToAI')
+                                                : t('chat.switchToLive')
+                                        }
+                                        title={
+                                            chatMode === 'live'
+                                                ? t('chat.switchToAI')
+                                                : t('chat.switchToLive')
+                                        }
                                     >
                                         {chatMode === 'live' ? (
-                                            <BotIcon className='w-5 h-5 text-white' />
+                                            <BotIcon className="w-5 h-5 text-white" />
                                         ) : (
-                                            <UsersIcon className='w-5 h-5 text-white' />
+                                            <UsersIcon className="w-5 h-5 text-white" />
                                         )}
                                     </button>
 
                                     {/* Close Button */}
                                     <button
                                         onClick={closeChat}
-                                        className='p-1 hover:bg-white/20 rounded-full transition-colors ml-1'
+                                        className="p-1 hover:bg-white/20 rounded-full transition-colors ml-1"
                                         aria-label={t('chat.closeChat')}
                                     >
-                                        <XIcon className='w-5 h-5 text-white' />
+                                        <XIcon className="w-5 h-5 text-white" />
                                     </button>
                                 </div>
                             </div>
@@ -754,8 +775,12 @@ export function GlobalChatWidget() {
 
                         {/* Chat messages - Scrollable area */}
                         <div
-                            className='overflow-y-auto p-4 bg-gray-50 space-y-3'
-                            style={{ height: 'calc(60vh - 140px)', minHeight: '300px', maxHeight: '500px' }}
+                            className="overflow-y-auto p-4 bg-gray-50 space-y-3"
+                            style={{
+                                height: 'calc(60vh - 140px)',
+                                minHeight: '300px',
+                                maxHeight: '500px',
+                            }}
                         >
                             {messages.map((message, index) => (
                                 <motion.div
@@ -772,32 +797,32 @@ export function GlobalChatWidget() {
                                                 message.type === 'agent'
                                                     ? 'bg-blue-500'
                                                     : message.type === 'system'
-                                                    ? 'bg-gray-400'
-                                                    : 'bg-gradient-to-br from-pink-400 to-purple-500'
+                                                      ? 'bg-gray-400'
+                                                      : 'bg-gradient-to-br from-pink-400 to-purple-500'
                                             }`}
                                         >
                                             {message.type === 'agent' ? (
-                                                <UserIcon className='w-4 h-4 text-white' />
+                                                <UserIcon className="w-4 h-4 text-white" />
                                             ) : message.type === 'system' ? (
-                                                <SparklesIcon className='w-4 h-4 text-white' />
+                                                <SparklesIcon className="w-4 h-4 text-white" />
                                             ) : (
-                                                <SparklesIcon className='w-4 h-4 text-white' />
+                                                <SparklesIcon className="w-4 h-4 text-white" />
                                             )}
                                         </div>
                                     )}
 
                                     {/* Message container */}
-                                    <div className='max-w-[75%] space-y-2'>
+                                    <div className="max-w-[75%] space-y-2">
                                         {/* Message bubble */}
                                         <div
                                             className={`rounded-2xl px-3 py-2 text-sm ${
                                                 message.type === 'user'
                                                     ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
                                                     : message.type === 'agent'
-                                                    ? 'bg-blue-50 border border-blue-200 text-gray-800'
-                                                    : message.type === 'system'
-                                                    ? 'bg-gray-100 border border-gray-300 text-gray-700 text-center italic'
-                                                    : 'bg-white border border-gray-200 text-gray-800'
+                                                      ? 'bg-blue-50 border border-blue-200 text-gray-800'
+                                                      : message.type === 'system'
+                                                        ? 'bg-gray-100 border border-gray-300 text-gray-700 text-center italic'
+                                                        : 'bg-white border border-gray-200 text-gray-800'
                                             }`}
                                         >
                                             {message.text}
@@ -805,14 +830,14 @@ export function GlobalChatWidget() {
 
                                         {/* Action buttons */}
                                         {message.actions && message.actions.length > 0 && (
-                                            <div className='flex flex-wrap gap-2'>
+                                            <div className="flex flex-wrap gap-2">
                                                 {message.actions.map((action, actionIndex) => (
                                                     <motion.button
                                                         key={actionIndex}
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
                                                         onClick={() => handleAction(action)}
-                                                        className='px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full hover:shadow-md transition-shadow'
+                                                        className="px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full hover:shadow-md transition-shadow"
                                                     >
                                                         {action.label}
                                                     </motion.button>
@@ -822,45 +847,54 @@ export function GlobalChatWidget() {
 
                                         {/* Booking slots */}
                                         {message.bookingData && (
-                                            <div className='bg-white border border-gray-200 rounded-xl p-3 space-y-2'>
-                                                <h4 className='text-xs font-semibold text-gray-700 flex items-center gap-1'>
-                                                    <CalendarIcon className='w-4 h-4' />
+                                            <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
+                                                <h4 className="text-xs font-semibold text-gray-700 flex items-center gap-1">
+                                                    <CalendarIcon className="w-4 h-4" />
                                                     {message.bookingData.serviceName}
                                                 </h4>
-                                                {message.bookingData.slots.map((slot, slotIndex) => {
-                                                    const slotDate = new Date(slot.datetime);
-                                                    return (
-                                                        <motion.button
-                                                            key={slotIndex}
-                                                            whileHover={{ scale: 1.02 }}
-                                                            whileTap={{ scale: 0.98 }}
-                                                            onClick={() =>
-                                                                handleBookSlot(slot, message.bookingData!.serviceName)
-                                                            }
-                                                            className='w-full text-left p-2 border border-pink-200 rounded-lg hover:bg-pink-50 transition-colors'
-                                                        >
-                                                            <div className='flex items-center justify-between text-xs'>
-                                                                <div className='flex items-center gap-2'>
-                                                                    <ClockIcon className='w-3 h-3 text-pink-500' />
-                                                                    <span className='font-medium'>
-                                                                        {slotDate.toLocaleDateString()}{' '}
-                                                                        {slotDate.toLocaleTimeString([], {
-                                                                            hour: '2-digit',
-                                                                            minute: '2-digit',
-                                                                        })}
+                                                {message.bookingData.slots.map(
+                                                    (slot, slotIndex) => {
+                                                        const slotDate = new Date(slot.datetime);
+                                                        return (
+                                                            <motion.button
+                                                                key={slotIndex}
+                                                                whileHover={{ scale: 1.02 }}
+                                                                whileTap={{ scale: 0.98 }}
+                                                                onClick={() =>
+                                                                    handleBookSlot(
+                                                                        slot,
+                                                                        message.bookingData!
+                                                                            .serviceName
+                                                                    )
+                                                                }
+                                                                className="w-full text-left p-2 border border-pink-200 rounded-lg hover:bg-pink-50 transition-colors"
+                                                            >
+                                                                <div className="flex items-center justify-between text-xs">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <ClockIcon className="w-3 h-3 text-pink-500" />
+                                                                        <span className="font-medium">
+                                                                            {slotDate.toLocaleDateString()}{' '}
+                                                                            {slotDate.toLocaleTimeString(
+                                                                                [],
+                                                                                {
+                                                                                    hour: '2-digit',
+                                                                                    minute: '2-digit',
+                                                                                }
+                                                                            )}
+                                                                        </span>
+                                                                    </div>
+                                                                    <span className="text-pink-600 font-semibold">
+                                                                        ${slot.price}
                                                                     </span>
                                                                 </div>
-                                                                <span className='text-pink-600 font-semibold'>
-                                                                    ${slot.price}
-                                                                </span>
-                                                            </div>
-                                                            <div className='flex items-center gap-1 mt-1 text-gray-600'>
-                                                                <MapPinIcon className='w-3 h-3' />
-                                                                <span>{slot.branchName}</span>
-                                                            </div>
-                                                        </motion.button>
-                                                    );
-                                                })}
+                                                                <div className="flex items-center gap-1 mt-1 text-gray-600">
+                                                                    <MapPinIcon className="w-3 h-3" />
+                                                                    <span>{slot.branchName}</span>
+                                                                </div>
+                                                            </motion.button>
+                                                        );
+                                                    }
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -872,23 +906,23 @@ export function GlobalChatWidget() {
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className='flex items-center gap-2'
+                                    className="flex items-center gap-2"
                                 >
-                                    <div className='w-7 h-7 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center'>
-                                        <SparklesIcon className='w-4 h-4 text-white' />
+                                    <div className="w-7 h-7 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                                        <SparklesIcon className="w-4 h-4 text-white" />
                                     </div>
-                                    <div className='bg-white border border-gray-200 rounded-2xl px-3 py-2'>
-                                        <div className='flex gap-1'>
+                                    <div className="bg-white border border-gray-200 rounded-2xl px-3 py-2">
+                                        <div className="flex gap-1">
                                             <div
-                                                className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
+                                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                                                 style={{ animationDelay: '0ms' }}
                                             ></div>
                                             <div
-                                                className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
+                                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                                                 style={{ animationDelay: '150ms' }}
                                             ></div>
                                             <div
-                                                className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
+                                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                                                 style={{ animationDelay: '300ms' }}
                                             ></div>
                                         </div>
@@ -901,20 +935,20 @@ export function GlobalChatWidget() {
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className='flex items-center gap-2'
+                                    className="flex items-center gap-2"
                                 >
-                                    <div className='w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center'>
-                                        <UserIcon className='w-4 h-4 text-white' />
+                                    <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
+                                        <UserIcon className="w-4 h-4 text-white" />
                                     </div>
-                                    <div className='bg-blue-50 border border-blue-200 rounded-2xl px-3 py-2'>
-                                        <div className='flex gap-1'>
-                                            <div className='w-2 h-2 bg-blue-400 rounded-full animate-bounce' />
+                                    <div className="bg-blue-50 border border-blue-200 rounded-2xl px-3 py-2">
+                                        <div className="flex gap-1">
+                                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" />
                                             <div
-                                                className='w-2 h-2 bg-blue-400 rounded-full animate-bounce'
+                                                className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
                                                 style={{ animationDelay: '0.2s' }}
                                             />
                                             <div
-                                                className='w-2 h-2 bg-blue-400 rounded-full animate-bounce'
+                                                className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
                                                 style={{ animationDelay: '0.4s' }}
                                             />
                                         </div>
@@ -923,34 +957,36 @@ export function GlobalChatWidget() {
                             )}
 
                             {/* Scroll anchor with padding */}
-                            <div ref={messagesEndRef} className='h-4' />
+                            <div ref={messagesEndRef} className="h-4" />
                         </div>
 
                         {/* Chat input */}
-                        <div className='p-3 border-t border-gray-200 bg-white'>
-                            <div className='flex gap-2'>
+                        <div className="p-3 border-t border-gray-200 bg-white">
+                            <div className="flex gap-2">
                                 <input
                                     ref={inputRef}
-                                    type='text'
+                                    type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                                     placeholder={t('chat.placeholder')}
-                                    className='flex-1 px-3 py-2 text-sm border-2 border-gray-200 rounded-full focus:outline-none focus:border-pink-300'
-                                    data-testid='chat-input'
+                                    className="flex-1 px-3 py-2 text-sm border-2 border-gray-200 rounded-full focus:outline-none focus:border-pink-300"
+                                    data-testid="chat-input"
                                 />
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={handleSend}
-                                    className='w-9 h-9 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'
-                                    data-testid='chat-send-button'
+                                    className="w-9 h-9 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0"
+                                    data-testid="chat-send-button"
                                     aria-label={t('chat.send')}
                                 >
-                                    <SendIcon className='w-4 h-4 text-white' />
+                                    <SendIcon className="w-4 h-4 text-white" />
                                 </motion.button>
                             </div>
-                            <p className='text-xs text-gray-500 mt-2 text-center'>{t('chat.poweredBy')}</p>
+                            <p className="text-xs text-gray-500 mt-2 text-center">
+                                {t('chat.poweredBy')}
+                            </p>
                         </div>
                     </motion.div>
                 )}

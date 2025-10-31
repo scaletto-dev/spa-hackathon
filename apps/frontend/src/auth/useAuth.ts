@@ -158,7 +158,11 @@ export function useAuth(): AuthState {
      * Register function
      * Calls backend API (POST /api/auth/register)
      */
-    const register = async (data: { name: string; email: string; password: string }): Promise<void> => {
+    const register = async (data: {
+        name: string;
+        email: string;
+        password: string;
+    }): Promise<void> => {
         if (!data.name || !data.email || !data.password) {
             throw new Error('All fields are required');
         }
@@ -232,7 +236,9 @@ export function useAuth(): AuthState {
 
             const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
             if (!clientId) {
-                throw new Error('Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env');
+                throw new Error(
+                    'Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env'
+                );
             }
 
             // Initialize Google Sign-In
@@ -333,7 +339,9 @@ export function useAuth(): AuthState {
 
                             // One Tap blocked - suggest using button instead
                             reject(
-                                new Error('Google One Tap is blocked. Please use the Google Sign-In button instead.'),
+                                new Error(
+                                    'Google One Tap is blocked. Please use the Google Sign-In button instead.'
+                                )
                             );
                         } else if (notification.isSkippedMoment()) {
                             const reason = notification.getSkippedReason();
@@ -414,15 +422,23 @@ export function useAuth(): AuthState {
 
             const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
             if (!clientId) {
-                throw new Error('Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env');
+                throw new Error(
+                    'Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in .env'
+                );
             }
 
             // Get allowed domains for admin (comma-separated)
-            const allowedDomainsStr = import.meta.env.VITE_GOOGLE_ALLOWED_DOMAINS as string | undefined;
-            const allowedDomains = allowedDomainsStr ? allowedDomainsStr.split(',').map((d) => d.trim()) : [];
+            const allowedDomainsStr = import.meta.env.VITE_GOOGLE_ALLOWED_DOMAINS as
+                | string
+                | undefined;
+            const allowedDomains = allowedDomainsStr
+                ? allowedDomainsStr.split(',').map((d) => d.trim())
+                : [];
 
             if (allowedDomains.length === 0) {
-                console.warn('VITE_GOOGLE_ALLOWED_DOMAINS not configured. All domains allowed for demo.');
+                console.warn(
+                    'VITE_GOOGLE_ALLOWED_DOMAINS not configured. All domains allowed for demo.'
+                );
             }
 
             // Initialize and prompt for Google Sign-In
@@ -448,7 +464,9 @@ export function useAuth(): AuthState {
 
                         if (!verifyResponse.ok) {
                             const error = await verifyResponse.json();
-                            throw new Error(error.message || 'Admin Google Sign-In verification failed');
+                            throw new Error(
+                                error.message || 'Admin Google Sign-In verification failed'
+                            );
                         }
 
                         const data = await verifyResponse.json();
@@ -520,7 +538,9 @@ export function useAuth(): AuthState {
                         if (notification.isNotDisplayed()) {
                             const reason = notification.getNotDisplayedReason();
                             console.warn('Google Admin One Tap not displayed:', reason);
-                            reject(new Error('Google One Tap blocked. Please use the sign-in button.'));
+                            reject(
+                                new Error('Google One Tap blocked. Please use the sign-in button.')
+                            );
                         } else if (notification.isSkippedMoment()) {
                             const reason = notification.getSkippedReason();
                             if (reason === 'user_cancel' || reason === 'tap_outside') {
@@ -620,7 +640,7 @@ export function mockLogin(role: 'admin' | 'client' = 'client') {
             email: user.email,
             fullName: user.name,
             role: role === 'admin' ? 'ADMIN' : 'MEMBER',
-        }),
+        })
     );
     localStorage.setItem('accessToken', 'mock-token-' + Math.random().toString(36).substr(2, 9));
 

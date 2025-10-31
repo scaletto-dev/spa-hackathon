@@ -11,11 +11,7 @@ import { z } from 'zod';
  * Query parameters with pagination and filtering
  */
 export const getReviewsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1, 'Page must be at least 1')
-    .default(1),
+  page: z.coerce.number().int().min(1, 'Page must be at least 1').default(1),
   limit: z.coerce
     .number()
     .int()
@@ -29,10 +25,7 @@ export const getReviewsQuerySchema = z.object({
     .min(1, 'Rating must be between 1 and 5')
     .max(5, 'Rating must be between 1 and 5')
     .optional(),
-  sort: z
-    .enum(['recent', 'rating'])
-    .default('recent')
-    .optional(),
+  sort: z.enum(['recent', 'rating']).default('recent').optional(),
 });
 
 export type GetReviewsQuery = z.infer<typeof getReviewsQuerySchema>;
@@ -62,7 +55,8 @@ export const createReviewSchema = z.object({
     .int()
     .min(1, 'Rating must be between 1 and 5')
     .max(5, 'Rating must be between 1 and 5'),
-  reviewText: z.string()
+  reviewText: z
+    .string()
     .min(10, 'Review text must be at least 10 characters')
     .max(1000, 'Review text must be at most 1000 characters'),
 });

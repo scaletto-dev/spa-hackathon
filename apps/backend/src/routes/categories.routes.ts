@@ -11,7 +11,7 @@ const router = Router();
 
 /**
  * Category Routes
- * 
+ *
  * Defines API endpoints for service category management
  * All endpoints include automatic request validation via Zod schemas
  */
@@ -19,10 +19,10 @@ const router = Router();
 /**
  * GET /api/v1/categories
  * Get all service categories
- * 
+ *
  * Query Parameters:
  * - includeServices: 'true' | 'false' (optional) - Include services in response
- * 
+ *
  * Validation: Auto-validates query params, transforms includeServices to boolean
  */
 router.get(
@@ -34,13 +34,13 @@ router.get(
 /**
  * GET /api/v1/categories/:id
  * Get a single category by ID
- * 
+ *
  * Path Parameters:
  * - id: string (UUID) - Category ID (validated as UUID)
- * 
+ *
  * Query Parameters:
  * - includeServices: 'true' | 'false' (optional) - Include services in response
- * 
+ *
  * Validation: Auto-validates path param as UUID, transforms includeServices to boolean
  */
 router.get(
@@ -53,14 +53,14 @@ router.get(
 /**
  * GET /api/v1/categories/:id/services
  * Get all services in a specific category
- * 
+ *
  * Path Parameters:
  * - id: string (UUID) - Category ID
- * 
+ *
  * Query Parameters:
  * - page: number (optional, default: 1) - Page number (must be > 0)
  * - limit: number (optional, default: 20, max: 100) - Items per page
- * 
+ *
  * Validation: Auto-validates path param as UUID, coerces and validates pagination params
  */
 router.get(

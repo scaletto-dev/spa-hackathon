@@ -33,10 +33,7 @@ class UserService {
    * @returns Updated user profile
    * @throws NotFoundError if user not found
    */
-  async updateUserProfile(
-    userId: string,
-    data: UpdateProfileRequestDTO
-  ): Promise<UserProfileDTO> {
+  async updateUserProfile(userId: string, data: UpdateProfileRequestDTO): Promise<UserProfileDTO> {
     // Check if user exists
     const existingUser = await userRepository.findById(userId);
 
@@ -72,4 +69,3 @@ class UserService {
 }
 
 export default new UserService();
-

@@ -221,7 +221,7 @@ export const routes: RouteObject[] = [
         element: (
             <RootErrorBoundary>
                 <Suspense fallback={<Pending />}>
-                    <RequireRole role='client'>
+                    <RequireRole role="client">
                         <ScrollToTop />
                         <ClientLayout />
                     </RequireRole>
@@ -274,7 +274,7 @@ export const routes: RouteObject[] = [
         element: (
             <RootErrorBoundary>
                 <Suspense fallback={<Pending />}>
-                    <RequireRole role='staff'>
+                    <RequireRole role="staff">
                         <SupportLayout />
                     </RequireRole>
                 </Suspense>
@@ -306,7 +306,7 @@ export const routes: RouteObject[] = [
         element: (
             <RootErrorBoundary>
                 <Suspense fallback={<Pending />}>
-                    <RequireRole role='admin'>
+                    <RequireRole role="admin">
                         <ScrollToTop />
                         <AdminLayout />
                     </RequireRole>
@@ -400,7 +400,7 @@ export const routes: RouteObject[] = [
     // Catch-all: Redirect to home
     {
         path: '*',
-        element: <Navigate to='/' replace />,
+        element: <Navigate to="/" replace />,
     },
 ];
 

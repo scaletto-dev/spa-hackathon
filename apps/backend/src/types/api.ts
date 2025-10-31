@@ -1,6 +1,6 @@
 /**
  * API Response Type Definitions
- * 
+ *
  * Provides a consistent structure for all API responses.
  * Includes standardized success and error formats to ensure predictable client-side handling.
  */
@@ -24,7 +24,7 @@ export interface BaseResponse {
 
 /**
  * Success Response
- * 
+ *
  * Returned when an operation completes successfully.
  * @template T - The type of the data payload.
  */
@@ -46,7 +46,7 @@ export interface SuccessResponse<T> extends BaseResponse {
 
 /**
  * Error Response
- * 
+ *
  * Returned when an API operation fails.
  */
 export interface ErrorResponse extends BaseResponse {
@@ -59,7 +59,7 @@ export interface ErrorResponse extends BaseResponse {
 
 /**
  * Unified API Response Type
- * 
+ *
  * A discriminated union that ensures type-safe handling
  * of both success and error responses.
  */

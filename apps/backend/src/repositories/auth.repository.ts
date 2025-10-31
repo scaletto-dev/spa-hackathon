@@ -70,13 +70,16 @@ class AuthRepository extends BaseRepository<any> {
   /**
    * Update user by ID
    */
-  async updateById(id: string, data: Partial<{
-    email: string;
-    fullName: string;
-    phone: string;
-    emailVerified: boolean;
-    supabaseAuthId: string;
-  }>) {
+  async updateById(
+    id: string,
+    data: Partial<{
+      email: string;
+      fullName: string;
+      phone: string;
+      emailVerified: boolean;
+      supabaseAuthId: string;
+    }>
+  ) {
     const updateData: any = {};
 
     if (data.email) updateData.email = data.email.toLowerCase().trim();

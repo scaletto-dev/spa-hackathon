@@ -114,18 +114,20 @@ export function TimePicker({
   `;
 
     return (
-        <div ref={containerRef} className='relative'>
+        <div ref={containerRef} className="relative">
             <div
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 className={baseClasses}
                 data-testid={dataTestId || name}
             >
-                <div className='flex items-center h-full'>
-                    <span className={value ? 'text-gray-900' : 'text-gray-400'}>{value || placeholder}</span>
+                <div className="flex items-center h-full">
+                    <span className={value ? 'text-gray-900' : 'text-gray-400'}>
+                        {value || placeholder}
+                    </span>
                 </div>
 
-                <div className='absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none'>
-                    <ClockIcon className='w-5 h-5 text-gray-400' />
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <ClockIcon className="w-5 h-5 text-gray-400" />
                 </div>
             </div>
 
@@ -136,10 +138,10 @@ export function TimePicker({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.15 }}
-                        className='absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden'
+                        className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
                         style={{ maxHeight: '280px' }}
                     >
-                        <div className='overflow-y-auto' style={{ maxHeight: '280px' }}>
+                        <div className="overflow-y-auto" style={{ maxHeight: '280px' }}>
                             {timeSlots.map((slot) => {
                                 const isSelected = value === slot.value;
 
@@ -147,7 +149,7 @@ export function TimePicker({
                                     <button
                                         key={slot.value}
                                         ref={isSelected ? selectedRef : undefined}
-                                        type='button'
+                                        type="button"
                                         onClick={() => handleSelectTime(slot.value, slot.disabled)}
                                         disabled={slot.disabled}
                                         className={`
@@ -161,7 +163,11 @@ export function TimePicker({
                     `}
                                     >
                                         {slot.label}
-                                        {slot.disabled && <span className='ml-2 text-xs text-red-500'>(Đã đầy)</span>}
+                                        {slot.disabled && (
+                                            <span className="ml-2 text-xs text-red-500">
+                                                (Đã đầy)
+                                            </span>
+                                        )}
                                     </button>
                                 );
                             })}

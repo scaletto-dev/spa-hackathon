@@ -11,11 +11,7 @@ import { z } from 'zod';
  * Query parameters with pagination and filtering
  */
 export const getBranchesQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1, 'Page must be at least 1')
-    .default(1),
+  page: z.coerce.number().int().min(1, 'Page must be at least 1').default(1),
   limit: z.coerce
     .number()
     .int()
@@ -45,11 +41,7 @@ export type GetBranchParams = z.infer<typeof getBranchParamsSchema>;
  * Query parameters with pagination
  */
 export const getBranchServicesQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1, 'Page must be at least 1')
-    .default(1),
+  page: z.coerce.number().int().min(1, 'Page must be at least 1').default(1),
   limit: z.coerce
     .number()
     .int()

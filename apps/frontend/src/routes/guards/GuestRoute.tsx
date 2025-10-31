@@ -20,21 +20,20 @@ export function GuestRoute({ children }: PropsWithChildren) {
     if (isAuthenticated) {
         // Get return URL from state or use default based on role
         const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-        
+
         // Determine redirect destination
         let redirectTo = '/dashboard'; // Default for clients
-        
+
         if (user?.role === 'admin') {
             redirectTo = '/admin';
         } else if (from && !from.includes('/login') && !from.includes('/register')) {
             // If there's a return URL and it's not a login/register page, use it
             redirectTo = from;
         }
-        
+
         return <Navigate to={redirectTo} replace />;
     }
 
     // Not authenticated -> render children (login/register page)
     return <>{children}</>;
 }
-

@@ -44,4 +44,3 @@ router.put('/:id', adminVoucherController.updateVoucher.bind(adminVoucherControl
 router.delete('/:id', adminVoucherController.deleteVoucher.bind(adminVoucherController));
 
 export default router;
-

@@ -27,7 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             'data-testid': dataTestId,
             ...props
         },
-        ref,
+        ref
     ) => {
         const [displayValue, setDisplayValue] = useState(value?.toString() || '');
 
@@ -43,7 +43,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             if (cleaned.startsWith('84')) {
                 const withoutPrefix = cleaned.slice(2);
                 if (withoutPrefix.length <= 3) return `(+84) ${withoutPrefix}`;
-                if (withoutPrefix.length <= 6) return `(+84) ${withoutPrefix.slice(0, 3)} ${withoutPrefix.slice(3)}`;
+                if (withoutPrefix.length <= 6)
+                    return `(+84) ${withoutPrefix.slice(0, 3)} ${withoutPrefix.slice(3)}`;
                 return `(+84) ${withoutPrefix.slice(0, 3)} ${withoutPrefix.slice(3, 6)} ${withoutPrefix.slice(6, 9)}`;
             }
 
@@ -105,10 +106,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     `;
 
         return (
-            <div className='relative'>
+            <div className="relative">
                 {LeftIcon && (
-                    <div className='absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none'>
-                        <LeftIcon className='w-5 h-5 text-gray-400' />
+                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <LeftIcon className="w-5 h-5 text-gray-400" />
                     </div>
                 )}
 
@@ -135,14 +136,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     >
                         <RightIcon
                             className={`w-5 h-5 ${
-                                onRightIconClick ? 'text-gray-600 hover:text-gray-800' : 'text-gray-400'
+                                onRightIconClick
+                                    ? 'text-gray-600 hover:text-gray-800'
+                                    : 'text-gray-400'
                             }`}
                         />
                     </div>
                 )}
             </div>
         );
-    },
+    }
 );
 
 Input.displayName = 'Input';

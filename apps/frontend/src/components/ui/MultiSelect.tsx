@@ -56,7 +56,9 @@ export function MultiSelect({
                   .map((g) => ({
                       ...g,
                       options: g.options.filter((opt) =>
-                          searchQuery ? opt.label.toLowerCase().includes(searchQuery.toLowerCase()) : true,
+                          searchQuery
+                              ? opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+                              : true
                       ),
                   }))
                   .filter((g) => g.options.length > 0)
@@ -103,13 +105,17 @@ export function MultiSelect({
                 if (!isOpen) {
                     setIsOpen(true);
                 } else {
-                    setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
+                    setHighlightedIndex((prev) =>
+                        prev < filteredOptions.length - 1 ? prev + 1 : 0
+                    );
                 }
                 break;
             case 'ArrowUp':
                 e.preventDefault();
                 if (isOpen) {
-                    setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
+                    setHighlightedIndex((prev) =>
+                        prev > 0 ? prev - 1 : filteredOptions.length - 1
+                    );
                 }
                 break;
         }
@@ -153,11 +159,11 @@ export function MultiSelect({
   `;
 
     return (
-        <div ref={containerRef} className='relative'>
+        <div ref={containerRef} className="relative">
             <div
-                role='combobox'
+                role="combobox"
                 aria-expanded={isOpen}
-                aria-haspopup='listbox'
+                aria-haspopup="listbox"
                 aria-controls={`${name}-listbox`}
                 aria-invalid={error ? 'true' : 'false'}
                 tabIndex={disabled ? -1 : 0}
@@ -166,9 +172,9 @@ export function MultiSelect({
                 className={baseClasses}
                 data-testid={dataTestId || name}
             >
-                <div className='flex flex-wrap gap-1.5 items-center pr-8'>
+                <div className="flex flex-wrap gap-1.5 items-center pr-8">
                     {selectedOptions.length === 0 ? (
-                        <span className='text-gray-400'>{placeholder}</span>
+                        <span className="text-gray-400">{placeholder}</span>
                     ) : (
                         selectedOptions.map((option) => (
                             <motion.span
@@ -176,34 +182,34 @@ export function MultiSelect({
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.8, opacity: 0 }}
-                                className='inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 rounded-lg text-sm font-medium'
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 rounded-lg text-sm font-medium"
                             >
                                 {option.label}
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={(e) => handleRemove(option.value, e)}
-                                    className='hover:bg-pink-200 rounded p-0.5 transition-colors'
+                                    className="hover:bg-pink-200 rounded p-0.5 transition-colors"
                                 >
-                                    <XIcon className='w-3 h-3' />
+                                    <XIcon className="w-3 h-3" />
                                 </button>
                             </motion.span>
                         ))
                     )}
                 </div>
 
-                <div className='absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1'>
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     {selectedOptions.length > 0 && (
                         <button
-                            type='button'
+                            type="button"
                             onClick={handleClearAll}
-                            className='p-1 hover:bg-gray-100 rounded transition-colors'
-                            title='Xoá tất cả'
+                            className="p-1 hover:bg-gray-100 rounded transition-colors"
+                            title="Xoá tất cả"
                         >
-                            <XIcon className='w-4 h-4 text-gray-500' />
+                            <XIcon className="w-4 h-4 text-gray-500" />
                         </button>
                     )}
                     {loading ? (
-                        <LoaderIcon className='w-5 h-5 text-gray-400 animate-spin' />
+                        <LoaderIcon className="w-5 h-5 text-gray-400 animate-spin" />
                     ) : (
                         <ChevronDownIcon
                             className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -219,20 +225,20 @@ export function MultiSelect({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.15 }}
-                        className='absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden'
+                        className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
                         style={{ maxHeight: '320px' }}
                     >
                         {searchable && (
-                            <div className='p-2 border-b border-gray-100 sticky top-0 bg-white'>
-                                <div className='relative'>
-                                    <SearchIcon className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400' />
+                            <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
+                                <div className="relative">
+                                    <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input
                                         ref={searchInputRef}
-                                        type='text'
+                                        type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder='Tìm kiếm...'
-                                        className='w-full h-9 pl-9 pr-3 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:border-pink-300 focus:bg-white'
+                                        placeholder="Tìm kiếm..."
+                                        className="w-full h-9 pl-9 pr-3 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:border-pink-300 focus:bg-white"
                                         onClick={(e) => e.stopPropagation()}
                                     />
                                 </div>
@@ -241,32 +247,42 @@ export function MultiSelect({
 
                         <div
                             id={`${name}-listbox`}
-                            role='listbox'
-                            aria-multiselectable='true'
-                            className='overflow-y-auto'
+                            role="listbox"
+                            aria-multiselectable="true"
+                            className="overflow-y-auto"
                             style={{ maxHeight: searchable ? '272px' : '320px' }}
                         >
                             {filteredOptions.length === 0 ? (
-                                <div className='px-4 py-8 text-center text-sm text-gray-500'>{emptyText}</div>
+                                <div className="px-4 py-8 text-center text-sm text-gray-500">
+                                    {emptyText}
+                                </div>
                             ) : groups.length > 0 ? (
                                 filteredGroups.map((group) => (
                                     <div key={group.label}>
-                                        <div className='px-3 py-2 text-xs font-semibold text-gray-500 bg-gray-50 sticky top-0'>
+                                        <div className="px-3 py-2 text-xs font-semibold text-gray-500 bg-gray-50 sticky top-0">
                                             {group.label}
                                         </div>
                                         {group.options.map((option) => {
                                             const isSelected = value.includes(option.value);
                                             const isDisabled =
                                                 option.disabled ||
-                                                (maxSelections ? !isSelected && value.length >= maxSelections : false);
+                                                (maxSelections
+                                                    ? !isSelected && value.length >= maxSelections
+                                                    : false);
 
                                             return (
                                                 <div
                                                     key={option.value}
-                                                    role='option'
+                                                    role="option"
                                                     aria-selected={isSelected}
-                                                    onClick={() => !isDisabled && handleToggle(option.value)}
-                                                    onMouseEnter={() => setHighlightedIndex(allOptions.indexOf(option))}
+                                                    onClick={() =>
+                                                        !isDisabled && handleToggle(option.value)
+                                                    }
+                                                    onMouseEnter={() =>
+                                                        setHighlightedIndex(
+                                                            allOptions.indexOf(option)
+                                                        )
+                                                    }
                                                     className={`
                             px-4 py-2.5 cursor-pointer transition-colors flex items-center gap-2
                             ${isSelected ? 'bg-pink-50 text-pink-700 font-medium' : 'text-gray-900'}
@@ -275,10 +291,10 @@ export function MultiSelect({
                           `}
                                                 >
                                                     <input
-                                                        type='checkbox'
+                                                        type="checkbox"
                                                         checked={isSelected}
                                                         readOnly
-                                                        className='w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500'
+                                                        className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
                                                     />
                                                     {option.label}
                                                 </div>
@@ -291,14 +307,18 @@ export function MultiSelect({
                                     const isSelected = value.includes(option.value);
                                     const isDisabled =
                                         option.disabled ||
-                                        (maxSelections ? !isSelected && value.length >= maxSelections : false);
+                                        (maxSelections
+                                            ? !isSelected && value.length >= maxSelections
+                                            : false);
 
                                     return (
                                         <div
                                             key={option.value}
-                                            role='option'
+                                            role="option"
                                             aria-selected={isSelected}
-                                            onClick={() => !isDisabled && handleToggle(option.value)}
+                                            onClick={() =>
+                                                !isDisabled && handleToggle(option.value)
+                                            }
                                             onMouseEnter={() => setHighlightedIndex(idx)}
                                             className={`
                         px-4 py-2.5 cursor-pointer transition-colors flex items-center gap-2
@@ -308,10 +328,10 @@ export function MultiSelect({
                       `}
                                         >
                                             <input
-                                                type='checkbox'
+                                                type="checkbox"
                                                 checked={isSelected}
                                                 readOnly
-                                                className='w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500'
+                                                className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
                                             />
                                             {option.label}
                                         </div>

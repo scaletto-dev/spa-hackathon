@@ -122,7 +122,8 @@ class MockDataStore {
             id: 1,
             name: 'AI Skin Analysis Facial',
             category: 'Facial',
-            description: 'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
+            description:
+                'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
             duration: '60 min',
             price: 150,
             image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop',
@@ -307,7 +308,8 @@ class MockDataStore {
             id: 1,
             title: 'The Future of AI in Skincare: What You Need to Know',
             slug: 'future-of-ai-in-skincare',
-            excerpt: 'Discover how artificial intelligence is revolutionizing personalized skincare treatments',
+            excerpt:
+                'Discover how artificial intelligence is revolutionizing personalized skincare treatments',
             content: 'Full blog content here...',
             category: 'AI Trends',
             author: 'Dr. Emily Parker',
@@ -434,7 +436,10 @@ class MockDataStore {
 
     // Customers CRUD
     addCustomer = (customer: Omit<Customer, 'id'>) => {
-        const newCustomer = { ...customer, id: Math.max(...this.customers.map((c) => c.id), 0) + 1 };
+        const newCustomer = {
+            ...customer,
+            id: Math.max(...this.customers.map((c) => c.id), 0) + 1,
+        };
         this.customers.push(newCustomer);
         return newCustomer;
     };
@@ -454,7 +459,10 @@ class MockDataStore {
 
     // Appointments CRUD
     addAppointment = (appointment: Omit<Appointment, 'id'>) => {
-        const newAppointment = { ...appointment, id: Math.max(...this.appointments.map((a) => a.id), 0) + 1 };
+        const newAppointment = {
+            ...appointment,
+            id: Math.max(...this.appointments.map((a) => a.id), 0) + 1,
+        };
         this.appointments.push(newAppointment);
         return newAppointment;
     };

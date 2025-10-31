@@ -1,9 +1,9 @@
 /**
  * Zod Validation Middleware
- * 
+ *
  * Generic validation middleware for request body, query, and params.
  * Attaches validated data back to request and returns consistent error format.
- * 
+ *
  * Usage:
  *   router.post('/', validate(schemaBody), controller.action)
  *   router.get('/', validate(schemaQuery, 'query'), controller.action)
@@ -18,7 +18,7 @@ type ValidationSource = 'body' | 'query' | 'params';
 
 /**
  * Express middleware for Zod schema validation
- * 
+ *
  * @param schema - Zod schema to validate against
  * @param source - Request property to validate ('body', 'query', or 'params')
  * @returns Express middleware function
@@ -27,12 +27,7 @@ export function validate(schema: ZodSchema, source: ValidationSource = 'body') {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       // Extract data from appropriate request source
-      const data =
-        source === 'body'
-          ? req.body
-          : source === 'query'
-            ? req.query
-            : req.params;
+      const data = source === 'body' ? req.body : source === 'query' ? req.query : req.params;
 
       // Parse and validate with Zod
       const validated = schema.parse(data);

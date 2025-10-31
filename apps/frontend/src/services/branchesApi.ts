@@ -9,30 +9,30 @@ import type { Branch, BranchParams, BranchesResponse } from '../types/branch';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const branchesApi = {
-  /**
-   * Get all branches with pagination
-   */
-  getAllBranches: async (params?: BranchParams): Promise<BranchesResponse> => {
-    const { data } = await axios.get(`${API_URL}/api/v1/branches`, { params });
-    return data;
-  },
+    /**
+     * Get all branches with pagination
+     */
+    getAllBranches: async (params?: BranchParams): Promise<BranchesResponse> => {
+        const { data } = await axios.get(`${API_URL}/api/v1/branches`, { params });
+        return data;
+    },
 
-  /**
-   * Get a single branch by ID
-   */
-  getBranchById: async (id: string): Promise<Branch> => {
-    const { data } = await axios.get(`${API_URL}/api/v1/branches/${id}`);
-    return data.data;
-  },
+    /**
+     * Get a single branch by ID
+     */
+    getBranchById: async (id: string): Promise<Branch> => {
+        const { data } = await axios.get(`${API_URL}/api/v1/branches/${id}`);
+        return data.data;
+    },
 };
 
 // Re-export types for convenience
-export type { 
-  Branch, 
-  BranchesResponse, 
-  BranchDetailResponse, 
-  BranchParams,
-  OperatingHoursEntry 
+export type {
+    Branch,
+    BranchesResponse,
+    BranchDetailResponse,
+    BranchParams,
+    OperatingHoursEntry,
 } from '../types/branch';
 
 // Re-export format utilities for convenience

@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import blogService from '@/services/blog.service';
 import { SuccessResponse } from '@/types/api';
-import {
-  GetBlogPostsQuery,
-  GetBlogPostParams,
-} from '@/validators/blog.validator';
+import { GetBlogPostsQuery, GetBlogPostParams } from '@/validators/blog.validator';
 
 /**
  * Blog Controller
@@ -18,14 +15,15 @@ export class BlogController {
    * GET /api/v1/blog/posts
    * Get all published blog posts with pagination and optional filtering
    */
-  async getAllPosts(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getAllPosts(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and coerced types (stored in req.validatedQuery)
-      const { page = 1, limit = 6, categoryId, search } = (req as any).validatedQuery as GetBlogPostsQuery;
+      const {
+        page = 1,
+        limit = 6,
+        categoryId,
+        search,
+      } = (req as any).validatedQuery as GetBlogPostsQuery;
 
       const result = await blogService.getAllPosts(page, limit, categoryId, search);
 
@@ -46,11 +44,7 @@ export class BlogController {
    * GET /api/v1/blog/posts/:slug
    * Get a single blog post by slug with related posts
    */
-  async getPostBySlug(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getPostBySlug(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and stored in req.validatedParams
       const { slug } = (req as any).validatedParams as GetBlogPostParams;
@@ -76,11 +70,7 @@ export class BlogController {
    * GET /api/v1/blog/categories
    * Get all blog categories with post counts
    */
-  async getAllCategories(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getAllCategories(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const categories = await blogService.getAllCategories();
 

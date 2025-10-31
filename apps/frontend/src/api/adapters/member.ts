@@ -71,7 +71,8 @@ const MOCK_UPCOMING_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-11-05T10:00:00Z',
         appointmentTime: '10:00',
         status: 'confirmed',
-        serviceImage: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
     },
     {
         id: '2',
@@ -81,7 +82,8 @@ const MOCK_UPCOMING_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-11-12T14:30:00Z',
         appointmentTime: '14:30',
         status: 'confirmed',
-        serviceImage: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop',
     },
     {
         id: '3',
@@ -91,7 +93,8 @@ const MOCK_UPCOMING_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-11-20T16:00:00Z',
         appointmentTime: '16:00',
         status: 'confirmed',
-        serviceImage: 'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=400&h=300&fit=crop',
     },
 ];
 
@@ -110,7 +113,8 @@ const MOCK_SPECIAL_OFFERS: SpecialOffer[] = [
         description: 'Complimentary AI skin analysis with any service booking',
         discountPercent: 100,
         validUntil: '2025-12-15T23:59:59Z',
-        imageUrl: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=400&h=300&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=400&h=300&fit=crop',
     },
 ];
 
@@ -125,7 +129,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-10-15T09:00:00Z',
         appointmentTime: '09:00',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop',
     },
     {
         id: '5',
@@ -135,7 +140,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-10-08T15:00:00Z',
         appointmentTime: '15:00',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop',
     },
     {
         id: '6',
@@ -145,7 +151,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-09-28T11:30:00Z',
         appointmentTime: '11:30',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop',
     },
     {
         id: '7',
@@ -155,7 +162,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-09-20T14:00:00Z',
         appointmentTime: '14:00',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
     },
     {
         id: '8',
@@ -165,7 +173,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-09-15T10:00:00Z',
         appointmentTime: '10:00',
         status: 'cancelled',
-        serviceImage: 'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=400&h=300&fit=crop',
     },
     {
         id: '9',
@@ -175,7 +184,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-09-10T16:30:00Z',
         appointmentTime: '16:30',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop',
     },
     {
         id: '10',
@@ -185,7 +195,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-08-25T13:00:00Z',
         appointmentTime: '13:00',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
     },
     {
         id: '11',
@@ -195,7 +206,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-08-18T10:30:00Z',
         appointmentTime: '10:30',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop',
     },
     {
         id: '12',
@@ -205,7 +217,8 @@ const MOCK_ALL_BOOKINGS: BookingSummary[] = [
         appointmentDate: '2025-08-12T14:00:00Z',
         appointmentTime: '14:00',
         status: 'completed',
-        serviceImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop',
+        serviceImage:
+            'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop',
     },
 ];
 
@@ -246,7 +259,9 @@ export function quickBookAppointment(): void {
  * Auth: Required (Bearer token)
  * Response: { data: BookingSummary[], meta: PaginationMeta }
  */
-export async function getMemberBookings(params: BookingHistoryParams = {}): Promise<BookingHistoryResponse> {
+export async function getMemberBookings(
+    params: BookingHistoryParams = {}
+): Promise<BookingHistoryResponse> {
     try {
         const queryParams = new URLSearchParams();
         if (params.page) queryParams.append('page', params.page.toString());
@@ -255,7 +270,9 @@ export async function getMemberBookings(params: BookingHistoryParams = {}): Prom
         if (params.dateFrom) queryParams.append('dateFrom', params.dateFrom);
         if (params.dateTo) queryParams.append('dateTo', params.dateTo);
 
-        const response = await axiosInstance.get(`${API_BASE}/members/bookings?${queryParams.toString()}`);
+        const response = await axiosInstance.get(
+            `${API_BASE}/members/bookings?${queryParams.toString()}`
+        );
         return {
             data: response.data.data,
             meta: response.data.meta,

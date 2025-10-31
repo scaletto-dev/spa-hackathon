@@ -12,7 +12,11 @@ import { BookingPayment } from '../components/booking/BookingPayment';
 import { BookingConfirmation } from '../components/booking/BookingConfirmation';
 import { QuickBooking } from '../components/booking/QuickBooking';
 import { BookingData } from '../components/booking/types';
-import { createBooking, createVNPayPaymentUrl, CreateBookingPayload } from '../../services/bookingApi';
+import {
+    createBooking,
+    createVNPayPaymentUrl,
+    CreateBookingPayload,
+} from '../../services/bookingApi';
 import { toast } from '../../utils/toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -117,7 +121,9 @@ export function BookingPage() {
                             name: serviceObj.name,
                             categoryName: serviceObj.categoryName || 'General',
                             price:
-                                typeof serviceObj.price === 'string' ? parseFloat(serviceObj.price) : serviceObj.price,
+                                typeof serviceObj.price === 'string'
+                                    ? parseFloat(serviceObj.price)
+                                    : serviceObj.price,
                             duration: String(serviceObj.duration),
                             images: serviceObj.images || [],
                             excerpt: serviceObj.excerpt,
@@ -128,9 +134,13 @@ export function BookingPage() {
 
                     // Show welcome toast
                     if (source === 'chat-booking') {
-                        toast.success(t('bookings.chatPreFilled') || '✅ Thông tin đã được điền sẵn từ chat!');
+                        toast.success(
+                            t('bookings.chatPreFilled') || '✅ Thông tin đã được điền sẵn từ chat!'
+                        );
                     } else if (source === 'chat-widget') {
-                        toast.info(t('bookings.aiSuggested') || '✨ AI đã chọn thời gian tốt nhất cho bạn!');
+                        toast.info(
+                            t('bookings.aiSuggested') || '✨ AI đã chọn thời gian tốt nhất cho bạn!'
+                        );
                     }
 
                     // Skip to step 4 (User Info) if we have all pre-filled data
@@ -197,7 +207,12 @@ export function BookingPage() {
 
     const handleSubmitBooking = async () => {
         try {
-            if (!bookingData.branch || !bookingData.date || !bookingData.time || !bookingData.serviceIds) {
+            if (
+                !bookingData.branch ||
+                !bookingData.date ||
+                !bookingData.time ||
+                !bookingData.serviceIds
+            ) {
                 toast.error('Thông tin đặt lịch chưa đầy đủ');
                 return;
             }
@@ -215,7 +230,12 @@ export function BookingPage() {
                 notes: bookingData.notes || '',
                 language: 'vi',
                 paymentType:
-                    (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
+                    (bookingData.paymentMethod as
+                        | 'ATM'
+                        | 'CLINIC'
+                        | 'WALLET'
+                        | 'CASH'
+                        | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
                 guestName: isLoggedIn ? '' : bookingData.name || '',
                 guestEmail: isLoggedIn ? '' : bookingData.email || '',
                 guestPhone: isLoggedIn ? '' : bookingData.phone || '',
@@ -293,7 +313,9 @@ export function BookingPage() {
             case 3: // Pick Date & Time
                 return bookingData.date !== null && bookingData.time !== null;
             case 4: // Your Info
-                return bookingData.name !== '' && bookingData.email !== '' && bookingData.phone !== '';
+                return (
+                    bookingData.name !== '' && bookingData.email !== '' && bookingData.phone !== ''
+                );
             case 5: // Payment - placeholder validation
                 return true;
             case 6: // Confirmation - just show it
@@ -304,8 +326,8 @@ export function BookingPage() {
     };
 
     return (
-        <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24'>
-            <div className='max-w-6xl mx-auto px-6 py-12'>
+        <div className="w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24">
+            <div className="max-w-6xl mx-auto px-6 py-12">
                 <motion.div
                     initial={{
                         opacity: 0,
@@ -318,17 +340,17 @@ export function BookingPage() {
                     transition={{
                         duration: 0.6,
                     }}
-                    className='text-center mb-12'
+                    className="text-center mb-12"
                 >
-                    <h1 className='text-4xl md:text-5xl font-bold mb-4'>
-                        <span className='bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                        <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                             {t('bookings.smartBooking')}
                         </span>
                     </h1>
-                    <p className='text-xl text-gray-600 max-w-2xl mx-auto mb-8'>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
                         {t('bookings.smartBookingDescription')}
                     </p>
-                    <div className='flex items-center justify-center gap-3'>
+                    <div className="flex items-center justify-center gap-3">
                         <motion.button
                             whileHover={{
                                 scale: 1.02,
@@ -343,7 +365,7 @@ export function BookingPage() {
                                     : 'bg-white/70 text-gray-700 border-2 border-gray-200'
                             }`}
                         >
-                            <ListIcon className='w-5 h-5' />
+                            <ListIcon className="w-5 h-5" />
                             {t('bookings.fullBooking')}
                         </motion.button>
                         <motion.button
@@ -360,22 +382,22 @@ export function BookingPage() {
                                     : 'bg-white/70 text-gray-700 border-2 border-gray-200'
                             }`}
                         >
-                            <ZapIcon className='w-5 h-5' />
+                            <ZapIcon className="w-5 h-5" />
                             {t('bookings.quickBooking')}
                         </motion.button>
                     </div>
                 </motion.div>
-                <AnimatePresence mode='wait'>
+                <AnimatePresence mode="wait">
                     {bookingMode === 'quick' ? (
                         <QuickBooking
-                            key='quick'
+                            key="quick"
                             bookingData={bookingData}
                             updateBookingData={updateBookingData}
                             onSwitchToFull={() => setBookingMode('full')}
                         />
                     ) : (
                         <motion.div
-                            key='full'
+                            key="full"
                             initial={{
                                 opacity: 0,
                                 y: 20,
@@ -393,25 +415,28 @@ export function BookingPage() {
 
                             {/* Sticky Navigation Bar - Show for all steps except final confirmation */}
                             {currentStep < steps.length && (
-                                <div className='sticky top-20 z-10 bg-gradient-to-r from-pink-50/95 via-white/95 to-purple-50/95 backdrop-blur-lg border-b border-pink-100 p-4 mb-6 rounded-2xl shadow-sm mt-8'>
-                                    <div className='flex justify-between items-center'>
+                                <div className="sticky top-20 z-10 bg-gradient-to-r from-pink-50/95 via-white/95 to-purple-50/95 backdrop-blur-lg border-b border-pink-100 p-4 mb-6 rounded-2xl shadow-sm mt-8">
+                                    <div className="flex justify-between items-center">
                                         {currentStep > 1 ? (
                                             <button
                                                 onClick={handlePrevStep}
-                                                className='flex items-center gap-2 px-6 py-2 bg-white border border-pink-200 text-gray-700 rounded-full font-medium shadow hover:shadow-md transition-all hover:scale-105'
+                                                className="flex items-center gap-2 px-6 py-2 bg-white border border-pink-200 text-gray-700 rounded-full font-medium shadow hover:shadow-md transition-all hover:scale-105"
                                             >
-                                                <ArrowLeftIcon className='w-4 h-4' />
-                                                <span className='hidden sm:inline'>{t('bookings.back')}</span>
+                                                <ArrowLeftIcon className="w-4 h-4" />
+                                                <span className="hidden sm:inline">
+                                                    {t('bookings.back')}
+                                                </span>
                                             </button>
                                         ) : (
-                                            <div className='w-24'></div>
+                                            <div className="w-24"></div>
                                         )}
 
-                                        <div className='text-center'>
-                                            <p className='text-sm text-gray-500'>
-                                                {t('bookings.step')} {currentStep} {t('bookings.of')} {steps.length}
+                                        <div className="text-center">
+                                            <p className="text-sm text-gray-500">
+                                                {t('bookings.step')} {currentStep}{' '}
+                                                {t('bookings.of')} {steps.length}
                                             </p>
-                                            <p className='font-semibold text-gray-800 hidden sm:block'>
+                                            <p className="font-semibold text-gray-800 hidden sm:block">
                                                 {steps[currentStep - 1]}
                                             </p>
                                         </div>
@@ -425,18 +450,20 @@ export function BookingPage() {
                                                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                             }`}
                                         >
-                                            <span className='hidden sm:inline'>{t('bookings.continue')}</span>
-                                            <ArrowRightIcon className='w-4 h-4' />
+                                            <span className="hidden sm:inline">
+                                                {t('bookings.continue')}
+                                            </span>
+                                            <ArrowRightIcon className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
                             )}
 
-                            <div className='mt-12 mb-24'>
-                                <AnimatePresence mode='wait'>
+                            <div className="mt-12 mb-24">
+                                <AnimatePresence mode="wait">
                                     {currentStep === 1 && (
                                         <BookingServiceSelect
-                                            key='step1'
+                                            key="step1"
                                             bookingData={bookingData}
                                             updateBookingData={updateBookingData}
                                             onNext={handleNextStep}
@@ -444,7 +471,7 @@ export function BookingPage() {
                                     )}
                                     {currentStep === 2 && (
                                         <BookingBranchSelect
-                                            key='step2'
+                                            key="step2"
                                             bookingData={bookingData}
                                             updateBookingData={updateBookingData}
                                             onNext={handleNextStep}
@@ -453,7 +480,7 @@ export function BookingPage() {
                                     )}
                                     {currentStep === 3 && (
                                         <BookingDateTimeSelect
-                                            key='step3'
+                                            key="step3"
                                             bookingData={bookingData}
                                             updateBookingData={updateBookingData}
                                             onNext={handleNextStep}
@@ -462,7 +489,7 @@ export function BookingPage() {
                                     )}
                                     {currentStep === 4 && (
                                         <BookingUserInfo
-                                            key='step4'
+                                            key="step4"
                                             bookingData={bookingData}
                                             updateBookingData={updateBookingData}
                                             onNext={handleNextStep}
@@ -471,7 +498,7 @@ export function BookingPage() {
                                     )}
                                     {currentStep === 5 && (
                                         <BookingPayment
-                                            key='step5'
+                                            key="step5"
                                             bookingData={bookingData}
                                             updateBookingData={updateBookingData}
                                             onNext={handleNextStep}
@@ -480,7 +507,7 @@ export function BookingPage() {
                                     )}
                                     {currentStep === 6 && (
                                         <BookingConfirmation
-                                            key='step6'
+                                            key="step6"
                                             bookingData={bookingData}
                                             onPrev={handlePrevStep}
                                             onSubmit={handleSubmitBooking}
@@ -500,7 +527,7 @@ export function BookingPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <motion.div
@@ -508,26 +535,33 @@ export function BookingPage() {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            className='bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-4'
+                            className="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-4"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className='text-center'>
+                            <div className="text-center">
                                 {/* Loading Animation */}
-                                <div className='relative mb-6'>
+                                <div className="relative mb-6">
                                     <motion.div
                                         animate={{ rotate: 360 }}
-                                        transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-                                        className='w-20 h-20 mx-auto border-4 border-pink-200 border-t-pink-500 rounded-full'
+                                        transition={{
+                                            duration: 1.5,
+                                            repeat: Infinity,
+                                            ease: 'linear',
+                                        }}
+                                        className="w-20 h-20 mx-auto border-4 border-pink-200 border-t-pink-500 rounded-full"
                                     />
-                                    <div className='absolute inset-0 flex items-center justify-center'>
-                                        <div className='w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full animate-pulse' />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full animate-pulse" />
                                     </div>
                                 </div>
 
                                 {/* Text */}
-                                <h3 className='text-2xl font-bold text-gray-800 mb-2'>Đang chuyển đến VNPay...</h3>
-                                <p className='text-gray-600 mb-6'>
-                                    Vui lòng đợi, bạn sẽ được chuyển hướng đến cổng thanh toán trong giây lát
+                                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                                    Đang chuyển đến VNPay...
+                                </h3>
+                                <p className="text-gray-600 mb-6">
+                                    Vui lòng đợi, bạn sẽ được chuyển hướng đến cổng thanh toán trong
+                                    giây lát
                                 </p>
 
                                 {/* Cancel Button */}
@@ -538,7 +572,7 @@ export function BookingPage() {
                                         setIsRedirectingToPayment(false);
                                         toast.info('Đã hủy chuyển hướng thanh toán');
                                     }}
-                                    className='px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full font-semibold transition-colors'
+                                    className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full font-semibold transition-colors"
                                 >
                                     Hủy
                                 </motion.button>

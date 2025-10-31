@@ -52,10 +52,12 @@ export function PaymentMethodSelector({
     ];
 
     return (
-        <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6'>
-            <h3 className='text-xl font-bold text-gray-800 mb-6'>{t('payment.selectPaymentMethod')}</h3>
+        <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-6">
+                {t('payment.selectPaymentMethod')}
+            </h3>
             {/* Method Tabs */}
-            <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mb-6'>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                 {paymentMethods.map((method) => (
                     <motion.button
                         key={method.id}
@@ -86,8 +88,8 @@ export function PaymentMethodSelector({
                         </span>
                         {selectedMethod === method.id && (
                             <motion.div
-                                layoutId='activeMethod'
-                                className='absolute inset-0 border-2 border-pink-500 rounded-2xl'
+                                layoutId="activeMethod"
+                                className="absolute inset-0 border-2 border-pink-500 rounded-2xl"
                                 transition={{
                                     type: 'spring',
                                     stiffness: 300,
@@ -99,7 +101,7 @@ export function PaymentMethodSelector({
                 ))}
             </div>
             {/* Method Content */}
-            <AnimatePresence mode='wait'>
+            <AnimatePresence mode="wait">
                 <motion.div
                     key={selectedMethod}
                     initial={{
@@ -118,14 +120,20 @@ export function PaymentMethodSelector({
                         duration: 0.3,
                     }}
                 >
-                    {selectedMethod === 'card' && <CardPayment onComplete={onPaymentDetailsChange} />}
-                    {selectedMethod === 'ewallet' && <EWalletPayment onComplete={onPaymentDetailsChange} />}
-                    {selectedMethod === 'bank' && <BankTransferPayment onComplete={onPaymentDetailsChange} />}
+                    {selectedMethod === 'card' && (
+                        <CardPayment onComplete={onPaymentDetailsChange} />
+                    )}
+                    {selectedMethod === 'ewallet' && (
+                        <EWalletPayment onComplete={onPaymentDetailsChange} />
+                    )}
+                    {selectedMethod === 'bank' && (
+                        <BankTransferPayment onComplete={onPaymentDetailsChange} />
+                    )}
                     {selectedMethod === 'clinic' && <PayAtClinicPayment />}
                 </motion.div>
             </AnimatePresence>
             {/* Promo Code */}
-            <div className='mt-6 pt-6 border-t border-gray-200'>
+            <div className="mt-6 pt-6 border-t border-gray-200">
                 <PromoCodeInput
                     promoCode={promoCode}
                     setPromoCode={setPromoCode}

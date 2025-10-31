@@ -1,6 +1,6 @@
 /**
  * Member Service
- * 
+ *
  * Handles business logic for member-related operations including:
  * - Dashboard overview (stats, upcoming bookings, special offers)
  * - Booking history with pagination and filters
@@ -167,10 +167,10 @@ class MemberService {
       if (status && status !== 'all') {
         // Map status string to database enum value
         const statusMap: Record<string, BookingStatus> = {
-          'confirmed': 'CONFIRMED',
-          'completed': 'COMPLETED',
-          'cancelled': 'CANCELLED',
-          'no_show': 'NO_SHOW',
+          confirmed: 'CONFIRMED',
+          completed: 'COMPLETED',
+          cancelled: 'CANCELLED',
+          no_show: 'NO_SHOW',
         };
         const mappedStatus = statusMap[status.toLowerCase()];
         if (mappedStatus) {
@@ -254,7 +254,9 @@ class MemberService {
   /**
    * Map database booking status to API status
    */
-  private mapBookingStatus(dbStatus: BookingStatus): 'confirmed' | 'completed' | 'cancelled' | 'no_show' {
+  private mapBookingStatus(
+    dbStatus: BookingStatus
+  ): 'confirmed' | 'completed' | 'cancelled' | 'no_show' {
     const statusMap: Record<BookingStatus, 'confirmed' | 'completed' | 'cancelled' | 'no_show'> = {
       CONFIRMED: 'confirmed',
       COMPLETED: 'completed',

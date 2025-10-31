@@ -3,10 +3,10 @@ import { GlobeIcon } from 'lucide-react';
 
 /**
  * LanguageSwitcher Component
- * 
+ *
  * Allows users to switch between Vietnamese (vi) and English (en).
  * Persists language selection to localStorage via i18next.
- * 
+ *
  * Features:
  * - Accessible button with ARIA labels
  * - Visual indication of current language

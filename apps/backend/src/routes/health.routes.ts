@@ -4,9 +4,9 @@ const router = Router();
 
 /**
  * Health Check Endpoint
- * 
+ *
  * GET /api/health
- * 
+ *
  * Returns server health status and uptime information.
  * Used for monitoring and load balancer health checks.
  */

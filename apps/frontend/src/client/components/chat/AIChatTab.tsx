@@ -105,7 +105,10 @@ export function AIChatTab({ isActive, onRequestAgent, onRequestBooking }: AIChat
             }
 
             const actions = aiResponse.actions?.map((action) => ({
-                type: (action.type === 'navigate' ? 'link' : 'button') as 'button' | 'booking' | 'link',
+                type: (action.type === 'navigate' ? 'link' : 'button') as
+                    | 'button'
+                    | 'booking'
+                    | 'link',
                 label: action.label,
                 action: action.url || action.type,
                 data: action.data,
@@ -200,31 +203,31 @@ export function AIChatTab({ isActive, onRequestAgent, onRequestBooking }: AIChat
     if (!isActive) return null;
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className="flex flex-col h-full">
             <MessageList messages={messages} onAction={handleAction} />
             {isAITyping && (
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className='flex items-center gap-2 px-4 pb-2'
+                    className="flex items-center gap-2 px-4 pb-2"
                 >
-                    <div className='w-7 h-7 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center'>
-                        <SparklesIcon className='w-4 h-4 text-white' />
+                    <div className="w-7 h-7 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <SparklesIcon className="w-4 h-4 text-white" />
                     </div>
-                    <div className='bg-white border border-gray-200 rounded-2xl px-3 py-2'>
-                        <div className='flex gap-1'>
+                    <div className="bg-white border border-gray-200 rounded-2xl px-3 py-2">
+                        <div className="flex gap-1">
                             <motion.div
-                                className='w-2 h-2 bg-gray-400 rounded-full'
+                                className="w-2 h-2 bg-gray-400 rounded-full"
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
                             />
                             <motion.div
-                                className='w-2 h-2 bg-gray-400 rounded-full'
+                                className="w-2 h-2 bg-gray-400 rounded-full"
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
                             />
                             <motion.div
-                                className='w-2 h-2 bg-gray-400 rounded-full'
+                                className="w-2 h-2 bg-gray-400 rounded-full"
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
                             />
@@ -232,7 +235,11 @@ export function AIChatTab({ isActive, onRequestAgent, onRequestBooking }: AIChat
                     </div>
                 </motion.div>
             )}
-            <ChatInput onSend={handleSend} onClear={clearChat} placeholder={t('chat.placeholder')} />
+            <ChatInput
+                onSend={handleSend}
+                onClear={clearChat}
+                placeholder={t('chat.placeholder')}
+            />
         </div>
     );
 }

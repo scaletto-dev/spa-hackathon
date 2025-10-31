@@ -1,6 +1,11 @@
 import { NotFoundError } from '@/utils/errors';
 import { branchRepository } from '@/repositories/branch.repository';
-import { BranchDTO, BranchWithServicesDTO, ServiceDTO, BranchServicesResponse } from '@/types/branch';
+import {
+  BranchDTO,
+  BranchWithServicesDTO,
+  ServiceDTO,
+  BranchServicesResponse,
+} from '@/types/branch';
 
 export class BranchService {
   /**
@@ -47,7 +52,10 @@ export class BranchService {
   /**
    * Get a single branch by ID
    */
-  async getBranchById(id: string, includeServices: boolean = false): Promise<BranchDTO | BranchWithServicesDTO> {
+  async getBranchById(
+    id: string,
+    includeServices: boolean = false
+  ): Promise<BranchDTO | BranchWithServicesDTO> {
     if (includeServices) {
       const result = await branchRepository.findByIdWithServices(id);
 

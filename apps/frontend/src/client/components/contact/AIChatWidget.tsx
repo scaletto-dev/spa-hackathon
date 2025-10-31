@@ -47,7 +47,7 @@ export function AIChatWidget() {
         <>
             {/* Chat toggle button */}
             <motion.button
-                className='fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center z-50'
+                className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center z-50"
                 whileHover={{
                     scale: 1.1,
                 }}
@@ -57,9 +57,9 @@ export function AIChatWidget() {
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {isOpen ? (
-                    <XIcon className='w-8 h-8 text-white' />
+                    <XIcon className="w-8 h-8 text-white" />
                 ) : (
-                    <MessageCircleIcon className='w-8 h-8 text-white' />
+                    <MessageCircleIcon className="w-8 h-8 text-white" />
                 )}
             </motion.button>
             {/* Chat bubble message when closed */}
@@ -81,16 +81,18 @@ export function AIChatWidget() {
                             scale: 0.8,
                             y: 10,
                         }}
-                        className='fixed bottom-24 right-6 bg-white rounded-xl p-4 shadow-lg max-w-xs z-40'
+                        className="fixed bottom-24 right-6 bg-white rounded-xl p-4 shadow-lg max-w-xs z-40"
                     >
-                        <div className='flex items-start gap-3'>
-                            <div className='w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center'>
-                                <SparklesIcon className='w-6 h-6 text-white' />
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                                <SparklesIcon className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <p className='text-gray-800'>Need help booking? Ask our AI assistant!</p>
+                                <p className="text-gray-800">
+                                    Need help booking? Ask our AI assistant!
+                                </p>
                                 <button
-                                    className='text-sm text-pink-600 font-medium mt-1'
+                                    className="text-sm text-pink-600 font-medium mt-1"
                                     onClick={() => setIsOpen(true)}
                                 >
                                     Start chatting
@@ -116,22 +118,24 @@ export function AIChatWidget() {
                             opacity: 0,
                             y: 20,
                         }}
-                        className='fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-full max-w-md z-40 border border-gray-200 overflow-hidden'
+                        className="fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-full max-w-md z-40 border border-gray-200 overflow-hidden"
                     >
                         {/* Chat header */}
-                        <div className='bg-gradient-to-r from-pink-500 to-purple-500 p-4'>
-                            <div className='flex items-center gap-3'>
-                                <div className='w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center'>
-                                    <SparklesIcon className='w-6 h-6 text-white' />
+                        <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+                                    <SparklesIcon className="w-6 h-6 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className='font-bold text-white'>BeautyAI Assistant</h3>
-                                    <p className='text-xs text-white/80'>Online | AI-powered support</p>
+                                    <h3 className="font-bold text-white">BeautyAI Assistant</h3>
+                                    <p className="text-xs text-white/80">
+                                        Online | AI-powered support
+                                    </p>
                                 </div>
                             </div>
                         </div>
                         {/* Chat messages */}
-                        <div className='h-96 overflow-y-auto p-4 bg-gray-50'>
+                        <div className="h-96 overflow-y-auto p-4 bg-gray-50">
                             {messages.map((message, index) => (
                                 <motion.div
                                     key={index}
@@ -149,14 +153,20 @@ export function AIChatWidget() {
                                     className={`mb-4 flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     {message.type === 'bot' && (
-                                        <div className='w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center mr-2 flex-shrink-0'>
-                                            <SparklesIcon className='w-5 h-5 text-white' />
+                                        <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center mr-2 flex-shrink-0">
+                                            <SparklesIcon className="w-5 h-5 text-white" />
                                         </div>
                                     )}
                                     <div
                                         className={`max-w-[80%] rounded-2xl px-4 py-3 ${message.type === 'user' ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white' : 'bg-white border border-gray-200'}`}
                                     >
-                                        <p className={message.type === 'user' ? 'text-white' : 'text-gray-800'}>
+                                        <p
+                                            className={
+                                                message.type === 'user'
+                                                    ? 'text-white'
+                                                    : 'text-gray-800'
+                                            }
+                                        >
                                             {message.text}
                                         </p>
                                     </div>
@@ -164,15 +174,15 @@ export function AIChatWidget() {
                             ))}
                         </div>
                         {/* Chat input */}
-                        <div className='p-4 border-t border-gray-200'>
-                            <div className='flex gap-2'>
+                        <div className="p-4 border-t border-gray-200">
+                            <div className="flex gap-2">
                                 <input
-                                    type='text'
+                                    type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder='Type your message...'
-                                    className='flex-1 px-4 py-2 border-2 border-gray-200 rounded-full focus:outline-none focus:border-pink-300'
+                                    placeholder="Type your message..."
+                                    className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-full focus:outline-none focus:border-pink-300"
                                 />
                                 <motion.button
                                     whileHover={{
@@ -182,12 +192,14 @@ export function AIChatWidget() {
                                         scale: 0.95,
                                     }}
                                     onClick={handleSend}
-                                    className='w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center'
+                                    className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center"
                                 >
-                                    <SendIcon className='w-5 h-5 text-white' />
+                                    <SendIcon className="w-5 h-5 text-white" />
                                 </motion.button>
                             </div>
-                            <p className='text-xs text-gray-500 mt-2 text-center'>Powered by BeautyAI Technology</p>
+                            <p className="text-xs text-gray-500 mt-2 text-center">
+                                Powered by BeautyAI Technology
+                            </p>
                         </div>
                     </motion.div>
                 )}

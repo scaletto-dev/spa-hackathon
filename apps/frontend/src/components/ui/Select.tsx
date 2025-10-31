@@ -68,7 +68,9 @@ export function Select({
                   .map((g) => ({
                       ...g,
                       options: g.options.filter((opt) =>
-                          searchQuery ? opt.label.toLowerCase().includes(searchQuery.toLowerCase()) : true,
+                          searchQuery
+                              ? opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+                              : true
                       ),
                   }))
                   .filter((g) => g.options.length > 0)
@@ -133,13 +135,17 @@ export function Select({
                 if (!isOpen) {
                     setIsOpen(true);
                 } else {
-                    setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
+                    setHighlightedIndex((prev) =>
+                        prev < filteredOptions.length - 1 ? prev + 1 : 0
+                    );
                 }
                 break;
             case 'ArrowUp':
                 e.preventDefault();
                 if (isOpen) {
-                    setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
+                    setHighlightedIndex((prev) =>
+                        prev > 0 ? prev - 1 : filteredOptions.length - 1
+                    );
                 }
                 break;
             case 'Tab':
@@ -175,11 +181,11 @@ export function Select({
   `;
 
     return (
-        <div ref={containerRef} className='relative'>
+        <div ref={containerRef} className="relative">
             <div
-                role='combobox'
+                role="combobox"
                 aria-expanded={isOpen}
-                aria-haspopup='listbox'
+                aria-haspopup="listbox"
                 aria-controls={`${name}-listbox`}
                 aria-invalid={error ? 'true' : 'false'}
                 tabIndex={disabled ? -1 : 0}
@@ -188,15 +194,15 @@ export function Select({
                 className={baseClasses}
                 data-testid={dataTestId || name}
             >
-                <div className='flex items-center h-full'>
+                <div className="flex items-center h-full">
                     <span className={selectedOption ? 'text-gray-900' : 'text-gray-400'}>
                         {selectedOption?.label || placeholder}
                     </span>
                 </div>
 
-                <div className='absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none'>
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
                     {loading ? (
-                        <LoaderIcon className='w-5 h-5 text-gray-400 animate-spin' />
+                        <LoaderIcon className="w-5 h-5 text-gray-400 animate-spin" />
                     ) : (
                         <ChevronDownIcon
                             className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -219,16 +225,16 @@ export function Select({
                         style={{ maxHeight: '320px' }}
                     >
                         {searchable && (
-                            <div className='p-2 border-b border-gray-100 sticky top-0 bg-white'>
-                                <div className='relative'>
-                                    <SearchIcon className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400' />
+                            <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
+                                <div className="relative">
+                                    <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input
                                         ref={searchInputRef}
-                                        type='text'
+                                        type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder='Tìm kiếm...'
-                                        className='w-full h-9 pl-9 pr-3 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:border-pink-300 focus:bg-white'
+                                        placeholder="Tìm kiếm..."
+                                        className="w-full h-9 pl-9 pr-3 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:border-pink-300 focus:bg-white"
                                         onClick={(e) => e.stopPropagation()}
                                     />
                                 </div>
@@ -237,25 +243,31 @@ export function Select({
 
                         <div
                             id={`${name}-listbox`}
-                            role='listbox'
-                            className='overflow-y-auto'
+                            role="listbox"
+                            className="overflow-y-auto"
                             style={{ maxHeight: searchable ? '272px' : '320px' }}
                         >
                             {filteredOptions.length === 0 ? (
-                                <div className='px-4 py-8 text-center text-sm text-gray-500'>{emptyText}</div>
+                                <div className="px-4 py-8 text-center text-sm text-gray-500">
+                                    {emptyText}
+                                </div>
                             ) : groups.length > 0 ? (
                                 filteredGroups.map((group) => (
                                     <div key={group.label}>
-                                        <div className='px-3 py-2 text-xs font-semibold text-gray-500 bg-gray-50 sticky top-0'>
+                                        <div className="px-3 py-2 text-xs font-semibold text-gray-500 bg-gray-50 sticky top-0">
                                             {group.label}
                                         </div>
                                         {group.options.map((option) => (
                                             <div
                                                 key={option.value}
-                                                role='option'
+                                                role="option"
                                                 aria-selected={value === option.value}
-                                                onClick={() => !option.disabled && handleSelect(option.value)}
-                                                onMouseEnter={() => setHighlightedIndex(allOptions.indexOf(option))}
+                                                onClick={() =>
+                                                    !option.disabled && handleSelect(option.value)
+                                                }
+                                                onMouseEnter={() =>
+                                                    setHighlightedIndex(allOptions.indexOf(option))
+                                                }
                                                 className={`
                           px-4 py-2.5 cursor-pointer transition-colors
                           ${value === option.value ? 'bg-pink-50 text-pink-700 font-medium' : 'text-gray-900'}
@@ -272,9 +284,11 @@ export function Select({
                                 filteredOptions.map((option, idx) => (
                                     <div
                                         key={option.value}
-                                        role='option'
+                                        role="option"
                                         aria-selected={value === option.value}
-                                        onClick={() => !option.disabled && handleSelect(option.value)}
+                                        onClick={() =>
+                                            !option.disabled && handleSelect(option.value)
+                                        }
                                         onMouseEnter={() => setHighlightedIndex(idx)}
                                         className={`
                       px-4 py-2.5 cursor-pointer transition-colors

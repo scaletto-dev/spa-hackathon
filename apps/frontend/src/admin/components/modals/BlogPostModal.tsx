@@ -14,7 +14,13 @@ interface BlogPostModalProps {
     mode?: 'create' | 'edit';
 }
 
-export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create' }: BlogPostModalProps) {
+export function BlogPostModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    post,
+    mode = 'create',
+}: BlogPostModalProps) {
     const [loading, setLoading] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
@@ -70,7 +76,9 @@ export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create
         }
     }, [post, mode, isOpen]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
@@ -212,149 +220,168 @@ export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create
     const modalContent = (
         <>
             {/* Backdrop - Covers everything including header */}
-            <div className='!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]' />
+            <div className="!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]" />
 
             {/* Modal Content - Above backdrop */}
             <div
-                className='!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none'
+                className="!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none"
                 onClick={onClose}
             >
                 <div
-                    className='bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in slide-in-from-bottom-4 pointer-events-auto'
+                    className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in slide-in-from-bottom-4 pointer-events-auto"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Header - Sticky */}
-                    <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0'>
-                        <h2 className='text-xl font-bold text-white'>
+                    <div className="bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0">
+                        <h2 className="text-xl font-bold text-white">
                             {mode === 'edit' ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới'}
                         </h2>
-                        <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
-                            <XIcon className='w-6 h-6 text-white' />
+                        <button
+                            onClick={onClose}
+                            className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                        >
+                            <XIcon className="w-6 h-6 text-white" />
                         </button>
                     </div>
 
                     {/* AI Generator Button - Prominent */}
-                    <div className='px-6 pt-6 pb-4 bg-gradient-to-br from-purple-50 to-pink-50 border-b border-purple-100'>
+                    <div className="px-6 pt-6 pb-4 bg-gradient-to-br from-purple-50 to-pink-50 border-b border-purple-100">
                         <button
-                            type='button'
+                            type="button"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setShowAIModal(true);
                             }}
-                            className='w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] font-medium'
+                            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] font-medium"
                         >
-                            <SparklesIcon className='w-5 h-5 animate-pulse' />
-                            <span className='text-base'>✨ Tạo nội dung bằng AI</span>
-                            <span className='text-xs bg-white/20 px-2 py-1 rounded-full'>Mới</span>
+                            <SparklesIcon className="w-5 h-5 animate-pulse" />
+                            <span className="text-base">✨ Tạo nội dung bằng AI</span>
+                            <span className="text-xs bg-white/20 px-2 py-1 rounded-full">Mới</span>
                         </button>
-                        <p className='text-xs text-gray-600 text-center mt-2'>
+                        <p className="text-xs text-gray-600 text-center mt-2">
                             Để AI tạo nội dung chất lượng cao chỉ trong vài giây
                         </p>
                     </div>
 
                     {/* Content - Scrollable */}
-                    <div className='overflow-y-auto flex-1 p-6 space-y-4'>
+                    <div className="overflow-y-auto flex-1 p-6 space-y-4">
                         <div>
-                            <label className='block text-sm font-medium text-gray-700 mb-2'>Ảnh đại diện</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Ảnh đại diện
+                            </label>
                             <input
                                 ref={fileInputRef}
-                                type='file'
-                                accept='image/*'
+                                type="file"
+                                accept="image/*"
                                 onChange={handleImageChange}
-                                className='hidden'
+                                className="hidden"
                             />
                             <div
                                 onClick={() => fileInputRef.current?.click()}
                                 onDragOver={handleDragOver}
                                 onDrop={handleDrop}
-                                className='border-2 border-dashed border-pink-200 rounded-2xl p-8 text-center hover:border-pink-300 transition-colors cursor-pointer bg-pink-50/30'
+                                className="border-2 border-dashed border-pink-200 rounded-2xl p-8 text-center hover:border-pink-300 transition-colors cursor-pointer bg-pink-50/30"
                             >
                                 {imagePreview ? (
-                                    <div className='relative'>
-                                        <img src={imagePreview} alt='Preview' className='max-h-48 mx-auto rounded-lg' />
-                                        <p className='text-xs text-gray-500 mt-2'>Click để thay đổi ảnh</p>
+                                    <div className="relative">
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="max-h-48 mx-auto rounded-lg"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Click để thay đổi ảnh
+                                        </p>
                                     </div>
                                 ) : (
                                     <>
-                                        <UploadIcon className='w-8 h-8 text-gray-400 mx-auto mb-2' />
-                                        <p className='text-sm text-gray-600'>Click để tải lên hoặc kéo thả</p>
-                                        <p className='text-xs text-gray-500 mt-1'>PNG, JPG tối đa 10MB</p>
+                                        <UploadIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                                        <p className="text-sm text-gray-600">
+                                            Click để tải lên hoặc kéo thả
+                                        </p>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            PNG, JPG tối đa 10MB
+                                        </p>
                                     </>
                                 )}
                             </div>
                         </div>
 
-                        <FormField label='Tiêu đề bài viết' name='title' required>
+                        <FormField label="Tiêu đề bài viết" name="title" required>
                             <Input
-                                name='title'
+                                name="title"
                                 value={formData.title}
                                 onChange={handleChange}
-                                placeholder='Nhập tiêu đề hấp dẫn...'
+                                placeholder="Nhập tiêu đề hấp dẫn..."
                             />
                         </FormField>
 
-                        <FormField label='Mô tả ngắn' name='excerpt'>
+                        <FormField label="Mô tả ngắn" name="excerpt">
                             <Textarea
-                                name='excerpt'
+                                name="excerpt"
                                 value={formData.excerpt}
                                 onChange={handleChange}
                                 rows={2}
-                                placeholder='Mô tả ngắn gọn về bài viết...'
+                                placeholder="Mô tả ngắn gọn về bài viết..."
                             />
                         </FormField>
 
-                        <FormField label='Nội dung' name='content' required>
+                        <FormField label="Nội dung" name="content" required>
                             <Textarea
-                                name='content'
+                                name="content"
                                 value={formData.content}
                                 onChange={handleChange}
                                 rows={12}
-                                placeholder='Viết nội dung bài viết tại đây... hoặc dùng AI ở trên ✨'
-                                className='font-mono text-sm'
+                                placeholder="Viết nội dung bài viết tại đây... hoặc dùng AI ở trên ✨"
+                                className="font-mono text-sm"
                             />
                         </FormField>
 
-                        <div className='grid grid-cols-2 gap-4'>
-                            <FormField label='Danh mục' name='categoryId'>
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField label="Danh mục" name="categoryId">
                                 <select
-                                    name='categoryId'
+                                    name="categoryId"
                                     value={formData.categoryId}
                                     onChange={handleChange}
-                                    className='w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300'
+                                    className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300"
                                 >
-                                    <option value='general'>General</option>
-                                    <option value='skincare'>Skincare</option>
-                                    <option value='wellness'>Wellness</option>
-                                    <option value='hair-care'>Hair Care</option>
-                                    <option value='beauty-tips'>Beauty Tips</option>
+                                    <option value="general">General</option>
+                                    <option value="skincare">Skincare</option>
+                                    <option value="wellness">Wellness</option>
+                                    <option value="hair-care">Hair Care</option>
+                                    <option value="beauty-tips">Beauty Tips</option>
                                 </select>
                             </FormField>
 
-                            <FormField label='URL Slug' name='slug'>
+                            <FormField label="URL Slug" name="slug">
                                 <Input
-                                    name='slug'
+                                    name="slug"
                                     value={formData.slug}
                                     onChange={handleChange}
-                                    placeholder='Để trống để auto-generate'
+                                    placeholder="Để trống để auto-generate"
                                 />
                             </FormField>
                         </div>
                     </div>
 
                     {/* Footer - Sticky */}
-                    <div className='flex-shrink-0 p-6 border-t border-pink-100 rounded-b-3xl flex gap-3'>
+                    <div className="flex-shrink-0 p-6 border-t border-pink-100 rounded-b-3xl flex gap-3">
                         <button
                             onClick={onClose}
-                            className='flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors'
+                            className="flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors"
                         >
                             Hủy
                         </button>
                         <button
                             onClick={handleSubmit}
                             disabled={loading}
-                            className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50'
+                            className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50"
                         >
-                            {loading ? 'Đang xử lý...' : mode === 'create' ? 'Tạo bài viết' : 'Cập nhật'}
+                            {loading
+                                ? 'Đang xử lý...'
+                                : mode === 'create'
+                                  ? 'Tạo bài viết'
+                                  : 'Cập nhật'}
                         </button>
                     </div>
                 </div>

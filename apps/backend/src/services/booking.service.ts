@@ -1,6 +1,6 @@
 /**
  * Booking Service
- * 
+ *
  * Handles business logic for booking operations including:
  * - Creating bookings (member and guest)
  * - Retrieving booking details
@@ -33,7 +33,7 @@ class BookingService {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-    
+
     return `SPAbooking-${year}${month}${day}-${randomPart}`;
   }
 
@@ -45,13 +45,13 @@ class BookingService {
       // Parse appointment date (YYYY-MM-DD format)
       const appointmentDate = new Date(date);
       appointmentDate.setHours(0, 0, 0, 0);
-      
+
       // Parse appointment time (HH:mm format) and combine with date
       const timeParts = time.split(':');
       const hours = parseInt(timeParts[0]!, 10);
       const minutes = parseInt(timeParts[1]!, 10);
       appointmentDate.setHours(hours, minutes, 0, 0);
-      
+
       // Get current time
       const now = new Date();
 
@@ -82,10 +82,7 @@ class BookingService {
   /**
    * Validate services and branch exist
    */
-  private async validateServicesAndBranch(
-    serviceIds: string[],
-    branchId: string
-  ): Promise<void> {
+  private async validateServicesAndBranch(serviceIds: string[], branchId: string): Promise<void> {
     if (!serviceIds || serviceIds.length === 0) {
       throw new ValidationError('At least one service is required');
     }
@@ -137,9 +134,7 @@ class BookingService {
       // For guest bookings, validate guest information
       if (!userId) {
         if (!guestName || !guestEmail || !guestPhone) {
-          throw new ValidationError(
-            'Guest bookings require guestName, guestEmail, and guestPhone'
-          );
+          throw new ValidationError('Guest bookings require guestName, guestEmail, and guestPhone');
         }
 
         // Validate email format
@@ -198,7 +193,7 @@ class BookingService {
 
       // Create payment record if payment info is provided
       let payment: any = null;
-      
+
       // Calculate payment amount from services if not provided
       let totalAmount = paymentAmount || 0;
       if (!paymentAmount || paymentAmount === 0) {
@@ -242,7 +237,9 @@ class BookingService {
         },
       });
 
-      logger.info(`Booking created: ${referenceNumber} by ${userId || guestEmail} with payment ${paymentAmount ? 'initiated' : 'pending'}`);
+      logger.info(
+        `Booking created: ${referenceNumber} by ${userId || guestEmail} with payment ${paymentAmount ? 'initiated' : 'pending'}`
+      );
 
       const response = this.mapBookingToResponse(booking, services);
       if (payment) {
@@ -251,10 +248,10 @@ class BookingService {
 
       // Send booking confirmation email (non-blocking)
       if (guestEmail) {
-        const serviceNames = services.map(s => s.name);
+        const serviceNames = services.map((s) => s.name);
         const appointmentDateStr = new Date(appointmentDate).toLocaleDateString('vi-VN');
         const totalAmount = payment?.amount || 0;
-        
+
         EmailService.sendBookingConfirmation(
           guestEmail,
           guestName || 'Guest',
@@ -268,7 +265,7 @@ class BookingService {
           serviceNames,
           totalAmount,
           notes
-        ).catch(err => {
+        ).catch((err) => {
           // Log email error but don't fail the booking
           logger.error(`Failed to send booking confirmation email for ${referenceNumber}:`, err);
         });
@@ -284,10 +281,7 @@ class BookingService {
   /**
    * Get booking by reference number
    */
-  async getBookingByReference(
-    referenceNumber: string,
-    userId?: string
-  ): Promise<BookingResponse> {
+  async getBookingByReference(referenceNumber: string, userId?: string): Promise<BookingResponse> {
     try {
       const booking = await prisma.booking.findUnique({
         where: { referenceNumber },
@@ -378,10 +372,10 @@ class BookingService {
       });
 
       // Fetch all services for all bookings
-      const allServiceIds = bookings.flatMap(b => b.serviceIds);
+      const allServiceIds = bookings.flatMap((b) => b.serviceIds);
       const uniqueServiceIds = [...new Set(allServiceIds)];
       const servicesMap = new Map();
-      
+
       if (uniqueServiceIds.length > 0) {
         const services = await prisma.service.findMany({
           where: { id: { in: uniqueServiceIds } },
@@ -392,7 +386,7 @@ class BookingService {
             price: true,
           },
         });
-        services.forEach(s => servicesMap.set(s.id, s));
+        services.forEach((s) => servicesMap.set(s.id, s));
       }
 
       const totalPages = Math.ceil(total / limit);
@@ -400,8 +394,8 @@ class BookingService {
       return {
         data: bookings.map((b) => {
           const bookingServices = b.serviceIds
-            .map(id => servicesMap.get(id))
-            .filter(s => s !== undefined);
+            .map((id) => servicesMap.get(id))
+            .filter((s) => s !== undefined);
           return this.mapBookingToResponse(b, bookingServices);
         }),
         meta: {
@@ -516,15 +510,14 @@ class BookingService {
         if (endDate) where.appointmentDate.lte = endDate;
       }
 
-      const [total, confirmed, cancelled, completed, noShow, pending] =
-        await Promise.all([
-          prisma.booking.count({ where }),
-          prisma.booking.count({ where: { ...where, status: 'CONFIRMED' } }),
-          prisma.booking.count({ where: { ...where, status: 'CANCELLED' } }),
-          prisma.booking.count({ where: { ...where, status: 'COMPLETED' } }),
-          prisma.booking.count({ where: { ...where, status: 'NO_SHOW' } }),
-          prisma.booking.count({ where: { ...where, status: 'PENDING' } }),
-        ]);
+      const [total, confirmed, cancelled, completed, noShow, pending] = await Promise.all([
+        prisma.booking.count({ where }),
+        prisma.booking.count({ where: { ...where, status: 'CONFIRMED' } }),
+        prisma.booking.count({ where: { ...where, status: 'CANCELLED' } }),
+        prisma.booking.count({ where: { ...where, status: 'COMPLETED' } }),
+        prisma.booking.count({ where: { ...where, status: 'NO_SHOW' } }),
+        prisma.booking.count({ where: { ...where, status: 'PENDING' } }),
+      ]);
 
       return {
         total,
@@ -564,7 +557,7 @@ class BookingService {
       cancellationReason: booking.cancellationReason || undefined,
       createdAt: booking.createdAt.toISOString(),
       updatedAt: booking.updatedAt.toISOString(),
-      services: services?.map(s => ({
+      services: services?.map((s) => ({
         id: s.id,
         name: s.name,
         duration: s.duration,

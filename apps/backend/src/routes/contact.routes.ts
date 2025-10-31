@@ -25,7 +25,12 @@ const router = Router();
  *
  * Validation: Auto-validates body schema
  */
-router.post('/', contactFormRateLimiter, validate(createContactSchema, 'body'), contactController.createContactSubmission.bind(contactController));
+router.post(
+  '/',
+  contactFormRateLimiter,
+  validate(createContactSchema, 'body'),
+  contactController.createContactSubmission.bind(contactController)
+);
 
 /**
  * GET /api/v1/contact
@@ -34,7 +39,11 @@ router.post('/', contactFormRateLimiter, validate(createContactSchema, 'body'), 
  * Query params: page, limit, status (optional)
  * Validation: Auto-validates query params with pagination
  */
-router.get('/', validate(getContactsQuerySchema, 'query'), contactController.getAllContactSubmissions.bind(contactController));
+router.get(
+  '/',
+  validate(getContactsQuerySchema, 'query'),
+  contactController.getAllContactSubmissions.bind(contactController)
+);
 
 /**
  * GET /api/v1/contact/:id
@@ -45,7 +54,11 @@ router.get('/', validate(getContactsQuerySchema, 'query'), contactController.get
  *
  * Validation: Auto-validates path param as UUID
  */
-router.get('/:id', validate(getContactParamsSchema, 'params'), contactController.getContactSubmission.bind(contactController));
+router.get(
+  '/:id',
+  validate(getContactParamsSchema, 'params'),
+  contactController.getContactSubmission.bind(contactController)
+);
 
 /**
  * PATCH /api/v1/contact/:id/status
@@ -73,6 +86,10 @@ router.patch(
  *
  * Validation: Auto-validates path param as UUID
  */
-router.delete('/:id', validate(getContactParamsSchema, 'params'), contactController.deleteContactSubmission.bind(contactController));
+router.delete(
+  '/:id',
+  validate(getContactParamsSchema, 'params'),
+  contactController.deleteContactSubmission.bind(contactController)
+);
 
 export default router;

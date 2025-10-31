@@ -16,14 +16,15 @@ export class ServiceController {
    * GET /api/v1/services
    * Get all services with pagination and filtering
    */
-  async getAllServices(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getAllServices(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Use validated query from middleware
-      const { page = 1, limit = 20, categoryId, featured } = (req as any).validatedQuery as GetServicesQuery;
+      const {
+        page = 1,
+        limit = 20,
+        categoryId,
+        featured,
+      } = (req as any).validatedQuery as GetServicesQuery;
 
       const result = await serviceService.getAllServices(
         page,
@@ -49,11 +50,7 @@ export class ServiceController {
    * GET /api/v1/services/:id
    * Get a single service by ID or slug
    */
-  async getServiceById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getServiceById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Use validated params from middleware
       const { id } = (req as any).validatedParams as GetServiceParams;
@@ -82,11 +79,7 @@ export class ServiceController {
    * GET /api/v1/services/featured
    * Get featured services
    */
-  async getFeaturedServices(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getFeaturedServices(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const services = await serviceService.getFeaturedServices();
 
@@ -106,11 +99,7 @@ export class ServiceController {
    * GET /api/v1/services/categories
    * Get all service categories with service count
    */
-  async getServiceCategories(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getServiceCategories(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const categories = await serviceService.getAllCategories();
 

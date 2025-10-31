@@ -106,7 +106,9 @@ export function DatePicker({
                 break;
             case 'weekend':
                 const daysUntilSaturday = (6 - today.getDay() + 7) % 7;
-                targetDate.setDate(today.getDate() + (daysUntilSaturday === 0 ? 7 : daysUntilSaturday));
+                targetDate.setDate(
+                    today.getDate() + (daysUntilSaturday === 0 ? 7 : daysUntilSaturday)
+                );
                 break;
         }
 
@@ -160,20 +162,20 @@ export function DatePicker({
   `;
 
     return (
-        <div ref={containerRef} className='relative'>
+        <div ref={containerRef} className="relative">
             <div
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 className={baseClasses}
                 data-testid={dataTestId || name}
             >
-                <div className='flex items-center h-full'>
+                <div className="flex items-center h-full">
                     <span className={value ? 'text-gray-900' : 'text-gray-400'}>
                         {value ? formatDate(value) : placeholder}
                     </span>
                 </div>
 
-                <div className='absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none'>
-                    <CalendarIcon className='w-5 h-5 text-gray-400' />
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <CalendarIcon className="w-5 h-5 text-gray-400" />
                 </div>
             </div>
 
@@ -184,65 +186,69 @@ export function DatePicker({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.15 }}
-                        className='absolute z-50 w-full md:w-auto mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-4'
+                        className="absolute z-50 w-full md:w-auto mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-4"
                     >
                         {quickPicks && (
-                            <div className='flex gap-2 mb-4 pb-4 border-b border-gray-100'>
+                            <div className="flex gap-2 mb-4 pb-4 border-b border-gray-100">
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={() => handleQuickPick('today')}
-                                    className='px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors'
+                                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                                 >
                                     Hôm nay
                                 </button>
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={() => handleQuickPick('tomorrow')}
-                                    className='px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors'
+                                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                                 >
                                     Ngày mai
                                 </button>
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={() => handleQuickPick('weekend')}
-                                    className='px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors'
+                                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                                 >
                                     Cuối tuần
                                 </button>
                             </div>
                         )}
 
-                        <div className='flex items-center justify-between mb-4'>
+                        <div className="flex items-center justify-between mb-4">
                             <button
-                                type='button'
+                                type="button"
                                 onClick={() => navigateMonth('prev')}
-                                className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
+                                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                             >
-                                <ChevronLeftIcon className='w-5 h-5 text-gray-600' />
+                                <ChevronLeftIcon className="w-5 h-5 text-gray-600" />
                             </button>
-                            <span className='text-sm font-semibold text-gray-800'>
+                            <span className="text-sm font-semibold text-gray-800">
                                 {monthNames[viewMonth.getMonth()]} {viewMonth.getFullYear()}
                             </span>
                             <button
-                                type='button'
+                                type="button"
                                 onClick={() => navigateMonth('next')}
-                                className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
+                                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                             >
-                                <ChevronRightIcon className='w-5 h-5 text-gray-600' />
+                                <ChevronRightIcon className="w-5 h-5 text-gray-600" />
                             </button>
                         </div>
 
-                        <div className='grid grid-cols-7 gap-1 mb-2'>
+                        <div className="grid grid-cols-7 gap-1 mb-2">
                             {dayNames.map((day) => (
-                                <div key={day} className='text-center text-xs font-medium text-gray-500 py-1'>
+                                <div
+                                    key={day}
+                                    className="text-center text-xs font-medium text-gray-500 py-1"
+                                >
                                     {day}
                                 </div>
                             ))}
                         </div>
 
-                        <div className='grid grid-cols-7 gap-1'>
+                        <div className="grid grid-cols-7 gap-1">
                             {days.map((date, idx) => {
-                                const isSelected = value && date.toDateString() === value.toDateString();
+                                const isSelected =
+                                    value && date.toDateString() === value.toDateString();
                                 const isCurrentMonth = date.getMonth() === viewMonth.getMonth();
                                 const isToday = date.toDateString() === new Date().toDateString();
                                 const disabled = isDateDisabled(date);
@@ -250,7 +256,7 @@ export function DatePicker({
                                 return (
                                     <button
                                         key={idx}
-                                        type='button'
+                                        type="button"
                                         onClick={() => handleSelectDate(date)}
                                         disabled={disabled}
                                         className={`

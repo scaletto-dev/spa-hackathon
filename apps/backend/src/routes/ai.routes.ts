@@ -13,27 +13,27 @@ const router = Router();
 
 // Rate limiters for different AI features
 const chatLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    max: 20, // 20 requests per minute
-    message: 'Too many chat requests, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20, // 20 requests per minute
+  message: 'Too many chat requests, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 const analysisLimiter = rateLimit({
-    windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 10, // 10 requests per 5 minutes
-    message: 'Too many analysis requests, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 10, // 10 requests per 5 minutes
+  message: 'Too many analysis requests, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 const generationLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 3, // 3 requests per 15 minutes (blog generation is expensive)
-    message: 'Too many generation requests, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3, // 3 requests per 15 minutes (blog generation is expensive)
+  message: 'Too many generation requests, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 /**
@@ -129,7 +129,11 @@ router.post('/blog-generate', generationLimiter, aiController.generateBlog.bind(
  * - breakdown: { service, staff, cleanliness, value }
  * - trends: array of insight strings
  */
-router.get('/sentiment-summary', analysisLimiter, aiController.getSentimentSummary.bind(aiController));
+router.get(
+  '/sentiment-summary',
+  analysisLimiter,
+  aiController.getSentimentSummary.bind(aiController)
+);
 
 /**
  * POST /api/v1/ai/suggest-timeslot
@@ -164,9 +168,9 @@ router.post('/suggest-timeslot', analysisLimiter, aiController.suggestTimeSlot.b
  * - variations: array of { description, longDescription, excerpt, benefits }
  */
 router.post(
-    '/generate-service-description',
-    generationLimiter,
-    aiController.generateServiceDescription.bind(aiController),
+  '/generate-service-description',
+  generationLimiter,
+  aiController.generateServiceDescription.bind(aiController)
 );
 
 export default router;

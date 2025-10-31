@@ -12,7 +12,13 @@ interface CustomerModalProps {
     mode?: 'create' | 'edit';
 }
 
-export function CustomerModal({ isOpen, onClose, onSuccess, customer, mode = 'create' }: CustomerModalProps) {
+export function CustomerModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    customer,
+    mode = 'create',
+}: CustomerModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
@@ -41,7 +47,9 @@ export function CustomerModal({ isOpen, onClose, onSuccess, customer, mode = 'cr
         }
     }, [customer, mode, isOpen]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
@@ -91,79 +99,89 @@ export function CustomerModal({ isOpen, onClose, onSuccess, customer, mode = 'cr
     if (!isOpen) return null;
     return (
         <>
-            <div className='!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]' onClick={onClose} />
-            <div className='!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none'>
-                <div className='bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto'>
+            <div
+                className="!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]"
+                onClick={onClose}
+            />
+            <div className="!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none">
+                <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto">
                     {/* Header */}
-                    <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0'>
-                        <h2 className='text-xl font-bold text-white'>
+                    <div className="bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0">
+                        <h2 className="text-xl font-bold text-white">
                             {mode === 'create' ? 'Thêm khách hàng mới' : 'Cập nhật khách hàng'}
                         </h2>
-                        <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
-                            <XIcon className='w-6 h-6 text-white' />
+                        <button
+                            onClick={onClose}
+                            className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                        >
+                            <XIcon className="w-6 h-6 text-white" />
                         </button>
                     </div>
 
                     {/* Content - Scrollable */}
-                    <div className='overflow-y-auto flex-1 p-6 space-y-4'>
-                        <FormField label='Họ và tên' name='fullName' required>
+                    <div className="overflow-y-auto flex-1 p-6 space-y-4">
+                        <FormField label="Họ và tên" name="fullName" required>
                             <Input
-                                type='text'
-                                name='fullName'
+                                type="text"
+                                name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
-                                placeholder='Nhập tên khách hàng'
+                                placeholder="Nhập tên khách hàng"
                             />
                         </FormField>
 
-                        <FormField label='Địa chỉ Email' name='email' required>
+                        <FormField label="Địa chỉ Email" name="email" required>
                             <Input
-                                type='email'
-                                name='email'
+                                type="email"
+                                name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                placeholder='email@example.com'
+                                placeholder="email@example.com"
                             />
                         </FormField>
 
-                        <FormField label='Số điện thoại' name='phone' required>
+                        <FormField label="Số điện thoại" name="phone" required>
                             <Input
-                                type='tel'
-                                name='phone'
+                                type="tel"
+                                name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
-                                placeholder='0912 345 678'
+                                placeholder="0912 345 678"
                             />
                         </FormField>
 
-                        <FormField label='Ngôn ngữ' name='language'>
+                        <FormField label="Ngôn ngữ" name="language">
                             <select
-                                name='language'
+                                name="language"
                                 value={formData.language}
                                 onChange={handleChange}
-                                className='w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300'
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300"
                             >
-                                <option value='en'>English</option>
-                                <option value='vi'>Tiếng Việt</option>
-                                <option value='es'>Español</option>
+                                <option value="en">English</option>
+                                <option value="vi">Tiếng Việt</option>
+                                <option value="es">Español</option>
                             </select>
                         </FormField>
                     </div>
 
                     {/* Footer */}
-                    <div className='flex-shrink-0 p-6 border-t border-pink-100 rounded-b-3xl flex gap-3'>
+                    <div className="flex-shrink-0 p-6 border-t border-pink-100 rounded-b-3xl flex gap-3">
                         <button
                             onClick={onClose}
-                            className='flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors'
+                            className="flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors"
                         >
                             Hủy
                         </button>
                         <button
                             onClick={handleSubmit}
                             disabled={loading}
-                            className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50'
+                            className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50"
                         >
-                            {loading ? 'Đang xử lý...' : mode === 'create' ? 'Thêm khách hàng' : 'Cập nhật'}
+                            {loading
+                                ? 'Đang xử lý...'
+                                : mode === 'create'
+                                  ? 'Thêm khách hàng'
+                                  : 'Cập nhật'}
                         </button>
                     </div>
                 </div>

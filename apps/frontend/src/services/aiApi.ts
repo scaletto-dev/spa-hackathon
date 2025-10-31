@@ -145,7 +145,9 @@ export async function analyzeSkin(request: SkinAnalysisRequest): Promise<SkinAna
 /**
  * Analyze review sentiment
  */
-export async function analyzeSentiment(request: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
+export async function analyzeSentiment(
+    request: SentimentAnalysisRequest
+): Promise<SentimentAnalysisResponse> {
     try {
         const response = await fetch(`${API_URL}/api/v1/ai/sentiment`, {
             method: 'POST',
@@ -273,7 +275,9 @@ export interface GenerateServiceDescriptionResponse {
 /**
  * Suggest optimal time slots using AI
  */
-export async function suggestTimeSlot(request: SuggestTimeSlotRequest): Promise<SuggestTimeSlotResponse> {
+export async function suggestTimeSlot(
+    request: SuggestTimeSlotRequest
+): Promise<SuggestTimeSlotResponse> {
     try {
         const response = await fetch(`${API_URL}/api/v1/ai/suggest-timeslot`, {
             method: 'POST',
@@ -299,7 +303,9 @@ export async function suggestTimeSlot(request: SuggestTimeSlotRequest): Promise<
 /**
  * Get sentiment analysis summary for reviews
  */
-export async function getSentimentSummary(period: 'week' | 'month' | 'year' = 'month'): Promise<SentimentSummary> {
+export async function getSentimentSummary(
+    period: 'week' | 'month' | 'year' = 'month'
+): Promise<SentimentSummary> {
     try {
         const response = await fetch(`${API_URL}/api/v1/ai/sentiment-summary?period=${period}`);
 
@@ -320,7 +326,7 @@ export async function getSentimentSummary(period: 'week' | 'month' | 'year' = 'm
  * Generate service description with AI
  */
 export async function generateServiceDescription(
-    request: GenerateServiceDescriptionRequest,
+    request: GenerateServiceDescriptionRequest
 ): Promise<GenerateServiceDescriptionResponse> {
     try {
         const response = await fetch(`${API_URL}/api/v1/ai/generate-service-description`, {

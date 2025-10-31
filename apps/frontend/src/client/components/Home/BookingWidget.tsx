@@ -65,7 +65,7 @@ export function BookingWidget() {
     };
 
     return (
-        <section className='relative w-full -mt-20 z-20 px-6'>
+        <section className="relative w-full -mt-20 z-20 px-6">
             <motion.div
                 initial={{
                     opacity: 0,
@@ -81,28 +81,30 @@ export function BookingWidget() {
                 transition={{
                     duration: 0.6,
                 }}
-                className='max-w-5xl mx-auto'
+                className="max-w-5xl mx-auto"
             >
-                <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8'>
-                    <div className='flex items-center justify-between mb-6'>
-                        <h2 className='text-2xl font-bold text-gray-800'>{t('home.bookingWidget.title')}</h2>
-                        <label className='flex items-center gap-2 cursor-pointer'>
+                <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-800">
+                            {t('home.bookingWidget.title')}
+                        </h2>
+                        <label className="flex items-center gap-2 cursor-pointer">
                             <input
-                                type='checkbox'
+                                type="checkbox"
                                 checked={aiAssist}
                                 onChange={(e) => setAiAssist(e.target.checked)}
-                                className='w-4 h-4 rounded accent-pink-500'
+                                className="w-4 h-4 rounded accent-pink-500"
                             />
-                            <span className='text-sm text-gray-600 flex items-center gap-1'>
-                                <SparklesIcon className='w-4 h-4 text-pink-500' />
+                            <span className="text-sm text-gray-600 flex items-center gap-1">
+                                <SparklesIcon className="w-4 h-4 text-pink-500" />
                                 {t('home.bookingWidget.aiAssist')}
                             </span>
                         </label>
                     </div>
-                    <div className='grid md:grid-cols-4 gap-4 mb-6'>
-                        <FormField label={t('home.bookingWidget.service')} name='service'>
+                    <div className="grid md:grid-cols-4 gap-4 mb-6">
+                        <FormField label={t('home.bookingWidget.service')} name="service">
                             <Select
-                                name='service'
+                                name="service"
                                 value={formData.service}
                                 onChange={handleSelectChange('service')}
                                 options={serviceOptions}
@@ -110,9 +112,9 @@ export function BookingWidget() {
                             />
                         </FormField>
 
-                        <FormField label={t('home.bookingWidget.branch')} name='branch'>
+                        <FormField label={t('home.bookingWidget.branch')} name="branch">
                             <Select
-                                name='branch'
+                                name="branch"
                                 value={formData.branch}
                                 onChange={handleSelectChange('branch')}
                                 options={branchOptions}
@@ -121,9 +123,9 @@ export function BookingWidget() {
                             />
                         </FormField>
 
-                        <FormField label={t('home.bookingWidget.date')} name='date'>
+                        <FormField label={t('home.bookingWidget.date')} name="date">
                             <DatePicker
-                                name='date'
+                                name="date"
                                 value={formData.date}
                                 onChange={handleDateChange}
                                 placeholder={t('home.bookingWidget.selectDate')}
@@ -131,9 +133,9 @@ export function BookingWidget() {
                             />
                         </FormField>
 
-                        <FormField label={t('home.bookingWidget.time')} name='time'>
+                        <FormField label={t('home.bookingWidget.time')} name="time">
                             <TimePicker
-                                name='time'
+                                name="time"
                                 value={formData.time}
                                 onChange={handleSelectChange('time')}
                                 placeholder={t('home.bookingWidget.selectTime')}
@@ -149,9 +151,11 @@ export function BookingWidget() {
                         whileTap={{
                             scale: 0.98,
                         }}
-                        className='w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-shadow'
+                        className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-shadow"
                     >
-                        {aiAssist ? t('home.bookingWidget.confirmWithAI') : t('home.bookingWidget.confirmBooking')}
+                        {aiAssist
+                            ? t('home.bookingWidget.confirmWithAI')
+                            : t('home.bookingWidget.confirmBooking')}
                     </motion.button>
                 </div>
             </motion.div>

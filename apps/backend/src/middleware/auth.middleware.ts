@@ -1,6 +1,6 @@
 /**
  * Authentication Middleware
- * 
+ *
  * Verifies JWT token and attaches user data to request
  */
 
@@ -29,14 +29,10 @@ declare global {
 /**
  * Authentication middleware
  * Verifies JWT token from Authorization header and attaches user to request
- * 
+ *
  * Usage: router.get('/protected', authenticate, controller)
  */
-export async function authenticate(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     // Extract token from Authorization header
     const authHeader = req.headers.authorization;
@@ -133,7 +129,7 @@ export async function authenticate(
 /**
  * Optional authentication middleware
  * Attaches user to request if token is valid, but doesn't fail if missing
- * 
+ *
  * Usage: router.get('/optional', optionalAuthenticate, controller)
  */
 export async function optionalAuthenticate(
@@ -198,7 +194,7 @@ export async function optionalAuthenticate(
 /**
  * Role-based authorization middleware
  * Requires authenticate middleware to be called first
- * 
+ *
  * Usage: router.get('/admin', authenticate, requireRole('ADMIN'), controller)
  */
 export function requireRole(...allowedRoles: string[]) {
@@ -235,7 +231,7 @@ export function requireRole(...allowedRoles: string[]) {
  * Admin authorization middleware
  * Checks if user has ADMIN or SUPER_ADMIN role
  * Must be used AFTER authenticate middleware
- * 
+ *
  * Usage: router.get('/admin', authenticate, requireAdmin, controller)
  */
 export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
@@ -249,7 +245,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
   }
 
   const adminRoles = ['ADMIN', 'SUPER_ADMIN'];
-  
+
   if (!adminRoles.includes(req.user.role)) {
     logger.warn('Admin access denied', {
       userId: req.user.id,
@@ -274,4 +270,3 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
 
   next();
 }
-

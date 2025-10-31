@@ -1,6 +1,6 @@
 /**
  * I18n Formatting Utilities
- * 
+ *
  * Provides locale-aware formatting for dates, numbers, and currency
  * using the Intl API based on the current i18n language.
  */
@@ -15,7 +15,7 @@ export function formatDate(
 ): string {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     const localeCode = locale === 'vi' ? 'vi-VN' : 'en-US';
-    
+
     return new Intl.DateTimeFormat(localeCode, options).format(dateObj);
 }
 
@@ -28,19 +28,16 @@ export function formatNumber(
     options?: Intl.NumberFormatOptions
 ): string {
     const localeCode = locale === 'vi' ? 'vi-VN' : 'en-US';
-    
+
     return new Intl.NumberFormat(localeCode, options).format(value);
 }
 
 /**
  * Format currency (VND) according to the current locale
  */
-export function formatCurrency(
-    amount: number,
-    locale: string
-): string {
+export function formatCurrency(amount: number, locale: string): string {
     const localeCode = locale === 'vi' ? 'vi-VN' : 'en-US';
-    
+
     return new Intl.NumberFormat(localeCode, {
         style: 'currency',
         currency: 'VND',
@@ -58,7 +55,7 @@ export function formatPercent(
     options?: Intl.NumberFormatOptions
 ): string {
     const localeCode = locale === 'vi' ? 'vi-VN' : 'en-US';
-    
+
     return new Intl.NumberFormat(localeCode, {
         style: 'percent',
         minimumFractionDigits: 0,

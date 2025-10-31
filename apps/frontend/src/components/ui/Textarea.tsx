@@ -21,7 +21,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             'data-testid': dataTestId,
             ...props
         },
-        ref,
+        ref
     ) => {
         const [charCount, setCharCount] = useState(0);
         const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -84,7 +84,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     `;
 
         return (
-            <div className='relative'>
+            <div className="relative">
                 <textarea
                     ref={setRefs}
                     className={baseClasses}
@@ -100,13 +100,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                 />
 
                 {showCounter && maxLength && (
-                    <div className='absolute bottom-2 right-3 text-xs text-gray-500 pointer-events-none'>
+                    <div className="absolute bottom-2 right-3 text-xs text-gray-500 pointer-events-none">
                         {charCount}/{maxLength}
                     </div>
                 )}
             </div>
         );
-    },
+    }
 );
 
 Textarea.displayName = 'Textarea';

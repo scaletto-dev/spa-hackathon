@@ -13,7 +13,7 @@ import logger from './config/logger';
 import socketService from './services/socket.service';
 
 // Load environment variables from root .env file
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 // Create Express app
 const app = express();
@@ -43,8 +43,8 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 // 3. Body parsers with increased limit for large payloads (blog posts, images, etc.)
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // 4. Request logging
 app.use(requestLogger);
@@ -63,11 +63,11 @@ socketService.initialize(httpServer);
 
 // Start server
 httpServer.listen(PORT, () => {
-    logger.info(`🚀 Backend server running on http://localhost:${PORT}`);
-    logger.info(`� Socket.IO server ready on ws://localhost:${PORT}`);
-    logger.info(`�📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-    logger.info(`🔗 Health check: http://localhost:${PORT}/api/health`);
-    logger.info(`💬 Support Chat API: http://localhost:${PORT}/api/v1/support`);
+  logger.info(`🚀 Backend server running on http://localhost:${PORT}`);
+  logger.info(`� Socket.IO server ready on ws://localhost:${PORT}`);
+  logger.info(`�📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`🔗 Health check: http://localhost:${PORT}/api/health`);
+  logger.info(`💬 Support Chat API: http://localhost:${PORT}/api/v1/support`);
 });
 
 // Export app and server for testing

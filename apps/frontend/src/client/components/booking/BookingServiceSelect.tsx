@@ -7,7 +7,11 @@ import { getFeaturedServices } from '../../../services/servicesApi';
 import { formatPrice } from '../../../utils/format';
 import type { Service } from '../../../types/service';
 
-export function BookingServiceSelect({ bookingData, updateBookingData, onNext }: Omit<BookingStepProps, 'onPrev'>) {
+export function BookingServiceSelect({
+    bookingData,
+    updateBookingData,
+    onNext,
+}: Omit<BookingStepProps, 'onPrev'>) {
     const { t } = useTranslation('common');
     const [services, setServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(true);
@@ -33,14 +37,14 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
 
     const handleToggleService = (serviceId: string) => {
         const newIds = selectedServiceIds.includes(serviceId)
-            ? selectedServiceIds.filter(id => id !== serviceId)
+            ? selectedServiceIds.filter((id) => id !== serviceId)
             : [...selectedServiceIds, serviceId];
-        
+
         // Get all selected services details
         const selectedServicesList = newIds
-            .map(id => services.find(s => s.id === id))
+            .map((id) => services.find((s) => s.id === id))
             .filter((s): s is Service => s !== undefined)
-            .map(selectedService => ({
+            .map((selectedService) => ({
                 id: selectedService.id,
                 name: selectedService.name,
                 categoryName: selectedService.categoryName || 'Service',
@@ -51,7 +55,7 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
             }));
 
         // Update with all selected services
-        const updateData: any = { 
+        const updateData: any = {
             serviceIds: newIds,
             selectedServices: selectedServicesList,
         };
@@ -78,28 +82,33 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
                 duration: 0.5,
             }}
         >
-            <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.selectService')}</h2>
-                <p className='text-gray-600 mb-2'>{t('bookings.selectServiceDesc')}</p>
+            <div className="mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    {t('bookings.selectService')}
+                </h2>
+                <p className="text-gray-600 mb-2">{t('bookings.selectServiceDesc')}</p>
                 {selectedServiceIds.length > 0 && (
-                    <p className='text-pink-600 font-medium'>
-                        {selectedServiceIds.length} service{selectedServiceIds.length !== 1 ? 's' : ''} selected
+                    <p className="text-pink-600 font-medium">
+                        {selectedServiceIds.length} service
+                        {selectedServiceIds.length !== 1 ? 's' : ''} selected
                     </p>
                 )}
             </div>
 
-            {loading && <div className='text-center py-12 text-gray-500'>Loading services...</div>}
-            {error && <div className='text-center py-12 text-red-500'>{error}</div>}
+            {loading && <div className="text-center py-12 text-gray-500">Loading services...</div>}
+            {error && <div className="text-center py-12 text-red-500">{error}</div>}
 
             {!loading && !error && (
                 <>
-                    <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         {services.map((service) => {
                             const isSelected = selectedServiceIds.includes(service.id);
-                            const imageUrl = service.images && service.images.length > 0 
-                                ? service.images[0] 
-                                : 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(service.name);
-                            
+                            const imageUrl =
+                                service.images && service.images.length > 0
+                                    ? service.images[0]
+                                    : 'https://via.placeholder.com/400x300?text=' +
+                                      encodeURIComponent(service.name);
+
                             return (
                                 <motion.div
                                     key={service.id}
@@ -113,33 +122,43 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
                                             : 'border-white/50 shadow-lg'
                                     } overflow-hidden transition-all`}
                                 >
-                                    <div className='relative h-44 overflow-hidden'>
-                                        <img src={imageUrl} alt={service.name} className='w-full h-full object-cover' />
-                                        <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
-                                        <div className='absolute bottom-4 left-4 right-4'>
-                                            <span className='px-3 py-1 bg-white/80 backdrop-blur-md rounded-full text-xs font-medium text-pink-600'>
+                                    <div className="relative h-44 overflow-hidden">
+                                        <img
+                                            src={imageUrl}
+                                            alt={service.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                        <div className="absolute bottom-4 left-4 right-4">
+                                            <span className="px-3 py-1 bg-white/80 backdrop-blur-md rounded-full text-xs font-medium text-pink-600">
                                                 {service.categoryName}
                                             </span>
-                                            <h3 className='text-xl font-bold text-white mt-2'>{service.name}</h3>
+                                            <h3 className="text-xl font-bold text-white mt-2">
+                                                {service.name}
+                                            </h3>
                                         </div>
                                         {isSelected && (
-                                            <div className='absolute top-4 right-4 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center'>
-                                                <SparklesIcon className='w-5 h-5 text-white' />
+                                            <div className="absolute top-4 right-4 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
+                                                <SparklesIcon className="w-5 h-5 text-white" />
                                             </div>
                                         )}
                                     </div>
-                                    <div className='p-5'>
-                                        <div className='flex justify-between text-sm text-gray-700 mb-3'>
+                                    <div className="p-5">
+                                        <div className="flex justify-between text-sm text-gray-700 mb-3">
                                             <span>{service.duration}</span>
-                                            <span className='font-semibold'>{formatPrice(service.price)}</span>
+                                            <span className="font-semibold">
+                                                {formatPrice(service.price)}
+                                            </span>
                                         </div>
-                                        <p className='text-gray-600 text-sm line-clamp-2'>{service.excerpt}</p>
+                                        <p className="text-gray-600 text-sm line-clamp-2">
+                                            {service.excerpt}
+                                        </p>
                                     </div>
                                 </motion.div>
                             );
                         })}
                     </div>
-                    <div className='flex justify-end mt-12'>
+                    <div className="flex justify-end mt-12">
                         <motion.button
                             whileHover={{
                                 scale: 1.05,
@@ -156,7 +175,7 @@ export function BookingServiceSelect({ bookingData, updateBookingData, onNext }:
                             }`}
                         >
                             {t('common.continue')}
-                            <ArrowRightIcon className='w-5 h-5' />
+                            <ArrowRightIcon className="w-5 h-5" />
                         </motion.button>
                     </div>
                 </>

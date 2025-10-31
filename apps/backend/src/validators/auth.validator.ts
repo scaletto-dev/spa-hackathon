@@ -15,10 +15,7 @@ const phoneRegex = /^[\d\s\-\+\(\)]*$/;
  * Schema for POST /auth/register
  */
 export const registerSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .regex(emailRegex, 'Invalid email format'),
+  email: z.string().min(1, 'Email is required').regex(emailRegex, 'Invalid email format'),
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')
@@ -27,7 +24,7 @@ export const registerSchema = z.object({
     .string()
     .min(2, 'Full name must be at least 2 characters')
     .max(100, 'Full name must not exceed 100 characters')
-    .transform(val => val.trim()),
+    .transform((val) => val.trim()),
   phone: z
     .string()
     .regex(phoneRegex, 'Invalid phone format')
@@ -46,11 +43,11 @@ export const verifyOtpSchema = z.object({
     .string()
     .min(1, 'Email is required')
     .regex(emailRegex, 'Invalid email format')
-    .transform(val => val.toLowerCase().trim()),
+    .transform((val) => val.toLowerCase().trim()),
   otp: z
     .string()
     .regex(/^\d{6}$/, 'OTP must be a 6-digit code')
-    .transform(val => val.trim()),
+    .transform((val) => val.trim()),
 });
 
 export type VerifyOtpRequest = z.infer<typeof verifyOtpSchema>;
@@ -63,10 +60,8 @@ export const loginSchema = z.object({
     .string()
     .min(1, 'Email is required')
     .regex(emailRegex, 'Invalid email format')
-    .transform(val => val.toLowerCase().trim()),
-  password: z
-    .string()
-    .min(1, 'Password is required'),
+    .transform((val) => val.toLowerCase().trim()),
+  password: z.string().min(1, 'Password is required'),
 });
 
 export type LoginRequest = z.infer<typeof loginSchema>;
@@ -74,21 +69,18 @@ export type LoginRequest = z.infer<typeof loginSchema>;
 /**
  * Schema for POST /auth/change-password
  */
-export const changePasswordSchema = z.object({
-  currentPassword: z
-    .string()
-    .min(1, 'Current password is required'),
-  newPassword: z
-    .string()
-    .min(8, 'New password must be at least 8 characters')
-    .max(100, 'New password must not exceed 100 characters'),
-}).refine(
-  data => data.currentPassword !== data.newPassword,
-  {
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: z
+      .string()
+      .min(8, 'New password must be at least 8 characters')
+      .max(100, 'New password must not exceed 100 characters'),
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
     message: 'New password must be different from current password',
     path: ['newPassword'],
-  }
-);
+  });
 
 export type ChangePasswordRequest = z.infer<typeof changePasswordSchema>;
 
@@ -100,7 +92,7 @@ export const forgotPasswordSchema = z.object({
     .string()
     .min(1, 'Email is required')
     .regex(emailRegex, 'Invalid email format')
-    .transform(val => val.toLowerCase().trim()),
+    .transform((val) => val.toLowerCase().trim()),
 });
 
 export type ForgotPasswordRequest = z.infer<typeof forgotPasswordSchema>;
@@ -109,9 +101,7 @@ export type ForgotPasswordRequest = z.infer<typeof forgotPasswordSchema>;
  * Schema for POST /auth/reset-password
  */
 export const resetPasswordSchema = z.object({
-  token: z
-    .string()
-    .min(1, 'Reset token is required'),
+  token: z.string().min(1, 'Reset token is required'),
   newPassword: z
     .string()
     .min(8, 'Password must be at least 8 characters')

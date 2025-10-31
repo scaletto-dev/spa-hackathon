@@ -1,6 +1,11 @@
 import { NotFoundError } from '@/utils/errors';
 import { serviceRepository } from '@/repositories/service.repository';
-import { ServiceDTO, ServiceWithCategoryDTO, ServicesResponse, FeaturedServiceDTO } from '@/types/service';
+import {
+  ServiceDTO,
+  ServiceWithCategoryDTO,
+  ServicesResponse,
+  FeaturedServiceDTO,
+} from '@/types/service';
 
 export class ServiceService {
   /**

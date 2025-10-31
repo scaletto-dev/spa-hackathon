@@ -1,6 +1,6 @@
 /**
  * Category Type Definitions
- * 
+ *
  * DTO types for service category API responses
  */
 

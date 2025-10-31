@@ -7,9 +7,9 @@ import { GlobalChatWidget } from '../components/GlobalChatWidget';
 export function ClientLayout() {
     return (
         <ChatWidgetProvider>
-            <div className='min-h-screen flex flex-col'>
+            <div className="min-h-screen flex flex-col">
                 <Navbar />
-                <main className='flex-1'>
+                <main className="flex-1">
                     <Outlet />
                 </main>
                 <Footer />

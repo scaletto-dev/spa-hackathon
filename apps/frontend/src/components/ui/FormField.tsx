@@ -33,70 +33,70 @@ export function FormField({
     return (
         <div className={`mb-5 md:mb-6 ${className}`} data-testid={dataTestId}>
             {label && (
-                <label htmlFor={name} className='block text-sm font-medium text-gray-700 mb-1'>
+                <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
                     {label}
-                    {required && <span className='text-pink-500 ml-1'>*</span>}
+                    {required && <span className="text-pink-500 ml-1">*</span>}
                 </label>
             )}
 
-            <div className='relative'>{children}</div>
+            <div className="relative">{children}</div>
 
-            <AnimatePresence mode='wait'>
+            <AnimatePresence mode="wait">
                 {error && (
                     <motion.div
-                        key='error'
+                        key="error"
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.15 }}
                         id={errorId}
-                        className='flex items-start gap-1.5 mt-1.5 text-sm text-red-600'
-                        role='alert'
-                        aria-live='polite'
+                        className="flex items-start gap-1.5 mt-1.5 text-sm text-red-600"
+                        role="alert"
+                        aria-live="polite"
                     >
-                        <AlertCircleIcon className='w-4 h-4 flex-shrink-0 mt-0.5' />
+                        <AlertCircleIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
                         <span>{error}</span>
                     </motion.div>
                 )}
 
                 {!error && success && (
                     <motion.div
-                        key='success'
+                        key="success"
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.15 }}
-                        className='flex items-start gap-1.5 mt-1.5 text-sm text-emerald-600'
-                        role='status'
-                        aria-live='polite'
+                        className="flex items-start gap-1.5 mt-1.5 text-sm text-emerald-600"
+                        role="status"
+                        aria-live="polite"
                     >
-                        <CheckCircleIcon className='w-4 h-4 flex-shrink-0 mt-0.5' />
+                        <CheckCircleIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
                         <span>{success}</span>
                     </motion.div>
                 )}
 
                 {!error && !success && info && (
                     <motion.div
-                        key='info'
+                        key="info"
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.15 }}
-                        className='flex items-start gap-1.5 mt-1.5 text-sm text-blue-600'
-                        role='status'
+                        className="flex items-start gap-1.5 mt-1.5 text-sm text-blue-600"
+                        role="status"
                     >
-                        <InfoIcon className='w-4 h-4 flex-shrink-0 mt-0.5' />
+                        <InfoIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
                         <span>{info}</span>
                     </motion.div>
                 )}
 
                 {!error && !success && !info && helpText && (
                     <motion.div
-                        key='help'
+                        key="help"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         id={helpId}
-                        className='mt-1.5 text-sm text-gray-500'
+                        className="mt-1.5 text-sm text-gray-500"
                     >
                         {helpText}
                     </motion.div>

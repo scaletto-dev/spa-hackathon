@@ -1,6 +1,6 @@
 /**
  * Member Routes
- * 
+ *
  * RESTful API endpoints for member management
  */
 
@@ -18,11 +18,11 @@ router.use(authenticate);
 /**
  * GET /api/v1/members/dashboard
  * Get member dashboard overview
- * 
+ *
  * Returns dashboard data including:
  * - stats (total bookings, upcoming, completed, member points)
  * - upcomingBookings (next 5 bookings)
- * 
+ *
  * Response:
  * {
  *   "success": true,
@@ -42,14 +42,14 @@ router.get('/dashboard', memberController.getDashboard);
 /**
  * GET /api/v1/members/bookings
  * Get member booking history with pagination and filters
- * 
+ *
  * Query params:
  * - page (optional, default: 1)
  * - limit (optional, default: 10, max: 100)
  * - status (optional, default: 'all') - Filter by booking status
  * - dateFrom (optional) - Filter bookings from this date (YYYY-MM-DD)
  * - dateTo (optional) - Filter bookings until this date (YYYY-MM-DD)
- * 
+ *
  * Response:
  * {
  *   "success": true,
@@ -67,7 +67,7 @@ router.get('/bookings', memberController.getBookings);
 /**
  * GET /api/v1/members/profile
  * Get member profile information
- * 
+ *
  * Response:
  * {
  *   "success": true,
@@ -88,7 +88,7 @@ router.get('/profile', memberController.getProfile);
 /**
  * PATCH /api/v1/members/profile
  * Update member profile
- * 
+ *
  * Request body (all optional):
  * {
  *   "fullName": "New Name",

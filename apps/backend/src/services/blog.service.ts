@@ -66,7 +66,12 @@ export class BlogService {
     categoryId?: string,
     search?: string
   ): Promise<BlogPostsListResponse> {
-    const result = await blogRepository.findAllPublishedWithPagination(page, limit, categoryId, search);
+    const result = await blogRepository.findAllPublishedWithPagination(
+      page,
+      limit,
+      categoryId,
+      search
+    );
 
     return {
       data: result.posts.map(toBlogPostWithDetailsDTO),

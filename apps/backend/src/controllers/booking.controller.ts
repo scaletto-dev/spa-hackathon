@@ -1,6 +1,6 @@
 /**
  * Booking Controller
- * 
+ *
  * Handles HTTP requests for booking endpoints.
  * Validates input, calls service layer, and formats responses.
  */
@@ -35,13 +35,23 @@ export class BookingController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { serviceIds, branchId, appointmentDate, appointmentTime, notes, language, guestName, guestEmail, guestPhone, paymentType, paymentAmount } = req.body;
+      const {
+        serviceIds,
+        branchId,
+        appointmentDate,
+        appointmentTime,
+        notes,
+        language,
+        guestName,
+        guestEmail,
+        guestPhone,
+        paymentType,
+        paymentAmount,
+      } = req.body;
 
       // Validate required fields
       if (!serviceIds || !Array.isArray(serviceIds) || serviceIds.length === 0) {
-        throw new ValidationError(
-          'Missing required field: serviceIds (must be a non-empty array)'
-        );
+        throw new ValidationError('Missing required field: serviceIds (must be a non-empty array)');
       }
       if (!branchId || !appointmentDate || !appointmentTime) {
         throw new ValidationError(
@@ -143,12 +153,7 @@ export class BookingController {
         throw new ValidationError('Limit must be between 1 and 100');
       }
 
-      const result = await bookingService.listUserBookings(
-        userId,
-        page,
-        limit,
-        status as any
-      );
+      const result = await bookingService.listUserBookings(userId, page, limit, status as any);
 
       const response: SuccessResponse<BookingResponse[]> = {
         success: true,
@@ -211,9 +216,7 @@ export class BookingController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const startDate = req.query.startDate
-        ? new Date(req.query.startDate)
-        : undefined;
+      const startDate = req.query.startDate ? new Date(req.query.startDate) : undefined;
       const endDate = req.query.endDate ? new Date(req.query.endDate) : undefined;
 
       // Validate dates
@@ -290,7 +293,8 @@ export class BookingController {
       });
 
       const totalPrice = servicesWithPrice.reduce((sum, service) => {
-        const priceValue = typeof service.price === 'number' ? service.price : service.price?.toNumber?.() || 0;
+        const priceValue =
+          typeof service.price === 'number' ? service.price : service.price?.toNumber?.() || 0;
         return sum + priceValue;
       }, 0);
 
@@ -303,7 +307,8 @@ export class BookingController {
       });
 
       // Send confirmation email
-      const appointmentDateStr = new Date(booking.appointmentDate as Date).toISOString().split('T')[0] || '0000-00-00';
+      const appointmentDateStr =
+        new Date(booking.appointmentDate as Date).toISOString().split('T')[0] || '0000-00-00';
       await emailService.sendBookingConfirmation(
         email,
         booking.guestName || 'Quý khách',

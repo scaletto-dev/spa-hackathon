@@ -94,59 +94,64 @@ export function LoginPage() {
     };
 
     return (
-        <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center px-6 py-12'>
+        <div className="w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center px-6 py-12">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className='w-full max-w-md'
+                className="w-full max-w-md"
             >
                 {/* Logo & Header */}
-                <div className='text-center mb-8'>
+                <div className="text-center mb-8">
                     <motion.div
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.5 }}
-                        className='inline-flex items-center gap-2 mb-4'
+                        className="inline-flex items-center gap-2 mb-4"
                     >
-                        <div className='w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center'>
-                            <SparklesIcon className='w-6 h-6 text-white' />
+                        <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                            <SparklesIcon className="w-6 h-6 text-white" />
                         </div>
-                        <h1 className='text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                             BeautyAI
                         </h1>
                     </motion.div>
-                    <p className='text-gray-600'>{t('auth.welcomeBack')}</p>
+                    <p className="text-gray-600">{t('auth.welcomeBack')}</p>
                 </div>
 
                 {/* Login Form Card */}
-                <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8'>
+                <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8">
                     {/* Google Sign-In Button Container */}
-                    <div id='google-signin-button' className='w-full mb-6'></div>
+                    <div id="google-signin-button" className="w-full mb-6"></div>
 
                     {/* Divider */}
-                    <div className='relative my-6'>
-                        <div className='absolute inset-0 flex items-center'>
-                            <div className='w-full border-t border-gray-200' />
+                    <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-200" />
                         </div>
-                        <div className='relative flex justify-center text-sm'>
-                            <span className='px-4 bg-white/70 text-gray-500'>{t('auth.orContinueEmail')}</span>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-4 bg-white/70 text-gray-500">
+                                {t('auth.orContinueEmail')}
+                            </span>
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className='space-y-5'>
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Email Field */}
                         <div>
-                            <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-2'>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                            >
                                 {t('auth.emailAddress')}
                             </label>
-                            <div className='relative'>
-                                <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                    <MailIcon className='w-5 h-5 text-gray-400' />
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <MailIcon className="w-5 h-5 text-gray-400" />
                                 </div>
                                 <input
-                                    id='email'
-                                    type='email'
+                                    id="email"
+                                    type="email"
                                     value={formData.email}
                                     onChange={(e) => {
                                         setFormData({ ...formData, email: e.target.value });
@@ -162,7 +167,11 @@ export function LoginPage() {
                                 />
                             </div>
                             {errors.email && (
-                                <p id='email-error' className='mt-1 text-sm text-red-600' role='alert'>
+                                <p
+                                    id="email-error"
+                                    className="mt-1 text-sm text-red-600"
+                                    role="alert"
+                                >
                                     {errors.email}
                                 </p>
                             )}
@@ -170,15 +179,18 @@ export function LoginPage() {
 
                         {/* Password Field */}
                         <div>
-                            <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-2'>
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                            >
                                 {t('auth.password')}
                             </label>
-                            <div className='relative'>
-                                <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                                    <LockIcon className='w-5 h-5 text-gray-400' />
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <LockIcon className="w-5 h-5 text-gray-400" />
                                 </div>
                                 <input
-                                    id='password'
+                                    id="password"
                                     type={showPassword ? 'text' : 'password'}
                                     value={formData.password}
                                     onChange={(e) => {
@@ -191,42 +203,52 @@ export function LoginPage() {
                                             : 'border-gray-200 focus:ring-pink-200'
                                     } focus:outline-none focus:ring-2 transition-colors`}
                                     placeholder={t('auth.enterYourPassword')}
-                                    aria-describedby={errors.password ? 'password-error' : undefined}
+                                    aria-describedby={
+                                        errors.password ? 'password-error' : undefined
+                                    }
                                 />
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className='absolute inset-y-0 right-0 pr-3 flex items-center hover:text-pink-600 transition-colors'
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-pink-600 transition-colors"
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                 >
                                     {showPassword ? (
-                                        <EyeOffIcon className='w-5 h-5 text-gray-400' />
+                                        <EyeOffIcon className="w-5 h-5 text-gray-400" />
                                     ) : (
-                                        <EyeIcon className='w-5 h-5 text-gray-400' />
+                                        <EyeIcon className="w-5 h-5 text-gray-400" />
                                     )}
                                 </button>
                             </div>
                             {errors.password && (
-                                <p id='password-error' className='mt-1 text-sm text-red-600' role='alert'>
+                                <p
+                                    id="password-error"
+                                    className="mt-1 text-sm text-red-600"
+                                    role="alert"
+                                >
                                     {errors.password}
                                 </p>
                             )}
                         </div>
 
                         {/* Remember Me & Forgot Password */}
-                        <div className='flex items-center justify-between'>
-                            <label className='flex items-center gap-2 cursor-pointer'>
+                        <div className="flex items-center justify-between">
+                            <label className="flex items-center gap-2 cursor-pointer">
                                 <input
-                                    type='checkbox'
+                                    type="checkbox"
                                     checked={formData.rememberMe}
-                                    onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
-                                    className='w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-200'
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, rememberMe: e.target.checked })
+                                    }
+                                    className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-200"
                                 />
-                                <span className='text-sm text-gray-600'>{t('auth.rememberMe')}</span>
+                                <span className="text-sm text-gray-600">
+                                    {t('auth.rememberMe')}
+                                </span>
                             </label>
                             <Link
-                                to='/forgot-password'
-                                className='text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors'
+                                to="/forgot-password"
+                                className="text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors"
                             >
                                 {t('auth.forgotPassword')}
                             </Link>
@@ -234,7 +256,7 @@ export function LoginPage() {
 
                         {/* Submit Button */}
                         <motion.button
-                            type='submit'
+                            type="submit"
                             disabled={isLoading}
                             whileHover={{ scale: isLoading ? 1 : 1.02 }}
                             whileTap={{ scale: isLoading ? 1 : 0.98 }}
@@ -245,8 +267,8 @@ export function LoginPage() {
                             }`}
                         >
                             {isLoading ? (
-                                <span className='flex items-center justify-center gap-2'>
-                                    <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                                <span className="flex items-center justify-center gap-2">
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     {t('auth.signingIn')}
                                 </span>
                             ) : (
@@ -256,12 +278,12 @@ export function LoginPage() {
                     </form>
 
                     {/* Sign Up Link */}
-                    <div className='mt-6 text-center'>
-                        <p className='text-sm text-gray-600'>
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-gray-600">
                             {t('auth.dontHaveAccount')}{' '}
                             <Link
-                                to='/register'
-                                className='text-pink-600 hover:text-pink-700 font-semibold transition-colors'
+                                to="/register"
+                                className="text-pink-600 hover:text-pink-700 font-semibold transition-colors"
                             >
                                 {t('auth.createAccount')}
                             </Link>
@@ -270,8 +292,11 @@ export function LoginPage() {
                 </div>
 
                 {/* Back to Home */}
-                <div className='mt-6 text-center'>
-                    <Link to='/' className='text-sm text-gray-500 hover:text-pink-600 transition-colors'>
+                <div className="mt-6 text-center">
+                    <Link
+                        to="/"
+                        className="text-sm text-gray-500 hover:text-pink-600 transition-colors"
+                    >
                         {t('common.backHome')}
                     </Link>
                 </div>

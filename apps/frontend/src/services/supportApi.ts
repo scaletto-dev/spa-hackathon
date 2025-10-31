@@ -45,7 +45,11 @@ export interface SendMessageRequest {
 /**
  * Get all conversations with optional filters
  */
-export async function getConversations(filters?: { status?: string; assignedStaffId?: string; search?: string }) {
+export async function getConversations(filters?: {
+    status?: string;
+    assignedStaffId?: string;
+    search?: string;
+}) {
     const response = await axios.get<{
         success: boolean;
         data: ConversationResponse[];
@@ -83,7 +87,7 @@ export async function createConversation(data: CreateConversationRequest) {
  */
 export async function updateConversation(
     conversationId: string,
-    data: { customerName?: string; customerEmail?: string },
+    data: { customerName?: string; customerEmail?: string }
 ) {
     const response = await axios.patch<{
         success: boolean;
@@ -184,7 +188,7 @@ export async function bulkDeleteConversations(conversationIds: string[]) {
  */
 export async function getAISuggestions(
     conversationId: string,
-    language?: string,
+    language?: string
 ): Promise<
     {
         id: string;

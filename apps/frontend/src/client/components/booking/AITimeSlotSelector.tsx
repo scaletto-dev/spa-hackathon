@@ -65,19 +65,24 @@ export const AITimeSlotSelector: React.FC<AITimeSlotSelectorProps> = ({
     };
 
     return (
-        <div className='space-y-4'>
+        <div className="space-y-4">
             {/* AI Toggle */}
-            <div className='flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200 dark:border-purple-700'>
+            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
                 <input
-                    type='checkbox'
-                    id='ai-time-slot'
+                    type="checkbox"
+                    id="ai-time-slot"
                     checked={isAIEnabled}
                     onChange={(e) => handleAIToggle(e.target.checked)}
-                    className='w-5 h-5 text-purple-600 bg-white border-purple-300 rounded focus:ring-purple-500 focus:ring-2'
+                    className="w-5 h-5 text-purple-600 bg-white border-purple-300 rounded focus:ring-purple-500 focus:ring-2"
                 />
-                <label htmlFor='ai-time-slot' className='flex items-center gap-2 cursor-pointer flex-1'>
-                    <Sparkles className='w-5 h-5 text-purple-600' />
-                    <span className='font-medium text-gray-900 dark:text-white'>Để AI chọn giờ tốt nhất cho bạn</span>
+                <label
+                    htmlFor="ai-time-slot"
+                    className="flex items-center gap-2 cursor-pointer flex-1"
+                >
+                    <Sparkles className="w-5 h-5 text-purple-600" />
+                    <span className="font-medium text-gray-900 dark:text-white">
+                        Để AI chọn giờ tốt nhất cho bạn
+                    </span>
                 </label>
             </div>
 
@@ -88,10 +93,12 @@ export const AITimeSlotSelector: React.FC<AITimeSlotSelectorProps> = ({
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className='flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700'
+                        className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
                     >
-                        <Loader className='w-5 h-5 text-purple-600 animate-spin' />
-                        <span className='text-gray-600 dark:text-gray-300'>AI đang phân tích khung giờ tối ưu...</span>
+                        <Loader className="w-5 h-5 text-purple-600 animate-spin" />
+                        <span className="text-gray-600 dark:text-gray-300">
+                            AI đang phân tích khung giờ tối ưu...
+                        </span>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -103,9 +110,9 @@ export const AITimeSlotSelector: React.FC<AITimeSlotSelectorProps> = ({
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className='p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700'
+                        className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700"
                     >
-                        <p className='text-sm text-red-600 dark:text-red-400'>{error}</p>
+                        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -117,10 +124,10 @@ export const AITimeSlotSelector: React.FC<AITimeSlotSelectorProps> = ({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className='space-y-3'
+                        className="space-y-3"
                     >
-                        <div className='flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400'>
-                            <TrendingUp className='w-4 h-4' />
+                        <div className="flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+                            <TrendingUp className="w-4 h-4" />
                             <span>Gợi ý từ AI (theo thứ tự ưu tiên)</span>
                         </div>
 
@@ -137,24 +144,26 @@ export const AITimeSlotSelector: React.FC<AITimeSlotSelectorProps> = ({
                                         : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 bg-white dark:bg-gray-800'
                                 }`}
                             >
-                                <div className='flex items-start justify-between gap-3'>
-                                    <div className='flex-1'>
-                                        <div className='flex items-center gap-2 mb-1'>
-                                            <Clock className='w-4 h-4 text-purple-600' />
-                                            <span className='font-semibold text-gray-900 dark:text-white'>
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Clock className="w-4 h-4 text-purple-600" />
+                                            <span className="font-semibold text-gray-900 dark:text-white">
                                                 {suggestion.time}
                                             </span>
                                             {index === 0 && (
-                                                <span className='px-2 py-0.5 text-xs font-medium text-purple-700 bg-purple-100 dark:bg-purple-900/50 dark:text-purple-300 rounded-full'>
+                                                <span className="px-2 py-0.5 text-xs font-medium text-purple-700 bg-purple-100 dark:bg-purple-900/50 dark:text-purple-300 rounded-full">
                                                     Tốt nhất
                                                 </span>
                                             )}
                                         </div>
-                                        <p className='text-sm text-gray-600 dark:text-gray-400'>{suggestion.reason}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            {suggestion.reason}
+                                        </p>
                                     </div>
-                                    <div className='flex items-center gap-1'>
-                                        <Sparkles className='w-4 h-4 text-yellow-500' />
-                                        <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                                    <div className="flex items-center gap-1">
+                                        <Sparkles className="w-4 h-4 text-yellow-500" />
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                             {Math.round(suggestion.score * 100)}%
                                         </span>
                                     </div>

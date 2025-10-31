@@ -1,9 +1,9 @@
 /**
  * Category Validation Schemas
- * 
+ *
  * Zod schemas for validating category API requests.
  * Each schema validates a specific endpoint's input (query params, body, params).
- * 
+ *
  * Usage in routes:
  *   router.get('/', validate(getCategoriesQuerySchema, 'query'), controller.action)
  */

@@ -22,7 +22,11 @@ const router = Router();
  *
  * Validation: Auto-validates query (no params needed)
  */
-router.get('/categories', validate(getBlogCategoriesQuerySchema, 'query'), blogController.getAllCategories.bind(blogController));
+router.get(
+  '/categories',
+  validate(getBlogCategoriesQuerySchema, 'query'),
+  blogController.getAllCategories.bind(blogController)
+);
 
 /**
  * GET /api/v1/blog/posts
@@ -31,7 +35,11 @@ router.get('/categories', validate(getBlogCategoriesQuerySchema, 'query'), blogC
  * Query params: page, limit, categoryId (optional), search (optional)
  * Validation: Auto-validates query params with pagination
  */
-router.get('/posts', validate(getBlogPostsQuerySchema, 'query'), blogController.getAllPosts.bind(blogController));
+router.get(
+  '/posts',
+  validate(getBlogPostsQuerySchema, 'query'),
+  blogController.getAllPosts.bind(blogController)
+);
 
 /**
  * GET /api/v1/blog/posts/:slug
@@ -43,6 +51,10 @@ router.get('/posts', validate(getBlogPostsQuerySchema, 'query'), blogController.
  * Validation: Auto-validates path param
  * Note: This must be last to avoid conflicts with other routes
  */
-router.get('/posts/:slug', validate(getBlogPostParamsSchema, 'params'), blogController.getPostBySlug.bind(blogController));
+router.get(
+  '/posts/:slug',
+  validate(getBlogPostParamsSchema, 'params'),
+  blogController.getPostBySlug.bind(blogController)
+);
 
 export default router;

@@ -32,7 +32,10 @@ router.get('/profile', userController.getProfile.bind(userController));
  * Body: { fullName?, phone?, language? }
  * Response: { success, data: UserProfileDTO, message, timestamp }
  */
-router.put('/profile', validate(updateProfileSchema), userController.updateProfile.bind(userController));
+router.put(
+  '/profile',
+  validate(updateProfileSchema),
+  userController.updateProfile.bind(userController)
+);
 
 export default router;
-

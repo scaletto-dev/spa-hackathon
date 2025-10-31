@@ -1,6 +1,6 @@
 /**
  * Member Controller
- * 
+ *
  * Handles HTTP requests for member endpoints.
  * Validates input, calls service layer, and formats responses.
  */
@@ -21,11 +21,7 @@ export class MemberController {
    * GET /api/v1/members/dashboard
    * Get member dashboard overview with stats and upcoming bookings
    */
-  async getDashboard(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getDashboard(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.user?.id) {
         throw new ValidationError('Authentication required');
@@ -49,7 +45,7 @@ export class MemberController {
   /**
    * GET /api/v1/members/bookings
    * Get member booking history with pagination and filters
-   * 
+   *
    * Query params:
    * - page (optional, default: 1)
    * - limit (optional, default: 10, max: 100)
@@ -99,11 +95,7 @@ export class MemberController {
    * GET /api/v1/members/profile
    * Get member profile information
    */
-  async getProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.user?.id) {
         throw new ValidationError('Authentication required');

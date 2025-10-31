@@ -41,9 +41,12 @@ const MOCK_SERVICES_DETAIL: Record<number, ServiceDetail> = {
         id: 1,
         name: 'AI Skin Analysis Facial',
         category: 'Facial',
-        description: 'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
-        longDescription: 'Our AI Skin Analysis Facial combines cutting-edge technology with expert skincare knowledge. Using advanced AI algorithms, we analyze over 1000 facial data points to create a truly personalized treatment plan.\n\nThe treatment begins with a comprehensive skin analysis using our state-of-the-art AI scanner. This technology evaluates skin texture, hydration levels, pigmentation, pore size, and signs of aging. Based on this analysis, our skincare experts customize a facial treatment specifically for your skin needs.\n\nThe facial includes deep cleansing, gentle exfoliation, extractions if needed, a customized mask, and a relaxing facial massage. We finish with serums and moisturizers selected specifically for your skin type.',
-        excerpt: 'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
+        description:
+            'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
+        longDescription:
+            'Our AI Skin Analysis Facial combines cutting-edge technology with expert skincare knowledge. Using advanced AI algorithms, we analyze over 1000 facial data points to create a truly personalized treatment plan.\n\nThe treatment begins with a comprehensive skin analysis using our state-of-the-art AI scanner. This technology evaluates skin texture, hydration levels, pigmentation, pore size, and signs of aging. Based on this analysis, our skincare experts customize a facial treatment specifically for your skin needs.\n\nThe facial includes deep cleansing, gentle exfoliation, extractions if needed, a customized mask, and a relaxing facial massage. We finish with serums and moisturizers selected specifically for your skin type.',
+        excerpt:
+            'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
         duration: '60 min',
         price: 150,
         image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&h=600&fit=crop',
@@ -89,8 +92,10 @@ const MOCK_SERVICES_DETAIL: Record<number, ServiceDetail> = {
         name: 'Hydrafacial Treatment',
         category: 'Facial',
         description: 'Deep cleansing, exfoliation, and hydration treatment',
-        longDescription: 'The Hydrafacial is a revolutionary skincare treatment that combines cleansing, exfoliation, extraction, hydration, and antioxidant protection all in one session.\n\nThis medical-grade facial uses patented vortex-fusion technology to deeply cleanse pores while simultaneously infusing hydrating serums. The treatment is completely non-invasive, painless, and requires no downtime.\n\nEach Hydrafacial includes three essential steps: Cleanse & Peel to uncover a new layer of skin, Extract & Hydrate to remove impurities while nourishing with intense moisturizers, and Fuse & Protect with antioxidants and peptides to maximize your glow.',
-        excerpt: 'Deep cleansing, exfoliation, and hydration treatment that leaves your skin glowing',
+        longDescription:
+            'The Hydrafacial is a revolutionary skincare treatment that combines cleansing, exfoliation, extraction, hydration, and antioxidant protection all in one session.\n\nThis medical-grade facial uses patented vortex-fusion technology to deeply cleanse pores while simultaneously infusing hydrating serums. The treatment is completely non-invasive, painless, and requires no downtime.\n\nEach Hydrafacial includes three essential steps: Cleanse & Peel to uncover a new layer of skin, Extract & Hydrate to remove impurities while nourishing with intense moisturizers, and Fuse & Protect with antioxidants and peptides to maximize your glow.',
+        excerpt:
+            'Deep cleansing, exfoliation, and hydration treatment that leaves your skin glowing',
         duration: '45 min',
         price: 180,
         image: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&h=600&fit=crop',
@@ -125,7 +130,8 @@ const MOCK_SERVICES_DETAIL: Record<number, ServiceDetail> = {
         name: 'Laser Hair Removal',
         category: 'Laser',
         description: 'Permanent hair reduction using state-of-the-art laser technology',
-        longDescription: 'Our advanced laser hair removal system uses cutting-edge technology to safely and effectively reduce unwanted hair. The laser targets hair follicles with precision, destroying them at the root while leaving surrounding skin undamaged.\n\nTreatment sessions are quick and relatively comfortable. Most clients describe the sensation as similar to a rubber band snap against the skin. Our skilled technicians adjust settings based on your skin type and hair color for optimal safety and results.\n\nMultiple sessions are required for best results, as the laser is most effective during the active growth phase of hair. Most clients see significant hair reduction after 6-8 sessions.',
+        longDescription:
+            'Our advanced laser hair removal system uses cutting-edge technology to safely and effectively reduce unwanted hair. The laser targets hair follicles with precision, destroying them at the root while leaving surrounding skin undamaged.\n\nTreatment sessions are quick and relatively comfortable. Most clients describe the sensation as similar to a rubber band snap against the skin. Our skilled technicians adjust settings based on your skin type and hair color for optimal safety and results.\n\nMultiple sessions are required for best results, as the laser is most effective during the active growth phase of hair. Most clients see significant hair reduction after 6-8 sessions.',
         excerpt: 'Permanent hair reduction using state-of-the-art laser technology for smooth skin',
         duration: '30-90 min',
         price: 120,

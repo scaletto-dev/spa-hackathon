@@ -44,9 +44,9 @@ export function LiveChatTab({ isActive, onSwitchToAI }: LiveChatTabProps) {
     const [conversationId, setConversationId] = useState<string | null>(() => {
         return localStorage.getItem(STORAGE_KEY_CONVERSATION);
     });
-    const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>(
-        'disconnected',
-    );
+    const [connectionStatus, setConnectionStatus] = useState<
+        'disconnected' | 'connecting' | 'connected'
+    >('disconnected');
     const isInitializedRef = useRef(false);
     const handlersSetupRef = useRef(false);
 
@@ -179,13 +179,16 @@ export function LiveChatTab({ isActive, onSwitchToAI }: LiveChatTabProps) {
                                         msg.type === 'agent' &&
                                         // Check timestamp within 1 second window
                                         msg.timestamp &&
-                                        Math.abs(msg.timestamp.getTime() - new Date(data.createdAt).getTime()) < 1000,
+                                        Math.abs(
+                                            msg.timestamp.getTime() -
+                                                new Date(data.createdAt).getTime()
+                                        ) < 1000
                                 );
 
                                 if (exists) {
                                     console.log(
                                         '🚫 Duplicate message detected, ignoring:',
-                                        data.content.substring(0, 30),
+                                        data.content.substring(0, 30)
                                     );
                                     return prev;
                                 }
@@ -211,7 +214,7 @@ export function LiveChatTab({ isActive, onSwitchToAI }: LiveChatTabProps) {
                                               id: 'agent-' + Date.now(),
                                               name: data.senderName!,
                                               status: 'online',
-                                          },
+                                          }
                                 );
                             }
                         }
@@ -322,32 +325,34 @@ export function LiveChatTab({ isActive, onSwitchToAI }: LiveChatTabProps) {
     if (!isActive) return null;
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className="flex flex-col h-full">
             {/* Connection status header */}
-            <div className='px-4 py-2 bg-blue-50 border-b border-blue-200'>
-                <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-2'>
+            <div className="px-4 py-2 bg-blue-50 border-b border-blue-200">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
                         {connectionStatus === 'connecting' ? (
-                            <LoaderIcon className='w-4 h-4 text-blue-600 animate-spin' />
+                            <LoaderIcon className="w-4 h-4 text-blue-600 animate-spin" />
                         ) : connectionStatus === 'connected' ? (
-                            <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse' />
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                         ) : (
-                            <div className='w-2 h-2 bg-red-500 rounded-full' />
+                            <div className="w-2 h-2 bg-red-500 rounded-full" />
                         )}
-                        <span className='text-xs font-medium text-gray-700'>
+                        <span className="text-xs font-medium text-gray-700">
                             {connectionStatus === 'connecting'
                                 ? t('chat.connecting')
                                 : connectionStatus === 'connected'
-                                ? agentInfo
-                                    ? t('chat.connectedWith', { name: agentInfo.name })
-                                    : t('chat.connected')
-                                : t('chat.disconnected')}
+                                  ? agentInfo
+                                      ? t('chat.connectedWith', { name: agentInfo.name })
+                                      : t('chat.connected')
+                                  : t('chat.disconnected')}
                         </span>
                     </div>
                     {agentInfo && (
-                        <div className='flex items-center gap-1'>
-                            <UserIcon className='w-3 h-3 text-blue-600' />
-                            <span className='text-xs text-blue-600 font-medium'>{agentInfo.name}</span>
+                        <div className="flex items-center gap-1">
+                            <UserIcon className="w-3 h-3 text-blue-600" />
+                            <span className="text-xs text-blue-600 font-medium">
+                                {agentInfo.name}
+                            </span>
                         </div>
                     )}
                 </div>
@@ -361,25 +366,25 @@ export function LiveChatTab({ isActive, onSwitchToAI }: LiveChatTabProps) {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className='flex items-center gap-2 px-4 pb-2'
+                    className="flex items-center gap-2 px-4 pb-2"
                 >
-                    <div className='w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center'>
-                        <UserIcon className='w-4 h-4 text-white' />
+                    <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
+                        <UserIcon className="w-4 h-4 text-white" />
                     </div>
-                    <div className='bg-white border border-gray-200 rounded-2xl px-3 py-2'>
-                        <div className='flex gap-1'>
+                    <div className="bg-white border border-gray-200 rounded-2xl px-3 py-2">
+                        <div className="flex gap-1">
                             <motion.div
-                                className='w-2 h-2 bg-gray-400 rounded-full'
+                                className="w-2 h-2 bg-gray-400 rounded-full"
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
                             />
                             <motion.div
-                                className='w-2 h-2 bg-gray-400 rounded-full'
+                                className="w-2 h-2 bg-gray-400 rounded-full"
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
                             />
                             <motion.div
-                                className='w-2 h-2 bg-gray-400 rounded-full'
+                                className="w-2 h-2 bg-gray-400 rounded-full"
                                 animate={{ scale: [1, 1.3, 1] }}
                                 transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
                             />
@@ -392,7 +397,11 @@ export function LiveChatTab({ isActive, onSwitchToAI }: LiveChatTabProps) {
             <ChatInput
                 onSend={handleSend}
                 onClear={handleEndChat}
-                placeholder={connectionStatus === 'connected' ? t('chat.placeholder') : t('chat.waitingForConnection')}
+                placeholder={
+                    connectionStatus === 'connected'
+                        ? t('chat.placeholder')
+                        : t('chat.waitingForConnection')
+                }
                 disabled={isConnecting || connectionStatus !== 'connected'}
             />
         </div>

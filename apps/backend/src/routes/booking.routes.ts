@@ -15,7 +15,7 @@ const router = Router();
  * POST /api/v1/bookings
  * Create a new booking (guest or member)
  * Supports multiple services per booking (package/combo services)
- * 
+ *
  * Request body:
  * - serviceIds (required) - Array of service UUIDs
  * - branchId (required)
@@ -23,15 +23,15 @@ const router = Router();
  * - appointmentTime (required) - HH:mm format
  * - notes (optional)
  * - language (optional) - Default: 'vi'
- * 
+ *
  * For guest bookings:
  * - guestName (required if not authenticated)
  * - guestEmail (required if not authenticated)
  * - guestPhone (required if not authenticated)
- * 
+ *
  * For member bookings:
  * - Authentication token required (userId extracted from JWT)
- * 
+ *
  * Example request:
  * {
  *   "serviceIds": ["service-uuid-1", "service-uuid-2"],
@@ -48,11 +48,11 @@ router.post('/', optionalAuthenticate, bookingController.createBooking);
 /**
  * GET /api/v1/bookings/stats
  * Get booking statistics (admin only)
- * 
+ *
  * Query params:
  * - startDate (optional) - ISO 8601 format
  * - endDate (optional) - ISO 8601 format
- * 
+ *
  * Note: This route requires admin authentication
  * TODO: Add admin authorization middleware
  */
@@ -62,7 +62,7 @@ router.get('/stats', bookingController.getBookingStats);
  * GET /api/v1/bookings
  * List user's bookings (member only)
  * Requires authentication
- * 
+ *
  * Query params:
  * - page (optional) - Default: 1
  * - limit (optional) - Default: 10, Max: 100
@@ -73,7 +73,7 @@ router.get('/', authenticate, bookingController.listUserBookings);
 /**
  * GET /api/v1/bookings/:referenceNumber
  * Get booking details by reference number
- * 
+ *
  * Anyone can view booking details using reference number (public access)
  * Members with authentication can only view their own bookings if they pass userId check
  */
@@ -83,15 +83,18 @@ router.get('/:referenceNumber', bookingController.getBookingByReference);
  * POST /api/v1/bookings/:bookingId/send-confirmation
  * Send booking confirmation email
  */
-router.post('/:bookingId/send-confirmation', bookingController.sendConfirmationEmail.bind(bookingController));
+router.post(
+  '/:bookingId/send-confirmation',
+  bookingController.sendConfirmationEmail.bind(bookingController)
+);
 
 /**
  * PATCH /api/v1/bookings/:id/cancel
  * Cancel a booking
- * 
+ *
  * Request body:
  * - cancellationReason (required)
- * 
+ *
  * Rules:
  * - Can only cancel confirmed or pending bookings
  * - Cannot cancel past appointments

@@ -38,28 +38,28 @@ import { configureAdminRoutes } from './admin';
  * @param app - Express application instance
  */
 export function configureRoutes(app: Express): void {
-    // Health check (no /v1 prefix)
-    app.use('/api/health', healthRoutes);
+  // Health check (no /v1 prefix)
+  app.use('/api/health', healthRoutes);
 
-    // API v1 routes
-    app.use('/api/v1/services', servicesRoutes);
-    app.use('/api/v1/categories', categoriesRoutes);
-    app.use('/api/v1/branches', branchesRoutes);
-    app.use('/api/v1/reviews', reviewsRoutes);
-    app.use('/api/v1/contact', contactRoutes);
-    app.use('/api/v1/upload', uploadRoutes);
-    app.use('/api/v1/auth', authRoutes);
-    app.use('/api/v1/user', userRoutes);
-    app.use('/api/v1/members', memberRoutes);
-    app.use('/api/v1/blog', blogRoutes);
-    app.use('/api/v1/vouchers', vouchersRoutes);
-    app.use('/api/v1/ai', aiRoutes);
-    app.use('/api/v1/support', supportRoutes);
-    app.use('/api/v1/bookings', bookingRoutes);
-    app.use('/api/v1/payments', paymentRoutes);
+  // API v1 routes
+  app.use('/api/v1/services', servicesRoutes);
+  app.use('/api/v1/categories', categoriesRoutes);
+  app.use('/api/v1/branches', branchesRoutes);
+  app.use('/api/v1/reviews', reviewsRoutes);
+  app.use('/api/v1/contact', contactRoutes);
+  app.use('/api/v1/upload', uploadRoutes);
+  app.use('/api/v1/auth', authRoutes);
+  app.use('/api/v1/user', userRoutes);
+  app.use('/api/v1/members', memberRoutes);
+  app.use('/api/v1/blog', blogRoutes);
+  app.use('/api/v1/vouchers', vouchersRoutes);
+  app.use('/api/v1/ai', aiRoutes);
+  app.use('/api/v1/support', supportRoutes);
+  app.use('/api/v1/bookings', bookingRoutes);
+  app.use('/api/v1/payments', paymentRoutes);
 
-    // Admin routes
-    const adminRouter = Router();
-    configureAdminRoutes(adminRouter);
-    app.use('/api/v1/admin', adminRouter);
+  // Admin routes
+  const adminRouter = Router();
+  configureAdminRoutes(adminRouter);
+  app.use('/api/v1/admin', adminRouter);
 }

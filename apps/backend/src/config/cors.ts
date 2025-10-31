@@ -2,9 +2,9 @@ import { CorsOptions } from 'cors';
 
 /**
  * CORS Configuration
- * 
+ *
  * Allows cross-origin requests from the frontend application.
- * 
+ *
  * Configuration:
  * - origin: Frontend URL from environment variable (default: http://localhost:5173)
  * - credentials: true (allows cookies and Authorization headers)

@@ -93,7 +93,7 @@ class SupportWebSocketService {
 
         this.conversationId = conversationId;
         this.socket.emit('conversation:join', { conversationId });
-        console.log('í³¥ Joined conversation:', conversationId);
+        console.log('ï¿½ï¿½ï¿½ Joined conversation:', conversationId);
     }
 
     /**
@@ -104,13 +104,18 @@ class SupportWebSocketService {
 
         this.socket.emit('conversation:leave', { conversationId });
         this.conversationId = null;
-        console.log('í³¤ Left conversation:', conversationId);
+        console.log('ï¿½ï¿½ï¿½ Left conversation:', conversationId);
     }
 
     /**
      * Send a message
      */
-    sendMessage(conversationId: string, content: string, sender: 'customer' | 'staff' | 'ai', senderName?: string) {
+    sendMessage(
+        conversationId: string,
+        content: string,
+        sender: 'customer' | 'staff' | 'ai',
+        senderName?: string
+    ) {
         if (!this.socket?.connected) {
             throw new Error('Socket not connected');
         }
@@ -179,9 +184,12 @@ class SupportWebSocketService {
         });
 
         // Conversation assigned
-        this.socket.on('conversation:assigned', (data: { conversationId: string; staffId: string }) => {
-            this.emit('assigned', data);
-        });
+        this.socket.on(
+            'conversation:assigned',
+            (data: { conversationId: string; staffId: string }) => {
+                this.emit('assigned', data);
+            }
+        );
 
         // Conversation closed
         this.socket.on('conversation:closed', (data: { conversationId: string }) => {

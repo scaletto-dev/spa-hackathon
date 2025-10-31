@@ -63,15 +63,22 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
         >
-            <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.yourInformation')}</h2>
-                <p className='text-gray-600'>{t('bookings.provideContactInfo')}</p>
+            <div className="mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    {t('bookings.yourInformation')}
+                </h2>
+                <p className="text-gray-600">{t('bookings.provideContactInfo')}</p>
             </div>
-            <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 mb-8'>
-                <div className='grid md:grid-cols-2 gap-6 mb-6'>
-                    <FormField label={t('bookings.fullName')} name='name' error={errors.name} required>
+            <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-8 mb-8">
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    <FormField
+                        label={t('bookings.fullName')}
+                        name="name"
+                        error={errors.name}
+                        required
+                    >
                         <Input
-                            name='name'
+                            name="name"
                             value={formData.name}
                             onChange={handleChange}
                             leftIcon={UserIcon}
@@ -79,40 +86,50 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                         />
                     </FormField>
 
-                    <FormField label={t('bookings.emailAddress')} name='email' error={errors.email} required>
+                    <FormField
+                        label={t('bookings.emailAddress')}
+                        name="email"
+                        error={errors.email}
+                        required
+                    >
                         <Input
-                            type='email'
-                            name='email'
+                            type="email"
+                            name="email"
                             value={formData.email}
                             onChange={handleChange}
                             leftIcon={MailIcon}
-                            placeholder='email@example.com'
+                            placeholder="email@example.com"
                             disabled={bookingData.isLoggedIn}
                             readOnly={bookingData.isLoggedIn}
                         />
                     </FormField>
 
-                    <div className='md:col-span-2'>
-                        <FormField label={t('bookings.phoneNumber')} name='phone' error={errors.phone} required>
+                    <div className="md:col-span-2">
+                        <FormField
+                            label={t('bookings.phoneNumber')}
+                            name="phone"
+                            error={errors.phone}
+                            required
+                        >
                             <Input
-                                type='phone'
-                                name='phone'
+                                type="phone"
+                                name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
                                 leftIcon={PhoneIcon}
-                                placeholder='0912 345 678'
+                                placeholder="0912 345 678"
                             />
                         </FormField>
                     </div>
 
-                    <div className='md:col-span-2'>
+                    <div className="md:col-span-2">
                         <FormField
                             label={t('bookings.specialNotes')}
-                            name='notes'
+                            name="notes"
                             helpText={t('bookings.specialNotesHelp')}
                         >
                             <Textarea
-                                name='notes'
+                                name="notes"
                                 value={formData.notes}
                                 onChange={handleChange}
                                 placeholder={t('bookings.specialNotesPlaceholder')}
@@ -122,21 +139,23 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                         </FormField>
                     </div>
                 </div>
-                <div className='bg-pink-50 rounded-2xl p-6 border border-pink-200'>
-                    <h3 className='text-lg font-semibold text-gray-800 mb-2'>{t('bookings.appointmentSummary')}</h3>
-                    <div className='space-y-2 text-gray-700'>
+                <div className="bg-pink-50 rounded-2xl p-6 border border-pink-200">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        {t('bookings.appointmentSummary')}
+                    </h3>
+                    <div className="space-y-2 text-gray-700">
                         <p>
-                            <span className='font-medium'>{t('bookings.service')}:</span>{' '}
+                            <span className="font-medium">{t('bookings.service')}:</span>{' '}
                             {bookingData.selectedServices && bookingData.selectedServices.length > 0
                                 ? bookingData.selectedServices.map((s: any) => s.name).join(' + ')
                                 : bookingData.service?.name || t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.branch')}:</span>{' '}
+                            <span className="font-medium">{t('bookings.branch')}:</span>{' '}
                             {bookingData.branch?.name || t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.date')}:</span>{' '}
+                            <span className="font-medium">{t('bookings.date')}:</span>{' '}
                             {bookingData.date
                                 ? new Date(bookingData.date).toLocaleDateString('vi-VN', {
                                       weekday: 'long',
@@ -147,15 +166,21 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                                 : t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.time')}:</span>{' '}
+                            <span className="font-medium">{t('bookings.time')}:</span>{' '}
                             {bookingData.time || t('bookings.notSelected')}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.price')}:</span>{' '}
+                            <span className="font-medium">{t('bookings.price')}:</span>{' '}
                             {(() => {
                                 let totalPrice = 0;
-                                if (bookingData.selectedServices && bookingData.selectedServices.length > 0) {
-                                    totalPrice = bookingData.selectedServices.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+                                if (
+                                    bookingData.selectedServices &&
+                                    bookingData.selectedServices.length > 0
+                                ) {
+                                    totalPrice = bookingData.selectedServices.reduce(
+                                        (sum: number, s: any) => sum + (s.price || 0),
+                                        0
+                                    );
                                 } else if (bookingData.service?.price) {
                                     totalPrice = bookingData.service.price;
                                 }
@@ -168,22 +193,24 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                             })()}
                         </p>
                         <p>
-                            <span className='font-medium'>{t('bookings.duration')}:</span>{' '}
+                            <span className="font-medium">{t('bookings.duration')}:</span>{' '}
                             {bookingData.selectedServices && bookingData.selectedServices.length > 0
-                                ? bookingData.selectedServices.map((s: any) => s.duration).join(', ')
+                                ? bookingData.selectedServices
+                                      .map((s: any) => s.duration)
+                                      .join(', ')
                                 : bookingData.service?.duration || t('bookings.notSelected')}
                         </p>
                     </div>
                 </div>
             </div>
-            <div className='flex justify-between mt-12'>
+            <div className="flex justify-between mt-12">
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={onPrev}
-                    className='flex items-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg'
+                    className="flex items-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg"
                 >
-                    <ArrowLeftIcon className='w-5 h-5' />
+                    <ArrowLeftIcon className="w-5 h-5" />
                     {t('common.back')}
                 </motion.button>
                 <motion.button
@@ -198,7 +225,7 @@ export function BookingUserInfo({ bookingData, updateBookingData, onNext, onPrev
                     }`}
                 >
                     {t('bookings.completeBooking')}
-                    <ArrowRightIcon className='w-5 h-5' />
+                    <ArrowRightIcon className="w-5 h-5" />
                 </motion.button>
             </div>
         </motion.div>

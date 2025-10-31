@@ -25,7 +25,8 @@ async function main() {
       data: {
         name: 'Facial Treatments',
         slug: 'facial-treatments',
-        description: 'Advanced facial treatments using AI-powered skin analysis and premium skincare products',
+        description:
+          'Advanced facial treatments using AI-powered skin analysis and premium skincare products',
         displayOrder: 1,
         icon: 'spa',
       },
@@ -70,13 +71,15 @@ async function main() {
       data: {
         name: 'AI Skin Analysis Facial',
         slug: 'ai-skin-analysis-facial',
-        description: 'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
+        description:
+          'Advanced AI technology analyzes your skin and creates a personalized treatment plan',
         longDescription: `Our AI Skin Analysis Facial combines cutting-edge technology with expert skincare knowledge. Using advanced AI algorithms, we analyze over 1000 facial data points to create a truly personalized treatment plan.
 
 The treatment begins with a comprehensive skin analysis using our state-of-the-art AI scanner. This technology evaluates skin texture, hydration levels, pigmentation, pore size, and signs of aging. Based on this analysis, our skincare experts customize a facial treatment specifically for your skin needs.
 
 The facial includes deep cleansing, gentle exfoliation, extractions if needed, a customized mask, and a relaxing facial massage. We finish with serums and moisturizers selected specifically for your skin type.`,
-        excerpt: 'Revolutionary AI-powered skin analysis with customized treatment based on your unique skin characteristics',
+        excerpt:
+          'Revolutionary AI-powered skin analysis with customized treatment based on your unique skin characteristics',
         duration: 90,
         price: 2500000, // 2.5M VND
         categoryId: categories[0].id, // Facial
@@ -100,9 +103,21 @@ The facial includes deep cleansing, gentle exfoliation, extractions if needed, a
           'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
         ],
         faqs: [
-          { question: 'How long does the treatment take?', answer: 'The full treatment takes 90 minutes including AI analysis, consultation, and facial treatment.' },
-          { question: 'Is it suitable for sensitive skin?', answer: 'Yes! The AI analysis allows us to customize the treatment for all skin types, including sensitive skin.' },
-          { question: 'How often should I get this treatment?', answer: 'We recommend monthly treatments for optimal results, with quarterly AI re-analysis to track progress.' },
+          {
+            question: 'How long does the treatment take?',
+            answer:
+              'The full treatment takes 90 minutes including AI analysis, consultation, and facial treatment.',
+          },
+          {
+            question: 'Is it suitable for sensitive skin?',
+            answer:
+              'Yes! The AI analysis allows us to customize the treatment for all skin types, including sensitive skin.',
+          },
+          {
+            question: 'How often should I get this treatment?',
+            answer:
+              'We recommend monthly treatments for optimal results, with quarterly AI re-analysis to track progress.',
+          },
         ],
       },
     }),
@@ -136,8 +151,15 @@ Each session is customized to your skin's needs, ensuring optimal results withou
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'How often should I get this treatment?', answer: 'Every 4-6 weeks for best results' },
-          { question: 'Is there any downtime?', answer: 'No downtime! You may have mild redness for 1-2 hours which is completely normal.' },
+          {
+            question: 'How often should I get this treatment?',
+            answer: 'Every 4-6 weeks for best results',
+          },
+          {
+            question: 'Is there any downtime?',
+            answer:
+              'No downtime! You may have mild redness for 1-2 hours which is completely normal.',
+          },
         ],
       },
     }),
@@ -171,8 +193,14 @@ Perfect for those with dry skin, or anyone looking for a moisture boost during h
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'How long do results last?', answer: 'Results typically last 2-3 weeks with proper at-home care.' },
-          { question: 'Can I wear makeup after?', answer: 'Yes! Your skin will be perfectly prepped for makeup application.' },
+          {
+            question: 'How long do results last?',
+            answer: 'Results typically last 2-3 weeks with proper at-home care.',
+          },
+          {
+            question: 'Can I wear makeup after?',
+            answer: 'Yes! Your skin will be perfectly prepped for makeup application.',
+          },
         ],
       },
     }),
@@ -208,9 +236,20 @@ Our experienced technicians ensure a comfortable treatment experience with minim
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'How many sessions are needed?', answer: '6-8 sessions spaced 4-6 weeks apart for best results' },
-          { question: 'Is it painful?', answer: 'Most clients describe it as a mild snapping sensation. We use cooling technology for comfort' },
-          { question: 'What should I do before treatment?', answer: 'Shave the area 24 hours before, avoid sun exposure for 4 weeks, and come with clean skin.' },
+          {
+            question: 'How many sessions are needed?',
+            answer: '6-8 sessions spaced 4-6 weeks apart for best results',
+          },
+          {
+            question: 'Is it painful?',
+            answer:
+              'Most clients describe it as a mild snapping sensation. We use cooling technology for comfort',
+          },
+          {
+            question: 'What should I do before treatment?',
+            answer:
+              'Shave the area 24 hours before, avoid sun exposure for 4 weeks, and come with clean skin.',
+          },
         ],
       },
     }),
@@ -244,8 +283,16 @@ Our advanced laser system delivers precise energy to the skin, triggering natura
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'Is there downtime?', answer: 'Minimal downtime. You may experience redness for 2-3 days, which can be covered with makeup.' },
-          { question: 'When will I see results?', answer: 'Initial results within 1 week, with optimal results developing over 3-6 months as collagen rebuilds.' },
+          {
+            question: 'Is there downtime?',
+            answer:
+              'Minimal downtime. You may experience redness for 2-3 days, which can be covered with makeup.',
+          },
+          {
+            question: 'When will I see results?',
+            answer:
+              'Initial results within 1 week, with optimal results developing over 3-6 months as collagen rebuilds.',
+          },
         ],
       },
     }),
@@ -281,8 +328,15 @@ Perfect for stress relief, muscle recovery, or simply a moment of complete relax
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'What pressure levels are available?', answer: 'We offer light (relaxing), medium (therapeutic), and deep tissue pressure. Your therapist will customize based on your preference.' },
-          { question: 'Should I avoid eating before?', answer: 'Yes, we recommend not eating a heavy meal 1-2 hours before your massage.' },
+          {
+            question: 'What pressure levels are available?',
+            answer:
+              'We offer light (relaxing), medium (therapeutic), and deep tissue pressure. Your therapist will customize based on your preference.',
+          },
+          {
+            question: 'Should I avoid eating before?',
+            answer: 'Yes, we recommend not eating a heavy meal 1-2 hours before your massage.',
+          },
         ],
       },
     }),
@@ -316,8 +370,15 @@ Choose from various wrap options: detoxifying seaweed, hydrating coconut, or ant
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'How often should I get this treatment?', answer: 'Once a month is ideal for maintaining smooth, healthy skin.' },
-          { question: 'Can I shower after?', answer: 'We recommend waiting 4-6 hours to allow the products to fully absorb into your skin.' },
+          {
+            question: 'How often should I get this treatment?',
+            answer: 'Once a month is ideal for maintaining smooth, healthy skin.',
+          },
+          {
+            question: 'Can I shower after?',
+            answer:
+              'We recommend waiting 4-6 hours to allow the products to fully absorb into your skin.',
+          },
         ],
       },
     }),
@@ -353,9 +414,21 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         active: true,
         beforeAfterPhotos: [],
         faqs: [
-          { question: 'When will I see results?', answer: 'You will see immediate glow. Optimal results develop over 4-6 weeks as collagen rebuilds' },
-          { question: 'How many treatments are recommended?', answer: 'For best results, we recommend a series of 3-6 treatments spaced 4 weeks apart.' },
-          { question: 'Is microneedling included?', answer: 'Microneedling is optional and can be added for enhanced collagen stimulation. Your aesthetician will recommend based on your skin assessment.' },
+          {
+            question: 'When will I see results?',
+            answer:
+              'You will see immediate glow. Optimal results develop over 4-6 weeks as collagen rebuilds',
+          },
+          {
+            question: 'How many treatments are recommended?',
+            answer:
+              'For best results, we recommend a series of 3-6 treatments spaced 4 weeks apart.',
+          },
+          {
+            question: 'Is microneedling included?',
+            answer:
+              'Microneedling is optional and can be added for enhanced collagen stimulation. Your aesthetician will recommend based on your skin assessment.',
+          },
         ],
       },
     }),
@@ -390,7 +463,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
           'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800',
         ],
         active: true,
-        description: 'Our flagship location in the heart of downtown featuring state-of-the-art facilities and premium treatments',
+        description:
+          'Our flagship location in the heart of downtown featuring state-of-the-art facilities and premium treatments',
       },
     }),
     prisma.branch.create({
@@ -413,7 +487,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         },
         images: ['https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=800'],
         active: true,
-        description: 'Convenient location with ample parking and easy access to public transportation',
+        description:
+          'Convenient location with ample parking and easy access to public transportation',
       },
     }),
     prisma.branch.create({
@@ -436,7 +511,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         },
         images: ['https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800'],
         active: true,
-        description: 'Modern facility serving the vibrant District 7 community with premium services',
+        description:
+          'Modern facility serving the vibrant District 7 community with premium services',
       },
     }),
   ]);
@@ -455,9 +531,11 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         email: 'sarah.nguyen@email.com',
         avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
         rating: 5,
-        reviewText: 'Amazing experience! The AI skin analysis was so detailed and the facial treatment was customized perfectly for my skin. My face feels so smooth and refreshed. Highly recommend!',
+        reviewText:
+          'Amazing experience! The AI skin analysis was so detailed and the facial treatment was customized perfectly for my skin. My face feels so smooth and refreshed. Highly recommend!',
         approved: true,
-        adminResponse: 'Thank you so much for your wonderful feedback, Sarah! We are thrilled that you loved the AI analysis and your customized treatment. We look forward to seeing you again!',
+        adminResponse:
+          'Thank you so much for your wonderful feedback, Sarah! We are thrilled that you loved the AI analysis and your customized treatment. We look forward to seeing you again!',
       },
     }),
     prisma.review.create({
@@ -468,7 +546,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         email: 'michael.chen@email.com',
         avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop',
         rating: 5,
-        reviewText: 'The technology is impressive! The skin analysis showed me exactly what my skin needed. The aesthetician was professional and knowledgeable. Best facial I have ever had.',
+        reviewText:
+          'The technology is impressive! The skin analysis showed me exactly what my skin needed. The aesthetician was professional and knowledgeable. Best facial I have ever had.',
         approved: true,
         adminResponse: null,
       },
@@ -481,9 +560,11 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         email: 'emily.tran@email.com',
         avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop',
         rating: 5,
-        reviewText: 'I am on my 4th session and seeing great results! The staff is gentle and makes me feel comfortable. The laser barely hurts and they use cooling gel. Worth every penny!',
+        reviewText:
+          'I am on my 4th session and seeing great results! The staff is gentle and makes me feel comfortable. The laser barely hurts and they use cooling gel. Worth every penny!',
         approved: true,
-        adminResponse: 'We are so happy to hear about your progress, Emily! Keep up with your sessions for the best results. Thank you for choosing us!',
+        adminResponse:
+          'We are so happy to hear about your progress, Emily! Keep up with your sessions for the best results. Thank you for choosing us!',
       },
     }),
     prisma.review.create({
@@ -494,7 +575,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         email: 'david.le@email.com',
         avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
         rating: 4,
-        reviewText: 'Good results after 2 sessions. My skin texture has improved and fine lines are less visible. Some redness after treatment but it goes away quickly.',
+        reviewText:
+          'Good results after 2 sessions. My skin texture has improved and fine lines are less visible. Some redness after treatment but it goes away quickly.',
         approved: true,
         adminResponse: null,
       },
@@ -507,7 +589,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         email: 'jessica.park@email.com',
         avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop',
         rating: 5,
-        reviewText: 'Perfect for my dry skin! My face feels so hydrated and plump now. The facial massage was so relaxing. I will definitely come back monthly.',
+        reviewText:
+          'Perfect for my dry skin! My face feels so hydrated and plump now. The facial massage was so relaxing. I will definitely come back monthly.',
         approved: true,
         adminResponse: null,
       },
@@ -520,9 +603,11 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         email: 'thomas.kim@email.com',
         avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop',
         rating: 5,
-        reviewText: 'Best massage in the city! The therapist really knew how to work out my muscle knots. The ambiance is peaceful and the aromatherapy oils smelled wonderful. So relaxing!',
+        reviewText:
+          'Best massage in the city! The therapist really knew how to work out my muscle knots. The ambiance is peaceful and the aromatherapy oils smelled wonderful. So relaxing!',
         approved: true,
-        adminResponse: 'Thank you for the kind words, Thomas! We are glad we could help you relax and relieve your muscle tension!',
+        adminResponse:
+          'Thank you for the kind words, Thomas! We are glad we could help you relax and relieve your muscle tension!',
       },
     }),
     prisma.review.create({
@@ -532,7 +617,8 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         customerName: 'Linda Hoang',
         email: 'linda.hoang@email.com',
         rating: 5,
-        reviewText: 'Incredible anti-aging results! My skin looks firmer and more youthful. The collagen treatment with LED light therapy is worth every dong. I look 5 years younger!',
+        reviewText:
+          'Incredible anti-aging results! My skin looks firmer and more youthful. The collagen treatment with LED light therapy is worth every dong. I look 5 years younger!',
         approved: true,
         adminResponse: null,
       },
@@ -544,9 +630,11 @@ Our multi-layered approach targets aging at the cellular level for comprehensive
         customerName: 'Alex Pham',
         email: 'alex.pham@email.com',
         rating: 4,
-        reviewText: 'Great deep cleaning treatment. The extraction process was thorough but a bit uncomfortable. My skin is much clearer now though. Good value for money.',
+        reviewText:
+          'Great deep cleaning treatment. The extraction process was thorough but a bit uncomfortable. My skin is much clearer now though. Good value for money.',
         approved: true,
-        adminResponse: 'Thank you for your honest feedback, Alex! We are glad your skin is clearer. Our team always tries to make extractions as comfortable as possible!',
+        adminResponse:
+          'Thank you for your honest feedback, Alex! We are glad your skin is clearer. Our team always tries to make extractions as comfortable as possible!',
       },
     }),
   ]);
@@ -645,7 +733,8 @@ Stress shows on your skin. Practice meditation, yoga, or other relaxation techni
 Results take time. Stick to your routine for at least 8-12 weeks to see significant improvements.
 
 Ready to elevate your skincare game? Book a consultation with our expert team today!`,
-        excerpt: 'Discover the top 10 skincare tips from our expert aestheticians to achieve healthy, radiant skin naturally',
+        excerpt:
+          'Discover the top 10 skincare tips from our expert aestheticians to achieve healthy, radiant skin naturally',
         featuredImage: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1200',
         categoryId: blogCategories[0].id, // Skincare Tips
         authorId: adminUser.id,
@@ -704,7 +793,8 @@ Our AI Skin Analysis Facial combines this revolutionary technology with expert s
 - Progress tracking over time
 
 Book your AI Skin Analysis Facial today and discover the future of personalized skincare!`,
-        excerpt: 'Explore how AI-powered skin analysis is revolutionizing personalized skincare treatments with precise diagnosis and custom solutions',
+        excerpt:
+          'Explore how AI-powered skin analysis is revolutionizing personalized skincare treatments with precise diagnosis and custom solutions',
         featuredImage: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=1200',
         categoryId: blogCategories[2].id, // Beauty Trends
         authorId: adminUser.id,
@@ -777,7 +867,8 @@ Our state-of-the-art laser technology is:
 - Performed by certified professionals
 
 Ready to say goodbye to razors and waxing? Book your consultation today!`,
-        excerpt: 'Everything you need to know about laser hair removal treatment, from preparation to results and aftercare',
+        excerpt:
+          'Everything you need to know about laser hair removal treatment, from preparation to results and aftercare',
         featuredImage: 'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=1200',
         categoryId: blogCategories[1].id, // Treatment Guides
         authorId: adminUser.id,
@@ -874,7 +965,8 @@ Our Collagen Boost Treatment is designed to:
 4. Complement your at-home skincare routine
 
 Invest in your skin's future. Book your Collagen Boost Treatment consultation today!`,
-        excerpt: 'Discover the science behind collagen and how to boost your natural collagen production for youthful, firm skin',
+        excerpt:
+          'Discover the science behind collagen and how to boost your natural collagen production for youthful, firm skin',
         featuredImage: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=1200',
         categoryId: blogCategories[1].id, // Treatment Guides
         authorId: adminUser.id,
@@ -1000,7 +1092,8 @@ We recommend:
 Self-care Sundays are just the beginning. Combine at-home rituals with professional treatments at Beauty Clinic for optimal results.
 
 Book your next appointment and give your skin the professional care it deserves!`,
-        excerpt: 'Create your perfect self-care Sunday routine with these at-home spa ideas for complete relaxation and rejuvenation',
+        excerpt:
+          'Create your perfect self-care Sunday routine with these at-home spa ideas for complete relaxation and rejuvenation',
         featuredImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1200',
         categoryId: blogCategories[3].id, // Wellness & Lifestyle
         authorId: adminUser.id,

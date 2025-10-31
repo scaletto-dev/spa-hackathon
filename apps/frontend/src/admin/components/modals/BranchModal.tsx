@@ -12,7 +12,13 @@ interface BranchModalProps {
     mode?: 'create' | 'edit';
 }
 
-export function BranchModal({ isOpen, onClose, onSuccess, branch, mode = 'create' }: BranchModalProps) {
+export function BranchModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    branch,
+    mode = 'create',
+}: BranchModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -49,7 +55,9 @@ export function BranchModal({ isOpen, onClose, onSuccess, branch, mode = 'create
         }
     }, [branch, mode, isOpen]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
@@ -99,103 +107,113 @@ export function BranchModal({ isOpen, onClose, onSuccess, branch, mode = 'create
 
     return (
         <>
-            <div className='!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]' onClick={onClose} />
-            <div className='!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none'>
-                <div className='bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col pointer-events-auto'>
-                    <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between'>
-                        <h2 className='text-xl font-bold text-white'>
+            <div
+                className="!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]"
+                onClick={onClose}
+            />
+            <div className="!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none">
+                <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col pointer-events-auto">
+                    <div className="bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-white">
                             {mode === 'create' ? 'Thêm chi nhánh mới' : 'Cập nhật chi nhánh'}
                         </h2>
-                        <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
-                            <XIcon className='w-6 h-6 text-white' />
+                        <button
+                            onClick={onClose}
+                            className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                        >
+                            <XIcon className="w-6 h-6 text-white" />
                         </button>
                     </div>
 
-                    <div className='overflow-y-auto flex-1 p-6 space-y-4'>
-                        <FormField label='Tên chi nhánh' name='name' required>
+                    <div className="overflow-y-auto flex-1 p-6 space-y-4">
+                        <FormField label="Tên chi nhánh" name="name" required>
                             <Input
-                                name='name'
+                                name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                placeholder='Nhập tên chi nhánh'
+                                placeholder="Nhập tên chi nhánh"
                             />
                         </FormField>
 
-                        <FormField label='Địa chỉ' name='address' required>
+                        <FormField label="Địa chỉ" name="address" required>
                             <Textarea
-                                name='address'
+                                name="address"
                                 value={formData.address}
                                 onChange={handleChange}
                                 rows={2}
-                                placeholder='Nhập địa chỉ chi nhánh'
+                                placeholder="Nhập địa chỉ chi nhánh"
                             />
                         </FormField>
 
-                        <div className='grid grid-cols-2 gap-4'>
-                            <FormField label='Số điện thoại' name='phone' required>
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField label="Số điện thoại" name="phone" required>
                                 <Input
-                                    name='phone'
+                                    name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    placeholder='0912 345 678'
+                                    placeholder="0912 345 678"
                                 />
                             </FormField>
 
-                            <FormField label='Email' name='email'>
+                            <FormField label="Email" name="email">
                                 <Input
-                                    type='email'
-                                    name='email'
+                                    type="email"
+                                    name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder='branch@example.com'
+                                    placeholder="branch@example.com"
                                 />
                             </FormField>
                         </div>
 
-                        <div className='grid grid-cols-2 gap-4'>
-                            <FormField label='Latitude' name='latitude'>
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField label="Latitude" name="latitude">
                                 <Input
-                                    name='latitude'
+                                    name="latitude"
                                     value={formData.latitude}
                                     onChange={handleChange}
-                                    placeholder='10.762622'
+                                    placeholder="10.762622"
                                 />
                             </FormField>
 
-                            <FormField label='Longitude' name='longitude'>
+                            <FormField label="Longitude" name="longitude">
                                 <Input
-                                    name='longitude'
+                                    name="longitude"
                                     value={formData.longitude}
                                     onChange={handleChange}
-                                    placeholder='106.660172'
+                                    placeholder="106.660172"
                                 />
                             </FormField>
                         </div>
 
-                        <FormField label='URL Slug' name='slug'>
+                        <FormField label="URL Slug" name="slug">
                             <Input
-                                name='slug'
+                                name="slug"
                                 value={formData.slug}
                                 onChange={handleChange}
-                                placeholder='Để trống để auto-generate'
+                                placeholder="Để trống để auto-generate"
                             />
                         </FormField>
                     </div>
 
-                    <div className='p-6 border-t border-pink-100 flex gap-3'>
+                    <div className="p-6 border-t border-pink-100 flex gap-3">
                         <button
                             onClick={onClose}
                             disabled={loading}
-                            className='flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors'
+                            className="flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors"
                         >
                             Hủy
                         </button>
                         <button
                             onClick={handleSubmit}
                             disabled={loading}
-                            className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50'
+                            className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm disabled:opacity-50"
                         >
-                            {loading ? 'Đang xử lý...' : mode === 'create' ? 'Tạo chi nhánh' : 'Cập nhật'}
+                            {loading
+                                ? 'Đang xử lý...'
+                                : mode === 'create'
+                                  ? 'Tạo chi nhánh'
+                                  : 'Cập nhật'}
                         </button>
                     </div>
                 </div>

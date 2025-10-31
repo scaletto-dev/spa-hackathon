@@ -8,7 +8,13 @@ import { AvailabilityIndicator } from './AvailabilityIndicator';
 import { QuickBookingConfirmationModal } from './QuickBookingConfirmationModal';
 import { AITimeSlotSelector } from './AITimeSlotSelector';
 import { BookingData } from './types';
-import { createBooking, createVNPayPaymentUrl, getBranchById, getBranches, Branch } from '../../../services/bookingApi';
+import {
+    createBooking,
+    createVNPayPaymentUrl,
+    getBranchById,
+    getBranches,
+    Branch,
+} from '../../../services/bookingApi';
 import { getServices } from '../../../services/servicesApi';
 import { toast } from '../../../utils/toast';
 import { Select } from '../../../components/ui/Select';
@@ -38,7 +44,11 @@ const generateTimeSlots = (): string[] => {
     return slots;
 };
 
-export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }: QuickBookingProps) {
+export function QuickBooking({
+    bookingData,
+    updateBookingData,
+    onSwitchToFull,
+}: QuickBookingProps) {
     const { t } = useTranslation('common');
     const location = useLocation();
     const navigate = useNavigate();
@@ -67,7 +77,10 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [servicesData, branchesData] = await Promise.all([getServices(), getBranches()]);
+                const [servicesData, branchesData] = await Promise.all([
+                    getServices(),
+                    getBranches(),
+                ]);
                 setServices(servicesData.data || []);
                 setBranches(branchesData || []);
             } catch (error) {
@@ -131,7 +144,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                     // Load service details if serviceId provided
                     if (serviceId) {
                         try {
-                            const { getServiceById } = await import('../../../services/servicesApi');
+                            const { getServiceById } = await import(
+                                '../../../services/servicesApi'
+                            );
                             serviceObj = await getServiceById(serviceId);
                         } catch (err) {
                             console.error('Failed to load service:', err);
@@ -152,7 +167,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
 
                     setFormData((prev) => ({
                         ...prev,
-                        ...(serviceObj && { service: serviceObj as unknown as typeof prev.service }),
+                        ...(serviceObj && {
+                            service: serviceObj as unknown as typeof prev.service,
+                        }),
                         ...(branchObj && { branch: branchObj }),
                         ...(date && { date }),
                         ...(formattedTime && { time: formattedTime }),
@@ -173,7 +190,11 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
     useEffect(() => {
         // Check URL params first
         const params = new URLSearchParams(location.search);
-        const hasURLParams = params.get('service') || params.get('branch') || params.get('date') || params.get('time');
+        const hasURLParams =
+            params.get('service') ||
+            params.get('branch') ||
+            params.get('date') ||
+            params.get('time');
 
         // If there are URL params, wait for them to load (handled by loadFromURLParams effect)
         if (hasURLParams) {
@@ -184,7 +205,11 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
             setFormData((prev) => {
                 // Convert ISO date string to yyyy-MM-dd format for date input
                 let formattedDate: string | null = bookingData.date || prev.date;
-                if (formattedDate && typeof formattedDate === 'string' && formattedDate.includes('T')) {
+                if (
+                    formattedDate &&
+                    typeof formattedDate === 'string' &&
+                    formattedDate.includes('T')
+                ) {
                     formattedDate = formattedDate.split('T')[0] || null; // Extract yyyy-MM-dd part
                 }
 
@@ -338,7 +363,11 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
             return true;
         }
         // Other methods need payment details to be complete
-        return formData.paymentMethod !== '' && formData.paymentMethod !== null && paymentDetailsComplete;
+        return (
+            formData.paymentMethod !== '' &&
+            formData.paymentMethod !== null &&
+            paymentDetailsComplete
+        );
     };
 
     const isFormValid =
@@ -365,11 +394,11 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                     opacity: 0,
                     y: -20,
                 }}
-                className='grid lg:grid-cols-3 gap-6'
+                className="grid lg:grid-cols-3 gap-6"
             >
                 {/* Main Booking Card */}
-                <div className='lg:col-span-2'>
-                    <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6 md:p-8'>
+                <div className="lg:col-span-2">
+                    <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6 md:p-8">
                         {/* AI Quick Select Banner */}
                         <motion.div
                             initial={{
@@ -380,18 +409,18 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 opacity: 1,
                                 y: 0,
                             }}
-                            className='mb-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-200/50'
+                            className="mb-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-200/50"
                         >
-                            <div className='flex items-center gap-3'>
-                                <SparklesIcon className='w-5 h-5 text-pink-500 flex-shrink-0' />
-                                <label className='flex items-center gap-2 cursor-pointer flex-1'>
+                            <div className="flex items-center gap-3">
+                                <SparklesIcon className="w-5 h-5 text-pink-500 flex-shrink-0" />
+                                <label className="flex items-center gap-2 cursor-pointer flex-1">
                                     <input
-                                        type='checkbox'
+                                        type="checkbox"
                                         checked={formData.useAI}
                                         onChange={handleAISelection}
-                                        className='w-4 h-4 rounded accent-pink-500'
+                                        className="w-4 h-4 rounded accent-pink-500"
                                     />
-                                    <span className='text-sm text-gray-700 font-medium'>
+                                    <span className="text-sm text-gray-700 font-medium">
                                         Let AI choose the best available slot for me
                                     </span>
                                 </label>
@@ -408,29 +437,34 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     opacity: 1,
                                     scale: 1,
                                 }}
-                                className='mb-6 bg-pink-50 rounded-2xl p-4 border border-pink-200'
+                                className="mb-6 bg-pink-50 rounded-2xl p-4 border border-pink-200"
                             >
-                                <div className='flex items-start gap-4'>
-                                    <div className='w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'>
-                                        <SparklesIcon className='w-6 h-6 text-white' />
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <SparklesIcon className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <h4 className='font-semibold text-gray-800 mb-1'>AI Recommendation</h4>
-                                        <p className='text-sm text-gray-600 mb-2'>
+                                        <h4 className="font-semibold text-gray-800 mb-1">
+                                            AI Recommendation
+                                        </h4>
+                                        <p className="text-sm text-gray-600 mb-2">
                                             Based on optimal conditions and availability:
                                         </p>
-                                        <div className='flex flex-wrap gap-2'>
-                                            <span className='px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600'>
+                                        <div className="flex flex-wrap gap-2">
+                                            <span className="px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600">
                                                 {formData.date &&
-                                                    new Date(formData.date).toLocaleDateString('en-US', {
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                    })}
+                                                    new Date(formData.date).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                        }
+                                                    )}
                                             </span>
-                                            <span className='px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600'>
+                                            <span className="px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600">
                                                 {formData.time}
                                             </span>
-                                            <span className='px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600'>
+                                            <span className="px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600">
                                                 {formData.branch?.name}
                                             </span>
                                         </div>
@@ -439,18 +473,20 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             </motion.div>
                         )}
                         {/* Form Fields */}
-                        <div className='space-y-6'>
+                        <div className="space-y-6">
                             {/* Service Selection */}
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     {t('bookings.selectServiceLabel')}
                                 </label>
                                 <Select
-                                    name='service'
+                                    name="service"
                                     value={formData.service?.id?.toString() || ''}
                                     onChange={(value) => {
                                         console.log('Service selected:', value);
-                                        const service = services.find((s) => s.id.toString() === value);
+                                        const service = services.find(
+                                            (s) => s.id.toString() === value
+                                        );
                                         console.log('Found service:', service);
                                         handleChange('service', service);
                                     }}
@@ -459,29 +495,31 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                         label: `${service.name} - ${formatPrice(
                                             typeof service.price === 'string'
                                                 ? parseFloat(service.price)
-                                                : service.price,
+                                                : service.price
                                         )} (${formatDuration(
                                             typeof service.duration === 'string'
                                                 ? parseInt(service.duration)
-                                                : service.duration,
+                                                : service.duration
                                         )})`,
                                     }))}
                                     placeholder={t('bookings.chooseService')}
                                     searchable={true}
-                                    className='w-full'
+                                    className="w-full"
                                 />
                             </div>
                             {/* Branch Selection */}
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     {t('bookings.selectBranchLabel')}
                                 </label>
                                 <Select
-                                    name='branch'
+                                    name="branch"
                                     value={formData.branch?.id?.toString() || ''}
                                     onChange={(value) => {
                                         console.log('Branch selected:', value);
-                                        const branch = branches.find((b) => b.id.toString() === value);
+                                        const branch = branches.find(
+                                            (b) => b.id.toString() === value
+                                        );
                                         console.log('Found branch:', branch);
                                         handleChange('branch', branch);
                                     }}
@@ -492,45 +530,53 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     placeholder={t('bookings.chooseLocation')}
                                     disabled={formData.useAI}
                                     searchable={true}
-                                    className='w-full'
+                                    className="w-full"
                                 />
                             </div>
                             {/* Date & Time Selection */}
-                            <div className='grid md:grid-cols-2 gap-4'>
+                            <div className="grid md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
                                         {t('bookings.selectDateLabel')}
                                     </label>
                                     <input
-                                        type='date'
+                                        type="date"
                                         value={formData.date || ''}
                                         onChange={(e) => handleChange('date', e.target.value)}
                                         disabled={formData.useAI}
                                         min={new Date().toISOString().split('T')[0]}
-                                        className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors disabled:opacity-50'
+                                        className="w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors disabled:opacity-50"
                                     />
                                 </div>
 
                                 {/* AI Time Slot Selector - Show when date and branch are selected */}
                                 {formData.date && formData.branch && (
-                                    <div className='col-span-full'>
+                                    <div className="col-span-full">
                                         <AITimeSlotSelector
                                             date={formData.date}
                                             branchId={formData.branch.id}
-                                            {...(formData.service && { serviceIds: [formData.service.id] })}
-                                            onTimeSlotSelected={(time: string) => handleChange('time', time)}
-                                            {...(formData.time && { currentTimeSlot: formData.time })}
+                                            {...(formData.service && {
+                                                serviceIds: [formData.service.id],
+                                            })}
+                                            onTimeSlotSelected={(time: string) =>
+                                                handleChange('time', time)
+                                            }
+                                            {...(formData.time && {
+                                                currentTimeSlot: formData.time,
+                                            })}
                                         />
                                     </div>
                                 )}
 
                                 <div>
-                                    <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                                         {t('bookings.selectTimeLabel')}
-                                        {formData.date && formData.service && <AvailabilityIndicator />}
+                                        {formData.date && formData.service && (
+                                            <AvailabilityIndicator />
+                                        )}
                                     </label>
                                     <Select
-                                        name='time'
+                                        name="time"
                                         value={formData.time || ''}
                                         onChange={(value) => handleChange('time', value)}
                                         options={availableTimeSlots.map((time) => ({
@@ -540,46 +586,50 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                         placeholder={t('bookings.chooseTime')}
                                         disabled={formData.useAI}
                                         searchable={false}
-                                        className='w-full'
+                                        className="w-full"
                                     />
                                 </div>
                             </div>
                             {/* Contact Information */}
-                            <div className='pt-4 border-t border-gray-200'>
-                                <h3 className='text-lg font-semibold text-gray-800 mb-4'>
+                            <div className="pt-4 border-t border-gray-200">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">
                                     {t('bookings.yourInformationLabel')}
                                 </h3>
-                                <div className='grid md:grid-cols-2 gap-4'>
+                                <div className="grid md:grid-cols-2 gap-4">
                                     <input
-                                        type='text'
+                                        type="text"
                                         placeholder={t('bookings.fullNamePlaceholder')}
                                         value={formData.name}
                                         onChange={(e) => handleChange('name', e.target.value)}
-                                        className='px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                                        className="px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors"
                                     />
                                     <input
-                                        type='tel'
+                                        type="tel"
                                         placeholder={t('bookings.phoneNumberPlaceholder')}
                                         value={formData.phone}
                                         onChange={(e) => handleChange('phone', e.target.value)}
-                                        className='px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                                        className="px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors"
                                     />
                                 </div>
                                 <input
-                                    type='email'
+                                    type="email"
                                     placeholder={t('bookings.emailAddressPlaceholder')}
                                     value={formData.email}
                                     onChange={(e) => handleChange('email', e.target.value)}
-                                    className='mt-4 w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                                    className="mt-4 w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors"
                                 />
                             </div>
                             {/* Payment Method */}
-                            <div className='pt-4 border-t border-gray-200'>
+                            <div className="pt-4 border-t border-gray-200">
                                 <InlinePaymentMethod
                                     selectedMethod={formData.paymentMethod}
-                                    onSelect={(method: string) => handleChange('paymentMethod', method)}
+                                    onSelect={(method: string) =>
+                                        handleChange('paymentMethod', method)
+                                    }
                                     promoCode={formData.promoCode}
-                                    onPromoChange={(code: string) => handleChange('promoCode', code)}
+                                    onPromoChange={(code: string) =>
+                                        handleChange('promoCode', code)
+                                    }
                                     onPaymentDetailsChange={(isComplete: boolean) =>
                                         setPaymentDetailsComplete(isComplete)
                                     }
@@ -587,7 +637,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             </div>
                         </div>
                         {/* Action Buttons */}
-                        <div className='mt-8 flex flex-col sm:flex-row gap-4'>
+                        <div className="mt-8 flex flex-col sm:flex-row gap-4">
                             <motion.button
                                 whileHover={{
                                     scale: 1.02,
@@ -596,9 +646,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     scale: 0.98,
                                 }}
                                 onClick={onSwitchToFull}
-                                className='flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold'
+                                className="flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold"
                             >
-                                <ListIcon className='w-5 h-5' />
+                                <ListIcon className="w-5 h-5" />
                                 Switch to Full Booking Mode
                             </motion.button>
                             <motion.button
@@ -627,13 +677,13 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                                 repeat: Infinity,
                                                 ease: 'linear',
                                             }}
-                                            className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                                            className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                                         />
                                         Processing...
                                     </>
                                 ) : (
                                     <>
-                                        <ZapIcon className='w-5 h-5' />
+                                        <ZapIcon className="w-5 h-5" />
                                         Book Now
                                     </>
                                 )}
@@ -642,35 +692,39 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                     </div>
                 </div>
                 {/* Summary Sidebar */}
-                <div className='lg:col-span-1'>
-                    <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6 sticky top-24'>
-                        <h3 className='text-xl font-bold text-gray-800 mb-6'>Booking Summary</h3>
-                        <div className='space-y-4'>
+                <div className="lg:col-span-1">
+                    <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6 sticky top-24">
+                        <h3 className="text-xl font-bold text-gray-800 mb-6">Booking Summary</h3>
+                        <div className="space-y-4">
                             {formData.service ? (
-                                <div className='p-3 bg-pink-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Service</p>
-                                    <p className='font-medium text-gray-800'>{formData.service.name}</p>
-                                    <p className='text-sm text-gray-600'>
+                                <div className="p-3 bg-pink-50 rounded-xl">
+                                    <p className="text-xs text-gray-500 mb-1">Service</p>
+                                    <p className="font-medium text-gray-800">
+                                        {formData.service.name}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
                                         {typeof formData.service.duration === 'number'
                                             ? formatDuration(formData.service.duration)
                                             : formData.service.duration}
                                     </p>
                                 </div>
                             ) : (
-                                <div className='p-3 bg-gray-50 rounded-xl'>
-                                    <p className='text-sm text-gray-400'>No service selected</p>
+                                <div className="p-3 bg-gray-50 rounded-xl">
+                                    <p className="text-sm text-gray-400">No service selected</p>
                                 </div>
                             )}
                             {formData.branch && (
-                                <div className='p-3 bg-purple-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Location</p>
-                                    <p className='font-medium text-gray-800'>{formData.branch.name}</p>
+                                <div className="p-3 bg-purple-50 rounded-xl">
+                                    <p className="text-xs text-gray-500 mb-1">Location</p>
+                                    <p className="font-medium text-gray-800">
+                                        {formData.branch.name}
+                                    </p>
                                 </div>
                             )}
                             {formData.therapist && (
-                                <div className='p-3 bg-blue-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Therapist</p>
-                                    <p className='font-medium text-gray-800'>
+                                <div className="p-3 bg-blue-50 rounded-xl">
+                                    <p className="text-xs text-gray-500 mb-1">Therapist</p>
+                                    <p className="font-medium text-gray-800">
                                         {typeof formData.therapist === 'string'
                                             ? formData.therapist
                                             : formData.therapist.name}
@@ -678,32 +732,32 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 </div>
                             )}
                             {formData.date && formData.time && (
-                                <div className='p-3 bg-green-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Date & Time</p>
-                                    <p className='font-medium text-gray-800'>
+                                <div className="p-3 bg-green-50 rounded-xl">
+                                    <p className="text-xs text-gray-500 mb-1">Date & Time</p>
+                                    <p className="font-medium text-gray-800">
                                         {new Date(formData.date).toLocaleDateString('en-US', {
                                             month: 'short',
                                             day: 'numeric',
                                         })}
                                     </p>
-                                    <p className='text-sm text-gray-600'>{formData.time}</p>
+                                    <p className="text-sm text-gray-600">{formData.time}</p>
                                 </div>
                             )}
                             {formData.service && (
-                                <div className='pt-4 border-t border-gray-200'>
-                                    <div className='flex justify-between items-center'>
-                                        <span className='text-gray-600'>Total</span>
-                                        <span className='text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
+                                <div className="pt-4 border-t border-gray-200">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600">Total</span>
+                                        <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                                             {formatPrice(formData.service.price)}
                                         </span>
                                     </div>
                                 </div>
                             )}
                         </div>
-                        <div className='mt-6 p-3 bg-yellow-50 rounded-xl border border-yellow-200'>
-                            <p className='text-xs text-gray-600'>
-                                <span className='font-medium'>⚡ Quick Booking:</span> Complete your appointment in
-                                seconds with AI assistance
+                        <div className="mt-6 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
+                            <p className="text-xs text-gray-600">
+                                <span className="font-medium">⚡ Quick Booking:</span> Complete your
+                                appointment in seconds with AI assistance
                             </p>
                         </div>
                     </div>
@@ -711,7 +765,10 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
             </motion.div>
             {/* Confirmation Modal */}
             {showConfirmation && (
-                <QuickBookingConfirmationModal bookingData={formData} onClose={() => setShowConfirmation(false)} />
+                <QuickBookingConfirmationModal
+                    bookingData={formData}
+                    onClose={() => setShowConfirmation(false)}
+                />
             )}
 
             {/* VNPay Redirect Loading Overlay */}
@@ -720,7 +777,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <motion.div
@@ -728,26 +785,29 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        className='bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-4'
+                        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className='text-center'>
+                        <div className="text-center">
                             {/* Loading Animation */}
-                            <div className='relative mb-6'>
+                            <div className="relative mb-6">
                                 <motion.div
                                     animate={{ rotate: 360 }}
                                     transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-                                    className='w-20 h-20 mx-auto border-4 border-pink-200 border-t-pink-500 rounded-full'
+                                    className="w-20 h-20 mx-auto border-4 border-pink-200 border-t-pink-500 rounded-full"
                                 />
-                                <div className='absolute inset-0 flex items-center justify-center'>
-                                    <div className='w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full animate-pulse' />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full animate-pulse" />
                                 </div>
                             </div>
 
                             {/* Text */}
-                            <h3 className='text-2xl font-bold text-gray-800 mb-2'>Đang chuyển đến VNPay...</h3>
-                            <p className='text-gray-600 mb-6'>
-                                Vui lòng đợi, bạn sẽ được chuyển hướng đến cổng thanh toán trong giây lát
+                            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                                Đang chuyển đến VNPay...
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                                Vui lòng đợi, bạn sẽ được chuyển hướng đến cổng thanh toán trong
+                                giây lát
                             </p>
 
                             {/* Cancel Button */}
@@ -758,7 +818,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                     setIsRedirectingToPayment(false);
                                     toast.info('Đã hủy chuyển hướng thanh toán');
                                 }}
-                                className='px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full font-semibold transition-colors'
+                                className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full font-semibold transition-colors"
                             >
                                 Hủy
                             </motion.button>

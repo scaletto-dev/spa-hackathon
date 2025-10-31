@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 /**
  * Prisma Client Singleton
- * 
+ *
  * Ensures a single instance of Prisma Client is used throughout the application
  * to avoid connection pool exhaustion and improve performance.
  */
@@ -14,9 +14,11 @@ declare global {
 }
 
 // Use existing instance in development to prevent multiple instances during hot-reload
-const prisma = global.prisma || new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-});
+const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
 
 // Store instance globally in development
 if (process.env.NODE_ENV !== 'production') {

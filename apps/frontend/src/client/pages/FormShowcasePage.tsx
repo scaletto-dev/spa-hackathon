@@ -132,20 +132,22 @@ export default function FormShowcasePage() {
     };
 
     return (
-        <div className='w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24'>
-            <div className='max-w-4xl mx-auto px-6 py-12'>
+        <div className="w-full min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-24">
+            <div className="max-w-4xl mx-auto px-6 py-12">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className='text-center mb-12'
+                    className="text-center mb-12"
                 >
-                    <h1 className='text-4xl md:text-5xl font-bold mb-4'>
-                        <span className='bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                        <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                             Form Components Showcase
                         </span>
                     </h1>
-                    <p className='text-xl text-gray-600'>Design System chuẩn chỉnh, đẹp mắt, dễ dùng, A11y compliant</p>
+                    <p className="text-xl text-gray-600">
+                        Design System chuẩn chỉnh, đẹp mắt, dễ dùng, A11y compliant
+                    </p>
                 </motion.div>
 
                 <motion.form
@@ -153,24 +155,24 @@ export default function FormShowcasePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     onSubmit={handleSubmit}
-                    className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8 md:p-12 space-y-6'
+                    className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-8 md:p-12 space-y-6"
                 >
                     {/* Text Inputs Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6'>Text Inputs</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Text Inputs</h2>
 
-                        <div className='grid md:grid-cols-2 gap-6'>
+                        <div className="grid md:grid-cols-2 gap-6">
                             <FormField
-                                label='Họ và tên'
-                                name='name'
+                                label="Họ và tên"
+                                name="name"
                                 error={errors.name}
-                                helpText='Nhập họ tên đầy đủ của bạn'
+                                helpText="Nhập họ tên đầy đủ của bạn"
                                 required
                             >
                                 <Input
-                                    name='name'
-                                    type='text'
-                                    placeholder='Nguyễn Văn A'
+                                    name="name"
+                                    type="text"
+                                    placeholder="Nguyễn Văn A"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     error={errors.name}
@@ -179,16 +181,16 @@ export default function FormShowcasePage() {
                             </FormField>
 
                             <FormField
-                                label='Email liên hệ'
-                                name='email'
+                                label="Email liên hệ"
+                                name="email"
                                 error={errors.email}
-                                helpText='Chúng tôi sẽ gửi xác nhận qua email'
+                                helpText="Chúng tôi sẽ gửi xác nhận qua email"
                                 required
                             >
                                 <Input
-                                    name='email'
-                                    type='email'
-                                    placeholder='example@email.com'
+                                    name="email"
+                                    type="email"
+                                    placeholder="example@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     error={errors.email}
@@ -197,43 +199,51 @@ export default function FormShowcasePage() {
                             </FormField>
                         </div>
 
-                        <div className='grid md:grid-cols-2 gap-6'>
+                        <div className="grid md:grid-cols-2 gap-6">
                             <FormField
-                                label='Số điện thoại'
-                                name='phone'
+                                label="Số điện thoại"
+                                name="phone"
                                 error={errors.phone}
-                                helpText='Định dạng tự động khi nhập'
+                                helpText="Định dạng tự động khi nhập"
                                 required
                             >
                                 <Input
-                                    name='phone'
-                                    type='tel'
-                                    placeholder='0912 345 678'
+                                    name="phone"
+                                    type="tel"
+                                    placeholder="0912 345 678"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     error={errors.phone}
                                     leftIcon={PhoneIcon}
-                                    mask='phone'
+                                    mask="phone"
                                 />
                             </FormField>
 
-                            <FormField label='Ngân sách dự kiến' name='budget' helpText='Tự động định dạng số'>
+                            <FormField
+                                label="Ngân sách dự kiến"
+                                name="budget"
+                                helpText="Tự động định dạng số"
+                            >
                                 <Input
-                                    name='budget'
-                                    type='text'
-                                    placeholder='5,000,000'
+                                    name="budget"
+                                    type="text"
+                                    placeholder="5,000,000"
                                     value={budget}
                                     onChange={(e) => setBudget(e.target.value)}
-                                    mask='number'
+                                    mask="number"
                                 />
                             </FormField>
                         </div>
 
-                        <FormField label='Tìm kiếm' name='search' helpText='Ví dụ input với icon tìm kiếm'>
+                        <FormField
+                            label="Tìm kiếm"
+                            name="search"
+                            helpText="Ví dụ input với icon tìm kiếm"
+                        >
                             <Input
-                                name='search'
-                                type='text'
-                                placeholder='Tìm dịch vụ, chuyên viên...'
+                                name="search"
+                                type="text"
+                                placeholder="Tìm dịch vụ, chuyên viên..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 leftIcon={SearchIcon}
@@ -243,16 +253,16 @@ export default function FormShowcasePage() {
 
                     {/* Textarea Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6 mt-12'>Textarea</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-12">Textarea</h2>
 
                         <FormField
-                            label='Ghi chú thêm'
-                            name='notes'
-                            helpText='Chia sẻ bất kỳ thông tin nào bạn muốn chúng tôi biết'
+                            label="Ghi chú thêm"
+                            name="notes"
+                            helpText="Chia sẻ bất kỳ thông tin nào bạn muốn chúng tôi biết"
                         >
                             <Textarea
-                                name='notes'
-                                placeholder='Tôi muốn tư vấn thêm về...'
+                                name="notes"
+                                placeholder="Tôi muốn tư vấn thêm về..."
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
                                 showCounter
@@ -264,77 +274,93 @@ export default function FormShowcasePage() {
 
                     {/* Select Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6 mt-12'>Select (Single)</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-12">
+                            Select (Single)
+                        </h2>
 
-                        <div className='grid md:grid-cols-2 gap-6'>
+                        <div className="grid md:grid-cols-2 gap-6">
                             <FormField
-                                label='Chọn dịch vụ'
-                                name='service'
+                                label="Chọn dịch vụ"
+                                name="service"
                                 error={errors.service}
-                                helpText='Chọn dịch vụ bạn quan tâm'
+                                helpText="Chọn dịch vụ bạn quan tâm"
                                 required
                             >
                                 <Select
-                                    name='service'
+                                    name="service"
                                     value={service}
                                     onChange={setService}
                                     groups={serviceGroups}
-                                    placeholder='Chọn dịch vụ...'
+                                    placeholder="Chọn dịch vụ..."
                                     error={errors.service}
                                     searchable
                                 />
                             </FormField>
 
-                            <FormField label='Chọn cơ sở' name='branch' helpText='Chi nhánh gần bạn nhất'>
+                            <FormField
+                                label="Chọn cơ sở"
+                                name="branch"
+                                helpText="Chi nhánh gần bạn nhất"
+                            >
                                 <Select
-                                    name='branch'
+                                    name="branch"
                                     value={branch}
                                     onChange={setBranch}
                                     options={branchOptions}
-                                    placeholder='Chọn cơ sở...'
+                                    placeholder="Chọn cơ sở..."
                                     searchable
                                 />
                             </FormField>
                         </div>
 
-                        <FormField label='Chọn chuyên viên' name='therapist' helpText='Để trống nếu muốn tự động chọn'>
+                        <FormField
+                            label="Chọn chuyên viên"
+                            name="therapist"
+                            helpText="Để trống nếu muốn tự động chọn"
+                        >
                             <Select
-                                name='therapist'
+                                name="therapist"
                                 value={therapist}
                                 onChange={setTherapist}
                                 options={therapistOptions}
-                                placeholder='Tự động chọn...'
+                                placeholder="Tự động chọn..."
                             />
                         </FormField>
                     </div>
 
                     {/* Multi-Select Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6 mt-12'>Multi-Select</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-12">
+                            Multi-Select
+                        </h2>
 
-                        <div className='grid md:grid-cols-2 gap-6'>
-                            <FormField label='Loại da' name='skinType' helpText='Có thể chọn nhiều loại'>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <FormField
+                                label="Loại da"
+                                name="skinType"
+                                helpText="Có thể chọn nhiều loại"
+                            >
                                 <MultiSelect
-                                    name='skinType'
+                                    name="skinType"
                                     value={skinTypes}
                                     onChange={setSkinTypes}
                                     options={skinTypeOptions}
-                                    placeholder='Chọn loại da...'
+                                    placeholder="Chọn loại da..."
                                     maxSelections={3}
                                 />
                             </FormField>
 
                             <FormField
-                                label='Mối quan tâm về da'
-                                name='concerns'
-                                helpText='Chọn tất cả vấn đề bạn gặp phải'
+                                label="Mối quan tâm về da"
+                                name="concerns"
+                                helpText="Chọn tất cả vấn đề bạn gặp phải"
                             >
                                 <MultiSelect
-                                    name='concerns'
+                                    name="concerns"
                                     value={concerns}
                                     onChange={setConcerns}
                                     options={concernOptions}
-                                    placeholder='Chọn mối quan tâm...'
+                                    placeholder="Chọn mối quan tâm..."
                                     searchable
                                 />
                             </FormField>
@@ -343,28 +369,38 @@ export default function FormShowcasePage() {
 
                     {/* Date & Time Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6 mt-12'>Date & Time Pickers</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-12">
+                            Date & Time Pickers
+                        </h2>
 
-                        <div className='grid md:grid-cols-2 gap-6'>
-                            <FormField label='Chọn ngày' name='date' helpText='Không thể chọn ngày trong quá khứ'>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <FormField
+                                label="Chọn ngày"
+                                name="date"
+                                helpText="Không thể chọn ngày trong quá khứ"
+                            >
                                 <DatePicker
-                                    name='date'
+                                    name="date"
                                     value={appointmentDate}
                                     onChange={setAppointmentDate}
-                                    placeholder='dd/mm/yyyy'
+                                    placeholder="dd/mm/yyyy"
                                     disablePastDates
                                     quickPicks
                                 />
                             </FormField>
 
-                            <FormField label='Chọn giờ' name='time' helpText='Giờ làm việc: 09:00 - 20:00'>
+                            <FormField
+                                label="Chọn giờ"
+                                name="time"
+                                helpText="Giờ làm việc: 09:00 - 20:00"
+                            >
                                 <TimePicker
-                                    name='time'
+                                    name="time"
                                     value={appointmentTime}
                                     onChange={setAppointmentTime}
-                                    placeholder='Chọn giờ...'
-                                    startTime='09:00'
-                                    endTime='20:00'
+                                    placeholder="Chọn giờ..."
+                                    startTime="09:00"
+                                    endTime="20:00"
                                     interval={30}
                                     disabledSlots={['12:00', '12:30', '18:00']}
                                 />
@@ -374,44 +410,50 @@ export default function FormShowcasePage() {
 
                     {/* Radio & Checkbox Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6 mt-12'>Radio & Checkbox</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-12">
+                            Radio & Checkbox
+                        </h2>
 
-                        <FormField label='Giới tính' name='gender' helpText='Chọn một trong các tùy chọn'>
-                            <div className='flex flex-wrap gap-4'>
+                        <FormField
+                            label="Giới tính"
+                            name="gender"
+                            helpText="Chọn một trong các tùy chọn"
+                        >
+                            <div className="flex flex-wrap gap-4">
                                 <Radio
-                                    name='gender'
-                                    value='male'
-                                    label='Nam'
+                                    name="gender"
+                                    value="male"
+                                    label="Nam"
                                     checked={gender === 'male'}
                                     onChange={(e) => setGender(e.target.value)}
                                 />
                                 <Radio
-                                    name='gender'
-                                    value='female'
-                                    label='Nữ'
+                                    name="gender"
+                                    value="female"
+                                    label="Nữ"
                                     checked={gender === 'female'}
                                     onChange={(e) => setGender(e.target.value)}
                                 />
                                 <Radio
-                                    name='gender'
-                                    value='other'
-                                    label='Khác'
+                                    name="gender"
+                                    value="other"
+                                    label="Khác"
                                     checked={gender === 'other'}
                                     onChange={(e) => setGender(e.target.value)}
                                 />
                             </div>
                         </FormField>
 
-                        <div className='space-y-3'>
+                        <div className="space-y-3">
                             <Checkbox
-                                name='subscribeNews'
-                                label='Nhận tin tức và ưu đãi qua email'
+                                name="subscribeNews"
+                                label="Nhận tin tức và ưu đãi qua email"
                                 checked={subscribeNews}
                                 onChange={(e) => setSubscribeNews(e.target.checked)}
                             />
                             <Checkbox
-                                name='acceptTerms'
-                                label='Tôi đồng ý với điều khoản sử dụng'
+                                name="acceptTerms"
+                                label="Tôi đồng ý với điều khoản sử dụng"
                                 checked={acceptTerms}
                                 onChange={(e) => setAcceptTerms(e.target.checked)}
                             />
@@ -420,23 +462,25 @@ export default function FormShowcasePage() {
 
                     {/* Toggle Section */}
                     <div>
-                        <h2 className='text-2xl font-bold text-gray-800 mb-6 mt-12'>Toggle Switch</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 mt-12">
+                            Toggle Switch
+                        </h2>
 
                         <Toggle
-                            name='notifications'
-                            label='Nhận nhắc hẹn qua SMS'
+                            name="notifications"
+                            label="Nhận nhắc hẹn qua SMS"
                             checked={notifications}
                             onChange={setNotifications}
                         />
                     </div>
 
                     {/* Submit Button */}
-                    <div className='pt-8 border-t border-gray-200'>
+                    <div className="pt-8 border-t border-gray-200">
                         <motion.button
-                            type='submit'
+                            type="submit"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className='w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-shadow'
+                            className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-shadow"
                         >
                             Đặt lịch ngay
                         </motion.button>

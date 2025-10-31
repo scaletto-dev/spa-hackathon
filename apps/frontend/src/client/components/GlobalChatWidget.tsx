@@ -44,11 +44,11 @@ export function GlobalChatWidget() {
     const getTabIcon = () => {
         switch (activeTab) {
             case 'live':
-                return <UsersIcon className='w-7 h-7 text-white' />;
+                return <UsersIcon className="w-7 h-7 text-white" />;
             case 'booking':
-                return <CalendarIcon className='w-7 h-7 text-white' />;
+                return <CalendarIcon className="w-7 h-7 text-white" />;
             default:
-                return <MessageCircleIcon className='w-7 h-7 text-white' />;
+                return <MessageCircleIcon className="w-7 h-7 text-white" />;
         }
     };
 
@@ -60,23 +60,23 @@ export function GlobalChatWidget() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleChat}
-                data-testid='chat-toggle-button'
+                data-testid="chat-toggle-button"
                 aria-label={isOpen ? t('chat.closeChat') : t('chat.openChat')}
             >
-                <AnimatePresence mode='wait'>
+                <AnimatePresence mode="wait">
                     {isOpen ? (
                         <motion.div
-                            key='close'
+                            key="close"
                             initial={{ rotate: 0, opacity: 0 }}
                             animate={{ rotate: 90, opacity: 1 }}
                             exit={{ rotate: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <XIcon className='w-7 h-7 text-white' />
+                            <XIcon className="w-7 h-7 text-white" />
                         </motion.div>
                     ) : (
                         <motion.div
-                            key='icon'
+                            key="icon"
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
@@ -95,16 +95,16 @@ export function GlobalChatWidget() {
                         initial={{ opacity: 0, scale: 0.8, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                        className='fixed bottom-24 right-6 bg-white rounded-xl p-3 shadow-lg max-w-xs z-40 hidden md:block'
+                        className="fixed bottom-24 right-6 bg-white rounded-xl p-3 shadow-lg max-w-xs z-40 hidden md:block"
                     >
-                        <div className='flex items-start gap-3'>
-                            <div className='w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'>
-                                <SparklesIcon className='w-5 h-5 text-white' />
+                        <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <SparklesIcon className="w-5 h-5 text-white" />
                             </div>
-                            <div className='flex-1'>
-                                <p className='text-sm text-gray-800'>{t('chat.needHelp')}</p>
+                            <div className="flex-1">
+                                <p className="text-sm text-gray-800">{t('chat.needHelp')}</p>
                                 <button
-                                    className='text-xs text-pink-600 font-medium mt-1 hover:text-pink-700'
+                                    className="text-xs text-pink-600 font-medium mt-1 hover:text-pink-700"
                                     onClick={toggleChat}
                                 >
                                     {t('chat.startChat')}
@@ -112,10 +112,10 @@ export function GlobalChatWidget() {
                             </div>
                             <button
                                 onClick={() => setShowHint(false)}
-                                className='flex-shrink-0 p-1 hover:bg-gray-100 rounded-full transition-colors'
+                                className="flex-shrink-0 p-1 hover:bg-gray-100 rounded-full transition-colors"
                                 aria-label={t('chat.closeHint')}
                             >
-                                <XIcon className='w-4 h-4 text-gray-400' />
+                                <XIcon className="w-4 h-4 text-gray-400" />
                             </button>
                         </div>
                     </motion.div>
@@ -129,51 +129,51 @@ export function GlobalChatWidget() {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className='fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-[360px] max-w-[90vw] z-40 border border-gray-200 overflow-hidden flex flex-col'
+                        className="fixed bottom-24 right-6 bg-white rounded-3xl shadow-2xl w-[360px] max-w-[90vw] z-40 border border-gray-200 overflow-hidden flex flex-col"
                         style={{ height: '70vh', maxHeight: '700px', minHeight: '500px' }}
-                        data-testid='chat-window'
+                        data-testid="chat-window"
                     >
                         {/* Chat header with tabs */}
                         <div className={`bg-gradient-to-r ${getTabColor()}`}>
-                            <div className='p-3 flex items-center justify-between'>
-                                <div className='flex items-center gap-2'>
-                                    <div className='w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center'>
+                            <div className="p-3 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
                                         {activeTab === 'live' ? (
-                                            <UsersIcon className='w-5 h-5 text-white' />
+                                            <UsersIcon className="w-5 h-5 text-white" />
                                         ) : activeTab === 'booking' ? (
-                                            <CalendarIcon className='w-5 h-5 text-white' />
+                                            <CalendarIcon className="w-5 h-5 text-white" />
                                         ) : (
-                                            <SparklesIcon className='w-5 h-5 text-white' />
+                                            <SparklesIcon className="w-5 h-5 text-white" />
                                         )}
                                     </div>
                                     <div>
-                                        <h3 className='font-bold text-white text-sm'>
+                                        <h3 className="font-bold text-white text-sm">
                                             {activeTab === 'live'
                                                 ? t('chat.liveChat')
                                                 : activeTab === 'booking'
-                                                ? t('chat.quickBooking')
-                                                : t('chat.aiAssistant')}
+                                                  ? t('chat.quickBooking')
+                                                  : t('chat.aiAssistant')}
                                         </h3>
-                                        <p className='text-xs text-white/80'>
+                                        <p className="text-xs text-white/80">
                                             {activeTab === 'live'
                                                 ? t('chat.talkToRealPerson')
                                                 : activeTab === 'booking'
-                                                ? t('chat.bookInSeconds')
-                                                : t('chat.poweredByAI')}
+                                                  ? t('chat.bookInSeconds')
+                                                  : t('chat.poweredByAI')}
                                         </p>
                                     </div>
                                 </div>
                                 <button
                                     onClick={closeChat}
-                                    className='p-1 hover:bg-white/20 rounded-full transition-colors'
+                                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
                                     aria-label={t('chat.closeChat')}
                                 >
-                                    <XIcon className='w-5 h-5 text-white' />
+                                    <XIcon className="w-5 h-5 text-white" />
                                 </button>
                             </div>
 
                             {/* Tab navigation */}
-                            <div className='flex bg-black/10'>
+                            <div className="flex bg-black/10">
                                 <button
                                     onClick={() => setActiveTab('ai')}
                                     className={`flex-1 py-2 px-3 text-xs font-medium transition-all ${
@@ -182,8 +182,8 @@ export function GlobalChatWidget() {
                                             : 'text-white/70 hover:bg-white/10'
                                     }`}
                                 >
-                                    <div className='flex items-center justify-center gap-1'>
-                                        <SparklesIcon className='w-3.5 h-3.5' />
+                                    <div className="flex items-center justify-center gap-1">
+                                        <SparklesIcon className="w-3.5 h-3.5" />
                                         <span>{t('chat.aiChat')}</span>
                                     </div>
                                 </button>
@@ -195,8 +195,8 @@ export function GlobalChatWidget() {
                                             : 'text-white/70 hover:bg-white/10'
                                     }`}
                                 >
-                                    <div className='flex items-center justify-center gap-1'>
-                                        <UsersIcon className='w-3.5 h-3.5' />
+                                    <div className="flex items-center justify-center gap-1">
+                                        <UsersIcon className="w-3.5 h-3.5" />
                                         <span>{t('chat.liveChat')}</span>
                                     </div>
                                 </button>
@@ -208,8 +208,8 @@ export function GlobalChatWidget() {
                                             : 'text-white/70 hover:bg-white/10'
                                     }`}
                                 >
-                                    <div className='flex items-center justify-center gap-1'>
-                                        <CalendarIcon className='w-3.5 h-3.5' />
+                                    <div className="flex items-center justify-center gap-1">
+                                        <CalendarIcon className="w-3.5 h-3.5" />
                                         <span>{t('chat.booking')}</span>
                                     </div>
                                 </button>
@@ -217,19 +217,22 @@ export function GlobalChatWidget() {
                         </div>
 
                         {/* Tab content */}
-                        <div className='flex-1 flex flex-col overflow-hidden'>
+                        <div className="flex-1 flex flex-col overflow-hidden">
                             <AIChatTab
                                 isActive={activeTab === 'ai'}
                                 onRequestAgent={() => setActiveTab('live')}
                                 onRequestBooking={() => setActiveTab('booking')}
                             />
-                            <LiveChatTab isActive={activeTab === 'live'} onSwitchToAI={() => setActiveTab('ai')} />
+                            <LiveChatTab
+                                isActive={activeTab === 'live'}
+                                onSwitchToAI={() => setActiveTab('ai')}
+                            />
                             <BookingTab isActive={activeTab === 'booking'} />
                         </div>
 
                         {/* Footer */}
-                        <div className='px-3 py-2 text-center border-t border-gray-200'>
-                            <p className='text-xs text-gray-500'>{t('chat.poweredBy')}</p>
+                        <div className="px-3 py-2 text-center border-t border-gray-200">
+                            <p className="text-xs text-gray-500">{t('chat.poweredBy')}</p>
                         </div>
                     </motion.div>
                 )}

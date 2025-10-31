@@ -1,7 +1,16 @@
 // React hooks for accessing mock data store
 import { useState, useEffect, useCallback } from 'react';
 import { mockDataStore } from '../store/mockDataStore';
-import type { Service, Branch, Staff, Customer, Appointment, Review, BlogPost, Payment } from '../store/mockDataStore';
+import type {
+    Service,
+    Branch,
+    Staff,
+    Customer,
+    Appointment,
+    Review,
+    BlogPost,
+    Payment,
+} from '../store/mockDataStore';
 
 // Services hook
 export function useServices() {

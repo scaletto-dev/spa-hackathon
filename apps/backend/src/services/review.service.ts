@@ -1,6 +1,11 @@
 import { NotFoundError } from '@/utils/errors';
 import { reviewRepository } from '@/repositories/review.repository';
-import { ReviewDTO, ReviewWithServiceDTO, ServiceRatingDTO, ReviewsListResponse } from '@/types/review';
+import {
+  ReviewDTO,
+  ReviewWithServiceDTO,
+  ServiceRatingDTO,
+  ReviewsListResponse,
+} from '@/types/review';
 
 /**
  * Transform review to ReviewDTO

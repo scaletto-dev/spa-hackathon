@@ -18,7 +18,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
             >
                 <input
                     ref={ref}
-                    type='radio'
+                    type="radio"
                     disabled={disabled}
                     className={`
             w-4 h-4 
@@ -42,7 +42,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
                 </span>
             </label>
         );
-    },
+    }
 );
 
 Radio.displayName = 'Radio';
@@ -65,7 +65,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             >
                 <input
                     ref={ref}
-                    type='checkbox'
+                    type="checkbox"
                     disabled={disabled}
                     className={`
             w-4 h-4 
@@ -90,7 +90,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 </span>
             </label>
         );
-    },
+    }
 );
 
 Checkbox.displayName = 'Checkbox';

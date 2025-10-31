@@ -34,4 +34,3 @@ export interface UserProfileDTO {
 // ============================================================================
 
 export type UpdateProfileRequest = UpdateProfileRequestDTO;
-

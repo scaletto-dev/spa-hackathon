@@ -22,11 +22,7 @@ export class ContactController {
    * POST /api/v1/contact
    * Create a new contact form submission
    */
-  async createContactSubmission(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async createContactSubmission(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and stored in req.body
       const contactData = req.body as unknown as CreateContactRequest;
@@ -55,11 +51,7 @@ export class ContactController {
    * GET /api/v1/contact
    * Get all contact submissions with pagination (admin only)
    */
-  async getAllContactSubmissions(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getAllContactSubmissions(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and coerced types (stored in req.validatedQuery)
       const { page = 1, limit = 20, status } = (req as any).validatedQuery as GetContactsQuery;
@@ -83,11 +75,7 @@ export class ContactController {
    * GET /api/v1/contact/:id
    * Get a single contact submission by ID (admin only)
    */
-  async getContactSubmission(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getContactSubmission(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and stored in req.validatedParams
       const { id } = (req as any).validatedParams as GetContactParams;
@@ -110,11 +98,7 @@ export class ContactController {
    * PATCH /api/v1/contact/:id/status
    * Update contact submission status (admin only)
    */
-  async updateContactStatus(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async updateContactStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and stored in req.validatedParams
       const { id } = (req as any).validatedParams as GetContactParams;
@@ -139,11 +123,7 @@ export class ContactController {
    * DELETE /api/v1/contact/:id
    * Delete a contact submission (admin only)
    */
-  async deleteContactSubmission(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async deleteContactSubmission(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and stored in req.validatedParams
       const { id } = (req as any).validatedParams as GetContactParams;

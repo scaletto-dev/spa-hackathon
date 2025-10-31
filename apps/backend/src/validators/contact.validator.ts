@@ -19,17 +19,16 @@ export const createContactSchema = z.object({
     .string({ required_error: 'Email is required' })
     .email('Invalid email format')
     .max(255, 'Email must not exceed 255 characters'),
-  phone: z
-    .string()
-    .max(20, 'Phone must not exceed 20 characters')
-    .optional()
-    .nullable(),
-  messageType: z
-    .enum(['general_inquiry', 'service_question', 'booking_assistance', 'feedback', 'other'], {
+  phone: z.string().max(20, 'Phone must not exceed 20 characters').optional().nullable(),
+  messageType: z.enum(
+    ['general_inquiry', 'service_question', 'booking_assistance', 'feedback', 'other'],
+    {
       errorMap: () => ({
-        message: 'Invalid messageType. Must be one of: general_inquiry, service_question, booking_assistance, feedback, other',
+        message:
+          'Invalid messageType. Must be one of: general_inquiry, service_question, booking_assistance, feedback, other',
       }),
-    }),
+    }
+  ),
   message: z
     .string({ required_error: 'Message is required' })
     .min(5, 'Message must be at least 5 characters')
@@ -43,20 +42,14 @@ export type CreateContactRequest = z.infer<typeof createContactSchema>;
  * Query parameters for listing contact submissions (admin only)
  */
 export const getContactsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1, 'Page must be at least 1')
-    .default(1),
+  page: z.coerce.number().int().min(1, 'Page must be at least 1').default(1),
   limit: z.coerce
     .number()
     .int()
     .min(1, 'Limit must be at least 1')
     .max(100, 'Limit must be at most 100')
     .default(20),
-  status: z
-    .enum(['PENDING', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'])
-    .optional(),
+  status: z.enum(['PENDING', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']).optional(),
 });
 
 export type GetContactsQuery = z.infer<typeof getContactsQuerySchema>;

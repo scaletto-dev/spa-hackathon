@@ -69,7 +69,11 @@ export function BookingTab({ isActive }: BookingTabProps) {
                         type: 'button' as const,
                         label: `${service.name} - ${formatPrice(service.price)}`,
                         action: `select_service_${service.id}`,
-                        data: { serviceId: service.id, serviceName: service.name, price: service.price },
+                        data: {
+                            serviceId: service.id,
+                            serviceName: service.name,
+                            price: service.price,
+                        },
                     })),
                 },
             ]);
@@ -96,7 +100,11 @@ export function BookingTab({ isActive }: BookingTabProps) {
     }, [isActive, loadServices]);
 
     // Handle service selection
-    const handleServiceSelection = async (serviceId: string, serviceName: string, price: number) => {
+    const handleServiceSelection = async (
+        serviceId: string,
+        serviceName: string,
+        price: number
+    ) => {
         setMessages((prev) => [
             ...prev,
             {
@@ -217,7 +225,11 @@ export function BookingTab({ isActive }: BookingTabProps) {
     };
 
     // Handle slot click - start booking flow
-    const handleBookSlot = (slot: BookingData['slots'][0], serviceName: string, serviceId?: string) => {
+    const handleBookSlot = (
+        slot: BookingData['slots'][0],
+        serviceName: string,
+        serviceId?: string
+    ) => {
         console.log('📝 handleBookSlot called with:', { slot, serviceName, serviceId });
 
         const slotDate = new Date(slot.datetime);
@@ -289,7 +301,11 @@ export function BookingTab({ isActive }: BookingTabProps) {
             ...prev,
             {
                 type: 'bot',
-                text: t('chat.slotConfirmed', { serviceName, datetime, branchName: slot.branchName }),
+                text: t('chat.slotConfirmed', {
+                    serviceName,
+                    datetime,
+                    branchName: slot.branchName,
+                }),
                 timestamp: new Date(),
             },
         ]);
@@ -412,7 +428,7 @@ export function BookingTab({ isActive }: BookingTabProps) {
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-            },
+            }
         );
 
         const confirmationText = `${t('chat.confirmationTitle')}
@@ -524,12 +540,13 @@ ${i18n.language === 'vi' ? 'Nhấn nút bên dưới để hoàn tất đặt l�
 
     if (!isActive) return null;
 
-    const shouldShowInput = bookingStep !== 'slot_selection' && bookingStep !== 'completed' && isWaitingForInput;
+    const shouldShowInput =
+        bookingStep !== 'slot_selection' && bookingStep !== 'completed' && isWaitingForInput;
 
     return (
-        <div className='flex flex-col h-full'>
-            <div className='px-4 py-2 bg-green-50 border-b border-green-200'>
-                <p className='text-xs text-center font-medium text-gray-700'>
+        <div className="flex flex-col h-full">
+            <div className="px-4 py-2 bg-green-50 border-b border-green-200">
+                <p className="text-xs text-center font-medium text-gray-700">
                     {bookingStep === 'service_selection' && t('chat.step1')}
                     {bookingStep === 'slot_selection' && t('chat.step2')}
                     {bookingStep === 'ask_name' && t('chat.step3')}
@@ -546,10 +563,10 @@ ${i18n.language === 'vi' ? 'Nhấn nút bên dưới để hoàn tất đặt l�
                         bookingStep === 'ask_name'
                             ? t('chat.namePlaceholder')
                             : bookingStep === 'ask_phone'
-                            ? t('chat.phonePlaceholder')
-                            : bookingStep === 'ask_email'
-                            ? t('chat.emailPlaceholder')
-                            : t('chat.placeholder')
+                              ? t('chat.phonePlaceholder')
+                              : bookingStep === 'ask_email'
+                                ? t('chat.emailPlaceholder')
+                                : t('chat.placeholder')
                     }
                     hideOptions
                 />

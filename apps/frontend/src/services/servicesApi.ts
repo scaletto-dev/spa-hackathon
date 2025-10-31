@@ -4,52 +4,54 @@
  */
 
 import axios from 'axios';
-import { 
-  Service,
-  ServiceCategory,
-  ServiceWithCategory,
-  ServicesResponse, 
-  ServiceParams, 
-  ServiceDetailResponse,
-  ServiceCategoriesResponse
+import {
+    Service,
+    ServiceCategory,
+    ServiceWithCategory,
+    ServicesResponse,
+    ServiceParams,
+    ServiceDetailResponse,
+    ServiceCategoriesResponse,
 } from '../types/service';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const servicesApi = {
-  /**
-   * Get all service categories with service count
-   */
-  getAllCategories: async (): Promise<ServiceCategory[]> => {
-    const { data } = await axios.get<ServiceCategoriesResponse>(`${API_URL}/api/v1/services/categories`);
-    return data.data;
-  },
+    /**
+     * Get all service categories with service count
+     */
+    getAllCategories: async (): Promise<ServiceCategory[]> => {
+        const { data } = await axios.get<ServiceCategoriesResponse>(
+            `${API_URL}/api/v1/services/categories`
+        );
+        return data.data;
+    },
 
-  /**
-   * Get all services with optional filters and pagination
-   */
-  getServices: async (params?: ServiceParams): Promise<ServicesResponse> => {
-    const { data } = await axios.get(`${API_URL}/api/v1/services`, { params });
-    return data;
-  },
+    /**
+     * Get all services with optional filters and pagination
+     */
+    getServices: async (params?: ServiceParams): Promise<ServicesResponse> => {
+        const { data } = await axios.get(`${API_URL}/api/v1/services`, { params });
+        return data;
+    },
 
-  /**
-   * Get featured services for homepage
-   */
-  getFeaturedServices: async (limit: number = 6): Promise<Service[]> => {
-    const { data } = await axios.get(`${API_URL}/api/v1/services`, {
-      params: { featured: true, limit },
-    });
-    return data.data;
-  },
+    /**
+     * Get featured services for homepage
+     */
+    getFeaturedServices: async (limit: number = 6): Promise<Service[]> => {
+        const { data } = await axios.get(`${API_URL}/api/v1/services`, {
+            params: { featured: true, limit },
+        });
+        return data.data;
+    },
 
-  /**
-   * Get a single service by ID with full category details
-   */
-  getServiceById: async (id: string): Promise<ServiceWithCategory> => {
-    const { data } = await axios.get(`${API_URL}/api/v1/services/${id}`);
-    return data.data;
-  },
+    /**
+     * Get a single service by ID with full category details
+     */
+    getServiceById: async (id: string): Promise<ServiceWithCategory> => {
+        const { data } = await axios.get(`${API_URL}/api/v1/services/${id}`);
+        return data.data;
+    },
 };
 
 // Re-export types for convenience
