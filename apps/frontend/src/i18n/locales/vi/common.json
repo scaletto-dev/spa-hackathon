@@ -596,11 +596,135 @@
         "closeHint": "Đóng gợi ý",
         "assistant": "BeautyAI Assistant",
         "aiSupport": "Hỗ trợ bởi AI",
+        "liveSupport": "Đang kết nối với nhân viên",
         "closeChat": "Đóng chat",
         "openChat": "Mở chat",
         "placeholder": "Nhập tin nhắn của bạn...",
         "send": "Gửi tin nhắn",
-        "poweredBy": "Được hỗ trợ bởi BeautyAI Technology"
+        "poweredBy": "Được hỗ trợ bởi BeautyAI Technology",
+        "messageSent": "Tin nhắn đã được gửi",
+        "bookingIntent": "Tôi có thể giúp bạn đặt lịch! Bạn muốn đặt dịch vụ nào?",
+        "showAvailableSlots": "Xem lịch trống",
+        "talkToAgent": "Nói chuyện với nhân viên",
+        "viewPricing": "Xem bảng giá",
+        "viewBranches": "Xem chi nhánh",
+        "takeQuiz": "Làm bài test da",
+        "connectingAgent": "Bạn muốn kết nối với nhân viên tư vấn?",
+        "requestAgent": "Yêu cầu nhân viên hỗ trợ",
+        "defaultResponse": "Cảm ơn bạn đã liên hệ! Tôi có thể giúp bạn tìm hiểu về dịch vụ, giá cả, hoặc đặt lịch hẹn.",
+        "browseServices": "Xem dịch vụ",
+        "requestingAgent": "Đang kết nối với nhân viên...",
+        "agentConnected": "{{name}} đã tham gia cuộc trò chuyện",
+        "agentGreeting": "Xin chào! Tôi là nhân viên tư vấn. Tôi có thể giúp gì cho bạn?",
+        "availableSlots": "Đây là các khung giờ trống:",
+        "bookingConfirmed": "Đặt lịch thành công!",
+        "bookingSuccess": "Đã đặt lịch {{service}} vào {{time}}",
+        "queuePosition": "Vị trí trong hàng đợi: {{position}}",
+        "switchToLive": "Chuyển sang nhân viên tư vấn",
+        "switchToAI": "Chuyển về AI Assistant",
+        "switchToBooking": "Chuyển sang đặt lịch",
+        "switchedToAI": "Đã chuyển về chế độ AI Assistant",
+        "bookingAssistant": "Trợ lý đặt lịch",
+        "bookingMode": "Chế độ đặt lịch nhanh",
+        "errorMessage": "Không thể nhận phản hồi. Vui lòng thử lại.",
+        "aiChat": "AI Chat",
+        "liveChat": "Chat Trực Tiếp",
+        "booking": "Đặt Lịch",
+        "aiAssistant": "Trợ Lý AI",
+        "quickBooking": "Đặt Lịch Nhanh",
+        "talkToRealPerson": "Trò chuyện với người thật",
+        "bookInSeconds": "Đặt lịch trong giây lát",
+        "poweredByAI": "Trợ lý hỗ trợ bởi AI",
+        "connectingToSupport": "Đang kết nối hỗ trợ...",
+        "connectedWaitingForAgent": "Đã kết nối! Đang chờ nhân viên tham gia...",
+        "connectionFailed": "Kết nối thất bại. Vui lòng thử lại.",
+        "connectionLost": "Mất kết nối. Vui lòng tải lại trang.",
+        "connecting": "Đang kết nối...",
+        "connected": "Đã kết nối",
+        "disconnected": "Mất kết nối",
+        "connectedWith": "Đã kết nối với {{name}}",
+        "waitingForConnection": "Đang chờ kết nối...",
+        "selectSlotToBook": "Chọn khung giờ để đặt lịch hẹn",
+        "faq": {
+            "hours": "Spa của chúng tôi mở cửa Thứ 2 - Thứ 7: 9:00 - 20:00, Chủ nhật: 10:00 - 18:00",
+            "pricing": "Giá dịch vụ từ $80 đến $400. Facial từ $120 - $250, Laser từ $150 - $400, Body Treatments từ $300 - $600.",
+            "location": "Chúng tôi có 3 chi nhánh: Downtown (123 Main St), Westside (456 Oak Ave), Eastside (789 Elm Rd)",
+            "skinAnalysis": "Hệ thống phân tích da AI của chúng tôi sử dụng công nghệ tiên tiến để phân tích loại da, mối quan tâm và đề xuất liệu trình phù hợp."
+        }
+    },
+    "quiz": {
+        "title": "Phân Tích Da AI",
+        "analyzing": "Đang phân tích làn da của bạn...",
+        "analyzingSubtitle": "AI của chúng tôi đang tạo đề xuất cá nhân hóa cho bạn",
+        "questionOf": "Câu hỏi {{current}} / {{total}}",
+        "previousQuestion": "← Câu hỏi trước",
+        "questions": {
+            "q1": {
+                "question": "Mối quan tâm chính về da của bạn là gì?",
+                "options": {
+                    "acne": "Mụn & Mụn trứng cá",
+                    "aging": "Lão hóa & Nếp nhăn",
+                    "pigmentation": "Sắc tố da",
+                    "dryness": "Da khô",
+                    "sensitivity": "Da nhạy cảm"
+                }
+            },
+            "q2": {
+                "question": "Loại da của bạn là gì?",
+                "options": {
+                    "oily": "Da dầu",
+                    "dry": "Da khô",
+                    "combination": "Da hỗn hợp",
+                    "normal": "Da thường",
+                    "sensitive": "Da nhạy cảm"
+                }
+            },
+            "q3": {
+                "question": "Bạn gặp vấn đề về da thường xuyên như thế nào?",
+                "options": {
+                    "daily": "Hàng ngày",
+                    "weekly": "Hàng tuần",
+                    "monthly": "Hàng tháng",
+                    "occasionally": "Thỉnh thoảng",
+                    "rarely": "Hiếm khi"
+                }
+            },
+            "q4": {
+                "question": "Độ tuổi của bạn?",
+                "options": {
+                    "18-25": "18-25",
+                    "26-35": "26-35",
+                    "36-45": "36-45",
+                    "46-55": "46-55",
+                    "55+": "55+"
+                }
+            },
+            "q5": {
+                "question": "Mục tiêu làm đẹp của bạn là gì?",
+                "options": {
+                    "clear": "Da sạch",
+                    "antiAging": "Chống lão hóa",
+                    "brightening": "Làm sáng da",
+                    "hydration": "Dưỡng ẩm",
+                    "overall": "Sức khỏe tổng thể"
+                }
+            }
+        },
+        "results": {
+            "title": "Kết Quả Cá Nhân Hóa",
+            "subtitle": "Dựa trên câu trả lời của bạn, chúng tôi đề xuất các liệu trình sau:",
+            "skinType": "Loại da",
+            "primaryConcern": "Mối quan tâm chính",
+            "riskLevel": "Mức độ rủi ro",
+            "recommendations": "Dịch vụ đề xuất",
+            "tips": "Mẹo Chăm Sóc Da Cá Nhân",
+            "bookConsultation": "Đặt lịch tư vấn",
+            "retakeQuiz": "Làm lại Quiz"
+        },
+        "errors": {
+            "analysisFailed": "Không thể phân tích. Hiển thị đề xuất mặc định.",
+            "pleaseTryAgain": "Vui lòng thử lại sau."
+        }
     },
     "admin": {
         "portal": "Cổng quản trị",
@@ -1031,7 +1155,111 @@
         "minPurchase": "Mua tối thiểu:",
         "usageLimit": "Giới hạn sử dụng",
         "apply": "Áp dụng Voucher",
-        "code": "Mã"
+        "code": "Mã",
+    "support": {
+        "dashboard": {
+            "title": "Hỗ trợ khách hàng",
+            "subtitle": "Quản lý và trả lời các cuộc trò chuyện của khách hàng",
+            "conversations": "Cuộc trò chuyện",
+            "stats": {
+                "pending": "Chờ xử lý",
+                "active": "Đang xử lý",
+                "closed": "Đã đóng",
+                "response": "Phản hồi trung bình"
+            },
+            "filters": {
+                "all": "Tất cả",
+                "pending": "Chờ xử lý",
+                "active": "Đang xử lý",
+                "closed": "Đã đóng",
+                "mine": "Của tôi"
+            },
+            "search": "Tìm kiếm cuộc trò chuyện...",
+            "noConversations": "Không có cuộc trò chuyện nào",
+            "noConversationsDesc": "Chưa có cuộc trò chuyện nào. Khi khách hàng bắt đầu chat, chúng sẽ xuất hiện ở đây.",
+            "loading": "Đang tải...",
+            "take": "Nhận cuộc trò chuyện",
+            "unread": "tin nhắn chưa đọc",
+            "justNow": "Vừa xong",
+            "minutesAgo": "phút trước",
+            "hoursAgo": "giờ trước",
+            "daysAgo": "ngày trước",
+            "deleteConversation": "Xóa cuộc trò chuyện",
+            "deleteSelected": "Xóa đã chọn",
+            "selected": "{{count}} đã chọn",
+            "confirmDelete": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Hành động này không thể hoàn tác.",
+            "confirmBulkDelete": "Bạn có chắc chắn muốn xóa {{count}} cuộc trò chuyện? Hành động này không thể hoàn tác.",
+            "conversationDeleted": "Đã xóa cuộc trò chuyện thành công",
+            "conversationsDeleted": "Đã xóa {{count}} cuộc trò chuyện thành công"
+        },
+        "chat": {
+            "connected": "Đã kết nối",
+            "disconnected": "Mất kết nối",
+            "aiHints": "Gợi ý AI",
+            "close": "Đóng",
+            "you": "Bạn",
+            "customer": "Khách hàng",
+            "aiSuggestion": "Gợi ý AI",
+            "typing": "Đang nhập...",
+            "sendMessage": "Gửi tin nhắn",
+            "typeMessage": "Nhập tin nhắn của bạn...",
+            "attach": "Đính kèm",
+            "emoji": "Biểu tượng cảm xúc",
+            "send": "Gửi",
+            "enterToSend": "Enter để gửi",
+            "shiftEnterNewLine": "Shift + Enter để xuống dòng",
+            "closeConversation": "Đóng cuộc trò chuyện",
+            "closeConfirm": "Bạn có chắc muốn đóng cuộc trò chuyện này?",
+            "conversationClosed": "Cuộc trò chuyện đã đóng",
+            "failedToSend": "Không thể gửi tin nhắn",
+            "failedToLoad": "Không thể tải tin nhắn",
+            "failedToClose": "Không thể đóng cuộc trò chuyện",
+            "noMessages": "Chưa có tin nhắn nào"
+        },
+        "ai": {
+            "title": "Gợi ý AI",
+            "subtitle": "Các câu trả lời được AI đề xuất",
+            "loading": "AI đang phân tích...",
+            "noSuggestions": "Chưa có gợi ý nào",
+            "noSuggestionsDesc": "AI sẽ phân tích cuộc trò chuyện và đưa ra gợi ý phù hợp",
+            "refresh": "Làm mới gợi ý",
+            "confidence": "Độ tin cậy",
+            "reasoning": "Lý do",
+            "useSuggestion": "Sử dụng gợi ý này",
+            "copied": "Đã sao chép",
+            "failedToLoad": "Không thể tải gợi ý AI"
+        },
+        "login": {
+            "title": "Đăng nhập hỗ trợ",
+            "subtitle": "Truy cập bảng điều khiển hỗ trợ khách hàng",
+            "email": "Email",
+            "password": "Mật khẩu",
+            "emailPlaceholder": "support@example.com",
+            "passwordPlaceholder": "Nhập mật khẩu của bạn",
+            "rememberMe": "Ghi nhớ đăng nhập",
+            "forgotPassword": "Quên mật khẩu?",
+            "login": "Đăng nhập",
+            "loggingIn": "Đang đăng nhập...",
+            "emailRequired": "Vui lòng nhập email và mật khẩu",
+            "loginSuccess": "Đăng nhập thành công!",
+            "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.",
+            "features": {
+                "realtime": "Chat thời gian thực với khách hàng",
+                "realtimeDesc": "Trả lời khách hàng tức thì",
+                "ai": "Gợi ý trả lời bằng AI",
+                "aiDesc": "Được hỗ trợ bởi AI thông minh",
+                "management": "Quản lý cuộc trò chuyện",
+                "indicators": "Chỉ báo nhập văn bản & nhiều hơn",
+                "analytics": "Phân tích",
+                "analyticsDesc": "Theo dõi hiệu suất hỗ trợ"
+            }
+        },
+        "toast": {
+            "newChat": "Cuộc trò chuyện mới từ",
+            "conversationTaken": "Cuộc trò chuyện đã được nhận",
+            "failedToTake": "Không thể nhận cuộc trò chuyện",
+            "failedToLoadConversations": "Không thể tải danh sách cuộc trò chuyện"
+        }
     }
 }
 

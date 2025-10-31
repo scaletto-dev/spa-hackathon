@@ -86,10 +86,6 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
         const days = [];
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
-        // Tomorrow is the earliest selectable date
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
 
         // Get days in current viewing month
         const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
@@ -105,8 +101,8 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
             date.setHours(0, 0, 0, 0);
 
             const isToday = date.getTime() === today.getTime();
-            const isSelected = selectedDate && date.toISOString().split('T')[0] === selectedDate;
-            const isPast = date < tomorrow; // Changed from < today to < tomorrow
+            const isSelected = selectedDate && formatLocalDate(date) === selectedDate;
+            const isPast = date < today; // Only dates before today are past
             days.push(
                 <motion.div
                     key={day}

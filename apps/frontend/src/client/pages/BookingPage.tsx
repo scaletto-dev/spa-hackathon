@@ -39,7 +39,7 @@ export function BookingPage() {
         if (userStr) {
             try {
                 const user = JSON.parse(userStr);
-                setBookingData(prev => ({
+                setBookingData((prev) => ({
                     ...prev,
                     isLoggedIn: true,
                     name: user.fullName || '',
@@ -52,14 +52,14 @@ export function BookingPage() {
         }
     }, []);
 
-    // Step order
+    // Step order with i18n
     const steps = [
-        'Select Services', // Step 1
-        'Choose Branch',   // Step 2
-        'Pick Date & Time', // Step 3
-        'Your Information', // Step 4
-        'Payment',         // Step 5
-        'Confirmation',     // Step 6
+        t('bookings.steps.selectService'), // Step 1
+        t('bookings.steps.chooseBranch'), // Step 2
+        t('bookings.steps.pickDateTime'), // Step 3
+        t('bookings.steps.yourInfo'), // Step 4
+        t('bookings.steps.payment'), // Step 5
+        t('bookings.steps.confirm'), // Step 6
     ];
 
     const handleNextStep = () => {
@@ -91,13 +91,13 @@ export function BookingPage() {
         const timeParts = timePart.split(':').map(Number);
         let hours = timeParts[0] || 9;
         const minutes = timeParts[1] || 0;
-        
+
         if (period === 'PM' && hours !== 12) {
             hours += 12;
         } else if (period === 'AM' && hours === 12) {
             hours = 0;
         }
-        
+
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
     };
 
@@ -119,15 +119,16 @@ export function BookingPage() {
                 guestPhone: bookingData.phone || '',
                 notes: bookingData.notes || '',
                 language: 'vi',
+                paymentType: (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
             };
 
             console.log('Submitting booking with payload:', payload);
             toast.info('Đang xử lý đặt lịch...');
-            
+
             // Call API
             const response = await createBooking(payload);
             console.log('Booking created successfully:', response);
-            
+
             toast.success(`Đặt lịch thành công! Mã tham chiếu: #${response.referenceNumber}`);
         } catch (error) {
             console.error('Error submitting booking:', error);

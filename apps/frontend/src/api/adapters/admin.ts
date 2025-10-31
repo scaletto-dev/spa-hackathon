@@ -68,6 +68,7 @@ export const adminProfileAPI = {
       fullName?: string;
       phone?: string;
       language?: string;
+      avatar?: string;
    }) => {
       return apiCall("PUT", "/profile", data);
    },

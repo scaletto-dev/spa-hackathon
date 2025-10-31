@@ -597,11 +597,135 @@
         "closeHint": "Close hint",
         "assistant": "BeautyAI Assistant",
         "aiSupport": "AI-powered support",
+        "liveSupport": "Connected to staff",
         "closeChat": "Close chat",
         "openChat": "Open chat",
         "placeholder": "Type your message...",
         "send": "Send message",
-        "poweredBy": "Powered by BeautyAI Technology"
+        "poweredBy": "Powered by BeautyAI Technology",
+        "messageSent": "Message sent",
+        "bookingIntent": "I can help you book an appointment! What service are you interested in?",
+        "showAvailableSlots": "Show available slots",
+        "talkToAgent": "Talk to a staff member",
+        "viewPricing": "View pricing",
+        "viewBranches": "View branches",
+        "takeQuiz": "Take skin quiz",
+        "connectingAgent": "Would you like to connect with a consultant?",
+        "requestAgent": "Request staff support",
+        "defaultResponse": "Thanks for reaching out! I can help you with services, pricing, or booking an appointment.",
+        "browseServices": "Browse services",
+        "requestingAgent": "Connecting to staff...",
+        "agentConnected": "{{name}} has joined the conversation",
+        "agentGreeting": "Hello! I'm a consultant. How can I help you?",
+        "availableSlots": "Here are available time slots:",
+        "bookingConfirmed": "Booking confirmed!",
+        "bookingSuccess": "Booked {{service}} at {{time}}",
+        "queuePosition": "Queue position: {{position}}",
+        "switchToLive": "Switch to live support",
+        "switchToAI": "Switch to AI Assistant",
+        "switchToBooking": "Switch to booking mode",
+        "switchedToAI": "Switched back to AI Assistant mode",
+        "bookingAssistant": "Booking Assistant",
+        "bookingMode": "Quick booking mode",
+        "errorMessage": "Failed to get response. Please try again.",
+        "aiChat": "AI Chat",
+        "liveChat": "Live Chat",
+        "booking": "Booking",
+        "aiAssistant": "AI Assistant",
+        "quickBooking": "Quick Booking",
+        "talkToRealPerson": "Talk to a real person",
+        "bookInSeconds": "Book in seconds",
+        "poweredByAI": "AI-powered assistant",
+        "connectingToSupport": "Connecting to support...",
+        "connectedWaitingForAgent": "Connected! Waiting for an agent to join...",
+        "connectionFailed": "Failed to connect. Please try again.",
+        "connectionLost": "Connection lost. Please refresh.",
+        "connecting": "Connecting...",
+        "connected": "Connected",
+        "disconnected": "Disconnected",
+        "connectedWith": "Connected with {{name}}",
+        "waitingForConnection": "Waiting for connection...",
+        "selectSlotToBook": "Select a time slot to book your appointment",
+        "faq": {
+            "hours": "Our spa is open Monday - Saturday: 9 AM - 8 PM, Sunday: 10 AM - 6 PM",
+            "pricing": "Service prices range from $80 to $400. Facials $120-$250, Laser treatments $150-$400, Body treatments $300-$600.",
+            "location": "We have 3 locations: Downtown (123 Main St), Westside (456 Oak Ave), Eastside (789 Elm Rd)",
+            "skinAnalysis": "Our AI Skin Analysis uses advanced technology to analyze your skin type, concerns, and recommend personalized treatments."
+        }
+    },
+    "quiz": {
+        "title": "AI Skin Analysis",
+        "analyzing": "Analyzing Your Skin...",
+        "analyzingSubtitle": "Our AI is creating personalized recommendations for you",
+        "questionOf": "Question {{current}} of {{total}}",
+        "previousQuestion": "← Previous Question",
+        "questions": {
+            "q1": {
+                "question": "What is your primary skin concern?",
+                "options": {
+                    "acne": "Acne & Breakouts",
+                    "aging": "Aging & Wrinkles",
+                    "pigmentation": "Pigmentation",
+                    "dryness": "Dryness",
+                    "sensitivity": "Sensitivity"
+                }
+            },
+            "q2": {
+                "question": "What is your skin type?",
+                "options": {
+                    "oily": "Oily",
+                    "dry": "Dry",
+                    "combination": "Combination",
+                    "normal": "Normal",
+                    "sensitive": "Sensitive"
+                }
+            },
+            "q3": {
+                "question": "How often do you experience skin issues?",
+                "options": {
+                    "daily": "Daily",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly",
+                    "occasionally": "Occasionally",
+                    "rarely": "Rarely"
+                }
+            },
+            "q4": {
+                "question": "What is your age range?",
+                "options": {
+                    "18-25": "18-25",
+                    "26-35": "26-35",
+                    "36-45": "36-45",
+                    "46-55": "46-55",
+                    "55+": "55+"
+                }
+            },
+            "q5": {
+                "question": "What are your beauty goals?",
+                "options": {
+                    "clear": "Clear Skin",
+                    "antiAging": "Anti-Aging",
+                    "brightening": "Brightening",
+                    "hydration": "Hydration",
+                    "overall": "Overall Health"
+                }
+            }
+        },
+        "results": {
+            "title": "Your Personalized Results",
+            "subtitle": "Based on your answers, we recommend the following treatments:",
+            "skinType": "Skin Type",
+            "primaryConcern": "Primary Concern",
+            "riskLevel": "Risk Level",
+            "recommendations": "Recommended Services",
+            "tips": "Personalized Skincare Tips",
+            "bookConsultation": "Book Consultation",
+            "retakeQuiz": "Retake Quiz"
+        },
+        "errors": {
+            "analysisFailed": "Failed to analyze. Showing default recommendations.",
+            "pleaseTryAgain": "Please try again later."
+        }
     },
     "admin": {
         "portal": "Admin Portal",
@@ -1032,7 +1156,111 @@
         "minPurchase": "Min. purchase:",
         "usageLimit": "Usage limit",
         "apply": "Apply Voucher",
-        "code": "Code"
+        "code": "Code",
+    "support": {
+        "dashboard": {
+            "title": "Customer Support",
+            "subtitle": "Manage and respond to customer conversations",
+            "conversations": "Conversations",
+            "stats": {
+                "pending": "Pending",
+                "active": "Active",
+                "closed": "Closed",
+                "response": "Avg Response"
+            },
+            "filters": {
+                "all": "All",
+                "pending": "Pending",
+                "active": "Active",
+                "closed": "Closed",
+                "mine": "My Conversations"
+            },
+            "search": "Search conversations...",
+            "noConversations": "No conversations",
+            "noConversationsDesc": "No conversations yet. When customers start chatting, they'll appear here.",
+            "loading": "Loading...",
+            "take": "Take Conversation",
+            "unread": "unread messages",
+            "justNow": "Just now",
+            "minutesAgo": "minutes ago",
+            "hoursAgo": "hours ago",
+            "daysAgo": "days ago",
+            "deleteConversation": "Delete Conversation",
+            "deleteSelected": "Delete Selected",
+            "selected": "{{count}} selected",
+            "confirmDelete": "Are you sure you want to delete this conversation? This action cannot be undone.",
+            "confirmBulkDelete": "Are you sure you want to delete {{count}} conversations? This action cannot be undone.",
+            "conversationDeleted": "Conversation deleted successfully",
+            "conversationsDeleted": "{{count}} conversations deleted successfully"
+        },
+        "chat": {
+            "connected": "Connected",
+            "disconnected": "Disconnected",
+            "aiHints": "AI Hints",
+            "close": "Close",
+            "you": "You",
+            "customer": "Customer",
+            "aiSuggestion": "AI Suggestion",
+            "typing": "Typing...",
+            "sendMessage": "Send message",
+            "typeMessage": "Type your message...",
+            "attach": "Attach",
+            "emoji": "Emoji",
+            "send": "Send",
+            "enterToSend": "Enter to send",
+            "shiftEnterNewLine": "Shift + Enter for new line",
+            "closeConversation": "Close conversation",
+            "closeConfirm": "Are you sure you want to close this conversation?",
+            "conversationClosed": "Conversation closed",
+            "failedToSend": "Failed to send message",
+            "failedToLoad": "Failed to load messages",
+            "failedToClose": "Failed to close conversation",
+            "noMessages": "No messages yet"
+        },
+        "ai": {
+            "title": "AI Suggestions",
+            "subtitle": "AI-powered reply suggestions",
+            "loading": "AI is analyzing...",
+            "noSuggestions": "No suggestions yet",
+            "noSuggestionsDesc": "AI will analyze the conversation and provide relevant suggestions",
+            "refresh": "Refresh suggestions",
+            "confidence": "Confidence",
+            "reasoning": "Reasoning",
+            "useSuggestion": "Use this suggestion",
+            "copied": "Copied",
+            "failedToLoad": "Failed to load AI suggestions"
+        },
+        "login": {
+            "title": "Support Login",
+            "subtitle": "Access the customer support dashboard",
+            "email": "Email",
+            "password": "Password",
+            "emailPlaceholder": "support@example.com",
+            "passwordPlaceholder": "Enter your password",
+            "rememberMe": "Remember me",
+            "forgotPassword": "Forgot password?",
+            "login": "Login",
+            "loggingIn": "Logging in...",
+            "emailRequired": "Please enter email and password",
+            "loginSuccess": "Login successful!",
+            "loginFailed": "Login failed. Please check your credentials.",
+            "features": {
+                "realtime": "Real-time chat with customers",
+                "realtimeDesc": "Respond to customers instantly",
+                "ai": "AI-powered reply suggestions",
+                "aiDesc": "Powered by intelligent AI",
+                "management": "Conversation management",
+                "indicators": "Typing indicators & more",
+                "analytics": "Analytics",
+                "analyticsDesc": "Track support performance"
+            }
+        },
+        "toast": {
+            "newChat": "New chat from",
+            "conversationTaken": "Conversation taken",
+            "failedToTake": "Failed to take conversation",
+            "failedToLoadConversations": "Failed to load conversations"
+        }
     }
 }
 
