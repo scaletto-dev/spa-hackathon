@@ -12,6 +12,7 @@ import {
    FilterIcon,
 } from "lucide-react";
 import { CustomDropdown } from "../components/CustomDropdown";
+import { PaginationControls } from "../components/PaginationControls";
 import { adminServicesAPI } from "../../api/adapters/admin";
 import { useAdminList } from "../../hooks/useAdmin";
 import { Toast } from "../components/Toast";
@@ -115,7 +116,7 @@ export function Services() {
          </div>
 
          {/* Search and Filter */}
-         <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm p-4 flex items-center gap-4">
+         <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm p-4 flex items-center gap-4">
             <div className="relative flex-1">
                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                <input
@@ -220,50 +221,21 @@ export function Services() {
             </div>
          )}
 
+         
          {/* Pagination */}
          {!loading && services.length > 0 && (
-            <div className="flex items-center justify-between p-4 border-t border-pink-100 bg-pink-50/30">
-               <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-700">Items per page:</span>
-                  <select
-                     value={limit}
-                     onChange={(e) => setPageSize(Number(e.target.value))}
-                     className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  >
-                     <option value={10}>10</option>
-                     <option value={20}>20</option>
-                     <option value={50}>50</option>
-                     <option value={100}>100</option>
-                  </select>
-               </div>
-
-               <div className="flex flex-1 items-center justify-center gap-4">
-                  <button
-                     onClick={() => goToPage(page - 1)}
-                     disabled={page === 1}
-                     className="px-4 py-2 rounded-lg border border-gray-300 hover:border-pink-500 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-                  >
-                     Previous
-                  </button>
-
-                  <div className="text-sm text-gray-600 min-w-max">
-                     Page <span className="font-semibold">{page}</span> of <span className="font-semibold">{Math.ceil(total / limit)}</span>
-                  </div>
-
-                  <button
-                     onClick={() => goToPage(page + 1)}
-                     disabled={page >= Math.ceil(total / limit)}
-                     className="px-4 py-2 rounded-lg border border-gray-300 hover:border-pink-500 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-                  >
-                     Next
-                  </button>
-               </div>
-
-               <div className="text-sm text-gray-500">
-                  {((page - 1) * limit) + 1} - {Math.min(page * limit, total)} of {total}
-               </div>
+            <div className="relative isolate bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm overflow-visible" style={{ zIndex: 9999 }}>
+               <PaginationControls
+                  page={page}
+                  limit={limit}
+                  total={total}
+                  goToPage={goToPage}
+                  setPageSize={setPageSize}
+                  color="pink"
+               />
             </div>
          )}
+         
          <ServiceModal
             isOpen={isModalOpen}
             onClose={() => {

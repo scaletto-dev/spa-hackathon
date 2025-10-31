@@ -10,6 +10,7 @@ import {
    FilterIcon,
 } from "lucide-react";
 import { CustomDropdown } from "../components/CustomDropdown";
+import { PaginationControls } from "../components/PaginationControls";
 import { BlogPostModal } from "../components/modals/BlogPostModal";
 import { Toast } from "../components/Toast";
 import { adminBlogAPI } from "../../api/adapters/admin";
@@ -131,7 +132,7 @@ export function Blog() {
          </div>
 
          {/* Search and Filter */}
-         <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm p-4 flex items-center gap-4">
+         <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm p-4 flex items-center gap-4">
             <div className="relative flex-1">
                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                <input
@@ -252,55 +253,18 @@ export function Blog() {
 
          {/* Pagination */}
          {!loading && posts.length > 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-pink-100 shadow-sm">
-               <div className="flex items-center justify-between gap-4 p-6">
-                  {/* Items per page */}
-                  <div className="flex items-center gap-3">
-                     <label className="text-sm font-medium text-gray-700">Show:</label>
-                     <select
-                        value={limit}
-                        onChange={(e) => setPageSize(Number(e.target.value))}
-                        className="px-3 py-2 rounded-lg border border-purple-200 bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-400 hover:border-purple-300 transition-colors"
-                     >
-                        <option value={10}>10 items</option>
-                        <option value={20}>20 items</option>
-                        <option value={50}>50 items</option>
-                        <option value={100}>100 items</option>
-                     </select>
-                  </div>
-
-                  {/* Navigation buttons - centered */}
-                  <div className="flex flex-1 items-center justify-center gap-6">
-                     <button
-                        onClick={() => goToPage(page - 1)}
-                        disabled={page === 1}
-                        className="px-4 py-2 rounded-lg border-2 border-purple-300 text-purple-700 font-medium hover:bg-purple-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm"
-                     >
-                        ← Previous
-                     </button>
-
-                     <div className="text-center min-w-32">
-                        <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Page</div>
-                        <div className="text-lg font-bold text-purple-600">{page} / {Math.ceil(total / limit)}</div>
-                     </div>
-
-                     <button
-                        onClick={() => goToPage(page + 1)}
-                        disabled={page >= Math.ceil(total / limit)}
-                        className="px-4 py-2 rounded-lg border-2 border-purple-300 text-purple-700 font-medium hover:bg-purple-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm"
-                     >
-                        Next →
-                     </button>
-                  </div>
-
-                  {/* Item info */}
-                  <div className="text-right">
-                     <div className="text-xs text-gray-500 font-medium">Showing</div>
-                     <div className="text-sm font-semibold text-gray-700">
-                        {((page - 1) * limit) + 1}–{Math.min(page * limit, total)} of {total}
-                     </div>
-                  </div>
-               </div>
+            <div 
+               className="relative isolate bg-white/80 backdrop-blur-sm rounded-2xl border border-purple-100 shadow-sm overflow-visible" 
+               style={{ zIndex: 9999 }}
+            >
+               <PaginationControls
+                  page={page}
+                  limit={limit}
+                  total={total}
+                  goToPage={goToPage}
+                  setPageSize={setPageSize}
+                  color="purple"
+               />
             </div>
          )}
          <BlogPostModal

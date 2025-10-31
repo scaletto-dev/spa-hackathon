@@ -23,11 +23,18 @@ class AdminAppointmentsController {
          const limit = parseInt(req.query.limit as string) || 10;
          const status = req.query.status as string;
          const branchId = req.query.branchId as string;
+         const search = req.query.search as string; // Search by guest name
          const skip = (page - 1) * limit;
 
          const where: any = {};
          if (status) where.status = status;
          if (branchId) where.branchId = branchId;
+         if (search) {
+            where.OR = [
+               { guestName: { contains: search, mode: "insensitive" } },
+               { guestEmail: { contains: search, mode: "insensitive" } },
+            ];
+         }
 
          const [appointments, total] = await Promise.all([
             prisma.booking.findMany({
@@ -50,20 +57,42 @@ class AdminAppointmentsController {
             prisma.booking.count({ where }),
          ]);
 
-         // Fetch services separately for each booking
+         // Fetch services separately for each booking and map customer info
          const appointmentsWithServices = await Promise.all(
             appointments.map(async (appointment) => {
                const services = await prisma.service.findMany({
                   where: { id: { in: appointment.serviceIds } },
                });
-               return { ...appointment, services };
+               
+               // Prioritize user info over guest info
+               const customerName = appointment.user?.fullName || appointment.guestName || "Guest";
+               const customerEmail = appointment.user?.email || appointment.guestEmail || "";
+               const customerPhone = appointment.user?.phone || appointment.guestPhone || "";
+               
+               return { 
+                  ...appointment, 
+                  services,
+                  // Add mapped fields for frontend
+                  customerName,
+                  customerEmail,
+                  customerPhone,
+                  // Keep original fields for backward compatibility
+                  guestName: customerName,
+                  guestEmail: customerEmail,
+                  guestPhone: customerPhone,
+               };
             })
          );
 
          res.status(200).json({
             success: true,
-            data: appointmentsWithServices,
-            pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+            data: {
+               items: appointmentsWithServices,
+               total,
+               page,
+               limit,
+               totalPages: Math.ceil(total / limit),
+            },
             timestamp: new Date().toISOString(),
          });
       } catch (error) {

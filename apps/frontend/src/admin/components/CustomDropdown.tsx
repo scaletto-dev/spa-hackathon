@@ -13,6 +13,7 @@ interface CustomDropdownProps {
    options: DropdownOption[];
    placeholder?: string;
    color?: "pink" | "purple" | "blue" | "green";
+   dropUp?: boolean; // New prop to control dropdown direction
 }
 
 export function CustomDropdown({
@@ -21,6 +22,7 @@ export function CustomDropdown({
    options,
    placeholder = "Select...",
    color = "pink",
+   dropUp = false,
 }: CustomDropdownProps) {
    const [isOpen, setIsOpen] = useState(false);
    const dropdownRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export function CustomDropdown({
    const colors = colorClasses[color];
 
    return (
-      <div className="relative" ref={dropdownRef}>
+      <div className="relative z-[9999]" ref={dropdownRef}>
          <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
@@ -95,7 +97,7 @@ export function CustomDropdown({
             />
          </button>
          {isOpen && (
-            <div className={`absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border-2 ${colors.menu} shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200`}>
+            <div className={`absolute ${dropUp ? 'bottom-full mb-2' : 'top-full mt-2'} left-0 right-0 bg-white rounded-xl border-2 ${colors.menu} shadow-2xl overflow-hidden z-[10000] animate-in fade-in ${dropUp ? 'slide-in-from-bottom-2' : 'slide-in-from-top-2'} duration-200`}>
                {options.map((option) => (
                   <button
                      key={option.value}
