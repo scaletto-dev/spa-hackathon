@@ -111,12 +111,32 @@ model Booking {
   updatedAt          DateTime      @updatedAt
   branch             Branch        @relation(fields: [branchId], references: [id])
   user               User?         @relation(fields: [userId], references: [id])
+  payments           Payment[]
 
   @@index([referenceNumber])
   @@index([appointmentDate])
   @@index([userId])
   @@index([branchId])
   @@index([status])
+}
+
+/// Payment model - Payment records for bookings
+model Payment {
+  id            String       @id @default(uuid())
+  bookingId     String
+  amount        Decimal      @db.Decimal(10, 2)
+  currency      String       @default("VND")
+  paymentType   PaymentType  @default(ATM)
+  status        PaymentStatus @default(PENDING)
+  transactionId String?      @unique
+  notes         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  booking       Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([transactionId])
+  @@index([paymentType])
 }
 
 /// BlogCategory model - Organizes blog posts into topics
@@ -211,4 +231,37 @@ enum ContactStatus {
   PENDING
   IN_PROGRESS
   RESOLVED
+}
+
+enum ConversationStatus {
+  PENDING
+  ACTIVE
+  CLOSED
+}
+
+enum MessageSender {
+  CUSTOMER
+  STAFF
+  AI
+}
+
+enum VoucherType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum PaymentType {
+  ATM
+  CLINIC
+  WALLET
+  CASH
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
 }

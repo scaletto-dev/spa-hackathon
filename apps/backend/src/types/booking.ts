@@ -9,7 +9,7 @@ export type BookingStatus = 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW' 
 /**
  * Create Booking Request
  * Supports both member and guest bookings
- * Now supports multiple services per booking
+ * Now supports multiple services per booking and payment info
  */
 export interface CreateBookingRequest {
   serviceIds: string[]; // Array of service IDs for combo/package bookings
@@ -26,6 +26,10 @@ export interface CreateBookingRequest {
   guestName?: string;
   guestEmail?: string;
   guestPhone?: string;
+
+  // Payment information
+  paymentType?: 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER';
+  paymentAmount?: number; // Total payment amount in VND
 }
 
 /**
@@ -71,6 +75,16 @@ export interface BookingResponse {
     address: string;
     phone: string;
   } | undefined;
+
+  // Payment information
+  payment?: {
+    id: string;
+    amount: number;
+    currency: string;
+    paymentType: string;
+    status: string;
+    createdAt: string;
+  };
 }
 
 /**

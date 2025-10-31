@@ -13,6 +13,7 @@ import prisma from '../config/database';
 import { BookingStatus } from '@prisma/client';
 import { NotFoundError, ValidationError, ConflictError } from '../utils/errors';
 import logger from '../config/logger';
+import EmailService from './email.service';
 import {
   CreateBookingRequest,
   BookingResponse,
@@ -41,12 +42,23 @@ class BookingService {
    */
   private validateAppointmentDateTime(date: string, time: string): void {
     try {
+      // Parse appointment date (YYYY-MM-DD format)
       const appointmentDate = new Date(date);
+      appointmentDate.setHours(0, 0, 0, 0);
+      
+      // Parse appointment time (HH:mm format) and combine with date
+      const timeParts = time.split(':');
+      const hours = parseInt(timeParts[0]!, 10);
+      const minutes = parseInt(timeParts[1]!, 10);
+      appointmentDate.setHours(hours, minutes, 0, 0);
+      
+      // Get current time
       const now = new Date();
 
-      // Check if date is in the past
-      if (appointmentDate < now) {
-        throw new ValidationError('Appointment date must be in the future');
+      // Check if appointment date+time is in the future (at least 1 hour from now)
+      const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
+      if (appointmentDate < oneHourFromNow) {
+        throw new ValidationError('Appointment must be at least 1 hour from now');
       }
 
       // Check if time is valid (HH:mm format)
@@ -56,9 +68,6 @@ class BookingService {
       }
 
       // Check if appointment is within business hours (8:00 - 18:00)
-      const timeParts = time.split(':');
-      const hours = parseInt(timeParts[0]!, 10);
-      const minutes = parseInt(timeParts[1]!, 10);
       if (hours < 8 || hours >= 18) {
         throw new ValidationError('Appointments must be between 08:00 and 18:00');
       }
@@ -115,6 +124,8 @@ class BookingService {
         guestName,
         guestEmail,
         guestPhone,
+        paymentType = 'ATM',
+        paymentAmount,
       } = createBookingDto;
 
       // Validate appointment date and time
@@ -147,7 +158,7 @@ class BookingService {
       // Generate unique reference number
       const referenceNumber = this.generateReferenceNumber();
 
-      // Create booking
+      // Create booking with payment
       const booking = await prisma.booking.create({
         data: {
           referenceNumber,
@@ -172,8 +183,53 @@ class BookingService {
               phone: true,
             },
           },
+          payments: {
+            select: {
+              id: true,
+              amount: true,
+              currency: true,
+              paymentType: true,
+              status: true,
+              createdAt: true,
+            },
+          },
         },
       });
+
+      // Create payment record if payment info is provided
+      let payment: any = null;
+      
+      // Calculate payment amount from services if not provided
+      let totalAmount = paymentAmount || 0;
+      if (!paymentAmount || paymentAmount === 0) {
+        // Fetch services to calculate total price
+        const services = await prisma.service.findMany({
+          where: { id: { in: serviceIds } },
+          select: { price: true },
+        });
+        totalAmount = services.reduce((sum, service) => sum + Number(service.price), 0);
+      }
+
+      // Create payment record for the booking
+      if (totalAmount > 0) {
+        payment = await prisma.payment.create({
+          data: {
+            bookingId: booking.id,
+            amount: totalAmount,
+            currency: 'VND',
+            paymentType: paymentType as any,
+            status: 'PENDING',
+          },
+          select: {
+            id: true,
+            amount: true,
+            currency: true,
+            paymentType: true,
+            status: true,
+            createdAt: true,
+          },
+        });
+      }
 
       // Fetch service details for response
       const services = await prisma.service.findMany({
@@ -186,9 +242,39 @@ class BookingService {
         },
       });
 
-      logger.info(`Booking created: ${referenceNumber} by ${userId || guestEmail}`);
+      logger.info(`Booking created: ${referenceNumber} by ${userId || guestEmail} with payment ${paymentAmount ? 'initiated' : 'pending'}`);
 
-      return this.mapBookingToResponse(booking, services);
+      const response = this.mapBookingToResponse(booking, services);
+      if (payment) {
+        response.payment = payment;
+      }
+
+      // Send booking confirmation email (non-blocking)
+      if (guestEmail) {
+        const serviceNames = services.map(s => s.name);
+        const appointmentDateStr = new Date(appointmentDate).toLocaleDateString('vi-VN');
+        const totalAmount = payment?.amount || 0;
+        
+        EmailService.sendBookingConfirmation(
+          guestEmail,
+          guestName || 'Guest',
+          guestPhone || '',
+          referenceNumber,
+          appointmentDateStr,
+          appointmentTime,
+          booking.branch?.name || '',
+          booking.branch?.address || '',
+          booking.branch?.phone || '',
+          serviceNames,
+          totalAmount,
+          notes
+        ).catch(err => {
+          // Log email error but don't fail the booking
+          logger.error(`Failed to send booking confirmation email for ${referenceNumber}:`, err);
+        });
+      }
+
+      return response;
     } catch (error) {
       logger.error('Error creating booking:', error);
       throw error;

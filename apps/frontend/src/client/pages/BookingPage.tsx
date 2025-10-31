@@ -119,6 +119,7 @@ export function BookingPage() {
                 guestPhone: bookingData.phone || '',
                 notes: bookingData.notes || '',
                 language: 'vi',
+                paymentType: (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
             };
 
             console.log('Submitting booking with payload:', payload);
