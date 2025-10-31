@@ -4,6 +4,10 @@
   "description": "Backend API for Beauty Clinic Care Website",
   "main": "dist/server.js",
   "private": true,
+  "prisma": {
+    "seed": "ts-node -r tsconfig-paths/register src/prisma/seed.ts",
+    "schema": "src/prisma/schema.prisma"
+  },
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"ts-node -r tsconfig-paths/register\" src/server.ts",
     "build": "tsc",

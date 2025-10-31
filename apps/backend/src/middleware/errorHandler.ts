@@ -6,16 +6,16 @@ import { ApiError } from '../utils/errors';
 
 /**
  * Global Error Handler Middleware
- * 
+ *
  * Catches all errors from route handlers and middleware, logs them,
  * and returns a consistent error response format.
- * 
+ *
  * Handles:
  * - Custom ApiError instances (ValidationError, NotFoundError, etc.)
  * - Prisma errors (P2002 unique constraint, P2025 not found, etc.)
  * - express-validator validation errors
  * - Generic JavaScript errors
- * 
+ *
  * IMPORTANT: This middleware MUST be registered last in the middleware chain.
  */
 export function errorHandler(
@@ -26,7 +26,7 @@ export function errorHandler(
 ): void {
   // Log the error
   logger.error(err.message, {
-    url: req.url,
+    url: req.originalUrl,
     method: req.method,
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });

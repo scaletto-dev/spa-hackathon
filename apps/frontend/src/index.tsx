@@ -7,9 +7,9 @@ import { App } from './App';
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <Suspense fallback={<div>Loading...</div>}>
             <App />
         </Suspense>
-    </React.StrictMode>,
+    // </React.StrictMode>,
 );
