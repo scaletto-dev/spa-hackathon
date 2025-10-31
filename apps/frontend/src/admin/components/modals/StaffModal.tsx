@@ -115,116 +115,119 @@ export function StaffModal({ isOpen, onClose, onSuccess }: StaffModalProps) {
 
     if (!isOpen) return null;
     return (
-        <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
-            <div className='bg-white rounded-3xl shadow-2xl w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 max-h-[90vh] overflow-y-auto'>
-                <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between sticky top-0'>
-                    <h2 className='text-xl font-bold text-white'>Thêm Chuyên viên mới</h2>
-                    <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
-                        <XIcon className='w-6 h-6 text-white' />
-                    </button>
-                </div>
-                <div className='p-6 space-y-4'>
-                    <div className='flex justify-center'>
-                        <div className='relative'>
-                            <div className='w-32 h-32 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center border-4 border-white shadow-lg'>
-                                <UploadIcon className='w-8 h-8 text-gray-400' />
+        <>
+            <div className='!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]' onClick={onClose} />
+            <div className='!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none'>
+                <div className='bg-white rounded-3xl shadow-2xl w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 max-h-[90vh] overflow-y-auto pointer-events-auto'>
+                    <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between sticky top-0'>
+                        <h2 className='text-xl font-bold text-white'>Thêm Chuyên viên mới</h2>
+                        <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
+                            <XIcon className='w-6 h-6 text-white' />
+                        </button>
+                    </div>
+                    <div className='p-6 space-y-4'>
+                        <div className='flex justify-center'>
+                            <div className='relative'>
+                                <div className='w-32 h-32 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center border-4 border-white shadow-lg'>
+                                    <UploadIcon className='w-8 h-8 text-gray-400' />
+                                </div>
+                                <button className='absolute bottom-0 right-0 w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 flex items-center justify-center shadow-lg'>
+                                    <UploadIcon className='w-5 h-5 text-white' />
+                                </button>
                             </div>
-                            <button className='absolute bottom-0 right-0 w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 flex items-center justify-center shadow-lg'>
-                                <UploadIcon className='w-5 h-5 text-white' />
-                            </button>
                         </div>
-                    </div>
-                    <div className='grid grid-cols-2 gap-4'>
-                        <FormField label='Họ và tên' name='name' required>
-                            <Input
-                                name='name'
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder='Nhập họ và tên'
-                            />
-                        </FormField>
-
-                        <FormField label='Chuyên môn' name='specialization' required>
-                            <Select
-                                name='specialization'
-                                value={formData.specialization}
-                                onChange={handleSelectChange('specialization')}
-                                options={specializationOptions}
-                                placeholder='Chọn chuyên môn'
-                            />
-                        </FormField>
-                    </div>
-
-                    <FormField label='Chi nhánh' name='branch' required>
-                        <Select
-                            name='branch'
-                            value={formData.branch}
-                            onChange={handleSelectChange('branch')}
-                            options={branchOptions}
-                            placeholder='Chọn chi nhánh'
-                        />
-                    </FormField>
-
-                    <FormField label='Giờ làm việc' name='workingHours' required>
                         <div className='grid grid-cols-2 gap-4'>
-                            <Input
-                                type='time'
-                                name='startTime'
-                                value={formData.startTime}
-                                onChange={handleChange}
-                                placeholder='Giờ bắt đầu'
-                            />
-                            <Input
-                                type='time'
-                                name='endTime'
-                                value={formData.endTime}
-                                onChange={handleChange}
-                                placeholder='Giờ kết thúc'
-                            />
-                        </div>
-                    </FormField>
+                            <FormField label='Họ và tên' name='name' required>
+                                <Input
+                                    name='name'
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder='Nhập họ và tên'
+                                />
+                            </FormField>
 
-                    <div>
-                        <div className='flex items-center justify-between mb-2'>
-                            <label className='block text-sm font-medium text-gray-700'>Tiểu sử</label>
-                            <button
-                                type='button'
-                                onClick={handleGenerateAIBio}
-                                className='text-xs text-purple-600 hover:text-purple-700 flex items-center gap-1'
-                            >
-                                <SparklesIcon className='w-3 h-3' />
-                                Tạo bằng AI
-                            </button>
+                            <FormField label='Chuyên môn' name='specialization' required>
+                                <Select
+                                    name='specialization'
+                                    value={formData.specialization}
+                                    onChange={handleSelectChange('specialization')}
+                                    options={specializationOptions}
+                                    placeholder='Chọn chuyên môn'
+                                />
+                            </FormField>
                         </div>
-                        <FormField name='bio'>
-                            <Textarea
-                                name='bio'
-                                value={formData.bio}
-                                onChange={handleChange}
-                                placeholder='Tiểu sử và trình độ chuyên môn...'
-                                rows={4}
-                                maxLength={500}
-                                showCounter
+
+                        <FormField label='Chi nhánh' name='branch' required>
+                            <Select
+                                name='branch'
+                                value={formData.branch}
+                                onChange={handleSelectChange('branch')}
+                                options={branchOptions}
+                                placeholder='Chọn chi nhánh'
                             />
                         </FormField>
-                    </div>
 
-                    <div className='flex gap-3 pt-4'>
-                        <button
-                            onClick={onClose}
-                            className='flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors'
-                        >
-                            Hủy
-                        </button>
-                        <button
-                            onClick={handleSubmit}
-                            className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm'
-                        >
-                            Thêm Chuyên viên
-                        </button>
+                        <FormField label='Giờ làm việc' name='workingHours' required>
+                            <div className='grid grid-cols-2 gap-4'>
+                                <Input
+                                    type='time'
+                                    name='startTime'
+                                    value={formData.startTime}
+                                    onChange={handleChange}
+                                    placeholder='Giờ bắt đầu'
+                                />
+                                <Input
+                                    type='time'
+                                    name='endTime'
+                                    value={formData.endTime}
+                                    onChange={handleChange}
+                                    placeholder='Giờ kết thúc'
+                                />
+                            </div>
+                        </FormField>
+
+                        <div>
+                            <div className='flex items-center justify-between mb-2'>
+                                <label className='block text-sm font-medium text-gray-700'>Tiểu sử</label>
+                                <button
+                                    type='button'
+                                    onClick={handleGenerateAIBio}
+                                    className='text-xs text-purple-600 hover:text-purple-700 flex items-center gap-1'
+                                >
+                                    <SparklesIcon className='w-3 h-3' />
+                                    Tạo bằng AI
+                                </button>
+                            </div>
+                            <FormField name='bio'>
+                                <Textarea
+                                    name='bio'
+                                    value={formData.bio}
+                                    onChange={handleChange}
+                                    placeholder='Tiểu sử và trình độ chuyên môn...'
+                                    rows={4}
+                                    maxLength={500}
+                                    showCounter
+                                />
+                            </FormField>
+                        </div>
+
+                        <div className='flex gap-3 pt-4'>
+                            <button
+                                onClick={onClose}
+                                className='flex-1 px-4 py-2 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors'
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                onClick={handleSubmit}
+                                className='flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm'
+                            >
+                                Thêm Chuyên viên
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }

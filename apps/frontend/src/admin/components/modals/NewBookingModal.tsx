@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XIcon, SparklesIcon, } from 'lucide-react';
+import { XIcon, SparklesIcon } from 'lucide-react';
 import { useAppointments } from '../../../hooks/useStore';
 import { toast } from '../../../utils/toast';
 import { FormField, Select, Textarea, DatePicker, TimePicker } from '../../../components/ui';
@@ -136,197 +136,202 @@ export function NewBookingModal({ isOpen, onClose, onSuccess }: NewBookingModalP
     };
 
     return (
-        <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in'>
-            <div className='bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col animate-in slide-in-from-bottom-4'>
-                <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0'>
-                    <div>
-                        <h2 className='text-xl font-bold text-white'>New Booking</h2>
-                        <p className='text-white/80 text-sm'>Step {step} of 3</p>
+        <>
+            <div className='!fixed !inset-0 !m-0 !p-0 bg-black/50 backdrop-blur-sm z-[9999]' onClick={onClose} />
+            <div className='!fixed !inset-0 !m-0 !p-0 flex items-center justify-center z-[10000] pointer-events-none'>
+                <div className='bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col animate-in slide-in-from-bottom-4 pointer-events-auto'>
+                    <div className='bg-gradient-to-r from-pink-400 to-purple-400 p-6 rounded-t-3xl flex items-center justify-between flex-shrink-0'>
+                        <div>
+                            <h2 className='text-xl font-bold text-white'>New Booking</h2>
+                            <p className='text-white/80 text-sm'>Step {step} of 3</p>
+                        </div>
+                        <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
+                            <XIcon className='w-6 h-6 text-white' />
+                        </button>
                     </div>
-                    <button onClick={onClose} className='p-1 hover:bg-white/20 rounded-full transition-colors'>
-                        <XIcon className='w-6 h-6 text-white' />
-                    </button>
-                </div>
-                <div className='p-6 overflow-y-auto flex-1'>
-                    <div className='flex items-center justify-between mb-6'>
-                        {[1, 2, 3].map((s) => (
-                            <div key={s} className='flex items-center flex-1'>
-                                <div
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                                        step >= s
-                                            ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white'
-                                            : 'bg-gray-200 text-gray-400'
-                                    }`}
-                                >
-                                    {s}
-                                </div>
-                                {s < 3 && (
+                    <div className='p-6 overflow-y-auto flex-1'>
+                        <div className='flex items-center justify-between mb-6'>
+                            {[1, 2, 3].map((s) => (
+                                <div key={s} className='flex items-center flex-1'>
                                     <div
-                                        className={`flex-1 h-1 mx-2 rounded-full transition-all ${
-                                            step > s ? 'bg-gradient-to-r from-pink-400 to-purple-400' : 'bg-gray-200'
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                                            step >= s
+                                                ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white'
+                                                : 'bg-gray-200 text-gray-400'
                                         }`}
-                                    />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    {step === 1 && (
-                        <div className='space-y-4 animate-in fade-in slide-in-from-right-2'>
-                            <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
-                                <div className='flex items-center gap-2'>
-                                    <SparklesIcon className='w-5 h-5 text-purple-600' />
-                                    <button className='text-sm text-purple-600 hover:text-purple-700 font-medium'>
-                                        AI: Gợi ý khung giờ tốt nhất
-                                    </button>
+                                    >
+                                        {s}
+                                    </div>
+                                    {s < 3 && (
+                                        <div
+                                            className={`flex-1 h-1 mx-2 rounded-full transition-all ${
+                                                step > s
+                                                    ? 'bg-gradient-to-r from-pink-400 to-purple-400'
+                                                    : 'bg-gray-200'
+                                            }`}
+                                        />
+                                    )}
                                 </div>
-                            </div>
-
-                            <FormField label='Dịch vụ' name='service' required>
-                                <Select
-                                    name='service'
-                                    value={formData.service}
-                                    onChange={handleSelectChange('service')}
-                                    options={serviceOptions}
-                                    placeholder='Chọn dịch vụ'
-                                />
-                            </FormField>
-
-                            <FormField label='Chuyên viên' name='therapist' required>
-                                <Select
-                                    name='therapist'
-                                    value={formData.therapist}
-                                    onChange={handleSelectChange('therapist')}
-                                    options={therapistOptions}
-                                    placeholder='Chọn chuyên viên'
-                                />
-                            </FormField>
-
-                            <FormField label='Chi nhánh' name='branch' required>
-                                <Select
-                                    name='branch'
-                                    value={formData.branch}
-                                    onChange={handleSelectChange('branch')}
-                                    options={branchOptions}
-                                    placeholder='Chọn chi nhánh'
-                                />
-                            </FormField>
+                            ))}
                         </div>
-                    )}
-                    {step === 2 && (
-                        <div className='space-y-4 animate-in fade-in slide-in-from-right-2'>
-                            <div className='grid grid-cols-2 gap-4'>
-                                <FormField label='Ngày' name='date' required>
-                                    <DatePicker
-                                        name='date'
-                                        value={formData.date ? new Date(formData.date) : null}
-                                        onChange={handleDateChange}
-                                        placeholder='Chọn ngày'
-                                        disablePastDates
+                        {step === 1 && (
+                            <div className='space-y-4 animate-in fade-in slide-in-from-right-2'>
+                                <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
+                                    <div className='flex items-center gap-2'>
+                                        <SparklesIcon className='w-5 h-5 text-purple-600' />
+                                        <button className='text-sm text-purple-600 hover:text-purple-700 font-medium'>
+                                            AI: Gợi ý khung giờ tốt nhất
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <FormField label='Dịch vụ' name='service' required>
+                                    <Select
+                                        name='service'
+                                        value={formData.service}
+                                        onChange={handleSelectChange('service')}
+                                        options={serviceOptions}
+                                        placeholder='Chọn dịch vụ'
                                     />
                                 </FormField>
 
-                                <FormField label='Giờ' name='time' required>
-                                    <TimePicker
-                                        name='time'
-                                        value={formData.time}
-                                        onChange={handleSelectChange('time')}
-                                        placeholder='Chọn giờ'
-                                        interval={30}
+                                <FormField label='Chuyên viên' name='therapist' required>
+                                    <Select
+                                        name='therapist'
+                                        value={formData.therapist}
+                                        onChange={handleSelectChange('therapist')}
+                                        options={therapistOptions}
+                                        placeholder='Chọn chuyên viên'
+                                    />
+                                </FormField>
+
+                                <FormField label='Chi nhánh' name='branch' required>
+                                    <Select
+                                        name='branch'
+                                        value={formData.branch}
+                                        onChange={handleSelectChange('branch')}
+                                        options={branchOptions}
+                                        placeholder='Chọn chi nhánh'
                                     />
                                 </FormField>
                             </div>
+                        )}
+                        {step === 2 && (
+                            <div className='space-y-4 animate-in fade-in slide-in-from-right-2'>
+                                <div className='grid grid-cols-2 gap-4'>
+                                    <FormField label='Ngày' name='date' required>
+                                        <DatePicker
+                                            name='date'
+                                            value={formData.date ? new Date(formData.date) : null}
+                                            onChange={handleDateChange}
+                                            placeholder='Chọn ngày'
+                                            disablePastDates
+                                        />
+                                    </FormField>
 
-                            <FormField label='Thời gian' name='duration' required>
-                                <Select
-                                    name='duration'
-                                    value={formData.duration}
-                                    onChange={handleSelectChange('duration')}
-                                    options={durationOptions}
-                                />
-                            </FormField>
+                                    <FormField label='Giờ' name='time' required>
+                                        <TimePicker
+                                            name='time'
+                                            value={formData.time}
+                                            onChange={handleSelectChange('time')}
+                                            placeholder='Chọn giờ'
+                                            interval={30}
+                                        />
+                                    </FormField>
+                                </div>
 
-                            <div className='bg-pink-50/50 rounded-lg p-4 border border-pink-100'>
-                                <p className='text-sm text-gray-700'>
-                                    <span className='font-semibold'>Khung giờ còn trống:</span> 10:00, 14:00, 16:30
-                                </p>
-                            </div>
-                        </div>
-                    )}
-                    {step === 3 && (
-                        <div className='space-y-4 animate-in fade-in slide-in-from-right-2'>
-                            <FormField label='Khách hàng' name='customer' required>
-                                <Select
-                                    name='customer'
-                                    value={formData.customer}
-                                    onChange={handleSelectChange('customer')}
-                                    options={customerOptions}
-                                    placeholder='Chọn khách hàng'
-                                />
-                            </FormField>
-                            <button className='text-sm text-purple-600 hover:text-purple-700'>
-                                + Thêm khách hàng mới
-                            </button>
+                                <FormField label='Thời gian' name='duration' required>
+                                    <Select
+                                        name='duration'
+                                        value={formData.duration}
+                                        onChange={handleSelectChange('duration')}
+                                        options={durationOptions}
+                                    />
+                                </FormField>
 
-                            <FormField label='Phương thức thanh toán' name='paymentMethod' required>
-                                <Select
-                                    name='paymentMethod'
-                                    value={formData.paymentMethod}
-                                    onChange={handleSelectChange('paymentMethod')}
-                                    options={paymentOptions}
-                                />
-                            </FormField>
-
-                            <FormField label='Ghi chú đặc biệt' name='notes'>
-                                <Textarea
-                                    name='notes'
-                                    value={formData.notes}
-                                    onChange={handleChange}
-                                    placeholder='Yêu cầu hoặc ghi chú đặc biệt...'
-                                    rows={3}
-                                    maxLength={300}
-                                />
-                            </FormField>
-
-                            <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
-                                <h4 className='font-semibold text-gray-800 mb-2'>Tóm tắt đặt lịch</h4>
-                                <div className='space-y-1 text-sm text-gray-700'>
-                                    <p>Dịch vụ: Chăm sóc da cao cấp</p>
-                                    <p>Chuyên viên: Emma Wilson</p>
-                                    <p>Ngày giờ: Hôm nay lúc 14:00</p>
-                                    <p className='font-semibold text-gray-800 pt-2 border-t border-pink-100'>
-                                        Tổng: 3,000,000đ
+                                <div className='bg-pink-50/50 rounded-lg p-4 border border-pink-100'>
+                                    <p className='text-sm text-gray-700'>
+                                        <span className='font-semibold'>Khung giờ còn trống:</span> 10:00, 14:00, 16:30
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                    )}
-                </div>
-                <div className='flex-shrink-0 bg-white/90 backdrop-blur-xl p-6 border-t border-pink-100 rounded-b-3xl flex gap-3'>
-                    {step > 1 && (
-                        <button
-                            onClick={() => setStep(step - 1)}
-                            className='flex-1 px-4 py-3 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors font-medium'
-                        >
-                            Back
-                        </button>
-                    )}
-                    {step < 3 ? (
-                        <button
-                            onClick={() => setStep(step + 1)}
-                            className='flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm font-medium'
-                        >
-                            Continue
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleSubmit}
-                            className='flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm font-medium'
-                        >
-                            Confirm Booking
-                        </button>
-                    )}
+                        )}
+                        {step === 3 && (
+                            <div className='space-y-4 animate-in fade-in slide-in-from-right-2'>
+                                <FormField label='Khách hàng' name='customer' required>
+                                    <Select
+                                        name='customer'
+                                        value={formData.customer}
+                                        onChange={handleSelectChange('customer')}
+                                        options={customerOptions}
+                                        placeholder='Chọn khách hàng'
+                                    />
+                                </FormField>
+                                <button className='text-sm text-purple-600 hover:text-purple-700'>
+                                    + Thêm khách hàng mới
+                                </button>
+
+                                <FormField label='Phương thức thanh toán' name='paymentMethod' required>
+                                    <Select
+                                        name='paymentMethod'
+                                        value={formData.paymentMethod}
+                                        onChange={handleSelectChange('paymentMethod')}
+                                        options={paymentOptions}
+                                    />
+                                </FormField>
+
+                                <FormField label='Ghi chú đặc biệt' name='notes'>
+                                    <Textarea
+                                        name='notes'
+                                        value={formData.notes}
+                                        onChange={handleChange}
+                                        placeholder='Yêu cầu hoặc ghi chú đặc biệt...'
+                                        rows={3}
+                                        maxLength={300}
+                                    />
+                                </FormField>
+
+                                <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
+                                    <h4 className='font-semibold text-gray-800 mb-2'>Tóm tắt đặt lịch</h4>
+                                    <div className='space-y-1 text-sm text-gray-700'>
+                                        <p>Dịch vụ: Chăm sóc da cao cấp</p>
+                                        <p>Chuyên viên: Emma Wilson</p>
+                                        <p>Ngày giờ: Hôm nay lúc 14:00</p>
+                                        <p className='font-semibold text-gray-800 pt-2 border-t border-pink-100'>
+                                            Tổng: 3,000,000đ
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className='flex-shrink-0 bg-white/90 backdrop-blur-xl p-6 border-t border-pink-100 rounded-b-3xl flex gap-3'>
+                        {step > 1 && (
+                            <button
+                                onClick={() => setStep(step - 1)}
+                                className='flex-1 px-4 py-3 rounded-lg border border-pink-200 text-gray-700 hover:bg-pink-50 transition-colors font-medium'
+                            >
+                                Back
+                            </button>
+                        )}
+                        {step < 3 ? (
+                            <button
+                                onClick={() => setStep(step + 1)}
+                                className='flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm font-medium'
+                            >
+                                Continue
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleSubmit}
+                                className='flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-sm font-medium'
+                            >
+                                Confirm Booking
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
