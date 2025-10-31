@@ -37,7 +37,7 @@ export default function ReviewsPage() {
         try {
             setIsLoading(true);
 
-            // Fetch reviews with filters
+            // Fetch reviews with filters and stats (in one API call)
             const response = await reviewsApi.getAllReviews({
                 page: currentPage,
                 limit: 6,
@@ -48,32 +48,12 @@ export default function ReviewsPage() {
             setReviews(response.data);
             setTotalPages(response.meta.totalPages);
 
-            // Calculate stats from all reviews (fetch all to get accurate stats)
-            const allReviewsResponse = await reviewsApi.getAllReviews({
-                page: 1,
-                limit: 100, // Get all reviews for stats
-                sort: 'recent',
-            });
-
-            const allReviews = allReviewsResponse.data;
-            const totalReviews = allReviews.length;
-
-            if (totalReviews > 0) {
-                const ratingDistribution = {
-                    1: allReviews.filter((r) => r.rating === 1).length,
-                    2: allReviews.filter((r) => r.rating === 2).length,
-                    3: allReviews.filter((r) => r.rating === 3).length,
-                    4: allReviews.filter((r) => r.rating === 4).length,
-                    5: allReviews.filter((r) => r.rating === 5).length,
-                };
-
-                const totalRating = allReviews.reduce((sum, r) => sum + r.rating, 0);
-                const averageRating = totalRating / totalReviews;
-
+            // Get stats from the same response
+            if (response.stats) {
                 setStats({
-                    averageRating: Math.round(averageRating * 10) / 10,
-                    totalReviews,
-                    ratingDistribution,
+                    averageRating: Math.round(response.stats.averageRating * 10) / 10,
+                    totalReviews: response.stats.totalReviews,
+                    ratingDistribution: response.stats.ratingDistribution,
                 });
             }
         } catch (error) {

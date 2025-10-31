@@ -42,7 +42,7 @@ export class ReviewService {
     serviceId?: string,
     sort: 'recent' | 'rating' = 'recent',
     rating?: number
-  ): Promise<ReviewsListResponse> {
+  ) {
     const result = await reviewRepository.findAllWithPagination(
       page,
       limit,
@@ -59,6 +59,7 @@ export class ReviewService {
         limit,
         totalPages: result.totalPages,
       },
+      stats: result.stats,
     };
   }
 

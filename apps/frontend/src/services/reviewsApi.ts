@@ -30,10 +30,10 @@ export const reviewsApi = {
    * Get featured reviews for homepage (limit 3, recent)
    */
   getFeaturedReviews: async (limit: number = 3): Promise<Review[]> => {
-    const response = await reviewsApi.getAllReviews({ 
-      page: 1, 
-      limit, 
-      sort: 'recent' 
+    const response = await reviewsApi.getAllReviews({
+      page: 1,
+      limit,
+      sort: 'recent'
     });
     return response.data;
   },

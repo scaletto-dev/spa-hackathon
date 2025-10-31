@@ -68,6 +68,10 @@ model Service {
   @@index([slug])
   @@index([categoryId])
   @@index([featured])
+  @@index([active, featured])
+  @@index([active])
+  @@index([categoryId, active])
+  @@index([featured, active, name])
 }
 
 /// Branch model - Physical clinic locations
@@ -171,6 +175,9 @@ model BlogPost {
   @@index([slug])
   @@index([published])
   @@index([categoryId])
+  @@index([published, categoryId])
+  @@index([published, publishedAt])
+  @@index([title])
 }
 
 /// Review model - Customer reviews and ratings for services
@@ -189,6 +196,12 @@ model Review {
   avatar        String?
   service       Service  @relation(fields: [serviceId], references: [id])
   user          User?    @relation(fields: [userId], references: [id])
+
+  @@index([approved])
+  @@index([createdAt])
+  @@index([serviceId, approved])
+  @@index([serviceId, approved, rating])
+  @@index([serviceId])
 }
 
 /// ContactSubmission model - Contact form submissions for admin review
