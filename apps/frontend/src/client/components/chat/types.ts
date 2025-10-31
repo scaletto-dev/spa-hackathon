@@ -13,10 +13,10 @@ export interface Message {
 }
 
 export interface MessageAction {
-    type: 'button' | 'booking' | 'link';
+    type: 'button' | 'booking' | 'link' | 'confirm_booking';
     label: string;
     action: string;
-    data?: Record<string, unknown>;
+    data?: Record<string, string | number | boolean | undefined>;
 }
 
 export interface BookingData {
@@ -25,8 +25,22 @@ export interface BookingData {
     slots: Array<{
         datetime: string;
         branchName: string;
+        branchId?: string;
         price: number;
     }>;
+}
+
+export interface BookingFormData {
+    serviceName: string;
+    serviceId?: string | undefined;
+    date: string;
+    time: string;
+    branchName: string;
+    branchId?: string | undefined;
+    price: number;
+    customerName?: string;
+    customerPhone?: string;
+    customerEmail?: string;
 }
 
 export interface AgentInfo {

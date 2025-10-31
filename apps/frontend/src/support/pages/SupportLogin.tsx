@@ -30,15 +30,15 @@ export default function SupportLogin() {
             setIsLoading(true);
             await login({ email, password });
 
-            // Check if user has staff role
+            // Check if user has staff or admin role
             const userData = localStorage.getItem('user_data');
             if (userData) {
                 const user = JSON.parse(userData);
-                if (user.role === 'STAFF') {
+                if (user.role === 'STAFF' || user.role === 'admin') {
                     toast.success(t('support.login.loginSuccess'));
                     navigate('/support-dashboard');
                 } else {
-                    toast.error('Access denied. Staff role required.');
+                    toast.error('Access denied. Staff or Admin role required.');
                     localStorage.removeItem('user_data');
                     localStorage.removeItem('accessToken');
                 }

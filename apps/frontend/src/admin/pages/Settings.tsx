@@ -117,7 +117,12 @@ export function Settings() {
          });
 
          // Update user context to refresh header avatar
+         console.log("🔄 Updating user context with avatar:", imageUrl);
          updateUser({ avatar: imageUrl });
+
+         // Verify localStorage was updated
+         const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
+         console.log("💾 localStorage user_data after update:", userData);
 
          toast.success("Cập nhật avatar thành công!");
 
