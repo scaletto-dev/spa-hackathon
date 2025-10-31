@@ -40,8 +40,8 @@ class ReviewRepository extends BaseRepository<any> {
     const orderBy: any = sort === 'rating' ? { rating: 'desc' } : { createdAt: 'desc' };
     const skip = (page - 1) * limit;
 
-    // Get total count and reviews in parallel
-    const [total, reviews] = await Promise.all([
+    // Get total count, reviews, and stats in parallel
+    const [total, reviews, statsResult, distribution] = await Promise.all([
       prisma.review.count({ where }),
       prisma.review.findMany({
         where,
@@ -57,12 +57,45 @@ class ReviewRepository extends BaseRepository<any> {
           },
         },
       }),
+      prisma.review.aggregate({
+        where: {
+          approved: true,
+        },
+        _avg: {
+          rating: true,
+        },
+        _count: true,
+      }),
+      prisma.review.groupBy({
+        by: ['rating'],
+        where: {
+          approved: true,
+        },
+        _count: true,
+      }),
     ]);
+
+    const ratingDistribution = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    };
+
+    distribution.forEach((item) => {
+      ratingDistribution[item.rating as keyof typeof ratingDistribution] = item._count;
+    });
 
     return {
       reviews,
       total,
       totalPages: Math.ceil(total / limit),
+      stats: {
+        averageRating: statsResult._avg.rating || 0,
+        totalReviews: statsResult._count,
+        ratingDistribution,
+      },
     };
   }
 

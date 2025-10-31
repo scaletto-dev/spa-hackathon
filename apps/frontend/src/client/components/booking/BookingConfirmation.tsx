@@ -12,7 +12,7 @@ export function BookingConfirmation({ bookingData, onPrev, onSubmit }: BookingCo
     }, []);
 
     // Calculate total price from selected services
-    const totalPrice = useMemo(() => {
+    const subtotal = useMemo(() => {
         if (bookingData.selectedServices && bookingData.selectedServices.length > 0) {
             return bookingData.selectedServices.reduce((sum, s) => sum + (s.price || 0), 0);
         } else if (bookingData.service?.price) {
@@ -20,6 +20,15 @@ export function BookingConfirmation({ bookingData, onPrev, onSubmit }: BookingCo
         }
         return 0;
     }, [bookingData.selectedServices, bookingData.service]);
+
+    // Calculate tax and total with tax
+    const tax = useMemo(() => {
+        return Math.round(subtotal * 0.08);
+    }, [subtotal]);
+
+    const totalPrice = useMemo(() => {
+        return subtotal + tax;
+    }, [subtotal, tax]);
 
     // Get service names
     const serviceNames = useMemo(() => {
@@ -115,7 +124,25 @@ export function BookingConfirmation({ bookingData, onPrev, onSubmit }: BookingCo
                             </p>
                         </div>
                         <div className='mt-4 pt-4 border-t border-gray-200'>
-                            <div className='flex justify-between items-center'>
+                            <div className='flex justify-between items-center mb-2'>
+                                <p className='text-sm text-gray-600'>Subtotal</p>
+                                <p className='text-sm font-medium text-gray-800'>
+                                    {new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND',
+                                    }).format(subtotal)}
+                                </p>
+                            </div>
+                            <div className='flex justify-between items-center mb-3'>
+                                <p className='text-sm text-gray-600'>Tax (8%)</p>
+                                <p className='text-sm font-medium text-gray-800'>
+                                    {new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND',
+                                    }).format(tax)}
+                                </p>
+                            </div>
+                            <div className='border-t border-gray-200 pt-3 flex justify-between items-center'>
                                 <p className='text-lg font-medium text-gray-800'>Total Price</p>
                                 <p className='text-2xl font-bold text-pink-600'>
                                     {new Intl.NumberFormat('vi-VN', {

@@ -30,6 +30,17 @@ export interface ReviewsResponse {
         total: number;
         totalPages: number;
     };
+    stats?: {
+        averageRating: number;
+        totalReviews: number;
+        ratingDistribution: {
+            1: number;
+            2: number;
+            3: number;
+            4: number;
+            5: number;
+        };
+    };
     timestamp: string;
 }
 
@@ -42,6 +53,13 @@ export interface ReviewDetailResponse {
 export interface ServiceRating {
     averageRating: number;
     totalReviews: number;
+    ratingDistribution?: {
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+    };
 }
 
 export interface ServiceRatingResponse {
