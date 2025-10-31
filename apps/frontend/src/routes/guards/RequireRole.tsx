@@ -51,9 +51,9 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
     }
 
     if (role === 'client' && user.role === 'admin') {
-        console.log('❌ Admin trying to access client page, redirecting to admin');
-        // Admin trying to access client-only page -> redirect to admin dashboard
-        return <Navigate to='/admin' replace />;
+        console.log('⚠️ Admin accessing client page - allowing for profile management');
+        // Allow admin to access profile management and other personal pages
+        // Admin can manage their own profile even though it's in client area
     }
 
     if (role === 'staff' && user.role !== 'staff' && user.role !== 'admin') {

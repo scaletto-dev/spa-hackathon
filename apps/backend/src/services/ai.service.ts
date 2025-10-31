@@ -679,7 +679,20 @@ Respond ONLY with valid JSON.`;
     // ===== PRIVATE HELPER METHODS =====
 
     private async buildChatSystemPrompt(context?: ChatContext): Promise<string> {
+        // Get current date and time for context
+        const now = new Date();
+        const currentDateTime = now.toLocaleString('vi-VN', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+            dateStyle: 'full',
+            timeStyle: 'short',
+        });
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
         const basePrompt = `You are a helpful AI assistant for BeautyAI Spa, a luxury beauty and wellness clinic.
+
+CURRENT DATE & TIME: ${currentDateTime} (Hour: ${currentHour}, Minute: ${currentMinute})
+Operating Hours: 09:00 - 21:00 daily (24-hour format)
 
 Your role:
 - Answer questions about spa services, pricing, treatments, and skincare
@@ -691,6 +704,10 @@ Your role:
 Important guidelines:
 - Use the available function calls (getServices, getBranches, getServiceDetails) to fetch real-time accurate data
 - Always call functions when users ask about specific information rather than guessing
+- When suggesting booking times, NEVER suggest times that have already passed today
+- Only suggest appointment times between 09:00 - 21:00 (use 24-hour format like 09:00, 14:30, 20:00)
+- ALWAYS use 24-hour time format (HH:MM) - NEVER use AM/PM format
+- If current time is past business hours, suggest next day appointments
 - Be warm, professional, and conversational
 - If asked about something you don't have information about, politely acknowledge and offer alternatives
 - Format prices in VNĐ for Vietnamese, $ for English

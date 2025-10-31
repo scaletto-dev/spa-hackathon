@@ -475,7 +475,8 @@
         "signUp": "Sign Up",
         "signOut": "Sign Out",
         "myAccount": "My Account",
-        "adminDashboard": "Admin Dashboard"
+        "adminDashboard": "Admin Dashboard",
+        "clientDashboard": "Client Dashboard"
     },
     "home": {
         "hero": {

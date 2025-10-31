@@ -477,7 +477,8 @@
         "signUp": "Đăng ký",
         "signOut": "Đăng xuất",
         "myAccount": "Tài khoản của tôi",
-        "adminDashboard": "Bảng điều khiển Admin"
+        "adminDashboard": "Bảng điều khiển Admin",
+        "clientDashboard": "Bảng điều khiển Khách hàng"
     },
     "home": {
         "hero": {

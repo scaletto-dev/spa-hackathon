@@ -116,49 +116,67 @@ export function BookingTab({ isActive }: BookingTabProps) {
             },
         ]);
 
-        // Load branches and create mock available slots
+        // Load branches and create available slots
         try {
             const branches = await getBranches();
             const availableSlots: BookingData['slots'] = [];
 
-            // Generate mock slots for next 3 days
+            // Generate time slots (9:00 AM - 9:00 PM, 30-minute intervals)
+            const generateTimeSlots = () => {
+                const slots: string[] = [];
+                for (let hour = 9; hour <= 21; hour++) {
+                    if (hour < 21) {
+                        slots.push(`${hour.toString().padStart(2, '0')}:00`);
+                        slots.push(`${hour.toString().padStart(2, '0')}:30`);
+                    } else {
+                        slots.push('21:00');
+                    }
+                }
+                return slots;
+            };
+
+            // Generate slots for next 3 days
+            const now = new Date();
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
             for (let i = 0; i < 3; i++) {
                 const date = new Date(today);
                 date.setDate(date.getDate() + i);
 
-                // Morning slot
-                const morningSlot = new Date(date);
-                morningSlot.setHours(10, 0, 0, 0);
+                const timeSlots = generateTimeSlots();
 
-                // Afternoon slot
-                const afternoonSlot = new Date(date);
-                afternoonSlot.setHours(14, 0, 0, 0);
-
-                // Evening slot
-                const eveningSlot = new Date(date);
-                eveningSlot.setHours(16, 30, 0, 0);
+                // Filter out past times if date is today
+                const availableTimeSlotsForDay =
+                    i === 0
+                        ? timeSlots.filter((timeSlot) => {
+                              const timeParts = timeSlot.split(':');
+                              const hours = parseInt(timeParts[0] || '0', 10);
+                              const minutes = parseInt(timeParts[1] || '0', 10);
+                              const slotDateTime = new Date();
+                              slotDateTime.setHours(hours, minutes, 0, 0);
+                              return slotDateTime > now;
+                          })
+                        : timeSlots;
 
                 // Add slots for first branch
                 if (branches.length > 0 && branches[0]) {
                     const branch = branches[0];
-                    availableSlots.push({
-                        datetime: morningSlot.toISOString(),
-                        branchName: branch.name,
-                        branchId: branch.id,
-                        price,
-                    });
-                    availableSlots.push({
-                        datetime: afternoonSlot.toISOString(),
-                        branchName: branch.name,
-                        branchId: branch.id,
-                        price,
-                    });
-                    availableSlots.push({
-                        datetime: eveningSlot.toISOString(),
-                        branchName: branch.name,
-                        branchId: branch.id,
-                        price,
+
+                    // Take first 3 available time slots for this day
+                    availableTimeSlotsForDay.slice(0, 3).forEach((timeSlot) => {
+                        const timeParts = timeSlot.split(':');
+                        const hours = parseInt(timeParts[0] || '0', 10);
+                        const minutes = parseInt(timeParts[1] || '0', 10);
+                        const slotDateTime = new Date(date);
+                        slotDateTime.setHours(hours, minutes, 0, 0);
+
+                        availableSlots.push({
+                            datetime: slotDateTime.toISOString(),
+                            branchName: branch.name,
+                            branchId: branch.id,
+                            price,
+                        });
                     });
                 }
             }

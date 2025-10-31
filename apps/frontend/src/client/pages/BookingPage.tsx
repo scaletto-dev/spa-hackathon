@@ -12,14 +12,17 @@ import { BookingPayment } from '../components/booking/BookingPayment';
 import { BookingConfirmation } from '../components/booking/BookingConfirmation';
 import { QuickBooking } from '../components/booking/QuickBooking';
 import { BookingData } from '../components/booking/types';
-import { createBooking } from '../../services/bookingApi';
+import { createBooking, createVNPayPaymentUrl, CreateBookingPayload } from '../../services/bookingApi';
 import { toast } from '../../utils/toast';
+import { useNavigate } from 'react-router-dom';
 
 export function BookingPage() {
     const { t } = useTranslation('common');
     const location = useLocation();
+    const navigate = useNavigate();
     const [bookingMode, setBookingMode] = useState('full'); // Default to 'full' mode
     const [currentStep, setCurrentStep] = useState(1);
+    const [isRedirectingToPayment, setIsRedirectingToPayment] = useState(false);
     const [bookingData, setBookingData] = useState<BookingData>({
         serviceIds: [],
         branch: null,
@@ -204,7 +207,7 @@ export function BookingPage() {
             const isLoggedIn = !!accessToken;
 
             // Build payload according to API spec
-            const payload: any = {
+            const payload: CreateBookingPayload = {
                 serviceIds: bookingData.serviceIds,
                 branchId: bookingData.branch.id,
                 appointmentDate: bookingData.date, // YYYY-MM-DD format
@@ -213,24 +216,47 @@ export function BookingPage() {
                 language: 'vi',
                 paymentType:
                     (bookingData.paymentMethod as 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') || 'CLINIC', // Default to CLINIC payment
+                guestName: isLoggedIn ? '' : bookingData.name || '',
+                guestEmail: isLoggedIn ? '' : bookingData.email || '',
+                guestPhone: isLoggedIn ? '' : bookingData.phone || '',
             };
-
-            // Only add guest fields if NOT logged in
-            if (!isLoggedIn) {
-                payload.guestName = bookingData.name || '';
-                payload.guestEmail = bookingData.email || '';
-                payload.guestPhone = bookingData.phone || '';
-            }
 
             console.log('Submitting booking with payload:', payload);
             console.log('Is logged in:', isLoggedIn);
             toast.info('Đang xử lý đặt lịch...');
 
-            // Call API
+            // Call API to create booking
             const response = await createBooking(payload);
             console.log('Booking created successfully:', response);
 
-            toast.success(`Đặt lịch thành công! Mã tham chiếu: #${response.referenceNumber}`);
+            // Check if payment method is ATM (VNPay)
+            if (bookingData.paymentMethod === 'ATM') {
+                setIsRedirectingToPayment(true);
+                toast.info('Đang chuyển hướng đến cổng thanh toán VNPay...');
+
+                try {
+                    // Create VNPay payment URL
+                    const vnpayResponse = await createVNPayPaymentUrl({
+                        bookingId: response.id,
+                        locale: 'vn',
+                    });
+
+                    // Redirect to VNPay payment page
+                    window.location.href = vnpayResponse.paymentUrl;
+                } catch (vnpayError) {
+                    console.error('Error creating VNPay payment URL:', vnpayError);
+                    toast.error('Không thể tạo liên kết thanh toán. Vui lòng thử lại.');
+                    setIsRedirectingToPayment(false);
+                }
+            } else {
+                // Other payment methods - show success message
+                toast.success(`Đặt lịch thành công! Mã tham chiếu: #${response.referenceNumber}`);
+
+                // Redirect to confirmation page after 2 seconds
+                setTimeout(() => {
+                    navigate(`/booking/confirmation?ref=${response.referenceNumber}`);
+                }, 2000);
+            }
         } catch (error) {
             console.error('Error submitting booking:', error);
             toast.error('Đặt lịch thất bại. Vui lòng thử lại.');
@@ -446,6 +472,61 @@ export function BookingPage() {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* VNPay Redirect Loading Overlay */}
+            <AnimatePresence>
+                {isRedirectingToPayment && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            className='bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-4'
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className='text-center'>
+                                {/* Loading Animation */}
+                                <div className='relative mb-6'>
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                                        className='w-20 h-20 mx-auto border-4 border-pink-200 border-t-pink-500 rounded-full'
+                                    />
+                                    <div className='absolute inset-0 flex items-center justify-center'>
+                                        <div className='w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full animate-pulse' />
+                                    </div>
+                                </div>
+
+                                {/* Text */}
+                                <h3 className='text-2xl font-bold text-gray-800 mb-2'>Đang chuyển đến VNPay...</h3>
+                                <p className='text-gray-600 mb-6'>
+                                    Vui lòng đợi, bạn sẽ được chuyển hướng đến cổng thanh toán trong giây lát
+                                </p>
+
+                                {/* Cancel Button */}
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => {
+                                        setIsRedirectingToPayment(false);
+                                        toast.info('Đã hủy chuyển hướng thanh toán');
+                                    }}
+                                    className='px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full font-semibold transition-colors'
+                                >
+                                    Hủy
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

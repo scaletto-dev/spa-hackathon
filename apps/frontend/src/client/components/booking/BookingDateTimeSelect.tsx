@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { BookingStepProps } from './types';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -12,8 +12,22 @@ import {
     ChevronRightIcon,
 } from 'lucide-react';
 
-// Fake data for the calendar
-const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
+// Generate time slots dynamically
+const generateTimeSlots = (): string[] => {
+    const slots: string[] = [];
+    const startHour = 9; // 9:00
+    const endHour = 21; // 21:00
+    const intervalMinutes = 30;
+
+    for (let hour = startHour; hour < endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += intervalMinutes) {
+            const hourStr = hour.toString().padStart(2, '0');
+            const minuteStr = minute.toString().padStart(2, '0');
+            slots.push(`${hourStr}:${minuteStr}`);
+        }
+    }
+    return slots;
+};
 
 export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
     const { t } = useTranslation('common');
@@ -23,6 +37,40 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
 
     // Calendar navigation state
     const [currentMonth, setCurrentMonth] = useState(new Date());
+
+    // Filter time slots based on selected date
+    const availableTimeSlots = useMemo(() => {
+        const allSlots = generateTimeSlots();
+
+        if (!selectedDate) return allSlots;
+
+        const selectedDateObj = new Date(selectedDate + 'T00:00:00');
+        const today = new Date();
+        const isToday = selectedDateObj.toDateString() === today.toDateString();
+
+        if (!isToday) return allSlots;
+
+        // Filter out past time slots for today
+        const currentHour = today.getHours();
+        const currentMinute = today.getMinutes();
+
+        return allSlots.filter((timeStr) => {
+            const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+            if (!match) return true;
+
+            const [, hourStr, minuteStr, period] = match;
+            let hour = parseInt(hourStr || '0', 10);
+            const minute = parseInt(minuteStr || '0', 10);
+
+            if (period && period.toUpperCase() === 'PM' && hour !== 12) {
+                hour += 12;
+            } else if (period && period.toUpperCase() === 'AM' && hour === 12) {
+                hour = 0;
+            }
+
+            return hour > currentHour || (hour === currentHour && minute > currentMinute);
+        });
+    }, [selectedDate]);
 
     // Helper to format date as YYYY-MM-DD in local timezone
     const formatLocalDate = (date: Date): string => {
@@ -63,8 +111,9 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
         updateBookingData({ useAI: value });
         // If AI is selected, automatically pick a time (just for demo)
         if (value) {
-            const randomIndex = Math.floor(Math.random() * timeSlots.length);
-            const aiRecommendedTime = timeSlots[randomIndex] ?? timeSlots[0] ?? '9:00 AM';
+            const allSlots = generateTimeSlots();
+            const randomIndex = Math.floor(Math.random() * allSlots.length);
+            const aiRecommendedTime = allSlots[randomIndex] ?? allSlots[0] ?? '9:00 AM';
             setSelectedTime(aiRecommendedTime);
             updateBookingData({
                 time: aiRecommendedTime,
@@ -222,7 +271,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                                 <h3 className='text-lg font-semibold text-gray-800'>{t('bookings.selectTime')}</h3>
                             </div>
                             <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
-                                {timeSlots.map((time) => (
+                                {availableTimeSlots.map((time) => (
                                     <motion.div
                                         key={time}
                                         whileHover={{

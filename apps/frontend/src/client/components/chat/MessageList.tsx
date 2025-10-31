@@ -72,18 +72,33 @@ export function MessageList({ messages, onAction, onBookSlot }: MessageListProps
 
                         {/* Action buttons */}
                         {message.actions && message.actions.length > 0 && (
-                            <div className='flex flex-wrap gap-2'>
+                            <div className='space-y-2 w-full'>
                                 {message.actions.map((action, i) => (
                                     <button
                                         key={i}
                                         onClick={() => onAction?.(action)}
-                                        className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+                                        className={`w-full px-4 py-3 text-sm font-medium rounded-xl transition-all text-left ${
                                             action.type === 'confirm_booking'
-                                                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-md'
-                                                : 'bg-white border-2 border-pink-200 text-pink-600 hover:bg-pink-50 hover:border-pink-300'
+                                                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-md hover:shadow-lg'
+                                                : 'bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-pink-200 text-gray-800 hover:from-pink-100 hover:to-purple-100 hover:border-pink-300 hover:shadow-md'
                                         }`}
                                     >
-                                        {action.label}
+                                        <div className='flex items-center justify-between'>
+                                            <span className='flex-1'>{action.label}</span>
+                                            <svg
+                                                className='w-4 h-4 opacity-50'
+                                                fill='none'
+                                                stroke='currentColor'
+                                                viewBox='0 0 24 24'
+                                            >
+                                                <path
+                                                    strokeLinecap='round'
+                                                    strokeLinejoin='round'
+                                                    strokeWidth={2}
+                                                    d='M9 5l7 7-7 7'
+                                                />
+                                            </svg>
+                                        </div>
                                     </button>
                                 ))}
                             </div>

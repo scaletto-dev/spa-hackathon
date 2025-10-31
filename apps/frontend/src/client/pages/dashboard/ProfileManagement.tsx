@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, Save, Loader2, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getMemberProfile, updateMemberProfile, type MemberProfile } from '../../../api/adapters/member';
+import { adminProfileAPI } from '../../../api/adapters/admin';
+import { useAuth } from '../../../auth/useAuth';
 
 export default function ProfileManagement() {
     const { t } = useTranslation('common');
+    const { user } = useAuth();
     const [profile, setProfile] = useState<MemberProfile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -17,20 +20,26 @@ export default function ProfileManagement() {
     const [phone, setPhone] = useState('');
     const [language, setLanguage] = useState<'vi' | 'ja' | 'en' | 'zh'>('vi');
 
-    // Load profile on mount
-    useEffect(() => {
-        loadProfile();
-    }, []);
+    const isAdmin = user?.role === 'admin';
 
     const loadProfile = async () => {
         try {
             setIsLoading(true);
             setError(null);
-            const data = await getMemberProfile();
+
+            // Use admin API if user is admin, otherwise use member API
+            let data;
+            if (isAdmin) {
+                const response = await adminProfileAPI.getProfile();
+                data = response.data;
+            } else {
+                data = await getMemberProfile();
+            }
+
             setProfile(data);
-            setFullName(data.fullName);
-            setPhone(data.phone);
-            setLanguage(data.language);
+            setFullName(data.fullName || '');
+            setPhone(data.phone || '');
+            setLanguage(data.language || 'vi');
         } catch (err) {
             setError(t('profileManagement.loadError'));
             console.error('Load profile error:', err);
@@ -38,6 +47,12 @@ export default function ProfileManagement() {
             setIsLoading(false);
         }
     };
+
+    // Load profile on mount
+    useEffect(() => {
+        loadProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -56,11 +71,22 @@ export default function ProfileManagement() {
             setIsSaving(true);
             setError(null);
 
-            const updated = await updateMemberProfile({
-                fullName: fullName.trim(),
-                phone: phone.trim(),
-                language,
-            });
+            // Use admin API if user is admin, otherwise use member API
+            let updated;
+            if (isAdmin) {
+                const response = await adminProfileAPI.updateProfile({
+                    fullName: fullName.trim(),
+                    phone: phone.trim(),
+                    language,
+                });
+                updated = response.data;
+            } else {
+                updated = await updateMemberProfile({
+                    fullName: fullName.trim(),
+                    phone: phone.trim(),
+                    language,
+                });
+            }
 
             setProfile(updated);
 
@@ -72,7 +98,7 @@ export default function ProfileManagement() {
                 userData.phone = updated.phone;
                 userData.language = updated.language;
                 localStorage.setItem('user_data', JSON.stringify(userData));
-                
+
                 // Dispatch custom event to notify Header component
                 window.dispatchEvent(new Event('userProfileUpdated'));
             }
@@ -175,7 +201,9 @@ export default function ProfileManagement() {
                                 {profile?.createdAt && (
                                     <>
                                         <div className='bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100'>
-                                            <p className='text-xs text-gray-500 mb-1'>{t('profileManagement.memberSince')}</p>
+                                            <p className='text-xs text-gray-500 mb-1'>
+                                                {t('profileManagement.memberSince')}
+                                            </p>
                                             <p className='font-semibold text-gray-800 text-sm'>
                                                 {new Date(profile.createdAt).toLocaleDateString('vi-VN', {
                                                     year: 'numeric',
@@ -187,7 +215,9 @@ export default function ProfileManagement() {
 
                                         {profile.updatedAt && (
                                             <div className='bg-gradient-to-r from-indigo-50 to-pink-50 rounded-lg p-4 border border-indigo-100'>
-                                                <p className='text-xs text-gray-500 mb-1'>{t('profileManagement.lastUpdated')}</p>
+                                                <p className='text-xs text-gray-500 mb-1'>
+                                                    {t('profileManagement.lastUpdated')}
+                                                </p>
                                                 <p className='font-semibold text-gray-800 text-sm'>
                                                     {new Date(profile.updatedAt).toLocaleDateString('vi-VN', {
                                                         year: 'numeric',
@@ -206,8 +236,7 @@ export default function ProfileManagement() {
                     {/* Right Column - Edit Form */}
                     <div className='lg:col-span-2'>
                         <div className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'>
-                            <h3 className='text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2'>
-                            </h3>
+                            <h3 className='text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2'></h3>
 
                             <form onSubmit={handleSubmit} className='space-y-6'>
                                 {/* Error Message */}
@@ -229,14 +258,15 @@ export default function ProfileManagement() {
                                         disabled
                                         className='w-full px-5 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed placeholder-gray-400'
                                     />
-                                    <p className='mt-2 text-xs text-gray-500'>
-                                        {t('profileManagement.emailReadOnly')}
-                                    </p>
+                                    <p className='mt-2 text-xs text-gray-500'>{t('profileManagement.emailReadOnly')}</p>
                                 </div>
 
                                 {/* Full Name */}
                                 <div>
-                                    <label htmlFor='fullName' className='block text-sm font-semibold text-gray-700 mb-3'>
+                                    <label
+                                        htmlFor='fullName'
+                                        className='block text-sm font-semibold text-gray-700 mb-3'
+                                    >
                                         {t('profileManagement.fullNameLabel')} <span className='text-red-500'>*</span>
                                     </label>
                                     <input
@@ -268,7 +298,10 @@ export default function ProfileManagement() {
 
                                 {/* Language */}
                                 <div>
-                                    <label htmlFor='language' className='block text-sm font-semibold text-gray-700 mb-3'>
+                                    <label
+                                        htmlFor='language'
+                                        className='block text-sm font-semibold text-gray-700 mb-3'
+                                    >
                                         {t('profileManagement.languageLabel')}
                                     </label>
                                     <select
@@ -305,7 +338,7 @@ export default function ProfileManagement() {
                                     </button>
 
                                     <Link
-                                        to='/dashboard'
+                                        to={isAdmin ? '/admin' : '/dashboard'}
                                         className='px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors'
                                     >
                                         {t('profileManagement.cancel')}
