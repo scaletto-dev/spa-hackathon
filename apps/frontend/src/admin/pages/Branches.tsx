@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MapPinIcon, PhoneIcon, ClockIcon, Edit3Icon, TrendingUpIcon, PlusIcon, Trash2Icon, SearchIcon, FilterIcon } from 'lucide-react';
+import { CustomDropdown } from '../components/CustomDropdown';
 import { adminBranchesAPI } from '../../api/adapters/admin';
 import { useAdminList } from '../../hooks/useAdmin';
 import { Toast } from '../components/Toast';
@@ -87,15 +88,16 @@ export function Branches() {
             className='w-full pl-10 pr-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'
           />
         </div>
-        <select 
+        <CustomDropdown 
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className='px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm'
-        >
-          <option>All Branches</option>
-          <option>Open</option>
-          <option>Closed</option>
-        </select>
+          onChange={setStatusFilter}
+          color="green"
+          options={[
+            { value: "All Branches", label: "All Branches" },
+            { value: "Open", label: "Open", icon: "✓" },
+            { value: "Closed", label: "Closed", icon: "⊗" },
+          ]}
+        />
         <button className='p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors'>
           <FilterIcon className='w-5 h-5 text-gray-600' />
         </button>

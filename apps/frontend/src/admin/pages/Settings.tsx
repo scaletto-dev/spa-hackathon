@@ -8,6 +8,7 @@ import {
    Camera,
    SparklesIcon,
 } from "lucide-react";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/useAuth";
 import { adminProfileAPI } from "../../api/adapters/admin";
@@ -352,19 +353,20 @@ export function Settings() {
                                  <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Ngôn ngữ
                                  </label>
-                                 <select
-                                    name="language"
+                                 <CustomDropdown
                                     value={profileData.language}
-                                    onChange={(e) =>
+                                    onChange={(value) =>
                                        setProfileData((prev) => ({
                                           ...prev,
-                                          language: e.target.value,
+                                          language: value,
                                        }))
                                     }
-                                    className="w-full px-4 py-2 rounded-lg border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 bg-pink-50/30">
-                                    <option value="vi">Tiếng Việt</option>
-                                    <option value="en">English</option>
-                                 </select>
+                                    color="blue"
+                                    options={[
+                                       { value: "vi", label: "Tiếng Việt", icon: "🇻🇳" },
+                                       { value: "en", label: "English", icon: "🇬🇧" },
+                                    ]}
+                                 />
                               </div>
 
                               {/* Save Button */}

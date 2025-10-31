@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { NewBookingModal } from "../components/modals/NewBookingModal";
 import { Toast } from "../components/Toast";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { adminAppointmentsAPI } from "../../api/adapters/admin";
 import { useAdminList } from "../../hooks/useAdmin";
 
@@ -105,16 +106,18 @@ export function Appointments() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
                />
-               <select
+               <CustomDropdown
                   value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-                  <option>All Status</option>
-                  <option>CONFIRMED</option>
-                  <option>PENDING</option>
-                  <option>COMPLETED</option>
-                  <option>CANCELLED</option>
-               </select>
+                  onChange={setSelectedStatus}
+                  color="pink"
+                  options={[
+                     { value: "All Status", label: "All Status" },
+                     { value: "CONFIRMED", label: "CONFIRMED", icon: "✓" },
+                     { value: "PENDING", label: "PENDING", icon: "⏳" },
+                     { value: "COMPLETED", label: "COMPLETED", icon: "✅" },
+                     { value: "CANCELLED", label: "CANCELLED", icon: "❌" },
+                  ]}
+               />
             </div>
 
             {loading ? (

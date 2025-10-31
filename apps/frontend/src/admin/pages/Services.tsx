@@ -11,6 +11,7 @@ import {
    SearchIcon,
    FilterIcon,
 } from "lucide-react";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { adminServicesAPI } from "../../api/adapters/admin";
 import { useAdminList } from "../../hooks/useAdmin";
 import { Toast } from "../components/Toast";
@@ -125,14 +126,16 @@ export function Services() {
                   className="w-full pl-10 pr-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
                />
             </div>
-            <select
+            <CustomDropdown
                value={activeFilter}
-               onChange={(e) => setActiveFilter(e.target.value)}
-               className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-               <option>All Services</option>
-               <option>Active</option>
-               <option>Inactive</option>
-            </select>
+               onChange={setActiveFilter}
+               color="pink"
+               options={[
+                  { value: "All Services", label: "All Services" },
+                  { value: "Active", label: "Active", icon: "✓" },
+                  { value: "Inactive", label: "Inactive", icon: "○" },
+               ]}
+            />
             <button className="p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors">
                <FilterIcon className="w-5 h-5 text-gray-600" />
             </button>

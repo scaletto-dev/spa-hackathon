@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
    CheckCircleIcon,
    XCircleIcon,
@@ -7,9 +7,9 @@ import {
    FilterIcon,
    SearchIcon,
    TrendingUpIcon,
-   ChevronDownIcon,
 } from "lucide-react";
 import { Toast } from "../components/Toast";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { adminPaymentsAPI } from "../../api/adapters/admin";
 import { useAdminList } from "../../hooks/useAdmin";
 
@@ -18,37 +18,10 @@ export function Payments() {
    const [selectedStatus, setSelectedStatus] = useState("All Status");
    const [selectedType, setSelectedType] = useState("All Types");
    const [stats, setStats] = useState<any>(null);
-   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
    const [toast, setToast] = useState<{
       message: string;
       type: "success" | "error" | "warning";
    } | null>(null);
-
-   const statusDropdownRef = useRef<HTMLDivElement>(null);
-   const typeDropdownRef = useRef<HTMLDivElement>(null);
-
-   // Close dropdowns when clicking outside
-   useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-         if (
-            statusDropdownRef.current &&
-            !statusDropdownRef.current.contains(event.target as Node)
-         ) {
-            setStatusDropdownOpen(false);
-         }
-         if (
-            typeDropdownRef.current &&
-            !typeDropdownRef.current.contains(event.target as Node)
-         ) {
-            setTypeDropdownOpen(false);
-         }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-         document.removeEventListener("mousedown", handleClickOutside);
-   }, []);
 
    const {
       data: payments = [],
@@ -142,7 +115,7 @@ export function Payments() {
             icon: XCircleIcon,
          },
       };
-      const badge = badges[status] || badges["PENDING"];
+      const badge = badges[status as keyof typeof badges] || badges["PENDING"];
       const Icon = badge.icon;
       return (
          <span
@@ -266,93 +239,33 @@ export function Payments() {
                   />
                </div>
 
-               {/* Custom Status Dropdown */}
-               <div className="relative" ref={statusDropdownRef}>
-                  <button
-                     onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
-                     className="flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-xl bg-gradient-to-br from-white to-pink-50 border-2 border-pink-200 hover:border-pink-300 hover:shadow-lg focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 text-sm font-medium text-gray-700 transition-all duration-200 min-w-[150px]">
-                     <span className="flex-1 text-left">{selectedStatus}</span>
-                     <ChevronDownIcon
-                        className={`w-4 h-4 text-pink-500 transition-transform duration-200 ${
-                           statusDropdownOpen ? "rotate-180" : ""
-                        }`}
-                     />
-                  </button>
-                  {statusDropdownOpen && (
-                     <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border-2 border-pink-200 shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                        {[
-                           "All Status",
-                           "COMPLETED",
-                           "PENDING",
-                           "FAILED",
-                           "REFUNDED",
-                           "CANCELLED",
-                        ].map((status) => (
-                           <button
-                              key={status}
-                              onClick={() => {
-                                 setSelectedStatus(status);
-                                 setStatusDropdownOpen(false);
-                              }}
-                              className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                                 selectedStatus === status
-                                    ? "bg-pink-100 text-pink-700 font-semibold"
-                                    : "text-gray-700 hover:bg-pink-50"
-                              }`}>
-                              {status === "COMPLETED" && "✓ "}
-                              {status === "PENDING" && "⏱ "}
-                              {status === "FAILED" && "✗ "}
-                              {status === "REFUNDED" && "↩ "}
-                              {status === "CANCELLED" && "⊘ "}
-                              {status}
-                           </button>
-                        ))}
-                     </div>
-                  )}
-               </div>
+               <CustomDropdown
+                  value={selectedStatus}
+                  onChange={setSelectedStatus}
+                  color="pink"
+                  options={[
+                     { value: "All Status", label: "All Status" },
+                     { value: "COMPLETED", label: "COMPLETED", icon: "✓" },
+                     { value: "PENDING", label: "PENDING", icon: "⏱" },
+                     { value: "FAILED", label: "FAILED", icon: "✗" },
+                     { value: "REFUNDED", label: "REFUNDED", icon: "↩" },
+                     { value: "CANCELLED", label: "CANCELLED", icon: "⊘" },
+                  ]}
+               />
 
-               {/* Custom Type Dropdown */}
-               <div className="relative" ref={typeDropdownRef}>
-                  <button
-                     onClick={() => setTypeDropdownOpen(!typeDropdownOpen)}
-                     className="flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-xl bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200 hover:border-purple-300 hover:shadow-lg focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-100 text-sm font-medium text-gray-700 transition-all duration-200 min-w-[150px]">
-                     <span className="flex-1 text-left">{selectedType}</span>
-                     <ChevronDownIcon
-                        className={`w-4 h-4 text-purple-500 transition-transform duration-200 ${
-                           typeDropdownOpen ? "rotate-180" : ""
-                        }`}
-                     />
-                  </button>
-                  {typeDropdownOpen && (
-                     <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border-2 border-purple-200 shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                        {[
-                           { value: "All Types", icon: "" },
-                           { value: "ATM", icon: "💳" },
-                           { value: "CLINIC", icon: "🏥" },
-                           { value: "WALLET", icon: "👛" },
-                           { value: "CASH", icon: "💵" },
-                           { value: "BANK_TRANSFER", icon: "🏦" },
-                        ].map((type) => (
-                           <button
-                              key={type.value}
-                              onClick={() => {
-                                 setSelectedType(type.value);
-                                 setTypeDropdownOpen(false);
-                              }}
-                              className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                                 selectedType === type.value
-                                    ? "bg-purple-100 text-purple-700 font-semibold"
-                                    : "text-gray-700 hover:bg-purple-50"
-                              }`}>
-                              {type.icon && (
-                                 <span className="mr-2">{type.icon}</span>
-                              )}
-                              {type.value}
-                           </button>
-                        ))}
-                     </div>
-                  )}
-               </div>
+               <CustomDropdown
+                  value={selectedType}
+                  onChange={setSelectedType}
+                  color="purple"
+                  options={[
+                     { value: "All Types", label: "All Types" },
+                     { value: "ATM", label: "ATM", icon: "💳" },
+                     { value: "CLINIC", label: "Clinic", icon: "🏥" },
+                     { value: "WALLET", label: "Wallet", icon: "👛" },
+                     { value: "CASH", label: "Cash", icon: "💵" },
+                     { value: "BANK_TRANSFER", label: "Bank Transfer", icon: "🏦" },
+                  ]}
+               />
 
                <button className="p-2.5 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50 border-2 border-pink-200 hover:border-pink-400 hover:shadow-lg transition-all duration-200">
                   <FilterIcon className="w-5 h-5 text-pink-500" />

@@ -6,6 +6,7 @@ import {
    TrendingUpIcon,
    FilterIcon,
 } from "lucide-react";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { ReviewReplyModal } from "../components/modals/ReviewReplyModal";
 import { Toast } from "../components/Toast";
 import { adminReviewsAPI } from "../../api/adapters/admin";
@@ -88,7 +89,7 @@ export function Reviews() {
 
       const matchesStatus =
          filterStatus === "All Status" ||
-         (filterStatus === "Pending Reply" && !review.adminResponse) ||
+         (filterStatus === "Pending" && !review.adminResponse) ||
          (filterStatus === "Replied" && review.adminResponse);
 
       return matchesSearch && matchesRating && matchesStatus;
@@ -164,7 +165,7 @@ export function Reviews() {
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-100 shadow-sm">
                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm text-gray-600">Pending Reply</h3>
+                  <h3 className="text-sm text-gray-600">Pending</h3>
                   <MessageSquareIcon className="w-5 h-5 text-orange-400" />
                </div>
                <p className="text-3xl font-bold text-gray-800">
@@ -222,24 +223,28 @@ export function Reviews() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
                />
-               <select
+               <CustomDropdown
                   value={filterRating}
-                  onChange={(e) => setFilterRating(e.target.value)}
-                  className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-                  <option>All Ratings</option>
-                  <option>5 Stars</option>
-                  <option>4 Stars</option>
-                  <option>3 Stars</option>
-                  <option>Below 3</option>
-               </select>
-               <select
+                  onChange={setFilterRating}
+                  color="pink"
+                  options={[
+                     { value: "All Ratings", label: "All Ratings" },
+                     { value: "5 Stars", label: "5 Stars", icon: "⭐⭐⭐⭐⭐" },
+                     { value: "4 Stars", label: "4 Stars", icon: "⭐⭐⭐⭐" },
+                     { value: "3 Stars", label: "3 Stars", icon: "⭐⭐⭐" },
+                     { value: "Below 3", label: "Below 3", icon: "⭐⭐" },
+                  ]}
+               />
+               <CustomDropdown
                   value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-                  <option>All Status</option>
-                  <option>Pending Reply</option>
-                  <option>Replied</option>
-               </select>
+                  onChange={setFilterStatus}
+                  color="purple"
+                  options={[
+                     { value: "All Status", label: "All Status" },
+                     { value: "Pending", label: "Pending", icon: "⏳" },
+                     { value: "Replied", label: "Replied", icon: "✓" },
+                  ]}
+               />
                <button className="p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors">
                   <FilterIcon className="w-5 h-5 text-gray-600" />
                </button>
