@@ -9,6 +9,7 @@ import {
    TrendingUpIcon,
    StarIcon,
 } from "lucide-react";
+import { CustomDropdown } from "../components/CustomDropdown";
 import { CustomerModal } from "../components/modals/CustomerModal";
 import { CustomerDetailsModal } from "../components/modals/CustomerDetailsModal";
 import { Toast } from "../components/Toast";
@@ -25,6 +26,7 @@ export function Customers() {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
    const [statusFilter, setStatusFilter] = useState("All Status");
+   const [tierFilter, setTierFilter] = useState("All Tiers");
    const [selectedCustomer, setSelectedCustomer] = useState<{
       id: string;
       mode: "view" | "edit";
@@ -143,21 +145,28 @@ export function Customers() {
                      className="w-full pl-10 pr-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
                   />
                </div>
-               <select
+               <CustomDropdown
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-                  <option>All Status</option>
-                  <option>Verified</option>
-                  <option>Pending</option>
-               </select>
-               <select className="px-4 py-2 rounded-lg bg-pink-50/50 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
-                  <option>All Tiers</option>
-                  <option>VIP</option>
-                  <option>Gold</option>
-                  <option>Silver</option>
-                  <option>New</option>
-               </select>
+                  onChange={setStatusFilter}
+                  color="pink"
+                  options={[
+                     { value: "All Status", label: "All Status" },
+                     { value: "Verified", label: "Verified", icon: "✓" },
+                     { value: "Pending", label: "Pending", icon: "⏳" },
+                  ]}
+               />
+               <CustomDropdown
+                  value={tierFilter}
+                  onChange={setTierFilter}
+                  color="purple"
+                  options={[
+                     { value: "All Tiers", label: "All Tiers" },
+                     { value: "VIP", label: "VIP", icon: "👑" },
+                     { value: "Gold", label: "Gold", icon: "🥇" },
+                     { value: "Silver", label: "Silver", icon: "🥈" },
+                     { value: "New", label: "New", icon: "🆕" },
+                  ]}
+               />
                <button className="p-2 rounded-lg bg-pink-50 hover:bg-pink-100 transition-colors">
                   <FilterIcon className="w-5 h-5 text-gray-600" />
                </button>
