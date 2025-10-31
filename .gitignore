@@ -49,3 +49,10 @@ coverage/
 
 # Debug
 .ai/debug-log.md
+.vercel
+
+# Vercel deployment configs with credentials
+/vercel.json
+/vercel-api.json
+/vercel.backend.json
+/api/vercel.json
