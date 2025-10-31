@@ -17,6 +17,7 @@ import adminReviewsController from "../../controllers/admin/admin.reviews.contro
 import adminBlogController from "../../controllers/admin/admin.blog.controller";
 import adminCategoriesController from "../../controllers/admin/admin.categories.controller";
 import adminContactsController from "../../controllers/admin/admin.contacts.controller";
+import adminPaymentsController from "../../controllers/admin/admin.payments.controller";
 import vouchersAdminRoutes from "./vouchers";
 
 /**
@@ -320,6 +321,34 @@ export function configureAdminRoutes(router: Router): void {
    router.delete(
       "/contacts/:id",
       adminContactsController.deleteContact.bind(adminContactsController)
+   );
+
+   // ============================================
+   // PAYMENTS ROUTES
+   // ============================================
+   router.get(
+      "/payments",
+      adminPaymentsController.getAllPayments.bind(adminPaymentsController)
+   );
+   router.get(
+      "/payments/stats",
+      adminPaymentsController.getPaymentStats.bind(adminPaymentsController)
+   );
+   router.get(
+      "/payments/:id",
+      adminPaymentsController.getPaymentById.bind(adminPaymentsController)
+   );
+   router.post(
+      "/payments",
+      adminPaymentsController.createPayment.bind(adminPaymentsController)
+   );
+   router.patch(
+      "/payments/:id/status",
+      adminPaymentsController.updatePaymentStatus.bind(adminPaymentsController)
+   );
+   router.delete(
+      "/payments/:id",
+      adminPaymentsController.deletePayment.bind(adminPaymentsController)
    );
 
    // ============================================
