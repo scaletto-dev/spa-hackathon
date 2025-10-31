@@ -1,42 +1,80 @@
 /**
- * Review Type Definitions
+ * Review Type Definitions & DTOs
  *
- * Types and interfaces for review-related operations
+ * Defines types for review requests, responses, and database entities.
+ * Following clean architecture pattern: types → validators → repository → service → controller
  */
 
-export interface GetReviewsQueryParams {
-    serviceId?: string;
-    page?: string;
-    limit?: string;
-    rating?: string;
-    sort?: 'recent' | 'rating' | 'helpful';
-    sortBy?: 'date' | 'rating';
-    sortOrder?: 'asc' | 'desc';
+/**
+ * Create Review Request DTO
+ */
+export interface CreateReviewRequest {
+  serviceId: string;
+  userId?: string;
+  customerName: string;
+  email: string;
+  avatar?: string;
+  rating: number;
+  reviewText: string;
 }
 
-export interface CreateReviewDto {
-    serviceId: string;
-    userId?: string;
-    customerName: string;
-    email: string;
-    avatar?: string;
-    rating: number;
-    reviewText: string;
+/**
+ * Review DTO
+ * Main review data transfer object
+ */
+export interface ReviewDTO {
+  id: string;
+  serviceId: string;
+  userId?: string;
+  customerName: string;
+  customerAvatar?: string | null;
+  email: string;
+  rating: number;
+  reviewText: string;
+  approved: boolean;
+  adminResponse?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface ReviewResponseDto {
+/**
+ * Review with Service DTO
+ * Extended review with service details
+ */
+export interface ReviewWithServiceDTO extends ReviewDTO {
+  service: {
     id: string;
-    serviceId: string;
-    customerName: string;
-    customerAvatar?: string | null;
-    rating: number;
-    reviewText: string;
-    approved: boolean;
-    adminResponse?: string | null;
-    createdAt: string;
-    updatedAt: string;
-    service?: {
-        id: string;
-        name: string;
-    };
+    name: string;
+  };
+}
+
+/**
+ * Service Rating DTO
+ * Average rating and count for a service
+ */
+export interface ServiceRatingDTO {
+  serviceId: string;
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: {
+    5: number;
+    4: number;
+    3: number;
+    2: number;
+    1: number;
+  };
+}
+
+/**
+ * Reviews List Response DTO
+ * Paginated list of reviews
+ */
+export interface ReviewsListResponse {
+  data: ReviewWithServiceDTO[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }

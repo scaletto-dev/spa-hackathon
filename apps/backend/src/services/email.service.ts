@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { ContactSubmissionDTO } from '../types/contact';
+import { ContactSubmissionDTO } from '@/types/contact';
 
 /**
  * Email Service

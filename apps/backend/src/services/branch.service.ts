@@ -2,60 +2,6 @@ import { NotFoundError } from '@/utils/errors';
 import { branchRepository } from '@/repositories/branch.repository';
 import { BranchDTO, BranchWithServicesDTO, ServiceDTO, BranchServicesResponse } from '@/types/branch';
 
-/**
- * Transform service to ServiceDTO
- */
-function toServiceDTO(service: any): ServiceDTO {
-  return {
-    id: service.id,
-    name: service.name,
-    slug: service.slug,
-    description: service.description,
-    excerpt: service.excerpt,
-    duration: service.duration,
-    price: service.price.toString(),
-    categoryId: service.categoryId,
-    images: service.images,
-    featured: service.featured,
-    active: service.active,
-    createdAt: service.createdAt.toISOString(),
-    updatedAt: service.updatedAt.toISOString(),
-  };
-}
-
-/**
- * Transform branch to BranchDTO
- */
-function toBranchDTO(branch: any): BranchDTO {
-  return {
-    id: branch.id,
-    name: branch.name,
-    slug: branch.slug,
-    address: branch.address,
-    phone: branch.phone,
-    email: branch.email,
-    latitude: parseFloat(branch.latitude.toString()),
-    longitude: parseFloat(branch.longitude.toString()),
-    operatingHours: branch.operatingHours as Record<string, any>,
-    images: branch.images,
-    image: branch.images[0] || '',
-    active: branch.active,
-    description: branch.description,
-    createdAt: branch.createdAt.toISOString(),
-    updatedAt: branch.updatedAt.toISOString(),
-  };
-}
-
-/**
- * Transform branch with services to BranchWithServicesDTO
- */
-function toBranchWithServicesDTO(branch: any, services: any[]): BranchWithServicesDTO {
-  return {
-    ...toBranchDTO(branch),
-    services: services.map(toServiceDTO),
-  };
-}
-
 export class BranchService {
   /**
    * Get all branches with pagination
@@ -148,6 +94,60 @@ export class BranchService {
       },
     };
   }
+}
+
+/**
+ * Transform service to ServiceDTO
+ */
+function toServiceDTO(service: any): ServiceDTO {
+  return {
+    id: service.id,
+    name: service.name,
+    slug: service.slug,
+    description: service.description,
+    excerpt: service.excerpt,
+    duration: service.duration,
+    price: service.price.toString(),
+    categoryId: service.categoryId,
+    images: service.images,
+    featured: service.featured,
+    active: service.active,
+    createdAt: service.createdAt.toISOString(),
+    updatedAt: service.updatedAt.toISOString(),
+  };
+}
+
+/**
+ * Transform branch to BranchDTO
+ */
+function toBranchDTO(branch: any): BranchDTO {
+  return {
+    id: branch.id,
+    name: branch.name,
+    slug: branch.slug,
+    address: branch.address,
+    phone: branch.phone,
+    email: branch.email,
+    latitude: parseFloat(branch.latitude.toString()),
+    longitude: parseFloat(branch.longitude.toString()),
+    operatingHours: branch.operatingHours as Record<string, any>,
+    images: branch.images,
+    image: branch.images[0] || '',
+    active: branch.active,
+    description: branch.description,
+    createdAt: branch.createdAt.toISOString(),
+    updatedAt: branch.updatedAt.toISOString(),
+  };
+}
+
+/**
+ * Transform branch with services to BranchWithServicesDTO
+ */
+function toBranchWithServicesDTO(branch: any, services: any[]): BranchWithServicesDTO {
+  return {
+    ...toBranchDTO(branch),
+    services: services.map(toServiceDTO),
+  };
 }
 
 export default new BranchService();

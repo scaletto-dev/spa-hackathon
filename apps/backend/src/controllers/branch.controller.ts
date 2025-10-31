@@ -22,13 +22,13 @@ export class BranchController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // Middleware validated and typed req.query
-      const { page = 1, limit = 20, includeServices } = req.query as unknown as GetBranchesQuery;
+      // Middleware already validated and coerced types (stored in req.validatedQuery)
+      const { page = 1, limit = 20, includeServices } = (req as any).validatedQuery as GetBranchesQuery;
 
       const result = await branchService.getAllBranches(
         includeServices ?? false,
-        Number(page),
-        Number(limit)
+        page,
+        limit
       );
 
       const response: SuccessResponse<typeof result.data> = {
@@ -54,10 +54,9 @@ export class BranchController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // Middleware validated req.params
-      const { id } = req.params as unknown as GetBranchParams;
-      // Middleware validated req.query
-      const { includeServices } = req.query as unknown as GetBranchesQuery;
+      // Middleware already validated and coerced types (stored in req.validatedParams and req.validatedQuery)
+      const { id } = (req as any).validatedParams as GetBranchParams;
+      const { includeServices } = (req as any).validatedQuery as GetBranchesQuery;
 
       const branch = await branchService.getBranchById(id, includeServices ?? false);
 
@@ -83,12 +82,11 @@ export class BranchController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // Middleware validated req.params
-      const { id } = req.params as unknown as GetBranchParams;
-      // Middleware validated req.query
-      const { page = 1, limit = 20 } = req.query as unknown as GetBranchServicesQuery;
+      // Middleware already validated and coerced types (stored in req.validatedParams and req.validatedQuery)
+      const { id } = (req as any).validatedParams as GetBranchParams;
+      const { page = 1, limit = 20 } = (req as any).validatedQuery as GetBranchServicesQuery;
 
-      const result = await branchService.getBranchServices(id, Number(page), Number(limit));
+      const result = await branchService.getBranchServices(id, page, limit);
 
       const response: SuccessResponse<typeof result.data> = {
         success: true,
