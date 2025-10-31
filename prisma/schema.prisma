@@ -92,7 +92,6 @@ model Branch {
 }
 
 /// Booking model - Appointment reservations (supports guest and member bookings)
-/// Now supports multiple services per booking (e.g., package deals, combo services)
 model Booking {
   id                 String        @id @default(uuid())
   referenceNumber    String        @unique
@@ -123,17 +122,17 @@ model Booking {
 
 /// Payment model - Payment records for bookings
 model Payment {
-  id            String       @id @default(uuid())
+  id            String        @id @default(uuid())
   bookingId     String
-  amount        Decimal      @db.Decimal(10, 2)
-  currency      String       @default("VND")
-  paymentType   PaymentType  @default(ATM)
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("VND")
+  paymentType   PaymentType   @default(ATM)
   status        PaymentStatus @default(PENDING)
-  transactionId String?      @unique
+  transactionId String?       @unique
   notes         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  booking       Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@index([bookingId])
   @@index([transactionId])
@@ -239,7 +238,7 @@ model SupportMessage {
 }
 
 model Voucher {
-  id                String      @id
+  id                String      @id @default(uuid())
   code              String      @unique
   title             String
   description       String?
@@ -253,7 +252,7 @@ model Voucher {
   validUntil        DateTime
   isActive          Boolean     @default(true)
   createdAt         DateTime    @default(now())
-  updatedAt         DateTime
+  updatedAt         DateTime    @updatedAt
 
   @@index([code])
   @@index([isActive])

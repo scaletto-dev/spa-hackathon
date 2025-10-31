@@ -86,8 +86,23 @@ export function useAuth(): AuthState {
          }
       };
 
-      checkAuth();
-   }, []);
+        checkAuth();
+
+        // Listen for profile updates (from custom event when same tab updates profile)
+        const handleProfileUpdate = () => {
+            checkAuth();
+        };
+
+        // Listen for storage changes from other tabs/windows
+        window.addEventListener('storage', checkAuth);
+        // Listen for custom event from same tab (ProfileManagement.tsx)
+        window.addEventListener('userProfileUpdated', handleProfileUpdate);
+
+        return () => {
+            window.removeEventListener('storage', checkAuth);
+            window.removeEventListener('userProfileUpdated', handleProfileUpdate);
+        };
+    }, []);
 
     /**
      * Login function

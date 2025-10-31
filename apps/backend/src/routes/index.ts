@@ -25,6 +25,7 @@ import { configureAdminRoutes } from './admin';
  * - /api/v1/branches - Branch location routes
  * - /api/v1/auth - Authentication routes (with rate limiting)
  * - /api/v1/user - User profile management routes (requires authentication)
+ * - /api/v1/vouchers - Voucher routes (public validation and retrieval)
  * - /api/v1/admin - Admin management routes (requires admin authentication)
  * - /api/v1/bookings - Booking management routes
  * - /api/v1/availability - Availability check routes

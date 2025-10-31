@@ -17,6 +17,7 @@ import adminReviewsController from "../../controllers/admin/admin.reviews.contro
 import adminBlogController from "../../controllers/admin/admin.blog.controller";
 import adminCategoriesController from "../../controllers/admin/admin.categories.controller";
 import adminContactsController from "../../controllers/admin/admin.contacts.controller";
+import vouchersAdminRoutes from "./vouchers";
 
 /**
  * Configure admin routes
@@ -320,6 +321,11 @@ export function configureAdminRoutes(router: Router): void {
       "/contacts/:id",
       adminContactsController.deleteContact.bind(adminContactsController)
    );
+
+   // ============================================
+   // VOUCHERS ROUTES
+   // ============================================
+   router.use("/vouchers", vouchersAdminRoutes);
 }
 
 export default configureAdminRoutes;

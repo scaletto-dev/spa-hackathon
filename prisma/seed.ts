@@ -8,6 +8,8 @@ async function main() {
   // Clear existing data (in reverse order due to foreign keys)
   console.log('🧹 Cleaning existing data...');
   await prisma.review.deleteMany();
+  await prisma.booking.deleteMany();
+  await prisma.voucher.deleteMany();
   await prisma.blogPost.deleteMany();
   await prisma.blogCategory.deleteMany();
   await prisma.service.deleteMany();
@@ -1011,6 +1013,113 @@ Book your next appointment and give your skin the professional care it deserves!
   console.log(`✅ Created ${blogPosts.length} blog posts`);
 
   // ============================================================================
+  // VOUCHERS
+  // ============================================================================
+  console.log('🎟️  Creating vouchers...');
+  const vouchers = await Promise.all([
+    // Percentage-based vouchers
+    prisma.voucher.create({
+      data: {
+        code: 'WELCOME10',
+        title: 'Welcome Discount',
+        description: '10% off on your first booking',
+        discountType: 'PERCENTAGE',
+        discountValue: new Prisma.Decimal(10),
+        minPurchaseAmount: new Prisma.Decimal(500000), // 500K VND
+        maxDiscountAmount: new Prisma.Decimal(500000), // 500K VND max
+        usageLimit: 100,
+        usageCount: 0,
+        validFrom: new Date('2025-10-01'),
+        validUntil: new Date('2025-12-31'),
+        isActive: true,
+      },
+    }),
+    prisma.voucher.create({
+      data: {
+        code: 'SUMMER20',
+        title: 'Summer Special',
+        description: '20% off on all services during summer',
+        discountType: 'PERCENTAGE',
+        discountValue: new Prisma.Decimal(20),
+        minPurchaseAmount: new Prisma.Decimal(1000000), // 1M VND
+        maxDiscountAmount: new Prisma.Decimal(2000000), // 2M VND max
+        usageLimit: 50,
+        usageCount: 0,
+        validFrom: new Date('2025-06-01'),
+        validUntil: new Date('2025-08-31'),
+        isActive: false,
+      },
+    }),
+    // Fixed amount vouchers
+    prisma.voucher.create({
+      data: {
+        code: 'FIXED500',
+        title: 'Fixed 500K Discount',
+        description: 'Get 500,000 VND discount on bookings over 2 million',
+        discountType: 'FIXED_AMOUNT',
+        discountValue: new Prisma.Decimal(500000),
+        minPurchaseAmount: new Prisma.Decimal(2000000), // 2M VND
+        maxDiscountAmount: null,
+        usageLimit: 200,
+        usageCount: 0,
+        validFrom: new Date('2025-10-01'),
+        validUntil: new Date('2025-11-30'),
+        isActive: true,
+      },
+    }),
+    prisma.voucher.create({
+      data: {
+        code: 'LOYALTY25',
+        title: 'Loyalty Bonus',
+        description: 'Exclusive loyalty member discount - 25% off',
+        discountType: 'PERCENTAGE',
+        discountValue: new Prisma.Decimal(25),
+        minPurchaseAmount: new Prisma.Decimal(0),
+        maxDiscountAmount: new Prisma.Decimal(5000000), // 5M VND max
+        usageLimit: 500,
+        usageCount: 0,
+        validFrom: new Date('2025-01-01'),
+        validUntil: new Date('2026-12-31'),
+        isActive: true,
+      },
+    }),
+    prisma.voucher.create({
+      data: {
+        code: 'PACKAGE1M',
+        title: 'Package Deal',
+        description: 'Special package pricing - fixed 1 million off',
+        discountType: 'FIXED_AMOUNT',
+        discountValue: new Prisma.Decimal(1000000),
+        minPurchaseAmount: new Prisma.Decimal(4000000), // 4M VND
+        maxDiscountAmount: null,
+        usageLimit: 30,
+        usageCount: 5,
+        validFrom: new Date('2025-10-15'),
+        validUntil: new Date('2025-10-31'),
+        isActive: true,
+      },
+    }),
+    // Expired voucher (for testing)
+    prisma.voucher.create({
+      data: {
+        code: 'EXPIRED15',
+        title: 'Expired Voucher',
+        description: 'This voucher has expired',
+        discountType: 'PERCENTAGE',
+        discountValue: new Prisma.Decimal(15),
+        minPurchaseAmount: new Prisma.Decimal(0),
+        maxDiscountAmount: new Prisma.Decimal(1000000),
+        usageLimit: 100,
+        usageCount: 45,
+        validFrom: new Date('2025-01-01'),
+        validUntil: new Date('2025-09-30'),
+        isActive: true,
+      },
+    }),
+  ]);
+  console.log(`✅ Created ${vouchers.length} vouchers`);
+
+  // ============================================================================
   // SUMMARY
   // ============================================================================
   console.log('\n✨ Database seeding completed successfully! ✨\n');
@@ -1021,6 +1130,7 @@ Book your next appointment and give your skin the professional care it deserves!
   console.log(`   - ${reviews.length} Reviews`);
   console.log(`   - ${blogCategories.length} Blog Categories`);
   console.log(`   - ${blogPosts.length} Blog Posts`);
+  console.log(`   - ${vouchers.length} Vouchers`);
   console.log(`   - 1 Admin User\n`);
 }
 

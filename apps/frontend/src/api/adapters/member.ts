@@ -312,30 +312,55 @@ export interface UpdateProfileParams {
     language?: 'vi' | 'ja' | 'en' | 'zh';
 }
 
-const MOCK_MEMBER_PROFILE: MemberProfile = {
-    id: 'member-uuid-001',
-    email: 'nguyenvana@gmail.com',
-    fullName: 'Nguyễn Văn A',
-    phone: '+84 912 345 678',
-    language: 'vi',
-    createdAt: '2024-06-15T08:30:00Z',
-    updatedAt: '2025-10-20T14:22:00Z',
-};
+// Deprecated: Using real backend API instead
+// const MOCK_MEMBER_PROFILE: MemberProfile = {
+//     id: 'member-uuid-001',
+//     email: 'nguyenvana@gmail.com',
+//     fullName: 'Nguyễn Văn A',
+//     phone: '+84 912 345 678',
+//     language: 'vi',
+//     createdAt: '2024-06-15T08:30:00Z',
+//     updatedAt: '2025-10-20T14:22:00Z',
+// };
 
 /**
  * Fetch member profile information
  * @returns Member profile data
  *
- * TODO API: GET /api/v1/members/profile
+ * API: GET /api/v1/user/profile
  * Auth: Required (Bearer token)
- * Response: { data: MemberProfile }
+ * Response: { success, data: UserProfileDTO, timestamp }
  */
 export async function getMemberProfile(): Promise<MemberProfile> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        throw new Error('Authentication required. Please login again.');
+    }
 
-    // Return a copy to avoid mutations
-    return { ...MOCK_MEMBER_PROFILE };
+    const response = await fetch('/api/v1/user/profile', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to fetch profile');
+    }
+
+    const data = await response.json();
+    
+    return {
+        id: data.data.id,
+        email: data.data.email,
+        fullName: data.data.fullName,
+        phone: data.data.phone,
+        language: data.data.language || 'vi',
+        createdAt: data.data.createdAt,
+        updatedAt: data.data.updatedAt,
+    };
 }
 
 /**
@@ -343,25 +368,62 @@ export async function getMemberProfile(): Promise<MemberProfile> {
  * @param params - Fields to update (fullName, phone, language)
  * @returns Updated profile data
  *
- * TODO API: PUT /api/v1/members/profile
+ * API: PUT /api/v1/user/profile
  * Auth: Required (Bearer token)
- * Body: { fullName, phone, language? }
- * Response: { data: MemberProfile }
+ * Body: { fullName?, phone?, language? }
+ * Response: { success, data: UserProfileDTO, message, timestamp }
  */
 export async function updateMemberProfile(params: UpdateProfileParams): Promise<MemberProfile> {
-    const { fullName, phone, language } = params;
-
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 700));
-
-    // Update mock data
-    MOCK_MEMBER_PROFILE.fullName = fullName;
-    MOCK_MEMBER_PROFILE.phone = phone;
-    if (language) {
-        MOCK_MEMBER_PROFILE.language = language;
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        throw new Error('Authentication required. Please login again.');
     }
-    MOCK_MEMBER_PROFILE.updatedAt = new Date().toISOString();
 
-    // Return updated copy
-    return { ...MOCK_MEMBER_PROFILE };
+    const response = await fetch('/api/v1/user/profile', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(params),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to update profile');
+    }
+
+    const data = await response.json();
+    
+    return {
+        id: data.data.id,
+        email: data.data.email,
+        fullName: data.data.fullName,
+        phone: data.data.phone,
+        language: data.data.language || 'vi',
+        createdAt: data.data.createdAt,
+        updatedAt: data.data.updatedAt,
+    };
+}
+
+// ============= Voucher Types & Mock Data =============
+
+import { Voucher, getActiveVouchers } from './voucher';
+
+/**
+ * Get member's available vouchers (active vouchers from API)
+ * @returns Array of active vouchers for the member
+ *
+ * API: GET /api/v1/vouchers/active
+ * Auth: Not required (public endpoint)
+ * Response: { data: Voucher[] }
+ */
+export async function getMemberVouchers(): Promise<Voucher[]> {
+    try {
+        const vouchers = await getActiveVouchers();
+        return vouchers;
+    } catch (error) {
+        console.error('Failed to fetch member vouchers:', error);
+        return []; // Return empty array if API fails
+    }
 }
