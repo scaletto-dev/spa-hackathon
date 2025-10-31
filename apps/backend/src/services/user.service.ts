@@ -1,132 +1,62 @@
 /**
  * User Service
- * 
  * Business logic for user profile management
  */
 
-import prisma from '../config/database';
-import { UserProfileDTO, UpdateProfileRequest } from '../types/user';
-import { NotFoundError, ValidationError } from '../utils/errors';
+import { userRepository } from '@/repositories/user.repository';
+import { UserProfileDTO, UpdateProfileRequestDTO } from '@/types/user';
+import { NotFoundError } from '@/utils/errors';
 
 class UserService {
   /**
    * Get user profile by ID
-   * 
+   *
    * @param userId - User ID from authenticated session
    * @returns User profile data
    * @throws NotFoundError if user not found
    */
   async getUserProfile(userId: string): Promise<UserProfileDTO> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-        phone: true,
-        role: true,
-        emailVerified: true,
-        language: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const user = await userRepository.findById(userId);
 
     if (!user) {
       throw new NotFoundError(`User with ID '${userId}' not found`);
     }
 
-    return this.mapUserToDTO(user);
+    return this.toUserProfileDTO(user);
   }
 
   /**
    * Update user profile
-   * 
+   *
    * @param userId - User ID from authenticated session
-   * @param data - Fields to update
+   * @param data - Fields to update (pre-validated by Zod)
    * @returns Updated user profile
    * @throws NotFoundError if user not found
-   * @throws ValidationError if validation fails
    */
   async updateUserProfile(
     userId: string,
-    data: UpdateProfileRequest
+    data: UpdateProfileRequestDTO
   ): Promise<UserProfileDTO> {
-    // Validate input
-    if (data.fullName !== undefined) {
-      if (data.fullName.trim().length < 2) {
-        throw new ValidationError('Full name must be at least 2 characters');
-      }
-      if (data.fullName.length > 100) {
-        throw new ValidationError('Full name must not exceed 100 characters');
-      }
-    }
-
-    if (data.phone !== undefined) {
-      const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-      if (!phoneRegex.test(data.phone)) {
-        throw new ValidationError('Invalid phone format');
-      }
-      if (data.phone.length < 8 || data.phone.length > 20) {
-        throw new ValidationError('Phone number must be between 8 and 20 characters');
-      }
-    }
-
-    if (data.language !== undefined) {
-      const validLanguages = ['vi', 'en', 'ja', 'zh'];
-      if (!validLanguages.includes(data.language)) {
-        throw new ValidationError('Language must be one of: vi, en, ja, zh');
-      }
-    }
-
     // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const existingUser = await userRepository.findById(userId);
 
     if (!existingUser) {
       throw new NotFoundError(`User with ID '${userId}' not found`);
     }
 
-    // Build update data object with only provided fields
-    const updateData: any = {};
-    if (data.fullName !== undefined) {
-      updateData.fullName = data.fullName.trim();
-    }
-    if (data.phone !== undefined) {
-      updateData.phone = data.phone.trim();
-    }
-    if (data.language !== undefined) {
-      updateData.language = data.language;
-    }
+    // Update user (validation already done by Zod)
+    const updatedUser = await userRepository.updateById(userId, data);
 
-    // Update user
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: updateData,
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-        phone: true,
-        role: true,
-        emailVerified: true,
-        language: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    return this.mapUserToDTO(updatedUser);
+    return this.toUserProfileDTO(updatedUser);
   }
 
   /**
-   * Map Prisma User model to UserProfileDTO
-   * 
-   * @param user - Prisma user object
+   * Map user data to UserProfileDTO
+   *
+   * @param user - User data from database
    * @returns UserProfileDTO
    */
-  private mapUserToDTO(user: any): UserProfileDTO {
+  private toUserProfileDTO(user: any): UserProfileDTO {
     return {
       id: user.id,
       email: user.email,

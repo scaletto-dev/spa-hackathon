@@ -1,13 +1,13 @@
 /**
  * User Controller
- * 
  * Handles HTTP requests for user profile endpoints
  */
 
 import { Request, Response, NextFunction } from 'express';
-import userService from '../services/user.service';
-import { UpdateProfileRequest, GetProfileResponse, UpdateProfileResponse } from '../types/user';
-import { ValidationError } from '../utils/errors';
+import userService from '@/services/user.service';
+import { SuccessResponse } from '@/types/api';
+import { UserProfileDTO } from '@/types/user';
+import { ValidationError } from '@/utils/errors';
 
 class UserController {
   /**
@@ -26,7 +26,7 @@ class UserController {
 
       const userProfile = await userService.getUserProfile(userId);
 
-      const response: GetProfileResponse = {
+      const response: SuccessResponse<UserProfileDTO> = {
         success: true,
         data: userProfile,
         timestamp: new Date().toISOString(),
@@ -52,25 +52,14 @@ class UserController {
         throw new ValidationError('User ID not found in request. Authentication required.');
       }
 
-      const { fullName, phone, language } = req.body;
-
-      // Validate at least one field is provided
-      if (fullName === undefined && phone === undefined && language === undefined) {
-        throw new ValidationError('At least one field must be provided for update');
-      }
-
-      const updateData: UpdateProfileRequest = {
-        fullName,
-        phone,
-        language,
-      };
+      // Validated data from middleware
+      const updateData = req.body;
 
       const updatedProfile = await userService.updateUserProfile(userId, updateData);
 
-      const response: UpdateProfileResponse = {
+      const response: SuccessResponse<UserProfileDTO & { message: string }> = {
         success: true,
-        data: updatedProfile,
-        message: 'Profile updated successfully',
+        data: { ...updatedProfile, message: 'Profile updated successfully' },
         timestamp: new Date().toISOString(),
       };
 

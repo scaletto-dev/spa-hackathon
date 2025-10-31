@@ -1,133 +1,136 @@
 import { Request, Response, NextFunction } from 'express';
-import reviewService from '../services/review.service';
-import { SuccessResponse } from '../types/api';
-import { ValidationError } from '../utils/errors';
-import { GetReviewsQueryParams, CreateReviewDto } from '../types/review';
+import reviewService from '@/services/review.service';
+import { SuccessResponse } from '@/types/api';
+import {
+  GetReviewsQuery,
+  GetReviewParams,
+  CreateReviewRequest,
+  GetServiceRatingParams,
+} from '@/validators/review.validator';
 
 /**
  * Review Controller
  *
  * Handles HTTP requests for review endpoints.
- * Validates input, calls service layer, and formats responses.
+ * All request validation is performed by Zod middleware before reaching these handlers.
+ * Controllers can assume valid, typed data from request.
  */
 
 export class ReviewController {
-    /**
-     * GET /api/v1/reviews
-     * Get all approved reviews with filtering and pagination
-     */
-    async getAllReviews(
-        req: Request<{}, {}, {}, GetReviewsQueryParams>,
-        res: Response,
-        next: NextFunction,
-    ): Promise<void> {
-        try {
-            const page = parseInt(req.query.page || '1', 10);
-            const limit = parseInt(req.query.limit || '20', 10);
-            const serviceId = req.query.serviceId;
-            const sort = req.query.sort || 'recent';
-            const rating = req.query.rating ? parseInt(req.query.rating, 10) : undefined;
+  /**
+   * GET /api/v1/reviews
+   * Get all approved reviews with filtering and pagination
+   */
+  async getAllReviews(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      // Middleware already validated and coerced types (stored in req.validatedQuery)
+      const { page = 1, limit = 20, serviceId, rating, sort = 'recent' } = (req as any).validatedQuery as GetReviewsQuery;
 
-            // Validation
-            if (page < 1) {
-                throw new ValidationError('Page must be greater than 0');
-            }
-            if (limit < 1 || limit > 100) {
-                throw new ValidationError('Limit must be between 1 and 100');
-            }
-            if (rating !== undefined && (rating < 1 || rating > 5)) {
-                throw new ValidationError('Rating must be between 1 and 5');
-            }
+      const result = await reviewService.getAllReviews(
+        page,
+        limit,
+        serviceId,
+        sort as 'recent' | 'rating',
+        rating
+      );
 
-            const result = await reviewService.getAllReviews(page, limit, serviceId, sort, rating);
+      const response: SuccessResponse<typeof result.data> = {
+        success: true,
+        data: result.data,
+        meta: result.meta,
+        timestamp: new Date().toISOString(),
+      };
 
-            const response: SuccessResponse<typeof result.data> = {
-                success: true,
-                data: result.data,
-                meta: result.meta,
-                timestamp: new Date().toISOString(),
-            };
-
-            res.status(200).json(response);
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * GET /api/v1/reviews/:id
-     * Get a single review by ID
-     */
-    async getReviewById(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { id } = req.params;
-            const review = await reviewService.getReviewById(id);
+  /**
+   * GET /api/v1/reviews/:id
+   * Get a single review by ID
+   */
+  async getReviewById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      // Middleware validated req.params
+      const { id } = req.params as GetReviewParams;
 
-            const response: SuccessResponse<typeof review> = {
-                success: true,
-                data: review,
-                timestamp: new Date().toISOString(),
-            };
+      const review = await reviewService.getReviewById(id);
 
-            res.status(200).json(response);
-        } catch (error) {
-            next(error);
-        }
+      const response: SuccessResponse<typeof review> = {
+        success: true,
+        data: review,
+        timestamp: new Date().toISOString(),
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * POST /api/v1/reviews
-     * Create a new review (pending approval)
-     */
-    async createReview(req: Request<{}, {}, CreateReviewDto>, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const reviewData: CreateReviewDto = req.body;
+  /**
+   * POST /api/v1/reviews
+   * Create a new review (pending approval)
+   */
+  async createReview(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      // Middleware validated req.body
+      const reviewData = req.body as unknown as CreateReviewRequest;
 
-            // Validation
-            if (
-                !reviewData.serviceId ||
-                !reviewData.customerName ||
-                !reviewData.email ||
-                !reviewData.rating ||
-                !reviewData.reviewText
-            ) {
-                throw new ValidationError('Missing required fields');
-            }
+      const review = await reviewService.createReview(reviewData);
 
-            const review = await reviewService.createReview(reviewData);
+      const response: SuccessResponse<typeof review> = {
+        success: true,
+        data: review,
+        timestamp: new Date().toISOString(),
+      };
 
-            const response: SuccessResponse<typeof review> = {
-                success: true,
-                data: review,
-                timestamp: new Date().toISOString(),
-            };
-
-            res.status(201).json(response);
-        } catch (error) {
-            next(error);
-        }
+      res.status(201).json(response);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
-     * GET /api/v1/reviews/service/:serviceId/rating
-     * Get average rating for a service
-     */
-    async getServiceRating(req: Request<{ serviceId: string }>, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { serviceId } = req.params;
-            const rating = await reviewService.getServiceRating(serviceId);
+  /**
+   * GET /api/v1/reviews/service/:serviceId/rating
+   * Get average rating for a service
+   */
+  async getServiceRating(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      // Middleware already validated and stored in req.validatedParams
+      const { serviceId } = (req as any).validatedParams as GetServiceRatingParams;
 
-            const response: SuccessResponse<typeof rating> = {
-                success: true,
-                data: rating,
-                timestamp: new Date().toISOString(),
-            };
+      const rating = await reviewService.getServiceRating(serviceId);
 
-            res.status(200).json(response);
-        } catch (error) {
-            next(error);
-        }
+      const response: SuccessResponse<typeof rating> = {
+        success: true,
+        data: rating,
+        timestamp: new Date().toISOString(),
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
     }
+  }
 }
 
 export default new ReviewController();

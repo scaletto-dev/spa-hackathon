@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import branchService from '../services/branch.service';
-import { SuccessResponse } from '../types/api';
-import { ValidationError } from '../utils/errors';
-import { GetBranchesQueryParams, GetBranchServicesQueryParams } from '../types/branch';
+import branchService from '@/services/branch.service';
+import { SuccessResponse } from '@/types/api';
+import { GetBranchesQuery, GetBranchParams, GetBranchServicesQuery } from '@/validators/branch.validator';
 
 /**
  * Branch Controller
- * 
+ *
  * Handles HTTP requests for branch endpoints.
- * Validates input, calls service layer, and formats responses.
+ * All request validation is performed by Zod middleware before reaching these handlers.
+ * Controllers can assume valid, typed data from request.
  */
 
 export class BranchController {
@@ -17,26 +17,19 @@ export class BranchController {
    * Get all branches
    */
   async getAllBranches(
-    req: Request<{}, {}, {}, GetBranchesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const includeServices = req.query.includeServices === 'true';
-      const page = req.query.page ? parseInt(req.query.page, 10) : 1;
-      const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
-      
-      // Validate page
-      if (page < 1) {
-        throw new ValidationError('Page must be greater than 0');
-      }
-      
-      // Validate limit if provided
-      if (limit !== undefined && (isNaN(limit) || limit < 1 || limit > 100)) {
-        throw new ValidationError('Limit must be between 1 and 100');
-      }
-      
-      const result = await branchService.getAllBranches(includeServices, page, limit);
+      // Middleware already validated and coerced types (stored in req.validatedQuery)
+      const { page = 1, limit = 20, includeServices } = (req as any).validatedQuery as GetBranchesQuery;
+
+      const result = await branchService.getAllBranches(
+        includeServices ?? false,
+        page,
+        limit
+      );
 
       const response: SuccessResponse<typeof result.data> = {
         success: true,
@@ -56,15 +49,16 @@ export class BranchController {
    * Get a single branch by ID with optional services
    */
   async getBranchById(
-    req: Request<{ id: string }, {}, {}, GetBranchesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
-      const includeServices = req.query.includeServices === 'true';
+      // Middleware already validated and coerced types (stored in req.validatedParams and req.validatedQuery)
+      const { id } = (req as any).validatedParams as GetBranchParams;
+      const { includeServices } = (req as any).validatedQuery as GetBranchesQuery;
 
-      const branch = await branchService.getBranchById(id, includeServices);
+      const branch = await branchService.getBranchById(id, includeServices ?? false);
 
       const response: SuccessResponse<typeof branch> = {
         success: true,
@@ -83,28 +77,20 @@ export class BranchController {
    * Get all services available at a specific branch with pagination
    */
   async getBranchServices(
-    req: Request<{ id: string }, {}, {}, GetBranchServicesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
-      const page = parseInt(req.query.page || '1', 10);
-      const limit = parseInt(req.query.limit || '20', 10);
-
-      // Validation
-      if (page < 1) {
-        throw new ValidationError('Page must be greater than 0');
-      }
-      if (limit < 1 || limit > 100) {
-        throw new ValidationError('Limit must be between 1 and 100');
-      }
+      // Middleware already validated and coerced types (stored in req.validatedParams and req.validatedQuery)
+      const { id } = (req as any).validatedParams as GetBranchParams;
+      const { page = 1, limit = 20 } = (req as any).validatedQuery as GetBranchServicesQuery;
 
       const result = await branchService.getBranchServices(id, page, limit);
 
-      const response: SuccessResponse<typeof result.services> = {
+      const response: SuccessResponse<typeof result.data> = {
         success: true,
-        data: result.services,
+        data: result.data,
         meta: result.meta,
         timestamp: new Date().toISOString(),
       };

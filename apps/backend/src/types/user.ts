@@ -1,8 +1,21 @@
 /**
  * User Type Definitions
- * 
- * DTO types for user profile API responses
+ * DTOs for user profile API
  */
+
+// ============================================================================
+// Request DTOs
+// ============================================================================
+
+export interface UpdateProfileRequestDTO {
+  fullName?: string;
+  phone?: string;
+  language?: string;
+}
+
+// ============================================================================
+// Response DTOs
+// ============================================================================
 
 export interface UserProfileDTO {
   id: string;
@@ -16,22 +29,9 @@ export interface UserProfileDTO {
   updatedAt: string;
 }
 
-export interface UpdateProfileRequest {
-  fullName?: string;
-  phone?: string;
-  language?: string;
-}
+// ============================================================================
+// Legacy type aliases (for backwards compatibility)
+// ============================================================================
 
-export interface UpdateProfileResponse {
-  success: boolean;
-  data: UserProfileDTO;
-  message: string;
-  timestamp: string;
-}
-
-export interface GetProfileResponse {
-  success: boolean;
-  data: UserProfileDTO;
-  timestamp: string;
-}
+export type UpdateProfileRequest = UpdateProfileRequestDTO;
 

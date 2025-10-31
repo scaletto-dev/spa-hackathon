@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import serviceController from '../controllers/service.controller';
+import serviceController from '@/controllers/service.controller';
+import { validate } from '@/middleware/validate';
+import { getServicesQuerySchema, getServiceParamsSchema } from '@/validators/service.validator';
 
 const router = Router();
 
@@ -14,7 +16,7 @@ const router = Router();
  * Get all services with pagination and filtering
  * Query params: page, limit, categoryId, featured
  */
-router.get('/', serviceController.getAllServices);
+router.get('/', validate(getServicesQuerySchema, 'query'), serviceController.getAllServices);
 
 /**
  * GET /api/v1/services/featured
@@ -38,6 +40,6 @@ router.get('/categories', serviceController.getServiceCategories);
  * 
  * Note: This must be last to avoid conflicts with other routes
  */
-router.get('/:id', serviceController.getServiceById);
+router.get('/:id', validate(getServiceParamsSchema, 'params'), serviceController.getServiceById);
 
 export default router;

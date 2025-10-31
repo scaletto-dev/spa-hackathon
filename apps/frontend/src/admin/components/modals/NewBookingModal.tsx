@@ -187,8 +187,10 @@ export function NewBookingModal({ isOpen, onClose, onSuccess }: NewBookingModalP
                                 </div>
                                 {s < 2 && (
                                     <div
-                                        className={`flex-1 h-1 mx-2 rounded-full transition-all ${
-                                            step > s ? 'bg-gradient-to-r from-pink-400 to-purple-400' : 'bg-gray-200'
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                                            step >= s
+                                                ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white'
+                                                : 'bg-gray-200 text-gray-400'
                                         }`}
                                     />
                                 )}
@@ -291,16 +293,16 @@ export function NewBookingModal({ isOpen, onClose, onSuccess }: NewBookingModalP
                                 />
                             </FormField>
 
-                            <FormField label='Ghi chú đặc biệt' name='notes'>
-                                <Textarea
-                                    name='notes'
-                                    value={formData.notes}
-                                    onChange={handleChange}
-                                    placeholder='Yêu cầu hoặc ghi chú đặc biệt...'
-                                    rows={3}
-                                    maxLength={300}
-                                />
-                            </FormField>
+                                <FormField label='Ghi chú đặc biệt' name='notes'>
+                                    <Textarea
+                                        name='notes'
+                                        value={formData.notes}
+                                        onChange={handleChange}
+                                        placeholder='Yêu cầu hoặc ghi chú đặc biệt...'
+                                        rows={3}
+                                        maxLength={300}
+                                    />
+                                </FormField>
 
                             <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100'>
                                 <h4 className='font-semibold text-gray-800 mb-2'>Tóm tắt đặt lịch</h4>
@@ -345,6 +347,6 @@ export function NewBookingModal({ isOpen, onClose, onSuccess }: NewBookingModalP
                     )}
                 </div>
             </div>
-        </div>
+        </>
     );
 }

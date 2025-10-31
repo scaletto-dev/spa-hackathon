@@ -1,34 +1,67 @@
-import { supabase } from '../config/supabase';
-import { PrismaClient, UserRole } from '@prisma/client';
-import { RegisterRequest, AuthUserData, AuthSession, LoginRequest } from '../types/auth';
-import { ValidationError, ConflictError, UnauthorizedError } from '../utils/errors';
-import logger from '../config/logger';
-
-const prisma = new PrismaClient();
+import { supabase } from '@/config/supabase';
+import { UserRole } from '@prisma/client';
+import { authRepository } from '@/repositories/auth.repository';
+import {
+  RegisterRequestDTO,
+  VerifyOtpRequestDTO,
+  LoginRequestDTO,
+  ChangePasswordRequestDTO,
+  ForgotPasswordRequestDTO,
+  ResetPasswordRequestDTO,
+  AuthUserDTO,
+  AuthSessionDTO,
+  AuthenticatedResponseDTO,
+} from '@/types/auth';
+import { ValidationError, ConflictError, UnauthorizedError } from '@/utils/errors';
+import logger from '@/config/logger';
 
 /**
  * Auth Service
  * Handles authentication logic with Supabase Auth and application database
+ * All validation is done by Zod middleware
  */
 class AuthService {
+  /**
+   * Convert Supabase user to AuthUserDTO
+   */
+  private toAuthUserDTO(user: any): AuthUserDTO {
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      phone: user.phone || '',
+      role: user.role,
+      emailVerified: user.emailVerified,
+    };
+  }
+
+  /**
+   * Convert Supabase session to AuthSessionDTO
+   */
+  private toAuthSessionDTO(session: any): AuthSessionDTO {
+    return {
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token,
+      expiresIn: session.expires_in || 3600,
+      expiresAt: session.expires_at || Date.now() / 1000 + 3600,
+    };
+  }
+
   /**
    * Register a new user with email, password, and send OTP for verification
    * @param data - Registration data (email, password, fullName, phone)
    * @returns Promise<void>
-   * @throws ValidationError if data is invalid
    * @throws ConflictError if email already exists
    */
-  async register(data: RegisterRequest): Promise<void> {
+  async register(data: RegisterRequestDTO): Promise<void> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
 
     const { email, password, fullName, phone } = data;
 
-    // Check if user already exists in our database
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    // Check if user already exists in database
+    const existingUser = await authRepository.findByEmail(email);
 
     if (existingUser) {
       throw new ConflictError('Email already registered');
@@ -83,24 +116,25 @@ class AuthService {
 
   /**
    * Verify OTP code and complete registration/login
-   * @param email - User's email
-   * @param otp - OTP code from email
+   * @param data - OTP verification data (email, otp)
    * @returns User data and session tokens
    * @throws ValidationError if OTP is invalid
    */
-  async verifyOtp(email: string, otp: string): Promise<{ user: AuthUserData; session: AuthSession }> {
+  async verifyOtp(data: VerifyOtpRequestDTO): Promise<{ user: AuthUserDTO; session: AuthSessionDTO }> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
 
+    const { email, otp } = data;
+
     // Verify OTP with Supabase Auth
-    const { data, error } = await supabase.auth.verifyOtp({
+    const { data: authData, error } = await supabase.auth.verifyOtp({
       email,
       token: otp,
       type: 'email',
     });
 
-    if (error || !data.user || !data.session) {
+    if (error || !authData.user || !authData.session) {
       logger.error('OTP verification failed', {
         error: error?.message,
         email,
@@ -108,28 +142,24 @@ class AuthService {
       throw new ValidationError('Invalid or expired verification code');
     }
 
-    const supabaseUser = data.user;
-    const session = data.session;
+    const supabaseUser = authData.user;
+    const session = authData.session;
 
     // Check if user exists in our database
-    let user = await prisma.user.findUnique({
-      where: { email },
-    });
+    let user = await authRepository.findByEmail(email);
 
     // If user doesn't exist, create new user record
     if (!user) {
       const fullName = supabaseUser.user_metadata?.full_name || 'User';
       const phone = supabaseUser.user_metadata?.phone || '';
 
-      user = await prisma.user.create({
-        data: {
-          email,
-          fullName,
-          phone,
-          role: UserRole.MEMBER,
-          emailVerified: true,
-          supabaseAuthId: supabaseUser.id,
-        },
+      user = await authRepository.create({
+        email,
+        fullName,
+        phone,
+        supabaseAuthId: supabaseUser.id,
+        emailVerified: true,
+        role: UserRole.MEMBER,
       });
 
       logger.info('New user created', {
@@ -138,13 +168,7 @@ class AuthService {
       });
     } else {
       // Update existing user
-      user = await prisma.user.update({
-        where: { email },
-        data: {
-          emailVerified: true,
-          supabaseAuthId: supabaseUser.id,
-        },
-      });
+      user = await authRepository.updateEmailVerified(email, supabaseUser.id);
 
       logger.info('User verified', {
         userId: user.id,
@@ -153,21 +177,8 @@ class AuthService {
     }
 
     // Map to response format
-    const userData: AuthUserData = {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      phone: user.phone,
-      role: user.role,
-      emailVerified: user.emailVerified,
-    };
-
-    const sessionData: AuthSession = {
-      accessToken: session.access_token,
-      refreshToken: session.refresh_token,
-      expiresIn: session.expires_in || 3600,
-      expiresAt: session.expires_at || Date.now() / 1000 + 3600,
-    };
+    const userData: AuthUserDTO = this.toAuthUserDTO(user);
+    const sessionData: AuthSessionDTO = this.toAuthSessionDTO(session);
 
     return { user: userData, session: sessionData };
   }
@@ -178,7 +189,7 @@ class AuthService {
    * @returns User data and session tokens
    * @throws UnauthorizedError if credentials are invalid
    */
-  async login(data: LoginRequest): Promise<{ user: AuthUserData; session: AuthSession }> {
+  async login(data: LoginRequestDTO): Promise<{ user: AuthUserDTO; session: AuthSessionDTO }> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
@@ -203,40 +214,23 @@ class AuthService {
     const session = authData.session;
 
     // Get or create user in our database
-    let user = await prisma.user.findUnique({
-      where: { email },
-    });
+    let user = await authRepository.findByEmail(email);
 
     // If user doesn't exist in our DB (shouldn't happen for login), create them
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email: supabaseUser.email!,
-          fullName: supabaseUser.user_metadata?.full_name || 'User',
-          phone: supabaseUser.user_metadata?.phone || '',
-          role: UserRole.MEMBER,
-          emailVerified: supabaseUser.email_confirmed_at != null,
-          supabaseAuthId: supabaseUser.id,
-        },
+      user = await authRepository.create({
+        email: supabaseUser.email!,
+        fullName: supabaseUser.user_metadata?.full_name || 'User',
+        phone: supabaseUser.user_metadata?.phone || '',
+        supabaseAuthId: supabaseUser.id,
+        emailVerified: supabaseUser.email_confirmed_at != null,
+        role: UserRole.MEMBER,
       });
     }
 
     // Map to response format
-    const userData: AuthUserData = {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      phone: user.phone,
-      role: user.role,
-      emailVerified: user.emailVerified,
-    };
-
-    const sessionData: AuthSession = {
-      accessToken: session.access_token,
-      refreshToken: session.refresh_token,
-      expiresIn: session.expires_in || 3600,
-      expiresAt: session.expires_at || Date.now() / 1000 + 3600,
-    };
+    const userData: AuthUserDTO = this.toAuthUserDTO(user);
+    const sessionData: AuthSessionDTO = this.toAuthSessionDTO(session);
 
     logger.info('User logged in successfully', {
       userId: user.id,
@@ -249,35 +243,19 @@ class AuthService {
   /**
    * Change password for authenticated user
    * Requires current password verification
-   * 
-   * @param userId - User ID from authenticated session
-   * @param currentPassword - Current password for verification
-   * @param newPassword - New password to set
+   *
+   * @param data - Change password data (userId, currentPassword, newPassword)
    * @throws UnauthorizedError if current password is incorrect
-   * @throws ValidationError if new password is invalid
    */
-  async changePassword(
-    userId: string,
-    currentPassword: string,
-    newPassword: string
-  ): Promise<void> {
+  async changePassword(userId: string, data: ChangePasswordRequestDTO): Promise<void> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
 
-    // Validate new password
-    if (newPassword.length < 8) {
-      throw new ValidationError('New password must be at least 8 characters');
-    }
-
-    if (newPassword.length > 100) {
-      throw new ValidationError('New password must not exceed 100 characters');
-    }
+    const { currentPassword, newPassword } = data;
 
     // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await authRepository.findById(userId);
 
     if (!user) {
       throw new UnauthorizedError('User not found');
@@ -318,25 +296,18 @@ class AuthService {
 
   /**
    * Send password reset email
-   * 
-   * @param email - User's email address
-   * @throws ValidationError if email format is invalid
+   *
+   * @param data - Forgot password data (email)
    */
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(data: ForgotPasswordRequestDTO): Promise<void> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new ValidationError('Invalid email format');
-    }
+    const { email } = data;
 
     // Check if user exists in database
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
-    });
+    const user = await authRepository.findByEmail(email);
 
     // Always return success even if user doesn't exist (security: don't reveal if email is registered)
     if (!user) {
@@ -368,28 +339,20 @@ class AuthService {
    * Note: With Supabase, the token is handled via redirectTo URL
    * User will be redirected to frontend with access_token in URL
    * Frontend should extract token and call updateUser with new password
-   * 
-   * @param accessToken - Access token from reset email URL
-   * @param newPassword - New password to set
-   * @throws ValidationError if password is invalid
+   *
+   * @param data - Reset password data (token, newPassword)
+   * @throws UnauthorizedError if token is invalid
    */
-  async resetPassword(accessToken: string, newPassword: string): Promise<void> {
+  async resetPassword(data: ResetPasswordRequestDTO): Promise<void> {
     if (!supabase) {
       throw new Error('Supabase client not configured');
     }
 
-    // Validate new password
-    if (newPassword.length < 8) {
-      throw new ValidationError('Password must be at least 8 characters');
-    }
-
-    if (newPassword.length > 100) {
-      throw new ValidationError('Password must not exceed 100 characters');
-    }
+    const { token, newPassword } = data;
 
     // Set the session with the access token
     const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-      access_token: accessToken,
+      access_token: token,
       refresh_token: '', // Not needed for password reset
     });
 
