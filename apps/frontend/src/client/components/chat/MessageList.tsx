@@ -5,11 +5,12 @@ import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SparklesIcon, UserIcon, CalendarIcon, ClockIcon, MapPinIcon } from 'lucide-react';
 import { Message, MessageAction, BookingData } from './types';
+import { formatPrice } from '../../../utils/format';
 
 interface MessageListProps {
     messages: Message[];
     onAction?: (action: MessageAction) => void;
-    onBookSlot?: (slot: BookingData['slots'][0], serviceName: string) => void;
+    onBookSlot?: (slot: BookingData['slots'][0], serviceName: string, serviceId?: string) => void;
 }
 
 export function MessageList({ messages, onAction, onBookSlot }: MessageListProps) {
@@ -76,7 +77,11 @@ export function MessageList({ messages, onAction, onBookSlot }: MessageListProps
                                     <button
                                         key={i}
                                         onClick={() => onAction?.(action)}
-                                        className='px-3 py-1.5 text-xs font-medium bg-white border-2 border-pink-200 text-pink-600 rounded-full hover:bg-pink-50 hover:border-pink-300 transition-all'
+                                        className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+                                            action.type === 'confirm_booking'
+                                                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-md'
+                                                : 'bg-white border-2 border-pink-200 text-pink-600 hover:bg-pink-50 hover:border-pink-300'
+                                        }`}
                                     >
                                         {action.label}
                                     </button>
@@ -94,7 +99,13 @@ export function MessageList({ messages, onAction, onBookSlot }: MessageListProps
                                     {message.bookingData.slots.map((slot, i) => (
                                         <button
                                             key={i}
-                                            onClick={() => onBookSlot?.(slot, message.bookingData!.serviceName)}
+                                            onClick={() =>
+                                                onBookSlot?.(
+                                                    slot,
+                                                    message.bookingData!.serviceName,
+                                                    message.bookingData!.serviceId,
+                                                )
+                                            }
                                             className='w-full p-2 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-all text-left'
                                         >
                                             <div className='flex items-center justify-between'>
@@ -119,7 +130,7 @@ export function MessageList({ messages, onAction, onBookSlot }: MessageListProps
                                                     </div>
                                                 </div>
                                                 <p className='text-xs font-bold text-green-600 flex-shrink-0 ml-2'>
-                                                    ${slot.price}
+                                                    {formatPrice(slot.price)}
                                                 </p>
                                             </div>
                                         </button>

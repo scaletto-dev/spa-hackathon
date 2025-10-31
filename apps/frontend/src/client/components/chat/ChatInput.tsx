@@ -10,9 +10,16 @@ interface ChatInputProps {
     onClear?: () => void;
     placeholder?: string;
     disabled?: boolean;
+    hideOptions?: boolean;
 }
 
-export function ChatInput({ onSend, onClear, placeholder = 'Type your message...', disabled = false }: ChatInputProps) {
+export function ChatInput({
+    onSend,
+    onClear,
+    placeholder = 'Type your message...',
+    disabled = false,
+    hideOptions = false,
+}: ChatInputProps) {
     const [input, setInput] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,7 +36,7 @@ export function ChatInput({ onSend, onClear, placeholder = 'Type your message...
     return (
         <div className='p-3 border-t border-gray-200 bg-white'>
             <div className='flex gap-2'>
-                {onClear && (
+                {onClear && !hideOptions && (
                     <button
                         onClick={onClear}
                         className='w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-gray-300 transition-colors'

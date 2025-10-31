@@ -7,6 +7,17 @@
 import { useState, useEffect } from "react";
 import { loadGoogleScript } from "../utils/loadGoogleScript";
 
+/**
+ * Map backend role to frontend role
+ * Backend: ADMIN, SUPER_ADMIN, STAFF, MEMBER
+ * Frontend: admin, staff, client
+ */
+function mapRole(backendRole: string): 'admin' | 'client' | 'staff' {
+   if (backendRole === 'ADMIN' || backendRole === 'SUPER_ADMIN') return 'admin';
+   if (backendRole === 'STAFF') return 'staff';
+   return 'client';
+}
+
 interface User {
    id: string;
    name: string;
@@ -62,7 +73,7 @@ export function useAuth(): AuthState {
                   id: userData.id,
                   name: userData.fullName,
                   email: userData.email,
-                  role: userData.role === "ADMIN" ? "admin" : "client",
+                  role: mapRole(userData.role),
                   avatar: userData.avatar,
                };
                setAuthState({
@@ -124,7 +135,7 @@ export function useAuth(): AuthState {
             id: data.user.id,
             name: data.user.fullName,
             email: data.user.email,
-            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
+            role: mapRole(data.user.role),
             avatar: data.user.avatar,
         };
 
@@ -255,7 +266,7 @@ export function useAuth(): AuthState {
                             id: data.user.id,
                             name: data.user.fullName,
                             email: data.user.email,
-                            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
+                            role: mapRole(data.user.role),
                             avatar: data.user.avatar,
                         };
 
@@ -369,7 +380,7 @@ export function useAuth(): AuthState {
             id: data.user.id,
             name: data.user.fullName,
             email: data.user.email,
-            role: data.user.role === 'ADMIN' ? 'admin' : 'client',
+            role: mapRole(data.user.role),
             avatar: data.user.avatar,
         };
 
@@ -465,16 +476,14 @@ export function useAuth(): AuthState {
                      response.credential
                   );
 
-                  // Update auth state
-                  const user: User = {
-                     id: data.user.id,
-                     name: data.user.fullName,
-                     email: data.user.email,
-                     role: data.user.role === "ADMIN" ? "admin" : "client",
-                     avatar: data.user.avatar,
-                  };
-
-                  console.log("✅ Admin saved from backend:", user);
+               // Update auth state
+               const user: User = {
+                  id: data.user.id,
+                  name: data.user.fullName,
+                  email: data.user.email,
+                  role: mapRole(data.user.role),
+                  avatar: data.user.avatar,
+               };                  console.log("✅ Admin saved from backend:", user);
 
                   setAuthState({
                      isAuthenticated: true,

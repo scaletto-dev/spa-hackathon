@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, DownloadIcon, CalendarIcon } from 'lucide-react';
 import { BookingData } from '../booking/types';
+import { formatPrice } from '../../../utils/format';
 
 interface PaymentSuccessProps {
     bookingData: BookingData;
@@ -44,7 +45,7 @@ export function PaymentSuccess({ bookingData, total }: PaymentSuccessProps) {
                 <CheckCircleIcon className='w-14 h-14 text-white' />
             </motion.div>
             <h2 className='text-3xl font-bold text-gray-800 mb-2'>Payment Successful!</h2>
-            <p className='text-lg text-gray-600 mb-8'>Your payment of ${total.toFixed(2)} has been processed</p>
+            <p className='text-lg text-gray-600 mb-8'>Your payment of {formatPrice(total)} has been processed</p>
             <div className='max-w-md mx-auto space-y-4'>
                 <div className='p-4 bg-pink-50 rounded-2xl border border-pink-200 text-left'>
                     <p className='text-sm text-gray-700'>

@@ -58,9 +58,10 @@ export function RequireRole({ children, role }: PropsWithChildren<RequireRolePro
         return <Navigate to='/admin' replace />;
     }
 
-    if (role === 'staff' && user.role !== 'staff') {
-        console.log('❌ User is not staff, redirecting to home');
-        // Non-staff trying to access support dashboard -> redirect home
+    if (role === 'staff' && user.role !== 'staff' && user.role !== 'admin') {
+        console.log('❌ User is not staff or admin, redirecting to home');
+        // Non-staff and non-admin trying to access support dashboard -> redirect home
+        // Admin and staff can both access support dashboard
         return <Navigate to='/' replace />;
     }
 

@@ -3,6 +3,7 @@ import { CheckCircleIcon, XIcon, DownloadIcon, CalendarIcon, MapPinIcon } from '
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BookingData } from './types';
+import { formatPrice } from '../../../utils/format';
 
 interface QuickBookingConfirmationModalProps {
     bookingData: BookingData;
@@ -107,7 +108,7 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                         <div className='flex justify-between items-center'>
                             <span className='text-gray-600'>{t('bookings.totalPaid')}</span>
                             <span className='text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
-                                {bookingData.service?.price}
+                                {bookingData.service?.price ? formatPrice(bookingData.service.price) : ''}
                             </span>
                         </div>
                     </div>

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { CalendarIcon, ClockIcon, MapPinIcon, TagIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BookingData } from '../booking/types';
+import { formatPrice } from '../../../utils/format';
 
 interface OrderSummaryProps {
     bookingData: BookingData;
@@ -58,7 +59,7 @@ export function OrderSummary({ bookingData, subtotal, discount, tax, total, appl
             <div className='space-y-3 mb-6'>
                 <div className='flex justify-between text-gray-700'>
                     <span>{t('payment.subtotal')}</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>{formatPrice(subtotal)}</span>
                 </div>
                 {appliedPromo && (
                     <div className='flex justify-between text-green-600'>
@@ -68,12 +69,12 @@ export function OrderSummary({ bookingData, subtotal, discount, tax, total, appl
                                 {t('payment.discount')} ({appliedPromo})
                             </span>
                         </div>
-                        <span>-${discount.toFixed(2)}</span>
+                        <span>-{formatPrice(discount)}</span>
                     </div>
                 )}
                 <div className='flex justify-between text-gray-700'>
                     <span>{t('payment.tax')}</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>{formatPrice(tax)}</span>
                 </div>
             </div>
             {/* Total */}
@@ -81,7 +82,7 @@ export function OrderSummary({ bookingData, subtotal, discount, tax, total, appl
                 <div className='flex justify-between items-center'>
                     <span className='text-lg font-semibold text-gray-800'>{t('payment.total')}</span>
                     <span className='text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
-                        ${total.toFixed(2)}
+                        {formatPrice(total)}
                     </span>
                 </div>
             </div>
