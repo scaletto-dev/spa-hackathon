@@ -1,10 +1,10 @@
-# ��� Beauty Clinic Care - Documentation
+# ��� Beauty Clinic Care - Documentation
 
-**Hackathon EES AI 2025** | **Team: Scaletto Dev** | **Submission Date: October 31, 2025**
+**Hackathon EES AI 2025** | **Team: 2003** | **Submission Date: October 31, 2025**
 
 ---
 
-## ��� Quick Start for Judges
+## ��� Quick Start for Judges
 
 ### 1️⃣ **[00-START-HERE/](./00-START-HERE/)** ⭐ **BẮT ĐẦU TẠI ĐÂY**
 
@@ -25,7 +25,7 @@ Thông tin chi tiết về sản phẩm và kiến trúc:
 - **[prd/](./01-FOR-JUDGES/prd/)** - Chi tiết các epics và requirements
 - **[architecture/](./01-FOR-JUDGES/architecture/)** - Technical architecture specs
 
-### 3️⃣ **[02-TECHNICAL-SPECS/](./02-TECHNICAL-SPECS/)** ��� **KỸ THUẬT CHI TIẾT**
+### 3️⃣ **[02-TECHNICAL-SPECS/](./02-TECHNICAL-SPECS/)** ��� **KỸ THUẬT CHI TIẾT**
 
 Tài liệu kỹ thuật cho developers:
 
@@ -38,7 +38,7 @@ Tài liệu kỹ thuật cho developers:
   - **[openapi.yml](./02-TECHNICAL-SPECS/api-spec/openapi.yml)** - OpenAPI 3.1 spec
 - **[FRONTEND_STRUCTURE.md](./02-TECHNICAL-SPECS/FRONTEND_STRUCTURE.md)** - Frontend code structure
 
-### 4️⃣ **[03-DEVELOPMENT-DOCS/](./03-DEVELOPMENT-DOCS/)** ���‍��� **TÀI LIỆU PHÁT TRIỂN**
+### 4️⃣ **[03-DEVELOPMENT-DOCS/](./03-DEVELOPMENT-DOCS/)** ���‍��� **TÀI LIỆU PHÁT TRIỂN**
 
 Internal documentation và AI features:
 
@@ -50,7 +50,7 @@ Internal documentation và AI features:
 
 ---
 
-## ��� Evaluation Path (Đề xuất)
+## ��� Evaluation Path (Đề xuất)
 
 **Thời gian: 15-20 phút**
 
@@ -76,7 +76,7 @@ Internal documentation và AI features:
 
 ---
 
-## ��� Project Statistics
+## ��� Project Statistics
 
 | Metric | Count |
 |--------|-------|
@@ -89,7 +89,7 @@ Internal documentation và AI features:
 
 ---
 
-## ��� Key Features
+## ��� Key Features
 
 - ✅ **6-Step Booking Flow** - Intuitive service booking
 - ✅ **Payment Integration** - VNPay sandbox
@@ -102,7 +102,7 @@ Internal documentation và AI features:
 
 ---
 
-## ��� Support
+## ��� Support
 
 **Team:** Scaletto Dev  
 **GitHub:** https://github.com/scaletto-dev/spa-hackathon  

@@ -1,0 +1,14 @@
+# Environment files with sensitive data
+*.env
+.env
+.env.*
+!.env.example
+
+# Vercel configuration with credentials
+vercel.json
+vercel-api.json
+vercel.backend.json
+
+# Keep example files
+!*.example.json
+!.env.example

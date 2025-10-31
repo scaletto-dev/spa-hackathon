@@ -1,0 +1,76 @@
+# ==========================================
+# Stage 1: Builder
+# ==========================================
+FROM node:20-alpine AS builder
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
+WORKDIR /app
+
+# Copy workspace files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/backend/package.json ./apps/backend/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy backend source
+COPY apps/backend ./apps/backend
+
+# Generate Prisma Client
+WORKDIR /app/apps/backend
+RUN npx prisma generate
+
+# Build TypeScript
+RUN pnpm run build
+
+# ==========================================
+# Stage 2: Production Runtime
+# ==========================================
+FROM node:20-alpine AS runtime
+
+# Install production dependencies only
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init curl
+
+WORKDIR /app
+
+# Copy workspace files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/backend/package.json ./apps/backend/
+
+# Install production dependencies
+RUN pnpm install --prod --frozen-lockfile
+
+# Copy built application
+COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder /app/apps/backend/src/prisma ./apps/backend/src/prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
+# Copy templates (for email, etc.)
+COPY apps/backend/src/templates ./apps/backend/src/templates
+
+WORKDIR /app/apps/backend
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 && \
+    chown -R nodejs:nodejs /app
+
+USER nodejs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start application
+CMD ["node", "-r", "tsconfig-paths/register", "dist/server.js"]

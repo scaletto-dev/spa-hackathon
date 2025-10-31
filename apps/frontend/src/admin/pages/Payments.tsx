@@ -117,10 +117,10 @@ export function Payments() {
          },
       };
       const badge = badges[status as keyof typeof badges] || badges["PENDING"];
-      const Icon = badge.icon;
+      const Icon = badge?.icon || ClockIcon;
       return (
          <span
-            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${badge.bg} ${badge.text}`}>
+            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${badge?.bg || 'bg-yellow-100'} ${badge?.text || 'text-yellow-700'}`}>
             <Icon className="w-3 h-3" />
             {status}
          </span>

@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # Backend API Service
+  # ==========================================
+  backend:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile.backend
+    image: spa-backend:latest
+    container_name: spa-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - backend.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - spa-network
+    depends_on:
+      - postgres
+    labels:
+      - "com.spa-hackathon.service=backend"
+      - "com.spa-hackathon.version=1.0.0"
+
+  # ==========================================
+  # Frontend Service
+  # ==========================================
+  frontend:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile.frontend
+    image: spa-frontend:latest
+    container_name: spa-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - spa-network
+    depends_on:
+      - backend
+    labels:
+      - "com.spa-hackathon.service=frontend"
+      - "com.spa-hackathon.version=1.0.0"
+
+  # ==========================================
+  # PostgreSQL Database (Development)
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: spa-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=spa_user
+      - POSTGRES_PASSWORD=spa_password
+      - POSTGRES_DB=spa_hackathon
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spa_user -d spa_hackathon"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - spa-network
+    labels:
+      - "com.spa-hackathon.service=database"
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  spa-network:
+    driver: bridge
+    name: spa-network
+
+# ==========================================
+# Volumes
+# ==========================================
+volumes:
+  postgres_data:
+    name: spa-postgres-data

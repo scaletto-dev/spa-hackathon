@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "name": "spa-hackathon-backend",
+  "framework": null,
+  "buildCommand": "cd apps/backend && npm run build",
+  "outputDirectory": "apps/backend/dist",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev -w @spa-hackathon/backend",
+  "regions": ["sin1"],
+  "env": {
+    "NODE_ENV": "production",
+    "DATABASE_URL": "@database_url",
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
+    "SUPABASE_JWT_SECRET": "@supabase_jwt_secret",
+    "GEMINI_API_KEY": "@gemini_api_key",
+    "RESEND_API_KEY": "@resend_api_key",
+    "FROM_EMAIL": "@from_email",
+    "VNPAY_TMN_CODE": "@vnpay_tmn_code",
+    "VNPAY_HASH_SECRET": "@vnpay_hash_secret",
+    "VNPAY_URL": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
+    "VNPAY_RETURN_URL": "@vnpay_return_url",
+    "CORS_ORIGIN": "@cors_origin"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "functions": {
+    "apps/backend/dist/**/*.js": {
+      "runtime": "nodejs20.x",
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/apps/backend/dist/server.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+        }
+      ]
+    }
+  ]
+}
