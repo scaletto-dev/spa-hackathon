@@ -85,6 +85,11 @@
         "paymentSubtitle": "Choose how you want to pay",
         "confirmTitle": "Confirm Booking",
         "confirmSubtitle": "Review your appointment details",
+        "chatPreFilled": "✅ Information has been pre-filled from chat! Please review and complete booking.",
+        "aiSuggested": "✨ AI has chosen the best time for you!",
+        "homeWidgetPreFilled": "✨ Information has been pre-filled!",
+        "aiAnalyzing": "✨ AI is analyzing to suggest the best date and time for you!",
+        "servicePreSelected": "✅ Service has been pre-selected! Please continue with branch selection.",
         "name": "Full Name",
         "email": "Email",
         "phone": "Phone Number",
@@ -103,6 +108,9 @@
         "letAIChoose": "Let AI choose the best time for me",
         "aiRecommendationDesc": "Based on your service type, provider availability, and optimal healing conditions, we recommend:",
         "optimalConditions": "This time has been selected based on optimal conditions for your treatment.",
+        "aiAnalyzingSlots": "AI is analyzing optimal time slots...",
+        "aiSuggestionTitle": "AI Suggestions (by priority)",
+        "bestChoice": "Best Choice",
         "chooseDateTime": "Choose when you'd like to visit {{branch}} for your {{service}}",
         "yourInformation": "Your Information",
         "provideContactInfo": "Please provide contact information to complete booking",
@@ -161,7 +169,17 @@
         "dateTimeLabel": "Date & Time",
         "totalPaid": "Total Paid",
         "receipt": "Receipt",
-        "addToCalendar": "Add to Calendar"
+        "addToCalendar": "Add to Calendar",
+        "letAIChooseSlot": "Let AI choose the best available slot for me",
+        "noServiceSelected": "No service selected",
+        "processing": "Processing...",
+        "bookNowAction": "Book Now",
+        "switchToFullBooking": "Switch to Full Booking Mode",
+        "quickBookingNote": "Complete your appointment in seconds with AI assistance",
+        "fastestMethod": "Fastest method",
+        "vnpayOnlinePayment": "VNPay online payment",
+        "payAtClinicDescription": "You can pay with cash or card when you arrive for your appointment.",
+        "havePromoCode": "Have a promo code?"
     },
     "profile": {
         "title": "Profile Management",
@@ -334,7 +352,9 @@
         "apply": "Apply",
         "reset": "Reset",
         "more": "More",
-        "less": "Less"
+        "less": "Less",
+        "actions": "Actions",
+        "viewDetails": "View Details"
     },
     "toast": {
         "profileUpdated": "Profile updated successfully!",
@@ -476,7 +496,8 @@
         "signOut": "Sign Out",
         "myAccount": "My Account",
         "adminDashboard": "Admin Dashboard",
-        "clientDashboard": "Client Dashboard"
+        "clientDashboard": "Client Dashboard",
+        "supportDashboard": "Support Dashboard"
     },
     "home": {
         "hero": {
@@ -511,6 +532,12 @@
             "confirmBooking": "Confirm Booking",
             "fillAllFields": "Please fill in all fields",
             "redirecting": "Redirecting to booking page...",
+            "selectServiceError": "Please select a service",
+            "selectBranchForAI": "Please select a branch for AI to suggest the best date and time",
+            "aiWillSuggest": "Redirecting to booking page, AI will suggest the best date and time for you...",
+            "aiWillSuggestShort": "AI will suggest",
+            "aiHintTitle": "🎯 AI will automatically suggest the best date and time",
+            "aiHintDesc": "Based on branch availability and service priority, AI will choose the optimal time for you.",
             "services": {
                 "facial": "Facial Treatments",
                 "laser": "Laser Hair Removal",

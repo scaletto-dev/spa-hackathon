@@ -15,6 +15,7 @@ const ServicesPage = lazy(() => import('../client/pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('../client/pages/ServiceDetailPage'));
 const ReviewsPage = lazy(() => import('../client/pages/ReviewsPage'));
 const BookingPage = lazy(() => import('../client/pages/BookingPage'));
+const BookingDetail = lazy(() => import('../client/pages/BookingDetail'));
 const PaymentResult = lazy(() => import('../client/pages/PaymentResult'));
 const BranchesPage = lazy(() => import('../client/pages/BranchesPage'));
 const BlogPage = lazy(() => import('../client/pages/BlogPage'));
@@ -114,6 +115,14 @@ export const routes: RouteObject[] = [
                 element: (
                     <Suspense fallback={<Pending />}>
                         <BookingPage />
+                    </Suspense>
+                ),
+            },
+            {
+                path: 'booking/detail',
+                element: (
+                    <Suspense fallback={<Pending />}>
+                        <BookingDetail />
                     </Suspense>
                 ),
             },

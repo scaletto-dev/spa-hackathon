@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { BookingStepProps } from './types';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
 } from 'lucide-react';
+import { AITimeSlotSelector } from './AITimeSlotSelector';
 
 // Generate time slots dynamically
 const generateTimeSlots = (): string[] => {
@@ -109,27 +110,25 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
     const handleUseAI = (value: boolean) => {
         setUseAI(value);
         updateBookingData({ useAI: value });
-        // If AI is selected, automatically pick a time (just for demo)
-        if (value) {
-            const allSlots = generateTimeSlots();
-            const randomIndex = Math.floor(Math.random() * allSlots.length);
-            const aiRecommendedTime = allSlots[randomIndex] ?? allSlots[0] ?? '9:00 AM';
-            setSelectedTime(aiRecommendedTime);
+        // When AI is enabled, AITimeSlotSelector will handle the time selection
+        // Set a default date if none selected (tomorrow)
+        if (value && !selectedDate) {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateString = formatLocalDate(tomorrow);
+            setSelectedDate(dateString);
             updateBookingData({
-                time: aiRecommendedTime,
+                date: dateString,
             });
-            // If no date is selected, pick tomorrow's date
-            if (!selectedDate) {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const dateString = formatLocalDate(tomorrow);
-                setSelectedDate(dateString);
-                updateBookingData({
-                    date: dateString,
-                });
-            }
         }
     };
+
+    // Auto-enable AI mode if useAI flag is passed from parent
+    useEffect(() => {
+        if (bookingData.useAI && !useAI) {
+            setUseAI(true);
+        }
+    }, [bookingData.useAI, useAI]);
 
     const renderCalendar = () => {
         const days = [];
@@ -205,7 +204,7 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
             }}
         >
             <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.pickDateTime')}</h2>
+                <h2 className='text-2xl font-bold text-gray-800 mb-4'>{t('bookings.steps.pickDateTime')}</h2>
                 <p className='text-gray-600'>
                     {t('bookings.chooseDateTime', {
                         branch: bookingData.branch?.name,
@@ -294,38 +293,28 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                         </div>
                     </>
                 )}
-                {useAI && (
-                    <div className='bg-pink-50 rounded-2xl p-6 border border-pink-200'>
-                        <div className='flex items-start gap-4'>
-                            <div className='w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center'>
-                                <SparklesIcon className='w-6 h-6 text-white' />
-                            </div>
-                            <div>
-                                <h3 className='text-lg font-semibold text-gray-800 mb-2'>
-                                    {t('bookings.aiRecommendation')}
-                                </h3>
-                                <p className='text-gray-600 mb-3'>{t('bookings.aiRecommendationDesc')}</p>
-                                <div className='flex flex-wrap gap-3 mb-2'>
-                                    <div className='bg-white rounded-xl px-4 py-2 border border-pink-200 flex items-center gap-2'>
-                                        <CalendarIcon className='w-4 h-4 text-pink-500' />
-                                        <span className='font-medium'>
-                                            {selectedDate
-                                                ? new Date(selectedDate).toLocaleDateString('en-US', {
-                                                      weekday: 'short',
-                                                      month: 'short',
-                                                      day: 'numeric',
-                                                  })
-                                                : 'Loading...'}
-                                        </span>
-                                    </div>
-                                    <div className='bg-white rounded-xl px-4 py-2 border border-pink-200 flex items-center gap-2'>
-                                        <ClockIcon className='w-4 h-4 text-pink-500' />
-                                        <span className='font-medium'>{selectedTime || 'Loading...'}</span>
-                                    </div>
-                                </div>
-                                <p className='text-sm text-gray-500 italic'>{t('bookings.optimalConditions')}</p>
-                            </div>
-                        </div>
+                {useAI && bookingData.branch && (
+                    <div className='mt-4'>
+                        <AITimeSlotSelector
+                            date={selectedDate || new Date(Date.now() + 86400000).toISOString().split('T')[0] || ''}
+                            branchId={bookingData.branch.id.toString()}
+                            {...(bookingData.serviceIds && { serviceIds: bookingData.serviceIds.map(String) })}
+                            onTimeSlotSelected={(time) => {
+                                setSelectedTime(time);
+                                // Ensure date is also set when AI selects time
+                                const dateToUse =
+                                    selectedDate || new Date(Date.now() + 86400000).toISOString().split('T')[0] || '';
+                                if (!selectedDate && dateToUse) {
+                                    setSelectedDate(dateToUse);
+                                }
+                                updateBookingData({
+                                    time,
+                                    date: dateToUse,
+                                });
+                            }}
+                            {...(selectedTime && { currentTimeSlot: selectedTime })}
+                            autoEnable={true}
+                        />
                     </div>
                 )}
             </div>
@@ -351,9 +340,9 @@ export function BookingDateTimeSelect({ bookingData, updateBookingData, onNext, 
                         scale: 0.95,
                     }}
                     onClick={onNext}
-                    disabled={!(selectedDate && selectedTime) && !useAI}
+                    disabled={!(selectedDate && selectedTime)}
                     className={`flex items-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
-                        (selectedDate && selectedTime) || useAI
+                        selectedDate && selectedTime
                             ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
                             : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}

@@ -87,6 +87,9 @@
         "confirmSubtitle": "Xem lại chi tiết cuộc hẹn của bạn",
         "chatPreFilled": "✅ Thông tin đã được điền sẵn từ chat! Vui lòng kiểm tra và hoàn tất đặt lịch.",
         "aiSuggested": "✨ AI đã chọn thời gian tốt nhất cho bạn!",
+        "homeWidgetPreFilled": "✨ Thông tin đã được điền sẵn!",
+        "aiAnalyzing": "✨ AI đang phân tích để gợi ý ngày và giờ tốt nhất cho bạn!",
+        "servicePreSelected": "✅ Dịch vụ đã được chọn sẵn! Vui lòng tiếp tục chọn chi nhánh.",
         "name": "Họ và tên",
         "email": "Email",
         "phone": "Số điện thoại",
@@ -105,6 +108,9 @@
         "letAIChoose": "Để AI chọn thời gian tốt nhất cho tôi",
         "aiRecommendationDesc": "Dựa trên loại dịch vụ, lịch trình của nhà cung cấp và điều kiện chữa lành tối ưu, chúng tôi khuyến nghị:",
         "optimalConditions": "Thời gian này đã được chọn dựa trên điều kiện tối ưu cho liệu trình của bạn.",
+        "aiAnalyzingSlots": "AI đang phân tích khung giờ tối ưu...",
+        "aiSuggestionTitle": "Gợi ý từ AI (theo thứ tự ưu tiên)",
+        "bestChoice": "Tốt nhất",
         "chooseDateTime": "Chọn thời điểm bạn muốn đến {{branch}} cho dịch vụ {{service}}",
         "yourInformation": "Thông tin của bạn",
         "provideContactInfo": "Vui lòng cung cấp thông tin liên hệ để hoàn tất đặt lịch",
@@ -163,7 +169,17 @@
         "dateTimeLabel": "Ngày & Giờ",
         "totalPaid": "Tổng thanh toán",
         "receipt": "Biên lai",
-        "addToCalendar": "Thêm vào lịch"
+        "addToCalendar": "Thêm vào lịch",
+        "letAIChooseSlot": "Để AI chọn khung giờ tốt nhất cho tôi",
+        "noServiceSelected": "Chưa chọn dịch vụ",
+        "processing": "Đang xử lý...",
+        "bookNowAction": "Đặt lịch ngay",
+        "switchToFullBooking": "Chuyển sang chế độ đặt lịch đầy đủ",
+        "quickBookingNote": "Hoàn tất cuộc hẹn trong vài giây với sự trợ giúp của AI",
+        "fastestMethod": "Phương thức nhanh nhất",
+        "vnpayOnlinePayment": "Thanh toán trực tuyến VNPay",
+        "payAtClinicDescription": "Bạn có thể thanh toán bằng tiền mặt hoặc thẻ khi đến phòng khám.",
+        "havePromoCode": "Có mã khuyến mãi?"
     },
     "profile": {
         "title": "Quản lý hồ sơ",
@@ -336,7 +352,9 @@
         "apply": "Áp dụng",
         "reset": "Đặt lại",
         "more": "Thêm",
-        "less": "Ít hơn"
+        "less": "Ít hơn",
+        "actions": "Hành động",
+        "viewDetails": "Xem chi tiết"
     },
     "toast": {
         "profileUpdated": "Hồ sơ đã được cập nhật thành công!",
@@ -478,7 +496,8 @@
         "signOut": "Đăng xuất",
         "myAccount": "Tài khoản của tôi",
         "adminDashboard": "Bảng điều khiển Admin",
-        "clientDashboard": "Bảng điều khiển Khách hàng"
+        "clientDashboard": "Bảng điều khiển Khách hàng",
+        "supportDashboard": "Hỗ trợ khách hàng"
     },
     "home": {
         "hero": {
@@ -513,6 +532,12 @@
             "confirmBooking": "Xác nhận đặt lịch",
             "fillAllFields": "Vui lòng điền đầy đủ thông tin",
             "redirecting": "Đang chuyển đến trang đặt lịch...",
+            "selectServiceError": "Vui lòng chọn dịch vụ",
+            "selectBranchForAI": "Vui lòng chọn chi nhánh để AI gợi ý ngày và giờ tốt nhất",
+            "aiWillSuggest": "Đang chuyển đến trang đặt lịch, AI sẽ gợi ý ngày và giờ tốt nhất cho bạn...",
+            "aiWillSuggestShort": "AI sẽ gợi ý",
+            "aiHintTitle": "🎯 AI sẽ tự động gợi ý ngày và giờ tốt nhất",
+            "aiHintDesc": "Dựa trên lịch rảnh của chi nhánh và độ ưu tiên của dịch vụ, AI sẽ chọn thời gian tối ưu nhất cho bạn.",
             "services": {
                 "facial": "Chăm sóc da mặt",
                 "laser": "Triệt lông Laser",

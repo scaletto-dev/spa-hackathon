@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SparklesIcon, MenuIcon, XIcon, LogOutIcon, LayoutDashboardIcon, UserIcon } from 'lucide-react';
+import { SparklesIcon, MenuIcon, XIcon, LogOutIcon, LayoutDashboardIcon, UserIcon, HeadphonesIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../auth/useAuth';
 import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
@@ -183,6 +183,19 @@ export function Navbar() {
                                             >
                                                 <LayoutDashboardIcon className='w-4 h-4' />
                                                 <span className='text-sm'>{t('nav.clientDashboard')}</span>
+                                            </button>
+                                        )}
+
+                                        {(user?.role === 'admin' || user?.role === 'staff') && (
+                                            <button
+                                                onClick={() => {
+                                                    setIsUserMenuOpen(false);
+                                                    navigate('/support-dashboard');
+                                                }}
+                                                className='w-full flex items-center gap-3 px-4 py-2.5 text-left text-gray-700 hover:bg-pink-50 transition-colors'
+                                            >
+                                                <HeadphonesIcon className='w-4 h-4' />
+                                                <span className='text-sm'>{t('nav.supportDashboard')}</span>
                                             </button>
                                         )}
 

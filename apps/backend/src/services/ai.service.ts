@@ -930,44 +930,79 @@ Important guidelines:
             if (forceLanguage) {
                 language = forceLanguage;
             } else {
-                const isVietnamese = conversation.messages.some((msg) =>
-                    /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(msg.content),
-                );
+                // Enhanced language detection - check customer messages (not support messages)
+                const customerMessages = conversation.messages.filter((msg) => msg.sender === 'CUSTOMER');
+                const recentCustomerText = customerMessages
+                    .slice(-3) // Last 3 customer messages
+                    .map((msg) => msg.content)
+                    .join(' ');
+
+                // Vietnamese detection - check for Vietnamese diacritics and common Vietnamese words
+                const vietnamesePattern =
+                    /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]|(?:xin chào|cảm ơn|cho tôi|giúp tôi|muốn|được|không|thế nào|bao nhiêu)/i;
+                const isVietnamese = vietnamesePattern.test(recentCustomerText);
+
                 language = isVietnamese ? 'Vietnamese' : 'English';
+                logger.info(`Detected language: ${language} from customer messages`);
             }
+
+            // Determine if we should respond in Vietnamese or English
+            const shouldRespondInVietnamese = language.toLowerCase().includes('viet');
+            const languageInstruction = shouldRespondInVietnamese ? 'TIẾNG VIỆT (Vietnamese)' : 'ENGLISH';
 
             const prompt = `You are a professional customer support assistant for a spa and beauty services business.
 
-CRITICAL: You MUST respond in ${language} language ONLY. All suggestions must be in ${language}.
+🚨 CRITICAL LANGUAGE REQUIREMENT 🚨
+- Customer is speaking in: ${language}
+- You MUST reply ONLY in ${languageInstruction}
+- Do NOT mix languages
+- Do NOT use English if customer used Vietnamese
+- Do NOT use Vietnamese if customer used English
+${shouldRespondInVietnamese ? '- Trả lời HOÀN TOÀN bằng TIẾNG VIỆT' : '- Reply ENTIRELY in ENGLISH'}
 
-Analyze this customer conversation and provide 3 helpful, professional reply suggestions:
+Customer Information:
+- Name: ${conversation.customerName}
+- Email: ${conversation.customerEmail || 'N/A'}
 
-Customer: ${conversation.customerName}
-Email: ${conversation.customerEmail || 'N/A'}
-
-Recent conversation:
+Recent Conversation History:
 ${messageHistory}
 
-Based on the context above, suggest 3 different professional replies IN ${language} that:
-1. Address the customer's most recent message or question
-2. Are helpful, empathetic, and solution-oriented
-3. Match a professional spa/beauty service tone
-4. Include relevant information about services, booking, pricing when applicable
-5. MUST be written entirely in ${language} language
+Task: Generate 3 professional reply suggestions that:
+1. Address the customer's most recent message directly
+2. Are empathetic, helpful, and solution-oriented
+3. Match professional spa/beauty service communication style
+4. Include relevant booking/service/pricing information when needed
+5. Are written ENTIRELY in ${languageInstruction} - no exceptions!
 
-Return ONLY a valid JSON array with this exact format (no markdown, no code blocks):
+${
+    shouldRespondInVietnamese
+        ? `
+VÍ DỤ định dạng phản hồi TIẾNG VIỆT:
+- "Chào bạn! Cảm ơn bạn đã liên hệ..."
+- "Xin chào! Tôi rất vui được hỗ trợ bạn..."
+- "Kính chào quý khách! Chúng tôi xin gửi thông tin..."
+`
+        : `
+EXAMPLE response format in ENGLISH:
+- "Hello! Thank you for reaching out..."
+- "Hi there! I'd be happy to help you with..."
+- "Dear customer! Here's the information you requested..."
+`
+}
+
+Return ONLY valid JSON (no markdown, no code blocks):
 [
   {
-    "content": "Your first suggested reply here IN ${language}",
-    "reasoning": "Why this reply is appropriate IN ${language}"
+    "content": "${shouldRespondInVietnamese ? 'Nội dung phản hồi tiếng Việt ở đây' : 'Reply content in English here'}",
+    "reasoning": "${shouldRespondInVietnamese ? 'Lý do bằng tiếng Việt' : 'Reasoning in English'}"
   },
   {
-    "content": "Your second suggested reply here IN ${language}",
-    "reasoning": "Why this reply is appropriate IN ${language}"
+    "content": "${shouldRespondInVietnamese ? 'Phản hồi thứ hai tiếng Việt' : 'Second reply in English'}",
+    "reasoning": "${shouldRespondInVietnamese ? 'Lý do thứ hai' : 'Second reasoning'}"
   },
   {
-    "content": "Your third suggested reply here IN ${language}",
-    "reasoning": "Why this reply is appropriate IN ${language}"
+    "content": "${shouldRespondInVietnamese ? 'Phản hồi thứ ba tiếng Việt' : 'Third reply in English'}",
+    "reasoning": "${shouldRespondInVietnamese ? 'Lý do thứ ba' : 'Third reasoning'}"
   }
 ]`;
 
