@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
-import { StarIcon, ThumbsUpIcon, MessageSquareIcon, TrendingUpIcon, FilterIcon } from 'lucide-react';
-import { ReviewReplyModal } from '../components/modals/ReviewReplyModal';
-import { Toast } from '../components/Toast';
-import { SentimentDashboard } from '../components/ai';
-import { adminReviewsAPI } from '../../api/adapters/admin';
-import { useAdminList } from '../../hooks/useAdmin';
+import { useState } from "react";
+import {
+   StarIcon,
+   ThumbsUpIcon,
+   MessageSquareIcon,
+   TrendingUpIcon,
+   FilterIcon,
+} from "lucide-react";
+import { ReviewReplyModal } from "../components/modals/ReviewReplyModal";
+import { Toast } from "../components/Toast";
+import { adminReviewsAPI } from "../../api/adapters/admin";
+import { useAdminList } from "../../hooks/useAdmin";
 
 export function Reviews() {
     const [selectedReview, setSelectedReview] = useState<string | null>(null);
@@ -16,22 +21,22 @@ export function Reviews() {
         type: 'success' | 'error' | 'warning';
     } | null>(null);
 
-    const { data: reviews = [], loading, fetch } = useAdminList(adminReviewsAPI.getAll);
+   const {
+      data: reviews = [],
+      loading,
+      fetch,
+      page,
+      limit,
+      total,
+      goToPage,
+      setPageSize,
+   } = useAdminList(adminReviewsAPI.getAll);
 
-    useEffect(() => {
-        let isMounted = true;
-
-        console.log('Reviews - Fetching data...');
-        fetch().then(() => {
-            if (isMounted) {
-                console.log('Reviews - Data fetched:', reviews);
-            }
-        });
-
-        return () => {
-            isMounted = false;
-        };
-    }, [fetch]);
+   const handleReplySuccess = () => {
+      setSelectedReview(null);
+      setToast({ message: "Reply added successfully!", type: "success" });
+      fetch();
+   };
 
     const handleReplySuccess = () => {
         setSelectedReview(null);
@@ -242,95 +247,118 @@ export function Reviews() {
                                     <div className='w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white font-semibold'>
                                         {review.customerName?.charAt(0) || review.avatar || '?'}
                                     </div>
-                                    <div className='flex-1'>
-                                        <div className='flex items-start justify-between mb-2'>
-                                            <div>
-                                                <h4 className='font-semibold text-gray-800'>
-                                                    {review.customerName || 'Guest'}
-                                                </h4>
-                                                <p className='text-xs text-gray-500'>
-                                                    {new Date(review.createdAt).toLocaleDateString()} •{' '}
-                                                    {review.service?.name || 'Service'}
-                                                </p>
-                                            </div>
-                                            <div className='flex items-center gap-2'>
-                                                <span
-                                                    className={`text-xs px-2 py-1 rounded-full ${getSentimentColor(
-                                                        review.rating,
-                                                    )}`}
-                                                >
-                                                    {getSentimentText(review.rating)}
-                                                </span>
-                                                <div className='flex items-center gap-1'>
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <StarIcon
-                                                            key={i}
-                                                            className={`w-4 h-4 ${
-                                                                i < review.rating
-                                                                    ? 'text-yellow-400 fill-yellow-400'
-                                                                    : 'text-gray-300'
-                                                            }`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p className='text-sm text-gray-700 mb-3'>{review.reviewText}</p>
-                                        {review.adminResponse && (
-                                            <div className='bg-blue-50 rounded-lg p-3 mb-3 border border-blue-200'>
-                                                <p className='text-xs text-blue-600 font-semibold mb-1'>
-                                                    Admin Response:
-                                                </p>
-                                                <p className='text-sm text-blue-700'>{review.adminResponse}</p>
-                                            </div>
-                                        )}
-                                        <div className='flex items-center gap-2'>
-                                            {review.adminResponse ? (
-                                                <span className='text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full flex items-center gap-1'>
-                                                    <MessageSquareIcon className='w-3 h-3' />
-                                                    Replied
-                                                </span>
-                                            ) : (
-                                                <button
-                                                    onClick={() => setSelectedReview(review.id)}
-                                                    className='text-xs text-pink-600 bg-pink-50 px-3 py-1 rounded-full hover:bg-pink-100 transition-colors flex items-center gap-1'
-                                                >
-                                                    <MessageSquareIcon className='w-3 h-3' />
-                                                    Reply
-                                                </button>
-                                            )}
-                                            {!review.approved && (
-                                                <>
-                                                    <button
-                                                        onClick={() => handleApprove(review.id)}
-                                                        className='text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full hover:bg-green-100 transition-colors'
-                                                    >
-                                                        Approve
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleReject(review.id)}
-                                                        className='text-xs text-red-600 bg-red-50 px-3 py-1 rounded-full hover:bg-red-100 transition-colors'
-                                                    >
-                                                        Reject
-                                                    </button>
-                                                </>
-                                            )}
-                                            <button
-                                                onClick={() =>
-                                                    handleDeleteReview(review.id, review.customerName || 'Guest')
-                                                }
-                                                className='text-xs text-red-600 bg-red-50 px-3 py-1 rounded-full hover:bg-red-100 transition-colors'
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                                 </div>
+                              </div>
+                              <p className="text-sm text-gray-700 mb-3">
+                                 {review.reviewText}
+                              </p>
+                              {review.adminResponse && (
+                                 <div className="bg-blue-50 rounded-lg p-3 mb-3 border border-blue-200">
+                                    <p className="text-xs text-blue-600 font-semibold mb-1">
+                                       Admin Response:
+                                    </p>
+                                    <p className="text-sm text-blue-700">
+                                       {review.adminResponse}
+                                    </p>
+                                 </div>
+                              )}
+                              <div className="flex items-center gap-2">
+                                 {review.adminResponse ? (
+                                    <span className="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full flex items-center gap-1">
+                                       <MessageSquareIcon className="w-3 h-3" />
+                                       Replied
+                                    </span>
+                                 ) : (
+                                    <button
+                                       onClick={() =>
+                                          setSelectedReview(review.id)
+                                       }
+                                       className="text-xs text-pink-600 bg-pink-50 px-3 py-1 rounded-full hover:bg-pink-100 transition-colors flex items-center gap-1">
+                                       <MessageSquareIcon className="w-3 h-3" />
+                                       Reply
+                                    </button>
+                                 )}
+                                 {!review.approved && (
+                                    <>
+                                       <button
+                                          onClick={() =>
+                                             handleApprove(review.id)
+                                          }
+                                          className="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full hover:bg-green-100 transition-colors">
+                                          Approve
+                                       </button>
+                                       <button
+                                          onClick={() =>
+                                             handleReject(review.id)
+                                          }
+                                          className="text-xs text-red-600 bg-red-50 px-3 py-1 rounded-full hover:bg-red-100 transition-colors">
+                                          Reject
+                                       </button>
+                                    </>
+                                 )}
+                                 <button
+                                    onClick={() =>
+                                       handleDeleteReview(
+                                          review.id,
+                                          review.customerName || "Guest"
+                                       )
+                                    }
+                                    className="text-xs text-red-600 bg-red-50 px-3 py-1 rounded-full hover:bg-red-100 transition-colors">
+                                    Delete
+                                 </button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            )}
+
+            {/* Pagination */}
+            {!loading && reviews.length > 0 && (
+               <div className="flex items-center justify-between p-4 border-t border-pink-100 bg-pink-50/30">
+                  <div className="flex items-center gap-2">
+                     <span className="text-sm text-gray-700">Items per page:</span>
+                     <select
+                        value={limit}
+                        onChange={(e) => setPageSize(Number(e.target.value))}
+                        className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                     >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                     </select>
+                  </div>
+
+                  <div className="flex flex-1 items-center justify-center gap-4">
+                     <button
+                        onClick={() => goToPage(page - 1)}
+                        disabled={page === 1}
+                        className="px-4 py-2 rounded-lg border border-gray-300 hover:border-pink-500 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                     >
+                        Previous
+                     </button>
+
+                     <div className="text-sm text-gray-600 min-w-max">
+                        Page <span className="font-semibold">{page}</span> of <span className="font-semibold">{Math.ceil(total / limit)}</span>
+                     </div>
+
+                     <button
+                        onClick={() => goToPage(page + 1)}
+                        disabled={page >= Math.ceil(total / limit)}
+                        className="px-4 py-2 rounded-lg border border-gray-300 hover:border-pink-500 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                     >
+                        Next
+                     </button>
+                  </div>
+
+                  <div className="text-sm text-gray-500">
+                     {((page - 1) * limit) + 1} - {Math.min(page * limit, total)} of {total}
+                  </div>
+               </div>
+            )}
+         </div>
 
             <ReviewReplyModal
                 isOpen={!!selectedReview}

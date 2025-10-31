@@ -3,7 +3,7 @@
  * Provides loading, error, and data states for admin API calls
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export interface UseAdminState<T> {
    data: T | null;
@@ -74,6 +74,7 @@ export function useAdminList<T>(
    const [total, setTotal] = useState(0);
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState<string | null>(null);
+   const [shouldFetch, setShouldFetch] = useState(true);
 
    const fetch = useCallback(
       async (...args: any[]) => {
@@ -97,6 +98,7 @@ export function useAdminList<T>(
 
    const goToPage = useCallback((newPage: number) => {
       setPage(Math.max(1, newPage));
+      setShouldFetch(true);
    }, []);
 
    const nextPage = useCallback(() => setPage((p) => p + 1), []);
@@ -104,9 +106,18 @@ export function useAdminList<T>(
    const setPageSize = useCallback((newLimit: number) => {
       setLimit(newLimit);
       setPage(1);
+      setShouldFetch(true);
    }, []);
 
    const clearError = useCallback(() => setError(null), []);
+
+   // Auto-fetch when page or limit changes
+   useEffect(() => {
+      if (shouldFetch) {
+         fetch();
+         setShouldFetch(false);
+      }
+   }, [page, limit, shouldFetch, fetch]);
 
    return {
       data,

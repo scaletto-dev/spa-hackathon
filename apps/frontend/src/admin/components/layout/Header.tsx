@@ -1,9 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SearchIcon, BellIcon, BotIcon, ChevronDownIcon, LogOutIcon, UserIcon, MenuIcon } from 'lucide-react';
-import { useAuth } from '../../../auth/useAuth';
-import { toast } from '../../../utils/toast';
-import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+   SearchIcon,
+   BellIcon,
+   ChevronDownIcon,
+   LogOutIcon,
+   UserIcon,
+   MenuIcon,
+} from "lucide-react";
+import { useAuth } from "../../../auth/useAuth";
+import { toast } from "../../../utils/toast";
+import { LanguageSwitcher } from "../../../components/LanguageSwitcher";
 
 interface HeaderProps {
     onMenuClick: () => void;
@@ -80,24 +87,14 @@ export function Header({ onMenuClick }: HeaderProps) {
                 {/* Language Switcher */}
                 <LanguageSwitcher />
 
-                {/* AI Assistant Button - Hidden on small mobile */}
-                <button
-                    onClick={() => toast.info('AI Assistant feature coming soon!')}
-                    className='hidden md:flex relative p-2 rounded-full hover:bg-pink-50 transition-colors group'
-                >
-                    <BotIcon className='w-5 h-5 text-purple-400 group-hover:text-purple-500' />
-                    <span className='absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full animate-pulse' />
-                </button>
-
-                {/* Notifications Dropdown */}
-                <div className='relative' ref={notifRef}>
-                    <button
-                        onClick={() => setShowNotifications(!showNotifications)}
-                        className='relative p-2 rounded-full hover:bg-pink-50 transition-colors'
-                    >
-                        <BellIcon className='w-5 h-5 text-gray-600' />
-                        <span className='absolute top-1 right-1 w-2 h-2 bg-rose-400 rounded-full' />
-                    </button>
+            {/* Notifications Dropdown */}
+            <div className="relative" ref={notifRef}>
+               <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2 rounded-full hover:bg-pink-50 transition-colors">
+                  <BellIcon className="w-5 h-5 text-gray-600" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-rose-400 rounded-full" />
+               </button>
 
                     {showNotifications && (
                         <div className='absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-pink-100 py-2 z-50'>

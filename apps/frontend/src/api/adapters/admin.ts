@@ -63,10 +63,20 @@ const apiCall = async (method: string, endpoint: string, body?: any) => {
 // ============= DASHBOARD =============
 
 export const adminDashboardAPI = {
-    // GET /dashboard/stats
-    getStats: async () => {
-        return apiCall('GET', '/dashboard/stats');
-    },
+   // GET /dashboard/stats
+   // Query params: ?period=week|month|year|today|custom&from=ISO_DATE&to=ISO_DATE
+   getStats: async (params?: { period?: string; from?: string; to?: string }) => {
+      let endpoint = "/dashboard/stats";
+      if (params) {
+         const queryParams = new URLSearchParams();
+         if (params.period) queryParams.append("period", params.period);
+         if (params.from) queryParams.append("from", params.from);
+         if (params.to) queryParams.append("to", params.to);
+         const queryString = queryParams.toString();
+         if (queryString) endpoint += `?${queryString}`;
+      }
+      return apiCall("GET", endpoint);
+   },
 };
 
 // ============= PROFILE =============
@@ -222,49 +232,54 @@ export const adminBranchesAPI = {
 // ============= APPOINTMENTS =============
 
 export const adminAppointmentsAPI = {
-    // GET /appointments
-    getAll: async (page = 1, limit = 10, status?: string) => {
-        let endpoint = `/appointments?page=${page}&limit=${limit}`;
-        if (status) endpoint += `&status=${status}`;
-        return apiCall('GET', endpoint);
-    },
+   // GET /appointments
+   getAll: async (page = 1, limit = 10, status?: string) => {
+      let endpoint = `/appointments?page=${page}&limit=${limit}`;
+      if (status) endpoint += `&status=${status}`;
+      return apiCall("GET", endpoint);
+   },
 
-    // GET /appointments/:id
-    getById: async (id: string) => {
-        return apiCall('GET', `/appointments/${id}`);
-    },
+   // GET /appointments/:id
+   getById: async (id: string) => {
+      return apiCall("GET", `/appointments/${id}`);
+   },
 
-    // POST /appointments
-    create: async (data: {
-        serviceId: string;
-        branchId: string;
-        appointmentDate: string;
-        appointmentTime: string;
-        guestName: string;
-        guestEmail: string;
-        guestPhone: string;
-        notes?: string;
-    }) => {
-        return apiCall('POST', '/appointments', data);
-    },
+   // POST /appointments
+   create: async (data: {
+      serviceIds: string[];
+      branchId: string;
+      appointmentDate: string;
+      appointmentTime: string;
+      guestName?: string;
+      guestEmail?: string;
+      guestPhone?: string;
+      notes?: string;
+      userId?: string;
+   }) => {
+      return apiCall("POST", "/appointments", data);
+   },
 
-    // PUT /appointments/:id
-    update: async (id: string, data: any) => {
-        return apiCall('PUT', `/appointments/${id}`, data);
-    },
+   // PUT /appointments/:id
+   update: async (id: string, data: any) => {
+      return apiCall("PUT", `/appointments/${id}`, data);
+   },
 
-    // PATCH /appointments/:id/status
-    updateStatus: async (id: string, status: string, cancellationReason?: string) => {
-        return apiCall('PATCH', `/appointments/${id}/status`, {
-            status,
-            ...(cancellationReason && { cancellationReason }),
-        });
-    },
+   // PATCH /appointments/:id/status
+   updateStatus: async (
+      id: string,
+      status: string,
+      cancellationReason?: string
+   ) => {
+      return apiCall("PATCH", `/appointments/${id}/status`, {
+         status,
+         ...(cancellationReason && { cancellationReason }),
+      });
+   },
 
-    // DELETE /appointments/:id
-    delete: async (id: string) => {
-        return apiCall('DELETE', `/appointments/${id}`);
-    },
+   // DELETE /appointments/:id
+   delete: async (id: string) => {
+      return apiCall("DELETE", `/appointments/${id}`);
+   },
 };
 
 // ============= REVIEWS =============
