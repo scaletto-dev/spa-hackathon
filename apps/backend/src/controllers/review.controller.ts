@@ -21,14 +21,16 @@ export class ReviewController {
    * GET /api/v1/reviews
    * Get all approved reviews with filtering and pagination
    */
-  async getAllReviews(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getAllReviews(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and coerced types (stored in req.validatedQuery)
-      const { page = 1, limit = 20, serviceId, rating, sort = 'recent' } = (req as any).validatedQuery as GetReviewsQuery;
+      const {
+        page = 1,
+        limit = 20,
+        serviceId,
+        rating,
+        sort = 'recent',
+      } = (req as any).validatedQuery as GetReviewsQuery;
 
       const result = await reviewService.getAllReviews(
         page,
@@ -38,10 +40,11 @@ export class ReviewController {
         rating
       );
 
-      const response: SuccessResponse<typeof result.data> = {
+      const response = {
         success: true,
         data: result.data,
         meta: result.meta,
+        stats: result.stats,
         timestamp: new Date().toISOString(),
       };
 
@@ -55,11 +58,7 @@ export class ReviewController {
    * GET /api/v1/reviews/:id
    * Get a single review by ID
    */
-  async getReviewById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getReviewById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware validated req.params
       const { id } = req.params as GetReviewParams;
@@ -82,11 +81,7 @@ export class ReviewController {
    * POST /api/v1/reviews
    * Create a new review (pending approval)
    */
-  async createReview(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async createReview(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware validated req.body
       const reviewData = req.body as unknown as CreateReviewRequest;
@@ -109,11 +104,7 @@ export class ReviewController {
    * GET /api/v1/reviews/service/:serviceId/rating
    * Get average rating for a service
    */
-  async getServiceRating(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getServiceRating(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Middleware already validated and stored in req.validatedParams
       const { serviceId } = (req as any).validatedParams as GetServiceRatingParams;
