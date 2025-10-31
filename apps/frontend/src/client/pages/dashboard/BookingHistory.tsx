@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
     CalendarIcon,
@@ -11,6 +11,7 @@ import {
     CheckCircleIcon,
     XCircleIcon,
     ClockIcon as PendingIcon,
+    EyeIcon,
 } from 'lucide-react';
 import {
     getMemberBookings,
@@ -23,16 +24,13 @@ type StatusFilter = 'all' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
 
 export default function BookingHistory() {
     const { t, i18n } = useTranslation('common');
+    const navigate = useNavigate();
     const [bookings, setBookings] = useState<BookingHistoryResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
-    useEffect(() => {
-        loadBookings();
-    }, [currentPage, statusFilter]);
-
-    const loadBookings = async () => {
+    const loadBookings = useCallback(async () => {
         try {
             setIsLoading(true);
             const params: BookingHistoryParams = {
@@ -47,7 +45,11 @@ export default function BookingHistory() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentPage, statusFilter]);
+
+    useEffect(() => {
+        loadBookings();
+    }, [loadBookings]);
 
     const handleStatusChange = (status: StatusFilter) => {
         setStatusFilter(status);
@@ -206,6 +208,9 @@ export default function BookingHistory() {
                                             <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                                                 {t('bookings.status.all')}
                                             </th>
+                                            <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                                {t('common.actions')}
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className='divide-y divide-gray-200'>
@@ -254,6 +259,17 @@ export default function BookingHistory() {
                                                     </code>
                                                 </td>
                                                 <td className='px-6 py-4'>{getStatusBadge(booking.status)}</td>
+                                                <td className='px-6 py-4'>
+                                                    <button
+                                                        onClick={() =>
+                                                            navigate(`/booking/detail?ref=${booking.referenceNumber}`)
+                                                        }
+                                                        className='flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50 rounded-lg transition-colors'
+                                                    >
+                                                        <EyeIcon className='w-4 h-4' />
+                                                        {t('common.viewDetails')}
+                                                    </button>
+                                                </td>
                                             </motion.tr>
                                         ))}
                                     </tbody>
@@ -292,12 +308,19 @@ export default function BookingHistory() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='flex items-center justify-between'>
+                                        <div className='flex items-center justify-between mb-3'>
                                             <code className='text-xs bg-gray-100 px-2 py-1 rounded font-mono'>
                                                 {booking.referenceNumber}
                                             </code>
                                             {getStatusBadge(booking.status)}
                                         </div>
+                                        <button
+                                            onClick={() => navigate(`/booking/detail?ref=${booking.referenceNumber}`)}
+                                            className='w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 rounded-lg transition-colors'
+                                        >
+                                            <EyeIcon className='w-4 h-4' />
+                                            {t('common.viewDetails')}
+                                        </button>
                                     </motion.div>
                                 ))}
                             </div>

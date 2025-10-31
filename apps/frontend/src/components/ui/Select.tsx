@@ -189,7 +189,7 @@ export function Select({
                 data-testid={dataTestId || name}
             >
                 <div className='flex items-center h-full'>
-                    <span className={selectedOption ? 'text-gray-900' : 'text-gray-400'}>
+                    <span className={`truncate ${selectedOption ? 'text-gray-900' : 'text-gray-400'}`}>
                         {selectedOption?.label || placeholder}
                     </span>
                 </div>

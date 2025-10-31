@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCardIcon, WalletIcon, BuildingIcon, BanknoteIcon, CheckIcon, UploadIcon, XIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface InlinePaymentMethodProps {
     selectedMethod: string;
@@ -47,6 +48,7 @@ export function InlinePaymentMethod({
     onPromoChange,
     onPaymentDetailsChange,
 }: InlinePaymentMethodProps) {
+    const { t } = useTranslation('common');
     const [showPromo, setShowPromo] = useState(false);
     const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
 
@@ -132,7 +134,7 @@ export function InlinePaymentMethod({
     };
     return (
         <div>
-            <h3 className='text-lg font-semibold text-gray-800 mb-4'>Payment Method</h3>
+            <h3 className='text-lg font-semibold text-gray-800 mb-4'>{t('bookings.paymentMethod')}</h3>
             {/* AI Recommendation */}
             <motion.div
                 initial={{
@@ -146,7 +148,8 @@ export function InlinePaymentMethod({
                 className='mb-4 p-3 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200/50'
             >
                 <p className='text-xs text-gray-700'>
-                    ✨ <span className='font-medium'>Fastest method:</span> VNPay online payment
+                    ✨ <span className='font-medium'>{t('bookings.fastestMethod')}:</span>{' '}
+                    {t('bookings.vnpayOnlinePayment')}
                 </p>
             </motion.div>
             {/* Payment Method Grid */}
@@ -374,8 +377,8 @@ export function InlinePaymentMethod({
                         className='mb-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200'
                     >
                         <p className='text-sm text-gray-700'>
-                            💰 <span className='font-medium'>Payment at clinic:</span> You can pay with cash or card
-                            when you arrive for your appointment.
+                            💰 <span className='font-medium'>{t('bookings.payAtClinic')}:</span>{' '}
+                            {t('bookings.payAtClinicDescription')}
                         </p>
                     </motion.div>
                 )}
@@ -388,7 +391,7 @@ export function InlinePaymentMethod({
                         onClick={() => setShowPromo(true)}
                         className='text-sm text-pink-600 font-medium hover:underline'
                     >
-                        Have a promo code?
+                        {t('bookings.havePromoCode')}
                     </button>
                 ) : appliedPromo ? (
                     <div className='flex items-center gap-2 p-3 bg-green-50 rounded-xl border border-green-200'>

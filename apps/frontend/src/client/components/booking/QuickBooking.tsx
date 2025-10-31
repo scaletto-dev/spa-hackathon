@@ -214,18 +214,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
             [field]: value,
         });
     };
-    const handleAISelection = () => {
-        handleChange('useAI', !formData.useAI);
-        if (!formData.useAI) {
-            // Simulate AI selection
-            setTimeout(() => {
-                const aiDate = new Date();
-                aiDate.setDate(aiDate.getDate() + 1);
-                handleChange('date', aiDate);
-                handleChange('time', '15:30');
-                handleChange('branch', branches[0]);
-            }, 500);
-        }
+
+    const handleAIToggle = (enabled: boolean) => {
+        handleChange('useAI', enabled);
     };
 
     const handleSubmit = async () => {
@@ -299,9 +290,9 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                 toast.success(`Đặt lịch thành công! Mã tham chiếu: #${response.referenceNumber}`);
                 setShowConfirmation(true);
 
-                // Redirect to confirmation page after 2 seconds
+                // Redirect to booking detail page after 2 seconds
                 setTimeout(() => {
-                    navigate(`/booking/confirmation?ref=${response.referenceNumber}`);
+                    navigate(`/booking/detail?ref=${response.referenceNumber}`);
                 }, 2000);
             }
         } catch (error) {
@@ -384,60 +375,21 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                         >
                             <div className='flex items-center gap-3'>
                                 <SparklesIcon className='w-5 h-5 text-pink-500 flex-shrink-0' />
-                                <label className='flex items-center gap-2 cursor-pointer flex-1'>
-                                    <input
-                                        type='checkbox'
-                                        checked={formData.useAI}
-                                        onChange={handleAISelection}
-                                        className='w-4 h-4 rounded accent-pink-500'
-                                    />
-                                    <span className='text-sm text-gray-700 font-medium'>
-                                        Let AI choose the best available slot for me
-                                    </span>
+                                <input
+                                    type='checkbox'
+                                    id='quickBookingAI'
+                                    checked={formData.useAI}
+                                    onChange={(e) => handleAIToggle(e.target.checked)}
+                                    className='w-4 h-4 rounded accent-pink-500'
+                                />
+                                <label
+                                    htmlFor='quickBookingAI'
+                                    className='text-sm text-gray-700 font-medium cursor-pointer flex-1'
+                                >
+                                    {t('bookings.letAIChooseSlot')}
                                 </label>
                             </div>
                         </motion.div>
-                        {/* AI Selection Result */}
-                        {formData.useAI && formData.date && formData.time && (
-                            <motion.div
-                                initial={{
-                                    opacity: 0,
-                                    scale: 0.95,
-                                }}
-                                animate={{
-                                    opacity: 1,
-                                    scale: 1,
-                                }}
-                                className='mb-6 bg-pink-50 rounded-2xl p-4 border border-pink-200'
-                            >
-                                <div className='flex items-start gap-4'>
-                                    <div className='w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0'>
-                                        <SparklesIcon className='w-6 h-6 text-white' />
-                                    </div>
-                                    <div>
-                                        <h4 className='font-semibold text-gray-800 mb-1'>AI Recommendation</h4>
-                                        <p className='text-sm text-gray-600 mb-2'>
-                                            Based on optimal conditions and availability:
-                                        </p>
-                                        <div className='flex flex-wrap gap-2'>
-                                            <span className='px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600'>
-                                                {formData.date &&
-                                                    new Date(formData.date).toLocaleDateString('en-US', {
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                    })}
-                                            </span>
-                                            <span className='px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600'>
-                                                {formData.time}
-                                            </span>
-                                            <span className='px-3 py-1 bg-white rounded-full text-sm font-medium text-pink-600'>
-                                                {formData.branch?.name}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
                         {/* Form Fields */}
                         <div className='space-y-6'>
                             {/* Service Selection */}
@@ -490,59 +442,75 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                         label: `${branch.name} - ${branch.address}`,
                                     }))}
                                     placeholder={t('bookings.chooseLocation')}
-                                    disabled={formData.useAI}
                                     searchable={true}
                                     className='w-full'
                                 />
                             </div>
                             {/* Date & Time Selection */}
                             <div className='grid md:grid-cols-2 gap-4'>
-                                <div>
-                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                        {t('bookings.selectDateLabel')}
-                                    </label>
-                                    <input
-                                        type='date'
-                                        value={formData.date || ''}
-                                        onChange={(e) => handleChange('date', e.target.value)}
-                                        disabled={formData.useAI}
-                                        min={new Date().toISOString().split('T')[0]}
-                                        className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors disabled:opacity-50'
-                                    />
-                                </div>
+                                {!formData.useAI && (
+                                    <>
+                                        <div>
+                                            <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                                {t('bookings.selectDateLabel')}
+                                            </label>
+                                            <input
+                                                type='date'
+                                                value={formData.date || ''}
+                                                onChange={(e) => handleChange('date', e.target.value)}
+                                                min={new Date().toISOString().split('T')[0]}
+                                                className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                                            />
+                                        </div>
 
-                                {/* AI Time Slot Selector - Show when date and branch are selected */}
-                                {formData.date && formData.branch && (
+                                        <div>
+                                            <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
+                                                {t('bookings.selectTimeLabel')}
+                                                {formData.date && formData.service && <AvailabilityIndicator />}
+                                            </label>
+                                            <Select
+                                                name='time'
+                                                value={formData.time || ''}
+                                                onChange={(value) => handleChange('time', value)}
+                                                options={availableTimeSlots.map((time) => ({
+                                                    value: time,
+                                                    label: time,
+                                                }))}
+                                                placeholder={t('bookings.chooseTime')}
+                                                searchable={false}
+                                                className='w-full'
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* AI Time Slot Selector - Show when AI mode enabled and branch is selected */}
+                                {formData.useAI && formData.branch && (
                                     <div className='col-span-full'>
                                         <AITimeSlotSelector
-                                            date={formData.date}
-                                            branchId={formData.branch.id}
-                                            {...(formData.service && { serviceIds: [formData.service.id] })}
-                                            onTimeSlotSelected={(time: string) => handleChange('time', time)}
+                                            date={
+                                                formData.date ||
+                                                new Date(Date.now() + 86400000).toISOString().split('T')[0] ||
+                                                ''
+                                            }
+                                            branchId={formData.branch.id.toString()}
+                                            {...(formData.service && { serviceIds: [formData.service.id.toString()] })}
+                                            onTimeSlotSelected={(time: string) => {
+                                                handleChange('time', time);
+                                                // Ensure date is also set when AI selects time
+                                                const dateToUse =
+                                                    formData.date ||
+                                                    new Date(Date.now() + 86400000).toISOString().split('T')[0] ||
+                                                    '';
+                                                if (!formData.date && dateToUse) {
+                                                    handleChange('date', dateToUse);
+                                                }
+                                            }}
                                             {...(formData.time && { currentTimeSlot: formData.time })}
+                                            autoEnable={true}
                                         />
                                     </div>
                                 )}
-
-                                <div>
-                                    <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
-                                        {t('bookings.selectTimeLabel')}
-                                        {formData.date && formData.service && <AvailabilityIndicator />}
-                                    </label>
-                                    <Select
-                                        name='time'
-                                        value={formData.time || ''}
-                                        onChange={(value) => handleChange('time', value)}
-                                        options={availableTimeSlots.map((time) => ({
-                                            value: time,
-                                            label: time,
-                                        }))}
-                                        placeholder={t('bookings.chooseTime')}
-                                        disabled={formData.useAI}
-                                        searchable={false}
-                                        className='w-full'
-                                    />
-                                </div>
                             </div>
                             {/* Contact Information */}
                             <div className='pt-4 border-t border-gray-200'>
@@ -599,7 +567,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 className='flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold'
                             >
                                 <ListIcon className='w-5 h-5' />
-                                Switch to Full Booking Mode
+                                {t('bookings.switchToFullBooking')}
                             </motion.button>
                             <motion.button
                                 whileHover={{
@@ -629,12 +597,12 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                             }}
                                             className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
                                         />
-                                        Processing...
+                                        {t('bookings.processing')}
                                     </>
                                 ) : (
                                     <>
                                         <ZapIcon className='w-5 h-5' />
-                                        Book Now
+                                        {t('bookings.bookNowAction')}
                                     </>
                                 )}
                             </motion.button>
@@ -644,11 +612,11 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                 {/* Summary Sidebar */}
                 <div className='lg:col-span-1'>
                     <div className='bg-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl p-6 sticky top-24'>
-                        <h3 className='text-xl font-bold text-gray-800 mb-6'>Booking Summary</h3>
+                        <h3 className='text-xl font-bold text-gray-800 mb-6'>{t('bookings.bookingSummary')}</h3>
                         <div className='space-y-4'>
                             {formData.service ? (
                                 <div className='p-3 bg-pink-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Service</p>
+                                    <p className='text-xs text-gray-500 mb-1'>{t('bookings.serviceLabel')}</p>
                                     <p className='font-medium text-gray-800'>{formData.service.name}</p>
                                     <p className='text-sm text-gray-600'>
                                         {typeof formData.service.duration === 'number'
@@ -658,18 +626,18 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                 </div>
                             ) : (
                                 <div className='p-3 bg-gray-50 rounded-xl'>
-                                    <p className='text-sm text-gray-400'>No service selected</p>
+                                    <p className='text-sm text-gray-400'>{t('bookings.noServiceSelected')}</p>
                                 </div>
                             )}
                             {formData.branch && (
                                 <div className='p-3 bg-purple-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Location</p>
+                                    <p className='text-xs text-gray-500 mb-1'>{t('bookings.locationLabel')}</p>
                                     <p className='font-medium text-gray-800'>{formData.branch.name}</p>
                                 </div>
                             )}
                             {formData.therapist && (
                                 <div className='p-3 bg-blue-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Therapist</p>
+                                    <p className='text-xs text-gray-500 mb-1'>{t('bookings.therapistLabel')}</p>
                                     <p className='font-medium text-gray-800'>
                                         {typeof formData.therapist === 'string'
                                             ? formData.therapist
@@ -679,7 +647,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             )}
                             {formData.date && formData.time && (
                                 <div className='p-3 bg-green-50 rounded-xl'>
-                                    <p className='text-xs text-gray-500 mb-1'>Date & Time</p>
+                                    <p className='text-xs text-gray-500 mb-1'>{t('bookings.dateTimeLabel')}</p>
                                     <p className='font-medium text-gray-800'>
                                         {new Date(formData.date).toLocaleDateString('en-US', {
                                             month: 'short',
@@ -692,7 +660,7 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                             {formData.service && (
                                 <div className='pt-4 border-t border-gray-200'>
                                     <div className='flex justify-between items-center'>
-                                        <span className='text-gray-600'>Total</span>
+                                        <span className='text-gray-600'>{t('bookings.total')}</span>
                                         <span className='text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
                                             {formatPrice(formData.service.price)}
                                         </span>
@@ -702,8 +670,8 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                         </div>
                         <div className='mt-6 p-3 bg-yellow-50 rounded-xl border border-yellow-200'>
                             <p className='text-xs text-gray-600'>
-                                <span className='font-medium'>⚡ Quick Booking:</span> Complete your appointment in
-                                seconds with AI assistance
+                                <span className='font-medium'>⚡ {t('bookings.quickBooking')}:</span>{' '}
+                                {t('bookings.quickBookingNote')}
                             </p>
                         </div>
                     </div>

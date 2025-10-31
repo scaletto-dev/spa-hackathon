@@ -57,12 +57,55 @@ export function BookingPage() {
         }
     }, []);
 
+    // Handle preSelectedService from ServiceDetailPage
+    useEffect(() => {
+        const state = location.state as {
+            preSelectedService?: {
+                id: string;
+                title: string;
+                category: string;
+                price: string | number;
+                duration: string;
+                image?: string;
+                description?: string;
+            };
+        } | null;
+        if (state?.preSelectedService) {
+            const service = state.preSelectedService;
+            setBookingData((prev) => ({
+                ...prev,
+                serviceIds: [service.id],
+                service: {
+                    id: service.id,
+                    name: service.title,
+                    categoryName: service.category,
+                    price:
+                        typeof service.price === 'string'
+                            ? parseFloat(service.price.replace(/[^0-9]/g, ''))
+                            : service.price,
+                    duration: service.duration,
+                    images: service.image ? [service.image] : [],
+                    excerpt: service.description || '',
+                },
+            }));
+            // Skip to Branch selection
+            setCurrentStep(2);
+            toast.success(t('bookings.servicePreSelected'));
+        }
+    }, [location.state, t]);
+
     // Parse URL params from chat widget redirect
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const source = params.get('source');
+        const aiAssist = params.get('aiAssist');
 
-        if (source === 'chat-booking' || source === 'chat-widget') {
+        if (
+            source === 'chat-booking' ||
+            source === 'chat-widget' ||
+            source === 'home-widget' ||
+            (params.has('service') && !source)
+        ) {
             const name = params.get('name');
             const phone = params.get('phone');
             const email = params.get('email');
@@ -128,14 +171,30 @@ export function BookingPage() {
 
                     // Show welcome toast
                     if (source === 'chat-booking') {
-                        toast.success(t('bookings.chatPreFilled') || '✅ Thông tin đã được điền sẵn từ chat!');
+                        toast.success(t('bookings.chatPreFilled'));
                     } else if (source === 'chat-widget') {
-                        toast.info(t('bookings.aiSuggested') || '✨ AI đã chọn thời gian tốt nhất cho bạn!');
+                        toast.info(t('bookings.aiSuggested'));
+                    } else if (source === 'home-widget' && aiAssist === 'true') {
+                        toast.info(t('bookings.aiAnalyzing'));
+                    } else if (source === 'home-widget') {
+                        toast.info(t('bookings.homeWidgetPreFilled'));
                     }
 
-                    // Skip to step 4 (User Info) if we have all pre-filled data
+                    // Skip to appropriate step based on what data we have
                     if (serviceId && branchId && date && time) {
+                        // All data available - skip to User Info
                         setCurrentStep(4);
+                    } else if (serviceId && branchId && aiAssist === 'true') {
+                        // AI mode: service + branch available, need AI to suggest date/time
+                        // Skip to step 3 (Date/Time) and enable AI mode
+                        setCurrentStep(3);
+                        setBookingData((prev) => ({ ...prev, useAI: true }));
+                    } else if (serviceId && branchId) {
+                        // Service + branch available - skip to Date/Time selection
+                        setCurrentStep(3);
+                    } else if (serviceId) {
+                        // Only service available - skip to Branch selection
+                        setCurrentStep(2);
                     }
                 } catch (error) {
                     console.error('Failed to load chat booking data:', error);
@@ -253,9 +312,9 @@ export function BookingPage() {
                 // Other payment methods - show success message
                 toast.success(`Đặt lịch thành công! Mã tham chiếu: #${response.referenceNumber}`);
 
-                // Redirect to confirmation page after 2 seconds
+                // Redirect to booking detail page after 2 seconds
                 setTimeout(() => {
-                    navigate(`/booking/confirmation?ref=${response.referenceNumber}`);
+                    navigate(`/booking/detail?ref=${response.referenceNumber}`);
                 }, 2000);
             }
         } catch (error) {
