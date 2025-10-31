@@ -1,0 +1,39 @@
+{
+  "name": "spa-hackathon",
+  "version": "0.1.0",
+  "description": "Beauty Clinic Care Website - Spa booking platform with React frontend and Node.js backend",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w @spa-hackathon/frontend\" \"npm run dev -w @spa-hackathon/backend\"",
+    "build": "npm run build -w @spa-hackathon/frontend && npm run build -w @spa-hackathon/backend",
+    "test": "npm run test -ws",
+    "lint": "npm run lint -ws",
+    "lint:fix": "npm run lint:fix -ws",
+    "format": "npm run format -ws",
+    "format:check": "npm run format:check -ws",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "keywords": [
+    "spa",
+    "booking",
+    "beauty-clinic",
+    "monorepo"
+  ],
+  "author": "Spa Hackathon Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.0",
+    "prisma": "^6.18.0",
+    "tsx": "^4.20.6"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.18.0",
+    "@supabase/supabase-js": "^2.76.1",
+    "@types/uuid": "^10.0.0"
+  }
+}

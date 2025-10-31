@@ -1,0 +1,1241 @@
+[
+  {
+    "id": 1,
+    "feature": "Bookings",
+    "priority": "CRITICAL",
+    "action": "ADD",
+    "api": "Check availability",
+    "path": "/api/v1/bookings/availability",
+    "method": "GET",
+    "query": ["serviceId", "branchId", "date", "therapistId"],
+    "response": {
+      "date": "string (YYYY-MM-DD)",
+      "availableSlots": [
+        {
+          "time": "string (HH:mm)",
+          "available": "boolean",
+          "therapistName": "string|null"
+        }
+      ]
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/components/booking/AvailabilityIndicator.tsx",
+        "line": null
+      }
+    ],
+    "breaking": false,
+    "effort": "3-5 days",
+    "notes": ["FE shows green/yellow/red indicators; needs real-time slot data"]
+  },
+  {
+    "id": 2,
+    "feature": "Authentication",
+    "priority": "CRITICAL",
+    "action": "ADD",
+    "api": "Get profile",
+    "path": "/api/v1/profile",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "id": "string (UUID)",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "avatar": "string|null",
+      "membershipTier": "new|silver|gold|vip",
+      "totalVisits": "number",
+      "totalSpent": "number",
+      "dateJoined": "string (ISO 8601)"
+    },
+    "auth": "required",
+    "scope": "client",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/pages/LoginPage.tsx",
+        "line": 57
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Auth system implies profile endpoint exists"]
+  },
+  {
+    "id": 3,
+    "feature": "Authentication",
+    "priority": "CRITICAL",
+    "action": "ADD",
+    "api": "Update profile",
+    "path": "/api/v1/profile",
+    "method": "PATCH",
+    "query": [],
+    "body": {
+      "name": "string (optional)",
+      "phone": "string (optional)",
+      "avatar": "string (optional)"
+    },
+    "response": {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "avatar": "string|null",
+      "updatedAt": "string"
+    },
+    "auth": "required",
+    "scope": "client",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/pages/LoginPage.tsx",
+        "line": 57
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": []
+  },
+  {
+    "id": 4,
+    "feature": "Bookings",
+    "priority": "CRITICAL",
+    "action": "ADD",
+    "api": "Client booking history",
+    "path": "/api/v1/profile/bookings",
+    "method": "GET",
+    "query": ["status", "page", "limit"],
+    "response": {
+      "data": [
+        {
+          "id": "number",
+          "serviceName": "string",
+          "branchName": "string",
+          "date": "string (YYYY-MM-DD)",
+          "time": "string (HH:mm)",
+          "status": "confirmed|pending|completed|cancelled",
+          "totalAmount": "number"
+        }
+      ],
+      "meta": {
+        "page": "number",
+        "limit": "number",
+        "total": "number",
+        "totalPages": "number"
+      }
+    },
+    "auth": "required",
+    "scope": "client",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/auth/useAuth.ts",
+        "line": null
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Implied by auth system"]
+  },
+  {
+    "id": 5,
+    "feature": "Staff",
+    "priority": "CRITICAL",
+    "action": "ADD",
+    "api": "Get available staff",
+    "path": "/api/v1/staff/available",
+    "method": "GET",
+    "query": ["branchId", "serviceId", "date", "time"],
+    "response": {
+      "data": [
+        {
+          "id": "number",
+          "name": "string",
+          "image": "string",
+          "rating": "number",
+          "specialties": "string[]",
+          "available": "boolean"
+        }
+      ]
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/components/booking/TherapistSelector.tsx",
+        "line": null
+      },
+      {
+        "file": "apps/frontend/src/client/components/booking/QuickBooking.tsx",
+        "line": 249
+      }
+    ],
+    "breaking": false,
+    "effort": "2-3 days",
+    "notes": ["Current spec has admin staff only, no public filtering"]
+  },
+  {
+    "id": 6,
+    "feature": "Uploads",
+    "priority": "CRITICAL",
+    "action": "UPDATE",
+    "api": "Upload image with folder routing",
+    "path": "/api/v1/admin/uploads/:folder",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "file": "File (multipart/form-data)"
+    },
+    "response": {
+      "url": "string (absolute URL)",
+      "relativePath": "string",
+      "id": "string",
+      "folder": "services|branches|blog|staff|profile"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "params": {
+      "folder": "services|branches|blog|staff|profile"
+    },
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/components/modals/ServiceModal.tsx",
+        "line": null
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Current endpoint lacks folder parameter"]
+  },
+  {
+    "id": 7,
+    "feature": "Authentication",
+    "priority": "CRITICAL",
+    "action": "UPDATE",
+    "api": "Google OAuth - server-side verification",
+    "path": "/api/v1/auth/google",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "credential": "string (Google JWT token)",
+      "provider": "google"
+    },
+    "response": {
+      "data": {
+        "user": {
+          "id": "string (UUID)",
+          "name": "string",
+          "email": "string",
+          "avatar": "string"
+        },
+        "token": "string"
+      }
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/auth/useAuth.ts",
+        "line": 178
+      }
+    ],
+    "breaking": true,
+    "effort": "2-3 days",
+    "notes": ["SECURITY: FE currently parses JWT client-side (INSECURE). Backend MUST verify with Google"]
+  },
+  {
+    "id": 8,
+    "feature": "Authentication",
+    "priority": "CRITICAL",
+    "action": "UPDATE",
+    "api": "Admin domain whitelist enforcement",
+    "path": "/api/v1/admin/auth/google",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "credential": "string",
+      "provider": "google-admin"
+    },
+    "response": {
+      "data": {
+        "user": {
+          "id": "string",
+          "name": "string",
+          "email": "string",
+          "role": "admin"
+        },
+        "token": "string"
+      }
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/auth/useAuth.ts",
+        "line": 337
+      }
+    ],
+    "breaking": true,
+    "effort": "0.5 day",
+    "notes": ["SECURITY: Client-side domain check is bypassable. Backend must enforce whitelist"]
+  },
+  {
+    "id": 9,
+    "feature": "Bookings",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Validate promo code",
+    "path": "/api/v1/bookings/validate-promo",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "promoCode": "string",
+      "serviceId": "number",
+      "amount": "number"
+    },
+    "response": {
+      "data": {
+        "valid": "boolean",
+        "discount": "number",
+        "discountType": "percentage|fixed",
+        "finalAmount": "number",
+        "message": "string"
+      }
+    },
+    "auth": "optional",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/components/payment/PromoCodeInput.tsx",
+        "line": 19
+      }
+    ],
+    "breaking": false,
+    "effort": "1-2 days",
+    "notes": []
+  },
+  {
+    "id": 10,
+    "feature": "Appointments",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Bulk delete appointments",
+    "path": "/api/v1/admin/appointments/bulk-delete",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "ids": "number[]"
+    },
+    "response": {
+      "data": {
+        "deleted": "number",
+        "failed": "number[]"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Appointments.tsx",
+        "line": 28
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": []
+  },
+  {
+    "id": 11,
+    "feature": "Appointments",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Bulk update appointment status",
+    "path": "/api/v1/admin/appointments/bulk-update",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "ids": "number[]",
+      "status": "confirmed|cancelled|completed"
+    },
+    "response": {
+      "data": {
+        "updated": "number",
+        "failed": "number[]"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Appointments.tsx",
+        "line": 35
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": []
+  },
+  {
+    "id": 12,
+    "feature": "Customers",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Bulk delete customers",
+    "path": "/api/v1/admin/customers/bulk-delete",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "ids": "number[]"
+    },
+    "response": {
+      "data": {
+        "deleted": "number",
+        "failed": "number[]"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Customers.tsx",
+        "line": 91
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": []
+  },
+  {
+    "id": 13,
+    "feature": "Staff",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Get staff schedule",
+    "path": "/api/v1/admin/staff/:id/schedule",
+    "method": "GET",
+    "query": ["dateFrom", "dateTo"],
+    "response": {
+      "data": {
+        "staffId": "number",
+        "staffName": "string",
+        "schedule": [
+          {
+            "date": "string (YYYY-MM-DD)",
+            "slots": [
+              {
+                "time": "string (HH:mm)",
+                "duration": "number (minutes)",
+                "status": "available|booked|break",
+                "appointmentId": "number|null",
+                "customerName": "string|null"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Staff.tsx",
+        "line": 64
+      }
+    ],
+    "breaking": false,
+    "effort": "2-3 days",
+    "notes": ["Calendar logic required"]
+  },
+  {
+    "id": 14,
+    "feature": "Customers",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Get customer analytics",
+    "path": "/api/v1/admin/customers/:id/analytics",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "data": {
+        "customerId": "number",
+        "retention": "number (percentage)",
+        "totalVisits": "number",
+        "totalSpent": "number",
+        "averageSpend": "number",
+        "lastVisit": "string",
+        "favoriteServices": "string[]"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Customers.tsx",
+        "line": 24
+      }
+    ],
+    "breaking": false,
+    "effort": "2 days",
+    "notes": ["Analytics calculation required"]
+  },
+  {
+    "id": 15,
+    "feature": "Dashboard",
+    "priority": "HIGH",
+    "action": "UPDATE",
+    "api": "Dashboard metrics - add change percentages",
+    "path": "/api/v1/admin/dashboard/metrics",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "data": {
+        "totalBookings": "number",
+        "bookingsChange": "number (percentage)",
+        "totalRevenue": "number",
+        "revenueChange": "number (percentage)",
+        "totalCustomers": "number",
+        "customersChange": "number (percentage)",
+        "aiRecommendations": "number"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Dashboard.tsx",
+        "line": 69
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Add percentage change calculations"]
+  },
+  {
+    "id": 16,
+    "feature": "Dashboard",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Revenue chart data",
+    "path": "/api/v1/admin/dashboard/revenue-chart",
+    "method": "GET",
+    "query": ["period"],
+    "response": {
+      "data": {
+        "labels": "string[] (dates)",
+        "bookings": "number[] (daily count)",
+        "revenue": "number[] (daily amount)"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Dashboard.tsx",
+        "line": 16
+      }
+    ],
+    "breaking": false,
+    "effort": "1-2 days",
+    "notes": ["Support 7d|30d|90d periods"]
+  },
+  {
+    "id": 17,
+    "feature": "Payments",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Payment revenue trend",
+    "path": "/api/v1/admin/payments/revenue-trend",
+    "method": "GET",
+    "query": ["period"],
+    "response": {
+      "data": {
+        "revenueData": {
+          "labels": "string[]",
+          "values": "number[]"
+        },
+        "paymentMethodData": [
+          {
+            "name": "string",
+            "value": "number",
+            "percentage": "number"
+          }
+        ]
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Payments.tsx",
+        "line": 17
+      }
+    ],
+    "breaking": false,
+    "effort": "1-2 days",
+    "notes": []
+  },
+  {
+    "id": 18,
+    "feature": "Payments",
+    "priority": "HIGH",
+    "action": "ADD",
+    "api": "Export payment report",
+    "path": "/api/v1/admin/payments/export",
+    "method": "GET",
+    "query": ["format", "dateFrom", "dateTo", "status"],
+    "response": "File download (Content-Type: text/csv or application/vnd.ms-excel)",
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Payments.tsx",
+        "line": 112
+      }
+    ],
+    "breaking": false,
+    "effort": "2 days",
+    "notes": ["File generation required"]
+  },
+  {
+    "id": 19,
+    "feature": "Authentication",
+    "priority": "HIGH",
+    "action": "UPDATE",
+    "api": "All auth endpoints - user.id should be string",
+    "path": "/api/v1/auth/*",
+    "method": "*",
+    "query": [],
+    "response": {
+      "user.id": "string (UUID, not number)"
+    },
+    "auth": "varies",
+    "scope": "varies",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/store/mockDataStore.ts",
+        "line": 4
+      }
+    ],
+    "breaking": true,
+    "effort": "1 day",
+    "notes": ["BREAKING: User IDs from Supabase are UUIDs (string), entity IDs remain number"]
+  },
+  {
+    "id": 20,
+    "feature": "All Features",
+    "priority": "HIGH",
+    "action": "UPDATE",
+    "api": "Add explicit auth scope to ALL endpoints",
+    "path": "ALL",
+    "method": "ALL",
+    "query": [],
+    "response": null,
+    "auth": "public|required",
+    "scope": "public|client|admin",
+    "evidence": [],
+    "breaking": false,
+    "effort": "1 hour",
+    "notes": ["Documentation update: Add Auth: public|client|admin to every endpoint"]
+  },
+  {
+    "id": 21,
+    "feature": "Staff",
+    "priority": "HIGH",
+    "action": "CLARIFY",
+    "api": "Staff endpoint ambiguity resolution",
+    "path": "/api/v1/staff",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "data": [
+        {
+          "id": "number",
+          "name": "string",
+          "image": "string",
+          "rating": "number",
+          "specialties": "string[]"
+        }
+      ]
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Create public staff list endpoint (limited fields). Keep /api/v1/admin/staff for full CRUD"]
+  },
+  {
+    "id": 22,
+    "feature": "Bookings",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Booking date/time format clarification",
+    "path": "/api/v1/bookings",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "date": "string (YYYY-MM-DD, date only)",
+      "time": "string (HH:mm, 24-hour)"
+    },
+    "response": null,
+    "auth": "optional",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/components/booking/BookingDateTime.tsx",
+        "line": null
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Clarify: date is YYYY-MM-DD, time is HH:mm, timestamps are ISO 8601"]
+  },
+  {
+    "id": 23,
+    "feature": "All Features",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Add search query parameter to list endpoints",
+    "path": "/api/v1/admin/{resource}",
+    "method": "GET",
+    "query": ["q"],
+    "response": null,
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Appointments.tsx",
+        "line": 11
+      },
+      {
+        "file": "apps/frontend/src/admin/pages/Customers.tsx",
+        "line": 148
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Standardize on ?q= for search across all list endpoints"]
+  },
+  {
+    "id": 24,
+    "feature": "All Features",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Add meta.totalPages to pagination",
+    "path": "ALL list endpoints",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "meta": {
+        "page": "number",
+        "limit": "number",
+        "total": "number",
+        "totalPages": "number (NEW)"
+      }
+    },
+    "auth": "varies",
+    "scope": "varies",
+    "evidence": [],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Add totalPages calculation to all paginated responses"]
+  },
+  {
+    "id": 25,
+    "feature": "Blog",
+    "priority": "MEDIUM",
+    "action": "ADD",
+    "api": "Get blog post by slug",
+    "path": "/api/v1/blog/:slug",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "data": {
+        "id": "number",
+        "slug": "string",
+        "title": "string",
+        "excerpt": "string",
+        "content": "string",
+        "author": "string",
+        "category": "string",
+        "tags": "string[]",
+        "featuredImage": "string",
+        "views": "number",
+        "published": "boolean",
+        "publishedAt": "string",
+        "createdAt": "string"
+      }
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/pages/BlogDetailPage.tsx",
+        "line": 7
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["FE uses slug routing, current spec uses ID routing"]
+  },
+  {
+    "id": 26,
+    "feature": "Contact",
+    "priority": "MEDIUM",
+    "action": "ADD",
+    "api": "Submit contact form",
+    "path": "/api/v1/contact",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "name": "string",
+      "email": "string",
+      "phone": "string (optional)",
+      "subject": "string",
+      "message": "string"
+    },
+    "response": {
+      "data": {
+        "id": "number",
+        "status": "received",
+        "message": "Thank you for contacting us"
+      }
+    },
+    "auth": "optional",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/routes/route-map.tsx",
+        "line": null
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Contact page route exists"]
+  },
+  {
+    "id": 27,
+    "feature": "Dashboard",
+    "priority": "MEDIUM",
+    "action": "ADD",
+    "api": "Service distribution chart",
+    "path": "/api/v1/admin/dashboard/service-distribution",
+    "method": "GET",
+    "query": ["period"],
+    "response": {
+      "data": [
+        {
+          "name": "string",
+          "value": "number",
+          "percentage": "number"
+        }
+      ]
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Dashboard.tsx",
+        "line": 47
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": []
+  },
+  {
+    "id": 28,
+    "feature": "Reviews",
+    "priority": "MEDIUM",
+    "action": "ADD",
+    "api": "Review metrics",
+    "path": "/api/v1/admin/reviews/metrics",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "data": {
+        "totalReviews": "number",
+        "averageRating": "number",
+        "positivePercentage": "number",
+        "ratingDistribution": {
+          "5": "number",
+          "4": "number",
+          "3": "number",
+          "2": "number",
+          "1": "number"
+        }
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Reviews.tsx",
+        "line": 109
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": []
+  },
+  {
+    "id": 29,
+    "feature": "Branches",
+    "priority": "MEDIUM",
+    "action": "ADD",
+    "api": "Find nearby branches",
+    "path": "/api/v1/branches/nearby",
+    "method": "GET",
+    "query": ["lat", "lng", "radius"],
+    "response": {
+      "data": [
+        {
+          "id": "number",
+          "name": "string",
+          "address": "string",
+          "location": {
+            "lat": "number",
+            "lng": "number"
+          },
+          "distance": "number (meters)",
+          "phone": "string",
+          "image": "string"
+        }
+      ]
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/components/branches/BranchMap.tsx",
+        "line": 29
+      }
+    ],
+    "breaking": false,
+    "effort": "2-3 days",
+    "notes": ["Geo-spatial queries required, may need PostGIS"]
+  },
+  {
+    "id": 30,
+    "feature": "Branches",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Branch location object structure",
+    "path": "/api/v1/branches",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "location": {
+        "lat": "number",
+        "lng": "number"
+      }
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/store/mockDataStore.ts",
+        "line": 18
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Ensure location is nested object, not flat fields"]
+  },
+  {
+    "id": 31,
+    "feature": "Staff",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Staff specialties should be array",
+    "path": "/api/v1/admin/staff",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "specialties": "string[] (not comma-separated string)"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/store/mockDataStore.ts",
+        "line": 28
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Change from comma-separated string to array"]
+  },
+  {
+    "id": 32,
+    "feature": "Blog",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Add tags field to blog post",
+    "path": "/api/v1/blog/posts",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "tags": "string[]"
+    },
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/store/mockDataStore.ts",
+        "line": 102
+      },
+      {
+        "file": "apps/frontend/src/client/pages/BlogDetailPage.tsx",
+        "line": 19
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Missing from current spec"]
+  },
+  {
+    "id": 33,
+    "feature": "Payments",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Payment method should be enum",
+    "path": "/api/v1/admin/payments",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "method": "credit_card|cash|digital_wallet|bank_transfer"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Payments.tsx",
+        "line": 43
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Change from generic string to enum"]
+  },
+  {
+    "id": 34,
+    "feature": "Reviews",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Add reply fields to review list",
+    "path": "/api/v1/admin/reviews",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "reply": "string|null",
+      "replyDate": "string|null",
+      "replied": "boolean"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Reviews.tsx",
+        "line": 11
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": []
+  },
+  {
+    "id": 35,
+    "feature": "Uploads",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Upload response should return absolute URL",
+    "path": "/api/v1/admin/uploads/:folder",
+    "method": "POST",
+    "query": [],
+    "response": {
+      "url": "string (absolute URL: https://...)",
+      "relativePath": "string",
+      "id": "string"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Clarify URL format (always absolute)"]
+  },
+  {
+    "id": 36,
+    "feature": "Services",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Clarify category filter query param",
+    "path": "/api/v1/services",
+    "method": "GET",
+    "query": ["category"],
+    "response": null,
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/pages/ServicesPage.tsx",
+        "line": 94
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Document: ?category=Facial|Massage|Hair|Nails|Body"]
+  },
+  {
+    "id": 37,
+    "feature": "Blog",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Add search and filter params to blog",
+    "path": "/api/v1/blog",
+    "method": "GET",
+    "query": ["q", "category", "tags", "sort"],
+    "response": null,
+    "auth": "public",
+    "scope": "public",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/client/pages/BlogPage.tsx",
+        "line": null
+      }
+    ],
+    "breaking": false,
+    "effort": "1 day",
+    "notes": ["Support ?q=skincare&category=AI+Technology&tags=innovation&sort=views|date"]
+  },
+  {
+    "id": 38,
+    "feature": "Customers",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Enum casing - membershipTier lowercase",
+    "path": "/api/v1/admin/customers",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "membershipTier": "new|silver|gold|vip (lowercase)"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/store/mockDataStore.ts",
+        "line": 54
+      }
+    ],
+    "breaking": true,
+    "effort": "0.5 day",
+    "notes": ["BREAKING: Change from New|Silver|Gold|VIP to lowercase. FE can map for display"]
+  },
+  {
+    "id": 39,
+    "feature": "Appointments",
+    "priority": "MEDIUM",
+    "action": "UPDATE",
+    "api": "Enum casing - status lowercase",
+    "path": "/api/v1/admin/appointments",
+    "method": "GET",
+    "query": [],
+    "response": {
+      "status": "confirmed|pending|completed|cancelled (lowercase)"
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/store/mockDataStore.ts",
+        "line": 64
+      }
+    ],
+    "breaking": false,
+    "effort": "0.5 day",
+    "notes": ["Already lowercase in FE, ensure consistency"]
+  },
+  {
+    "id": 40,
+    "feature": "All Features",
+    "priority": "LOW",
+    "action": "UPDATE",
+    "api": "Generic export pattern for all resources",
+    "path": "/api/v1/admin/{resource}/export",
+    "method": "GET",
+    "query": ["format"],
+    "response": "File download",
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [],
+    "breaking": false,
+    "effort": "0.5 day per resource",
+    "notes": ["Add export to: appointments, customers, staff, reviews, blog, payments"]
+  },
+  {
+    "id": 41,
+    "feature": "Blog",
+    "priority": "LOW",
+    "action": "ADD",
+    "api": "AI blog content generator",
+    "path": "/api/v1/admin/blog/ai-generate",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "topic": "string",
+      "keywords": "string[]",
+      "tone": "professional|casual|technical"
+    },
+    "response": {
+      "data": {
+        "title": "string",
+        "content": "string",
+        "excerpt": "string"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Blog.tsx",
+        "line": 57
+      }
+    ],
+    "breaking": false,
+    "effort": "3-5 days",
+    "notes": ["AI integration required"]
+  },
+  {
+    "id": 42,
+    "feature": "Staff",
+    "priority": "LOW",
+    "action": "ADD",
+    "api": "AI staff bio generator",
+    "path": "/api/v1/admin/staff/ai-generate-bio",
+    "method": "POST",
+    "query": [],
+    "body": {
+      "name": "string",
+      "specialties": "string[]",
+      "yearsExperience": "number",
+      "experience": "string"
+    },
+    "response": {
+      "data": {
+        "bio": "string"
+      }
+    },
+    "auth": "required",
+    "scope": "admin",
+    "evidence": [
+      {
+        "file": "apps/frontend/src/admin/pages/Staff.tsx",
+        "line": 102
+      }
+    ],
+    "breaking": false,
+    "effort": "2-3 days",
+    "notes": ["AI integration required"]
+  }
+]

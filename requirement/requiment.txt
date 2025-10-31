@@ -1,0 +1,113 @@
+Đề bài EES AI Hackathon: Ứng Dụng Web Cho Website Phòng Khám Chăm Sóc Sắc Đẹp
+Yêu cầu, phạm vi công việc và chức năng hệ thống
+I. Yêu Cầu Đề Bài Và Phạm Vi Công Việc
+1. Đề Bài
+Áp dụng công nghệ AI để phát triển một ứng dụng web sử dụng ngôn ngữ ReactJS và NodeJS cho website Phòng Khám Chăm Sóc Sắc Đẹp.
+2. Phạm Vi Công Việc (Scope of Work)
+   • Gợi ý tech stack (có thể sử dụng server local):
+       ◦ Frontend: React.js hoặc SSR, TailwindCSS hoặc công nghệ tương tự
+       ◦ Backend: Node.js với Express hoặc công nghệ tương tự
+       ◦ Database: MySQL cho dữ liệu quan hệ, Redis cho caching hoặc giải pháp khác
+       ◦ Payment: Stripe API hoặc công nghệ thanh toán khác
+       ◦ Chatbot: Open AI
+   • Sử dụng AI hỗ trợ tạo ra sản phẩm
+       ◦ Các đội được sử dụng bất kì các tool AI nào có thể để hỗ trợ quá trình tạo ra sản phẩm
+3. Deliverables
+   • Vòng loại:
+       ◦ Source code dự án
+       ◦ Các tài liệu thiết kế (ưu tiên file md, để trong folder docs) về:
+           ▪ Kiến trúc tổng thể (High level architecture)
+           ▪ Cơ sở dữ liệu (Database)
+           ▪ API
+           ▪ UI/UX
+           ▪ Testing
+           ▪ Triển khai (Deployment)
+       ◦ File setup.md hướng dẫn thiết lập để chạy project ở local, bao gồm cả setup data, key, ... đảm bảo Ban tổ chức có thể chạy được project local
+   • Vòng chung kết:
+       ◦ Slide thuyết trình
+           ▪ Nội dung thuyết trình ngoài sản phẩm các đội nên đưa ra được cách mà các đội đã sử dụng AI để giải bài toán như thế nào, đưa ra các chỉ số đo đạc khi sử dụng AI
+   • Cách thức nộp bài
+       ◦ Đội trưởng gửi mail về hòm thư datnv13@fpt.com
+           ▪ cc thành viên BGK
+               • duonghv@fpt.com
+               • hieutt39@fpt.com 
+           ▪ cc 3 thành viên trong nhóm
+       ◦ Subject: EES_AI_Hackathon [Tên đội] [Tên vòng]
+           ▪ Tên đội: Tên đội thi đã đăng kí với BTC (trường hợp đội chưa có tên thì gửi tên luôn trong subject của mail này)
+▪ Tên vòng: Vòng loại hoặc Vòng chung kết
+       ◦ Deadline
+           ▪ Vòng loại: 23:59 ngày 31/10/2025
+           ▪ Vòng chung kết: 23:59 ngày 04/11/2025
+4. Tiêu chí chấm điểm
+Đội gửi bài muộn hơn deadline sẽ bị trừ 10% số điểm
+4.1. Vòng loại
+Tiêu chí Trọng số (%) Giải thích 
+Hoàn thành các chức năng 50 Mỗi một chức năng trong 10 chức năng sẽ tương đương với 5 điểm. Đánh giá điểm của đội tương đương với mức độ hoàn thành các chức năng trong đề bài
+Các đội cần đảm bảo tài liệu setup.md có thể chạy được trên máy của BTC
+Chất lượng code 20 Tuân thủ coding convention, best pratice theo ngôn ngữ mà các đội sử dụng
+Chất lượng tài liệu 30 Các tài liệu mô tả đầy đủ, rõ ràng, chính xác giải pháp mà các đội đưa ra
+Lưu ý vì số lượng bài thi gửi nhiều và thời gian chấm thi ngắn nên BTC sẽ ưu tiên sử dụng AI để chấm thi
+4.2. Vòng chung kết (dự kiến)
+Tiêu chí Trọng số (%) Giải thích
+Hiểu đúng vấn đề & xác định hướng AI phù hợp 30 Nắm rõ bài toán, xác định pain point, chọn AI approach hợp lý, có căn cứ
+
+Giải pháp sáng tạo & khả thi 30 Đề xuất giải pháp cho bài toán chính xác, tạo giá trị rõ ràng, có thể triển khai trong thực tế dự án.
+
+Trình bày thuyết phục & logic
+20 Slide mạch lạc, storytelling rõ ràng, lập luận logic, thể hiện hiểu biết AI.
+Teamwork & phản biện
+20 
+Phối hợp ăn ý, phân vai rõ, trả lời phản biện tự tin, nắm vững nội dung.
+
+
+
+II. Yêu Cầu Chức Năng: Website Phòng Khám Chăm Sóc Sắc Đẹp
+1. Giới Thiệu
+Website Phòng Khám Chăm Sóc Sắc Đẹp là nền tảng trực tuyến hỗ trợ khách hàng tìm hiểu thông tin về dịch vụ, chi nhánh và dễ dàng đặt lịch hẹn. Giao diện hiện đại, thân thiện, hỗ trợ đa ngôn ngữ và tương thích thiết bị di động.
+2. Chức Năng Chi Tiết
+2.1 Trang chủ (Homepage)
+   • Banner lớn giới thiệu thương hiệu
+   • Gian dịch vụ nổi bật
+   • Hình ảnh phòng khám và cơ sở vật chất
+   • Nút đặt lịch nhanh
+2.2 Menu dịch vụ (Services Menu)
+   • Hiển thị dạng lưới với hình ảnh và mô tả
+   • Phân loại dịch vụ rõ ràng
+• Trang chi tiết riêng cho từng dịch vụ
+2.3 Đặt lịch khám (Booking System)
+   • Form đặt lịch: chọn dịch vụ, chi nhánh, ngày giờ, thông tin liên hệ
+   • Xác nhận qua email hoặc SMS
+   • Hỗ trợ 2 loại người dùng:
+       ◦ Khách vãng lai: không cần tài khoản, chỉ cần điền thông tin liên hệ
+       ◦ Thành viên: đăng nhập để đặt lịch, xem lịch sử, nhận ưu đãi
+2.4 Đăng ký & đăng nhập thành viên
+   • Form đăng ký: tên, email, mật khẩu, xác thực OTP
+   • Trang đăng nhập
+   • Trang quản lý cá nhân: lịch sử đặt lịch, hồ sơ cá nhân, ưu đãi
+2.5 Giới thiệu chi nhánh
+   • Danh sách chi nhánh: tên, địa chỉ, hình ảnh
+   • Trang chi tiết: bản đồ, giờ làm việc, số điện thoại
+2.6 Liên hệ (Contact Page)
+   • Form liên hệ: tên, email, nội dung
+   • Thông tin liên hệ: số điện thoại, email, địa chỉ
+   • Tích hợp bản đồ Google Maps
+2.7 Đa ngôn ngữ (Multilingual Support)
+   • Nút chuyển đổi ngôn ngữ (ví dụ: 🇻🇳 🇯🇵 🇬🇧 🇨🇳)
+   • Nội dung được dịch đầy đủ
+   • Tùy chọn tự động chuyển ngôn ngữ theo trình duyệt
+2.8 Blog / Tin tức
+   • Danh sách bài viết: tiêu đề, hình ảnh, mô tả ngắn
+   • Trang chi tiết bài viết
+   • Phân loại bài viết: chăm sóc da, công nghệ mới, mẹo sức khỏe
+2.9 Đánh giá & phản hồi
+   • Form gửi đánh giá: tên, nội dung, điểm số
+   • Hiển thị đánh giá công khai (tùy chọn)
+   • Quản trị viên có thể duyệt hoặc phản hồi đánh giá
+2.10 Hỗ trợ trực tuyến
+   • Live chat với nhân viên
+   • Chatbot tự động trả lời câu hỏi thường gặp
+   • Tích hợp hệ thống booking
+3. Hỗ Trợ Giao Diện Mobile
+   • Giao diện responsive, tương thích điện thoại và máy tính bảng
+   • Menu điều hướng đơn giản, dễ sử dụng trên thiết bị nhỏ
+   • Tối ưu tốc độ tải trang và trải nghiệm người dùng di động

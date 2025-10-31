@@ -1,0 +1,188 @@
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { CreditCardIcon, ShieldCheckIcon } from 'lucide-react';
+
+interface CardData {
+    number: string;
+    name: string;
+    expiry: string;
+    cvc: string;
+    saveCard: boolean;
+}
+
+interface CardPaymentProps {
+    onComplete: (isComplete: boolean) => void;
+}
+
+export function CardPayment({ onComplete }: CardPaymentProps) {
+    const { t } = useTranslation('common');
+    const [cardData, setCardData] = useState<CardData>({
+        number: '',
+        name: '',
+        expiry: '',
+        cvc: '',
+        saveCard: false,
+    });
+    const [_errors, _setErrors] = useState<Record<string, string>>({});
+
+    // Validate if card form is complete
+    useEffect(() => {
+        const isComplete =
+            cardData.number.replace(/\s/g, '').length >= 16 &&
+            cardData.name.trim().length > 0 &&
+            cardData.expiry.length === 5 &&
+            cardData.cvc.length >= 3;
+        onComplete(isComplete);
+    }, [cardData, onComplete]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setCardData({
+            ...cardData,
+            [name]: type === 'checkbox' ? checked : value,
+        });
+    };
+    const formatCardNumber = (value: string) => {
+        return (
+            value
+                .replace(/\s/g, '')
+                .match(/.{1,4}/g)
+                ?.join(' ')
+                .substr(0, 19) || ''
+        );
+    };
+    const formatExpiry = (value: string) => {
+        return value
+            .replace(/\D/g, '')
+            .replace(/(\d{2})(\d)/, '$1/$2')
+            .substr(0, 5);
+    };
+    return (
+        <div className='space-y-6'>
+            {/* Card Preview */}
+            <motion.div
+                initial={{
+                    opacity: 0,
+                    scale: 0.95,
+                }}
+                animate={{
+                    opacity: 1,
+                    scale: 1,
+                }}
+                className='relative h-48 bg-gradient-to-br from-pink-500 via-purple-500 to-rose-500 rounded-2xl p-6 text-white overflow-hidden'
+            >
+                <div className='absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32' />
+                <div className='relative z-10 flex flex-col justify-between h-full'>
+                    <div className='flex justify-between items-start'>
+                        <CreditCardIcon className='w-10 h-10' />
+                        <div className='text-right'>
+                            <p className='text-xs opacity-80'>Visa</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p className='text-xl tracking-wider mb-4 font-mono'>
+                            {cardData.number || '•••• •••• •••• ••••'}
+                        </p>
+                        <div className='flex justify-between items-end'>
+                            <div>
+                                <p className='text-xs opacity-80 mb-1'>{t('payment.cardHolder')}</p>
+                                <p className='font-medium'>{cardData.name || t('payment.yourName')}</p>
+                            </div>
+                            <div>
+                                <p className='text-xs opacity-80 mb-1'>{t('payment.expires')}</p>
+                                <p className='font-medium'>{cardData.expiry || 'MM/YY'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+            {/* Card Form */}
+            <div className='grid md:grid-cols-2 gap-4'>
+                <div className='md:col-span-2'>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>{t('payment.cardNumber')}</label>
+                    <input
+                        type='text'
+                        name='number'
+                        value={cardData.number}
+                        onChange={(e) => {
+                            const formatted = formatCardNumber(e.target.value);
+                            handleChange({
+                                ...e,
+                                target: {
+                                    ...e.target,
+                                    name: 'number',
+                                    value: formatted,
+                                },
+                            } as React.ChangeEvent<HTMLInputElement>);
+                        }}
+                        placeholder='1234 5678 9012 3456'
+                        className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                    />
+                </div>
+                <div className='md:col-span-2'>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                        {t('payment.cardholderName')}
+                    </label>
+                    <input
+                        type='text'
+                        name='name'
+                        value={cardData.name}
+                        onChange={handleChange}
+                        placeholder='John Doe'
+                        className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                    />
+                </div>
+                <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>{t('payment.expiryDate')}</label>
+                    <input
+                        type='text'
+                        name='expiry'
+                        value={cardData.expiry}
+                        onChange={(e) => {
+                            const formatted = formatExpiry(e.target.value);
+                            handleChange({
+                                ...e,
+                                target: {
+                                    ...e.target,
+                                    name: 'expiry',
+                                    value: formatted,
+                                },
+                            } as React.ChangeEvent<HTMLInputElement>);
+                        }}
+                        placeholder='MM/YY'
+                        className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                    />
+                </div>
+                <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>CVC</label>
+                    <input
+                        type='text'
+                        name='cvc'
+                        value={cardData.cvc}
+                        onChange={handleChange}
+                        placeholder='123'
+                        maxLength={3}
+                        className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors'
+                    />
+                </div>
+            </div>
+            {/* 3D Secure Badge */}
+            <div className='flex items-center gap-2 p-3 bg-green-50 rounded-xl border border-green-200'>
+                <ShieldCheckIcon className='w-5 h-5 text-green-600' />
+                <span className='text-sm text-green-700 font-medium'>{t('payment.secureTransaction')}</span>
+            </div>
+            {/* Save Card Option */}
+            <label className='flex items-center gap-2 cursor-pointer'>
+                <input
+                    type='checkbox'
+                    name='saveCard'
+                    checked={cardData.saveCard}
+                    onChange={handleChange}
+                    className='w-4 h-4 rounded accent-pink-500'
+                />
+                <span className='text-sm text-gray-700'>{t('payment.saveCard')}</span>
+            </label>
+        </div>
+    );
+}

@@ -1,0 +1,335 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// User model - Registered members and administrators
+/// Guest users don't have User records - their info is stored in Booking/Review
+model User {
+  id             String     @id @default(uuid())
+  email          String     @unique
+  phone          String
+  fullName       String
+  role           UserRole   @default(MEMBER)
+  emailVerified  Boolean    @default(false)
+  supabaseAuthId String?    @unique
+  language       String     @default("vi")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  avatar         String?
+  blogPosts      BlogPost[]
+  bookings       Booking[]
+  reviews        Review[]
+
+  @@index([email])
+  @@index([supabaseAuthId])
+  @@index([role])
+}
+
+/// ServiceCategory model - Organizes services into groups
+model ServiceCategory {
+  id           String    @id @default(uuid())
+  name         String
+  slug         String    @unique
+  description  String?
+  displayOrder Int       @default(0)
+  icon         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  services     Service[]
+}
+
+/// Service model - Individual beauty treatments and procedures
+model Service {
+  id                String          @id @default(uuid())
+  name              String
+  slug              String          @unique
+  description       String
+  excerpt           String
+  duration          Int
+  price             Decimal         @db.Decimal(10, 2)
+  categoryId        String
+  images            String[]
+  featured          Boolean         @default(false)
+  active            Boolean         @default(true)
+  beforeAfterPhotos String[]
+  faqs              Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  benefits          String[]
+  longDescription   String?
+  reviews           Review[]
+  category          ServiceCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([featured])
+  @@index([active, featured])
+  @@index([active])
+  @@index([categoryId, active])
+  @@index([featured, active, name])
+}
+
+/// Branch model - Physical clinic locations
+model Branch {
+  id             String    @id @default(uuid())
+  name           String
+  slug           String    @unique
+  address        String
+  phone          String
+  email          String?
+  latitude       Decimal   @db.Decimal(10, 8)
+  longitude      Decimal   @db.Decimal(11, 8)
+  operatingHours Json
+  images         String[]
+  active         Boolean   @default(true)
+  description    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  bookings       Booking[]
+
+  @@index([slug])
+}
+
+/// Booking model - Appointment reservations (supports guest and member bookings)
+model Booking {
+  id                 String        @id @default(uuid())
+  referenceNumber    String        @unique
+  userId             String?
+  branchId           String
+  appointmentDate    DateTime
+  appointmentTime    String
+  status             BookingStatus @default(CONFIRMED)
+  guestName          String?
+  guestEmail         String?
+  guestPhone         String?
+  notes              String?
+  language           String        @default("vi")
+  cancellationReason String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  serviceIds         String[]
+  branch             Branch        @relation(fields: [branchId], references: [id])
+  user               User?         @relation(fields: [userId], references: [id])
+  payments           Payment[]
+
+  @@index([referenceNumber])
+  @@index([appointmentDate])
+  @@index([userId])
+  @@index([branchId])
+  @@index([status])
+}
+
+/// Payment model - Payment records for bookings
+model Payment {
+  id            String        @id @default(uuid())
+  bookingId     String
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("VND")
+  paymentType   PaymentType   @default(ATM)
+  status        PaymentStatus @default(PENDING)
+  transactionId String?       @unique
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([transactionId])
+  @@index([paymentType])
+}
+
+/// BlogCategory model - Organizes blog posts into topics
+model BlogCategory {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  posts       BlogPost[]
+}
+
+/// BlogPost model - Blog articles for content marketing and SEO
+model BlogPost {
+  id            String       @id @default(uuid())
+  title         String
+  slug          String       @unique
+  content       String
+  excerpt       String
+  featuredImage String
+  categoryId    String
+  authorId      String
+  published     Boolean      @default(false)
+  publishedAt   DateTime?
+  language      String       @default("vi")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  author        User         @relation(fields: [authorId], references: [id])
+  category      BlogCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([slug])
+  @@index([published])
+  @@index([categoryId])
+  @@index([published, categoryId])
+  @@index([published, publishedAt])
+  @@index([title])
+}
+
+/// Review model - Customer reviews and ratings for services
+model Review {
+  id            String   @id @default(uuid())
+  serviceId     String
+  userId        String?
+  customerName  String
+  email         String
+  rating        Int
+  reviewText    String
+  approved      Boolean  @default(false)
+  adminResponse String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  avatar        String?
+  service       Service  @relation(fields: [serviceId], references: [id])
+  user          User?    @relation(fields: [userId], references: [id])
+
+  @@index([approved])
+  @@index([createdAt])
+  @@index([serviceId, approved])
+  @@index([serviceId, approved, rating])
+  @@index([serviceId])
+}
+
+/// ContactSubmission model - Contact form submissions for admin review
+model ContactSubmission {
+  id          String        @id @default(uuid())
+  name        String
+  email       String
+  phone       String?
+  messageType MessageType
+  message     String
+  status      ContactStatus @default(PENDING)
+  adminNotes  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+/// SupportConversation model - Customer support chat conversations
+model SupportConversation {
+  id              String             @id @default(uuid())
+  customerName    String
+  customerEmail   String?
+  status          ConversationStatus @default(PENDING)
+  assignedStaffId String?
+  lastMessage     String?
+  unreadCount     Int                @default(0)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  messages        SupportMessage[]
+
+  @@index([status])
+  @@index([assignedStaffId])
+  @@index([updatedAt])
+}
+
+/// SupportMessage model - Individual messages in support conversations
+model SupportMessage {
+  id             String              @id @default(uuid())
+  conversationId String
+  sender         MessageSender
+  senderName     String?
+  content        String
+  createdAt      DateTime            @default(now())
+  conversation   SupportConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+model Voucher {
+  id                String      @id @default(uuid())
+  code              String      @unique
+  title             String
+  description       String?
+  discountType      VoucherType @default(PERCENTAGE)
+  discountValue     Decimal     @db.Decimal(10, 2)
+  minPurchaseAmount Decimal?    @db.Decimal(10, 2)
+  maxDiscountAmount Decimal?    @db.Decimal(10, 2)
+  usageLimit        Int?
+  usageCount        Int         @default(0)
+  validFrom         DateTime
+  validUntil        DateTime
+  isActive          Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@index([validUntil])
+}
+
+enum UserRole {
+  MEMBER
+  ADMIN
+  SUPER_ADMIN
+  STAFF
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  PENDING
+}
+
+enum MessageType {
+  GENERAL_INQUIRY
+  SERVICE_QUESTION
+  BOOKING_ASSISTANCE
+  FEEDBACK
+  OTHER
+}
+
+enum ContactStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum ConversationStatus {
+  PENDING
+  ACTIVE
+  CLOSED
+}
+
+enum MessageSender {
+  CUSTOMER
+  STAFF
+  AI
+}
+
+enum VoucherType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum PaymentType {
+  ATM
+  CLINIC
+  WALLET
+  CASH
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}

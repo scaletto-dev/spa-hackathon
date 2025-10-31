@@ -1,0 +1,70 @@
+{
+  "name": "@spa-hackathon/backend",
+  "version": "0.1.0",
+  "description": "Backend API for Beauty Clinic Care Website",
+  "main": "dist/server.js",
+  "private": true,
+  "prisma": {
+    "seed": "ts-node -r tsconfig-paths/register src/prisma/seed.ts",
+    "schema": "src/prisma/schema.prisma"
+  },
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec \"ts-node -r tsconfig-paths/register\" src/server.ts",
+    "build": "tsc",
+    "start": "node -r tsconfig-paths/register dist/server.js",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:db": "ts-node -r dotenv/config -r tsconfig-paths/register src/scripts/testDatabaseConnection.ts",
+    "test:auth": "ts-node -r dotenv/config -r tsconfig-paths/register src/scripts/testSupabaseAuth.ts",
+    "test:storage": "ts-node -r dotenv/config -r tsconfig-paths/register src/scripts/testSupabaseStorage.ts"
+  },
+  "keywords": [
+    "express",
+    "backend",
+    "api"
+  ],
+  "author": "Spa Hackathon Team",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/client": "^6.18.0",
+    "@supabase/supabase-js": "^2.76.1",
+    "@types/multer": "^2.0.0",
+    "@types/socket.io": "^3.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "express-validator": "^7.3.0",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2",
+    "resend": "^6.3.0",
+    "socket.io": "^4.8.1",
+    "triple-beam": "^1.4.1",
+    "winston": "^3.18.3",
+    "zod": "^3.22.4",
+    "vnpay": "^2.4.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/helmet": "^0.0.48",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.9.1",
+    "@types/supertest": "^6.0.3",
+    "eslint": "^8.50.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.1.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3"
+  }
+}
