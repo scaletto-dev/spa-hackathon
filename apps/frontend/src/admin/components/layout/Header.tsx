@@ -26,7 +26,10 @@ export function Header({ onMenuClick }: HeaderProps) {
    const notifRef = useRef<HTMLDivElement>(null);
    const profileRef = useRef<HTMLDivElement>(null);
 
-   // Close dropdowns when clicking outside
+   // Debug: Log user avatar when it changes
+   useEffect(() => {
+      console.log("👤 Header - Current user avatar:", user?.avatar);
+   }, [user?.avatar]); // Close dropdowns when clicking outside
    useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
          if (
