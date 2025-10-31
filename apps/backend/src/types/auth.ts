@@ -3,36 +3,46 @@
  * Type definitions for auth endpoints (registration, login, verification)
  */
 
-/**
- * Registration request body (with password)
- */
-export interface RegisterRequest {
+// ============================================================================
+// Request DTOs
+// ============================================================================
+
+export interface RegisterRequestDTO {
   email: string;
   password: string;
   fullName: string;
-  phone?: string; // Optional phone number
+  phone?: string;
 }
 
-/**
- * Registration response (OTP sent)
- */
-export interface RegisterResponse {
-  success: boolean;
-  message: string;
-}
-
-/**
- * OTP verification request body
- */
-export interface VerifyOtpRequest {
+export interface VerifyOtpRequestDTO {
   email: string;
   otp: string;
 }
 
-/**
- * User data returned after authentication
- */
-export interface AuthUserData {
+export interface LoginRequestDTO {
+  email: string;
+  password: string;
+}
+
+export interface ChangePasswordRequestDTO {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ForgotPasswordRequestDTO {
+  email: string;
+}
+
+export interface ResetPasswordRequestDTO {
+  token: string;
+  newPassword: string;
+}
+
+// ============================================================================
+// Response DTOs
+// ============================================================================
+
+export interface AuthUserDTO {
   id: string;
   email: string;
   fullName: string;
@@ -41,88 +51,40 @@ export interface AuthUserData {
   emailVerified: boolean;
 }
 
-/**
- * Session data with tokens
- */
-export interface AuthSession {
+export interface AuthSessionDTO {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
   expiresAt: number;
 }
 
-/**
- * OTP verification response (after registration)
- */
-export interface VerifyOtpResponse {
+export interface AuthenticatedResponseDTO {
   success: boolean;
-  user: AuthUserData;
-  session: AuthSession;
+  user: AuthUserDTO;
+  session: AuthSessionDTO;
 }
 
-/**
- * Login request body (with password)
- */
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-/**
- * Login response
- */
-export interface LoginResponse {
-  success: boolean;
-  user: AuthUserData;
-  session: AuthSession;
-}
-
-/**
- * Change password request body
- * Requires authentication
- */
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
-/**
- * Change password response
- */
-export interface ChangePasswordResponse {
+export interface MessageResponseDTO {
   success: boolean;
   message: string;
 }
 
-/**
- * Forgot password request body
- * Sends reset email
- */
-export interface ForgotPasswordRequest {
-  email: string;
-}
+// ============================================================================
+// Legacy type aliases (for backwards compatibility)
+// ============================================================================
 
-/**
- * Forgot password response
- */
-export interface ForgotPasswordResponse {
-  success: boolean;
-  message: string;
-}
+export type RegisterRequest = RegisterRequestDTO;
+export type VerifyOtpRequest = VerifyOtpRequestDTO;
+export type LoginRequest = LoginRequestDTO;
+export type ChangePasswordRequest = ChangePasswordRequestDTO;
+export type ForgotPasswordRequest = ForgotPasswordRequestDTO;
+export type ResetPasswordRequest = ResetPasswordRequestDTO;
+export type AuthUserData = AuthUserDTO;
+export type AuthSession = AuthSessionDTO;
 
-/**
- * Reset password request body
- * Used when user clicks link from email
- */
-export interface ResetPasswordRequest {
-  token: string;
-  newPassword: string;
-}
-
-/**
- * Reset password response
- */
-export interface ResetPasswordResponse {
-  success: boolean;
-  message: string;
-}
+export type RegisterResponse = MessageResponseDTO;
+export type VerifyOtpResponse = AuthenticatedResponseDTO;
+export type LoginResponse = AuthenticatedResponseDTO;
+export type ChangePasswordResponse = MessageResponseDTO;
+export type ForgotPasswordResponse = MessageResponseDTO;
+export type ResetPasswordResponse = MessageResponseDTO;

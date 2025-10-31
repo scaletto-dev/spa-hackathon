@@ -1,24 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
-import authService from '../services/auth.service';
+import authService from '@/services/auth.service';
 import {
-  RegisterRequest,
-  RegisterResponse,
-  VerifyOtpRequest,
-  VerifyOtpResponse,
-  LoginRequest,
-  LoginResponse,
-  ChangePasswordRequest,
-  ChangePasswordResponse,
-  ForgotPasswordRequest,
-  ForgotPasswordResponse,
-  ResetPasswordRequest,
-  ResetPasswordResponse,
-} from '../types/auth';
-import { ValidationError } from '../utils/errors';
+  RegisterRequestDTO,
+  VerifyOtpRequestDTO,
+  LoginRequestDTO,
+  ChangePasswordRequestDTO,
+  ForgotPasswordRequestDTO,
+  ResetPasswordRequestDTO,
+  MessageResponseDTO,
+  AuthenticatedResponseDTO,
+} from '@/types/auth';
 
 /**
  * Auth Controller
- * Handles authentication endpoints (registration, login, OTP verification)
+ * Handles authentication endpoints
+ * All validation is done by Zod middleware
+ * Controllers can assume valid, typed data from request
  */
 class AuthController {
   /**
@@ -27,59 +24,12 @@ class AuthController {
    */
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, password, fullName, phone } = req.body;
+      // Middleware already validated and stored in req.body
+      const validatedData = req.body as RegisterRequestDTO;
 
-      // Validation
-      if (!email || !password || !fullName) {
-        throw new ValidationError('Missing required fields: email, password, and fullName are required');
-      }
+      await authService.register(validatedData);
 
-      // Email format validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new ValidationError('Invalid email format');
-      }
-
-      // Password validation
-      if (password.length < 8) {
-        throw new ValidationError('Password must be at least 8 characters');
-      }
-
-      if (password.length > 100) {
-        throw new ValidationError('Password must not exceed 100 characters');
-      }
-
-      // Full name validation
-      if (fullName.trim().length < 2) {
-        throw new ValidationError('Full name must be at least 2 characters');
-      }
-
-      if (fullName.length > 100) {
-        throw new ValidationError('Full name must not exceed 100 characters');
-      }
-
-      // Phone validation (optional)
-      if (phone) {
-        const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-        if (!phoneRegex.test(phone)) {
-          throw new ValidationError('Invalid phone format');
-        }
-
-        if (phone.length < 8 || phone.length > 20) {
-          throw new ValidationError('Phone number must be between 8 and 20 characters');
-        }
-      }
-
-      const registrationData: RegisterRequest = {
-        email: email.toLowerCase().trim(),
-        password,
-        fullName: fullName.trim(),
-        phone: phone ? phone.trim() : undefined,
-      };
-
-      await authService.register(registrationData);
-
-      const response: RegisterResponse = {
+      const response: MessageResponseDTO = {
         success: true,
         message: 'Please check your email for verification code',
       };
@@ -96,32 +46,12 @@ class AuthController {
    */
   async verifyOtp(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, otp } = req.body;
+      // Middleware already validated and stored in req.body
+      const validatedData = req.body as VerifyOtpRequestDTO;
 
-      // Validation
-      if (!email || !otp) {
-        throw new ValidationError('Missing required fields: email and otp are required');
-      }
+      const { user, session } = await authService.verifyOtp(validatedData);
 
-      // Email format validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new ValidationError('Invalid email format');
-      }
-
-      // OTP format validation (6 digits)
-      if (!/^\d{6}$/.test(otp)) {
-        throw new ValidationError('OTP must be a 6-digit code');
-      }
-
-      const verifyData: VerifyOtpRequest = {
-        email: email.toLowerCase().trim(),
-        otp: otp.trim(),
-      };
-
-      const { user, session } = await authService.verifyOtp(verifyData.email, verifyData.otp);
-
-      const response: VerifyOtpResponse = {
+      const response: AuthenticatedResponseDTO = {
         success: true,
         user,
         session,
@@ -139,27 +69,12 @@ class AuthController {
    */
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, password } = req.body;
+      // Middleware already validated and stored in req.body
+      const validatedData = req.body as LoginRequestDTO;
 
-      // Validation
-      if (!email || !password) {
-        throw new ValidationError('Email and password are required');
-      }
+      const result = await authService.login(validatedData);
 
-      // Email format validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new ValidationError('Invalid email format');
-      }
-
-      const loginData: LoginRequest = {
-        email: email.toLowerCase().trim(),
-        password,
-      };
-
-      const result = await authService.login(loginData);
-
-      const response: LoginResponse = {
+      const response: AuthenticatedResponseDTO = {
         success: true,
         user: result.user,
         session: result.session,
@@ -181,32 +96,15 @@ class AuthController {
       const userId = req.user?.id;
 
       if (!userId) {
-        throw new ValidationError('User ID not found in request. Authentication required.');
+        throw new Error('User ID not found in request. Authentication required.');
       }
 
-      const { currentPassword, newPassword } = req.body;
+      // Middleware already validated and stored in req.body
+      const validatedData = req.body as ChangePasswordRequestDTO;
 
-      // Validation
-      if (!currentPassword || !newPassword) {
-        throw new ValidationError('Current password and new password are required');
-      }
+      await authService.changePassword(userId, validatedData);
 
-      if (currentPassword === newPassword) {
-        throw new ValidationError('New password must be different from current password');
-      }
-
-      const changePasswordData: ChangePasswordRequest = {
-        currentPassword,
-        newPassword,
-      };
-
-      await authService.changePassword(
-        userId,
-        changePasswordData.currentPassword,
-        changePasswordData.newPassword
-      );
-
-      const response: ChangePasswordResponse = {
+      const response: MessageResponseDTO = {
         success: true,
         message: 'Password changed successfully',
       };
@@ -224,27 +122,13 @@ class AuthController {
    */
   async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email } = req.body;
+      // Middleware already validated and stored in req.body
+      const validatedData = req.body as ForgotPasswordRequestDTO;
 
-      // Validation
-      if (!email) {
-        throw new ValidationError('Email is required');
-      }
-
-      // Email format validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new ValidationError('Invalid email format');
-      }
-
-      const forgotPasswordData: ForgotPasswordRequest = {
-        email: email.toLowerCase().trim(),
-      };
-
-      await authService.forgotPassword(forgotPasswordData.email);
+      await authService.forgotPassword(validatedData);
 
       // Always return success message (security: don't reveal if email exists)
-      const response: ForgotPasswordResponse = {
+      const response: MessageResponseDTO = {
         success: true,
         message: 'If an account exists with this email, a password reset link has been sent',
       };
@@ -262,32 +146,12 @@ class AuthController {
    */
   async resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { token, newPassword } = req.body;
+      // Middleware already validated and stored in req.body
+      const validatedData = req.body as ResetPasswordRequestDTO;
 
-      // Validation
-      if (!token || !newPassword) {
-        throw new ValidationError('Token and new password are required');
-      }
+      await authService.resetPassword(validatedData);
 
-      if (newPassword.length < 8) {
-        throw new ValidationError('Password must be at least 8 characters');
-      }
-
-      if (newPassword.length > 100) {
-        throw new ValidationError('Password must not exceed 100 characters');
-      }
-
-      const resetPasswordData: ResetPasswordRequest = {
-        token,
-        newPassword,
-      };
-
-      await authService.resetPassword(
-        resetPasswordData.token,
-        resetPasswordData.newPassword
-      );
-
-      const response: ResetPasswordResponse = {
+      const response: MessageResponseDTO = {
         success: true,
         message: 'Password reset successfully',
       };

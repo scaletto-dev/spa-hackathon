@@ -1,237 +1,111 @@
-import prisma from '../config/database';
-import { NotFoundError, ValidationError } from '../utils/errors';
-import { CreateReviewDto, ReviewResponseDto } from '../types/review';
+import { NotFoundError } from '@/utils/errors';
+import { reviewRepository } from '@/repositories/review.repository';
+import { ReviewDTO, ReviewWithServiceDTO, ServiceRatingDTO, ReviewsListResponse } from '@/types/review';
 
 /**
- * Review Service
- *
- * Business logic for review management
+ * Transform review to ReviewDTO
  */
+function toReviewDTO(review: any): ReviewDTO {
+  return {
+    id: review.id,
+    serviceId: review.serviceId,
+    userId: review.userId,
+    customerName: review.customerName,
+    customerAvatar: review.avatar || null,
+    email: review.email,
+    rating: review.rating,
+    reviewText: review.reviewText,
+    approved: review.approved,
+    adminResponse: review.adminResponse || null,
+    createdAt: review.createdAt.toISOString(),
+    updatedAt: review.updatedAt.toISOString(),
+  };
+}
 
-class ReviewService {
-    /**
-     * Get all approved reviews with optional filtering and pagination
-     */
-    async getAllReviews(
-        page: number = 1,
-        limit: number = 20,
-        serviceId?: string,
-        sort: 'recent' | 'rating' | 'helpful' = 'recent',
-        rating?: number,
-    ) {
-        const skip = (page - 1) * limit;
+/**
+ * Transform review with service to ReviewWithServiceDTO
+ */
+function toReviewWithServiceDTO(review: any): ReviewWithServiceDTO {
+  return {
+    ...toReviewDTO(review),
+    service: review.service,
+  };
+}
 
-        // Build where clause
-        const where: any = {
-            approved: true, // Only show approved reviews
-        };
+export class ReviewService {
+  /**
+   * Get all approved reviews with optional filtering and pagination
+   */
+  async getAllReviews(
+    page: number = 1,
+    limit: number = 20,
+    serviceId?: string,
+    sort: 'recent' | 'rating' = 'recent',
+    rating?: number
+  ): Promise<ReviewsListResponse> {
+    const result = await reviewRepository.findAllWithPagination(
+      page,
+      limit,
+      serviceId,
+      sort,
+      rating
+    );
 
-        if (serviceId) {
-            where.serviceId = serviceId;
-        }
+    return {
+      data: result.reviews.map(toReviewWithServiceDTO),
+      meta: {
+        total: result.total,
+        page,
+        limit,
+        totalPages: result.totalPages,
+      },
+    };
+  }
 
-        if (rating !== undefined) {
-            where.rating = rating;
-        }
+  /**
+   * Get a single review by ID
+   */
+  async getReviewById(id: string): Promise<ReviewWithServiceDTO> {
+    const review = await reviewRepository.findById(id);
 
-        // Build orderBy clause
-        let orderBy: any = {};
-        switch (sort) {
-            case 'rating':
-                orderBy = { rating: 'desc' };
-                break;
-            case 'recent':
-            default:
-                orderBy = { createdAt: 'desc' };
-                break;
-        }
-
-        const [reviews, total] = await Promise.all([
-            prisma.review.findMany({
-                where,
-                orderBy,
-                skip,
-                take: limit,
-                include: {
-                    service: {
-                        select: {
-                            id: true,
-                            name: true,
-                        },
-                    },
-                    user: {
-                        select: {
-                            id: true,
-                            fullName: true,
-                        },
-                    },
-                },
-            }),
-            prisma.review.count({ where }),
-        ]);
-
-        // Transform data
-        const data: ReviewResponseDto[] = reviews.map((review) => ({
-            id: review.id,
-            serviceId: review.serviceId,
-            customerName: review.customerName,
-            customerAvatar: review.avatar || null,
-            rating: review.rating,
-            reviewText: review.reviewText,
-            approved: review.approved,
-            adminResponse: review.adminResponse,
-            createdAt: review.createdAt.toISOString(),
-            updatedAt: review.updatedAt.toISOString(),
-            service: review.service,
-        }));
-
-        return {
-            data,
-            meta: {
-                page,
-                limit,
-                total,
-                totalPages: Math.ceil(total / limit),
-            },
-        };
+    if (!review) {
+      throw new NotFoundError(`Review with ID '${id}' not found`);
     }
 
-    /**
-     * Get a single review by ID
-     */
-    async getReviewById(id: string): Promise<ReviewResponseDto> {
-        const review = await prisma.review.findUnique({
-            where: { id },
-            include: {
-                service: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                user: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
-            },
-        });
+    return toReviewWithServiceDTO(review);
+  }
 
-        if (!review) {
-            throw new NotFoundError('Review not found');
-        }
+  /**
+   * Create a new review (pending approval)
+   */
+  async createReview(data: any): Promise<ReviewWithServiceDTO> {
+    // Validate service exists
+    const serviceExists = await reviewRepository.serviceExists(data.serviceId);
 
-        return {
-            id: review.id,
-            serviceId: review.serviceId,
-            customerName: review.customerName,
-            customerAvatar: review.avatar || null,
-            rating: review.rating,
-            reviewText: review.reviewText,
-            approved: review.approved,
-            adminResponse: review.adminResponse,
-            createdAt: review.createdAt.toISOString(),
-            updatedAt: review.updatedAt.toISOString(),
-            service: review.service,
-        };
+    if (!serviceExists) {
+      throw new NotFoundError(`Service with ID '${data.serviceId}' not found`);
     }
 
-    /**
-     * Create a new review (pending approval)
-     */
-    async createReview(data: CreateReviewDto): Promise<ReviewResponseDto> {
-        // Validate rating
-        if (data.rating < 1 || data.rating > 5) {
-            throw new ValidationError('Rating must be between 1 and 5');
-        }
+    const review = await reviewRepository.create({
+      serviceId: data.serviceId,
+      userId: data.userId || null,
+      customerName: data.customerName,
+      email: data.email,
+      avatar: data.avatar || null,
+      rating: data.rating,
+      reviewText: data.reviewText,
+    });
 
-        // Validate review text length
-        if (data.reviewText.length > 500) {
-            throw new ValidationError('Review text must be less than 500 characters');
-        }
+    return toReviewWithServiceDTO(review);
+  }
 
-        // Check if service exists
-        const service = await prisma.service.findUnique({
-            where: { id: data.serviceId },
-        });
-
-        if (!service) {
-            throw new NotFoundError('Service not found');
-        }
-
-        // Create review (pending approval)
-        const review = await prisma.review.create({
-            data: {
-                serviceId: data.serviceId,
-                userId: data.userId || null,
-                customerName: data.customerName,
-                email: data.email,
-                avatar: data.avatar || null,
-                rating: data.rating,
-                reviewText: data.reviewText,
-                approved: false, // Pending moderation
-            },
-            include: {
-                service: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                user: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
-            },
-        });
-
-        return {
-            id: review.id,
-            serviceId: review.serviceId,
-            customerName: review.customerName,
-            customerAvatar: review.avatar || null,
-            rating: review.rating,
-            reviewText: review.reviewText,
-            approved: review.approved,
-            adminResponse: review.adminResponse,
-            createdAt: review.createdAt.toISOString(),
-            updatedAt: review.updatedAt.toISOString(),
-            service: review.service,
-        };
-    }
-
-    /**
-     * Get average rating for a service
-     */
-    async getServiceRating(serviceId: string) {
-        const reviews = await prisma.review.findMany({
-            where: {
-                serviceId,
-                approved: true,
-            },
-            select: {
-                rating: true,
-            },
-        });
-
-        if (reviews.length === 0) {
-            return {
-                averageRating: 0,
-                totalReviews: 0,
-            };
-        }
-
-        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-        const averageRating = totalRating / reviews.length;
-
-        return {
-            averageRating: Math.round(averageRating * 10) / 10, // Round to 1 decimal
-            totalReviews: reviews.length,
-        };
-    }
+  /**
+   * Get average rating for a service
+   */
+  async getServiceRating(serviceId: string): Promise<ServiceRatingDTO> {
+    const result = await reviewRepository.getServiceRating(serviceId);
+    return result;
+  }
 }
 
 export default new ReviewService();

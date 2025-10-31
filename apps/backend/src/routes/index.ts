@@ -9,6 +9,7 @@ import authRoutes from './auth.routes';
 import reviewsRoutes from './reviews.routes';
 import blogRoutes from './blog.routes';
 import userRoutes from './user.routes';
+import vouchersRoutes from './vouchers.route';
 import aiRoutes from './ai.routes';
 import supportRoutes from './support.routes';
 import bookingRoutes from './booking.routes';
@@ -51,6 +52,7 @@ export function configureRoutes(app: Express): void {
     app.use('/api/v1/user', userRoutes);
     app.use('/api/v1/members', memberRoutes);
     app.use('/api/v1/blog', blogRoutes);
+    app.use('/api/v1/vouchers', vouchersRoutes);
     app.use('/api/v1/ai', aiRoutes);
     app.use('/api/v1/support', supportRoutes);
     app.use('/api/v1/bookings', bookingRoutes);

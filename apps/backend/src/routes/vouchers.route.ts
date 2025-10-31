@@ -4,7 +4,9 @@
  */
 
 import { Router } from 'express';
-import voucherController from '../controllers/voucher.controller';
+import voucherController from '@/controllers/voucher.controller';
+import { validate } from '@/middleware/validate';
+import { getVoucherByCodeSchema, validateVoucherSchema } from '@/validators/voucher.validator';
 
 const router = Router();
 
@@ -22,7 +24,7 @@ router.get('/active', voucherController.getActiveVouchers.bind(voucherController
  * 
  * Response: { success, data: Voucher, timestamp }
  */
-router.get('/code/:code', voucherController.getVoucherByCode.bind(voucherController));
+router.get('/code/:code', validate(getVoucherByCodeSchema, 'params'), voucherController.getVoucherByCode.bind(voucherController));
 
 /**
  * POST /api/v1/vouchers/validate
@@ -31,6 +33,6 @@ router.get('/code/:code', voucherController.getVoucherByCode.bind(voucherControl
  * Request: { code, purchaseAmount }
  * Response: { success, data: { valid, discount, message }, timestamp }
  */
-router.post('/validate', voucherController.validateVoucher.bind(voucherController));
+router.post('/validate', validate(validateVoucherSchema, 'body'), voucherController.validateVoucher.bind(voucherController));
 
 export default router;
