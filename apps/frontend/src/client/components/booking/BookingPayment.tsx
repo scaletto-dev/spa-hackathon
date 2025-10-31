@@ -67,9 +67,12 @@ export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev 
     const handleConfirmPayment = async () => {
         setIsProcessing(true);
         try {
-            // Update booking data with payment info
+            // Update booking data with payment info and amounts
             updateBookingData({
                 paymentMethod: selectedPayment,
+                subtotalAmount: subtotal,
+                taxAmount: tax,
+                totalAmount: total,
             });
 
             // Proceed to next step

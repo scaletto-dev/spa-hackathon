@@ -51,6 +51,9 @@ export interface BookingData {
     paymentMethod?: string | null;
     promoCode?: string | null;
     paymentDetailsComplete?: boolean;
+    subtotalAmount?: number; // Price before tax
+    taxAmount?: number; // Tax (8%)
+    totalAmount?: number; // Total price including tax
 }
 
 export interface BookingStepProps {

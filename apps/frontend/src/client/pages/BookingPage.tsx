@@ -219,6 +219,7 @@ export function BookingPage() {
                 guestName: isLoggedIn ? '' : bookingData.name || '',
                 guestEmail: isLoggedIn ? '' : bookingData.email || '',
                 guestPhone: isLoggedIn ? '' : bookingData.phone || '',
+                paymentAmount: bookingData.totalAmount || 0, // Include total with tax
             };
 
             console.log('Submitting booking with payload:', payload);
@@ -259,7 +260,26 @@ export function BookingPage() {
             }
         } catch (error) {
             console.error('Error submitting booking:', error);
-            toast.error('Đặt lịch thất bại. Vui lòng thử lại.');
+
+            // Extract error message from backend response
+            let errorMessage = 'Đặt lịch thất bại. Vui lòng thử lại.';
+
+            if (error instanceof Error) {
+                // Check if it's an axios error with response data
+                const axiosError = error as any;
+                if (axiosError.response?.data) {
+                    const { message, error: errorType } = axiosError.response.data;
+                    if (message) {
+                        errorMessage = message;
+                    } else if (errorType) {
+                        errorMessage = errorType;
+                    }
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+            }
+
+            toast.error(errorMessage);
         }
     };
 
