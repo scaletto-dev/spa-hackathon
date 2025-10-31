@@ -12,6 +12,7 @@ import userRoutes from './user.routes';
 import aiRoutes from './ai.routes';
 import supportRoutes from './support.routes';
 import bookingRoutes from './booking.routes';
+import paymentRoutes from './payments';
 import { configureAdminRoutes } from './admin';
 
 /**
@@ -49,6 +50,7 @@ export function configureRoutes(app: Express): void {
     app.use('/api/v1/ai', aiRoutes);
     app.use('/api/v1/support', supportRoutes);
     app.use('/api/v1/bookings', bookingRoutes);
+    app.use('/api/v1/payments', paymentRoutes);
 
     // Admin routes
     const adminRouter = Router();

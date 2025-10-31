@@ -1,72 +1,86 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, ArrowLeftIcon, SparklesIcon, LockIcon } from 'lucide-react';
-import { OrderSummary } from '../payment/OrderSummary';
-import { PaymentMethodSelector } from '../payment/PaymentMethodSelector';
-import { PaymentSuccess } from '../payment/PaymentSuccess';
+import { ArrowRightIcon, ArrowLeftIcon, CreditCardIcon, BanknoteIcon, CheckCircleIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BookingStepProps } from './types';
 
-export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
-    const [selectedMethod, setSelectedMethod] = useState(bookingData.paymentMethod || '');
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [promoCode, setPromoCode] = useState('');
-    const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+interface PaymentOption {
+  id: 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER';
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+}
 
-    // Update bookingData immediately when payment method changes
-    const handleMethodChange = (method: string) => {
-        setSelectedMethod(method);
-        // If 'clinic' (pay at clinic), mark payment details as complete automatically
-        const isClinic = method === 'clinic';
-        updateBookingData({
-            paymentMethod: method,
-            paymentDetailsComplete: isClinic ? true : false,
-        });
-    };
-    
-    // Calculate total price from selected services or single service
+export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev }: BookingStepProps) {
+    const { t } = useTranslation('common');
+    const [selectedPayment, setSelectedPayment] = useState<'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER'>(
+        bookingData.paymentMethod as any || 'CLINIC'
+    );
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    // Calculate total from services
     let subtotal = 0;
     if (bookingData.selectedServices && bookingData.selectedServices.length > 0) {
+        // Calculate from actual selected services with real prices
         subtotal = bookingData.selectedServices.reduce((sum, service) => {
             const price = typeof service.price === 'number' ? service.price : parseFloat(String(service.price)) || 0;
             return sum + price;
         }, 0);
     } else if (bookingData.service?.price) {
+        // Fallback to single service if no selectedServices
         const price = typeof bookingData.service.price === 'number' 
             ? bookingData.service.price 
             : parseFloat(String(bookingData.service.price)) || 0;
         subtotal = price;
     }
     
-    const discount = appliedPromo ? subtotal * 0.1 : 0;
-    const tax = (subtotal - discount) * 0.08;
-    const total = subtotal - discount + tax;
+    const tax = Math.round(subtotal * 0.08);
+    const total = subtotal + tax;
 
-    // Check if payment is ready
-    const isPaymentReady = () => {
-        if (!selectedMethod) return false;
-        if (selectedMethod === 'clinic') return true; // No additional details needed
-        return bookingData.paymentDetailsComplete === true;
+    const paymentOptions: PaymentOption[] = [
+        {
+            id: 'CLINIC',
+            label: t('payment.payAtClinic') || 'Pay at Clinic',
+            description: 'Pay directly when you visit',
+            icon: <BanknoteIcon className='w-6 h-6' />,
+        },
+        {
+            id: 'ATM',
+            label: t('payment.creditCard') || 'ATM Card',
+            description: 'Visa, Mastercard, etc.',
+            icon: <CreditCardIcon className='w-6 h-6' />,
+        },
+        {
+            id: 'WALLET',
+            label: t('payment.eWallet') || 'E-Wallet',
+            description: 'Momo, Zalopay',
+            icon: <BanknoteIcon className='w-6 h-6' />,
+        },
+    ];
+
+    const handleSelectPayment = (paymentType: 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER') => {
+        setSelectedPayment(paymentType);
+        updateBookingData({ paymentMethod: paymentType });
     };
 
-    const handlePayment = async () => {
+    const handleConfirmPayment = async () => {
         setIsProcessing(true);
-        // Simulate payment processing
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        setIsProcessing(false);
-        setShowSuccess(true);
-        updateBookingData({
-            paymentMethod: selectedMethod,
-            promoCode: appliedPromo,
-        });
-        // Auto-advance after showing success
-        setTimeout(() => {
+        try {
+            // Update booking data with payment info
+            updateBookingData({
+                paymentMethod: selectedPayment,
+            });
+            
+            // Proceed to next step
+            await new Promise((resolve) => setTimeout(resolve, 500));
             onNext();
-        }, 3000);
+        } catch (error) {
+            console.error('Error confirming payment:', error);
+        } finally {
+            setIsProcessing(false);
+        }
     };
-    if (showSuccess) {
-        return <PaymentSuccess bookingData={bookingData} total={total} />;
-    }
+
     return (
         <motion.div
             initial={{
@@ -86,142 +100,115 @@ export function BookingPayment({ bookingData, updateBookingData, onNext, onPrev 
             }}
         >
             <div className='mb-8'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-4'>Payment Method</h2>
-                <p className='text-gray-600'>Choose your preferred payment method to complete your booking</p>
+                <h2 className='text-2xl font-bold text-gray-800 mb-2'>{t('payment.selectPaymentMethod') || 'Payment Method'}</h2>
+                <p className='text-gray-600'>{'Choose how you want to pay for your appointment'}</p>
             </div>
-            {/* AI Recommendation Banner */}
-            <motion.div
-                initial={{
-                    opacity: 0,
-                    y: -10,
-                }}
-                animate={{
-                    opacity: 1,
-                    y: 0,
-                }}
-                className='mb-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-200/50'
-            >
-                <div className='flex items-center gap-3'>
-                    <SparklesIcon className='w-5 h-5 text-pink-500 flex-shrink-0' />
-                    <p className='text-sm text-gray-700'>
-                        <span className='font-medium'>AI recommends</span> e-wallet for fastest checkout based on your
-                        preferences
+
+            {/* Payment Options Grid */}
+            <div className='grid md:grid-cols-3 gap-4 mb-8'>
+                {paymentOptions.map((option) => (
+                    <motion.button
+                        key={option.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleSelectPayment(option.id)}
+                        className={`relative p-6 rounded-2xl border-2 transition-all text-left ${
+                            selectedPayment === option.id
+                                ? 'border-pink-500 bg-pink-50 shadow-lg'
+                                : 'border-gray-200 bg-white hover:border-pink-200'
+                        }`}
+                    >
+                        <div className={`flex items-center gap-3 mb-3 ${
+                            selectedPayment === option.id ? 'text-pink-600' : 'text-gray-400'
+                        }`}>
+                            {option.icon}
+                            <h3 className='font-semibold text-gray-800'>{option.label}</h3>
+                        </div>
+                        <p className='text-sm text-gray-500'>{option.description}</p>
+                        
+                        {selectedPayment === option.id && (
+                            <div className='absolute top-3 right-3'>
+                                <CheckCircleIcon className='w-5 h-5 text-pink-500' />
+                            </div>
+                        )}
+                    </motion.button>
+                ))}
+            </div>
+
+            {/* Order Summary */}
+            <div className='bg-white/70 backdrop-blur-xl rounded-2xl border border-white/50 p-6 mb-8'>
+                <h3 className='text-lg font-semibold text-gray-800 mb-4'>{t('payment.orderSummary') || 'Order Summary'}</h3>
+                
+                <div className='space-y-3 mb-4'>
+                    <div className='flex justify-between text-gray-600'>
+                        <span>{t('payment.subtotal') || 'Subtotal'}</span>
+                        <span className='font-medium'>₫ {subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className='flex justify-between text-gray-600'>
+                        <span>{t('payment.tax') || 'Tax (8%)'}</span>
+                        <span className='font-medium'>₫ {tax.toLocaleString()}</span>
+                    </div>
+                </div>
+
+                <div className='border-t pt-3 flex justify-between'>
+                    <span className='font-semibold text-gray-800'>{t('payment.total') || 'Total'}</span>
+                    <span className='text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent'>
+                        ₫ {total.toLocaleString()}
+                    </span>
+                </div>
+            </div>
+
+            {/* Payment Details Info */}
+            {selectedPayment === 'CLINIC' && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className='bg-blue-50 rounded-2xl p-4 mb-8 border border-blue-200'
+                >
+                    <p className='text-sm text-blue-800'>
+                        <span className='font-semibold'>💳 Pay at Clinic:</span> You can pay when you arrive at our clinic. We accept cash and card payments.
                     </p>
-                </div>
-            </motion.div>
-            <div className='grid lg:grid-cols-3 gap-6 mb-8'>
-                {/* Payment Method Selector - Takes 2 columns */}
-                <div className='lg:col-span-2'>
-                    <PaymentMethodSelector
-                        selectedMethod={selectedMethod}
-                        setSelectedMethod={handleMethodChange}
-                        promoCode={promoCode}
-                        setPromoCode={setPromoCode}
-                        appliedPromo={appliedPromo}
-                        setAppliedPromo={setAppliedPromo}
-                        onPaymentDetailsChange={(isComplete: boolean) => {
-                            updateBookingData({ paymentDetailsComplete: isComplete });
-                        }}
-                    />
-                </div>
-                {/* Order Summary - Takes 1 column */}
-                <div className='lg:col-span-1'>
-                    <OrderSummary
-                        bookingData={bookingData}
-                        subtotal={subtotal}
-                        discount={discount}
-                        tax={tax}
-                        total={total}
-                        appliedPromo={appliedPromo}
-                    />
-                </div>
-            </div>
-            {/* Trust Indicators */}
-            <div className='flex items-center justify-center gap-4 mb-8 text-sm text-gray-500'>
-                <div className='flex items-center gap-1'>
-                    <LockIcon className='w-4 h-4' />
-                    <span>Secure checkout</span>
-                </div>
-                <span>•</span>
-                <span>PCI-compliant</span>
-                <span>•</span>
-                <span className='text-pink-600 font-medium'>Test mode</span>
-            </div>
+                </motion.div>
+            )}
+
             {/* Action Buttons */}
-            <div className='flex flex-col sm:flex-row justify-between gap-4'>
+            <div className='flex gap-4'>
                 <motion.button
-                    whileHover={{
-                        scale: 1.05,
-                    }}
-                    whileTap={{
-                        scale: 0.95,
-                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={onPrev}
-                    className='flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg'
+                    className='flex items-center gap-2 px-8 py-4 bg-white border-2 border-pink-200 text-gray-700 rounded-full font-semibold shadow-lg'
                 >
                     <ArrowLeftIcon className='w-5 h-5' />
-                    Back
+                    {t('common.back') || 'Back'}
                 </motion.button>
+
                 <motion.button
-                    whileHover={{
-                        scale: isPaymentReady() ? 1.05 : 1,
-                    }}
-                    whileTap={{
-                        scale: isPaymentReady() ? 0.95 : 1,
-                    }}
-                    onClick={handlePayment}
-                    disabled={isProcessing || !isPaymentReady()}
-                    className={`flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
-                        isProcessing || !isPaymentReady()
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleConfirmPayment}
+                    disabled={isProcessing || !selectedPayment}
+                    className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold shadow-xl ${
+                        isProcessing || !selectedPayment
+                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:shadow-2xl'
                     }`}
                 >
                     {isProcessing ? (
                         <>
                             <motion.div
-                                animate={{
-                                    rotate: 360,
-                                }}
-                                transition={{
-                                    duration: 1,
-                                    repeat: Infinity,
-                                    ease: 'linear',
-                                }}
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                                 className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
                             />
                             Processing...
                         </>
                     ) : (
                         <>
-                            Pay & Confirm Appointment
+                            {t('common.continue') || 'Continue'}
                             <ArrowRightIcon className='w-5 h-5' />
                         </>
                     )}
-                </motion.button>
-            </div>
-            {/* Mobile Sticky Footer */}
-            <div className='fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-200 p-4 lg:hidden z-40'>
-                <div className='flex items-center justify-between mb-3'>
-                    <span className='text-gray-600'>Total</span>
-                    <span className='text-2xl font-bold text-gray-800'>${total.toFixed(2)}</span>
-                </div>
-                <motion.button
-                    whileHover={{
-                        scale: isPaymentReady() ? 1.02 : 1,
-                    }}
-                    whileTap={{
-                        scale: isPaymentReady() ? 0.98 : 1,
-                    }}
-                    onClick={handlePayment}
-                    disabled={isProcessing || !isPaymentReady()}
-                    className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-full font-semibold shadow-xl ${
-                        isProcessing || !isPaymentReady()
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
-                    }`}
-                >
-                    {isProcessing ? 'Processing...' : `Pay $${total.toFixed(2)}`}
                 </motion.button>
             </div>
         </motion.div>

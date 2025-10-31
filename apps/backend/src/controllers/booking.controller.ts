@@ -27,7 +27,7 @@ export class BookingController {
   /**
    * POST /api/v1/bookings
    * Create a new booking (guest or member)
-   * Now supports multiple services
+   * Now supports multiple services and payment
    */
   async createBooking(
     req: Request<{}, {}, CreateBookingRequest>,
@@ -35,7 +35,7 @@ export class BookingController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { serviceIds, branchId, appointmentDate, appointmentTime, notes, language, guestName, guestEmail, guestPhone } = req.body;
+      const { serviceIds, branchId, appointmentDate, appointmentTime, notes, language, guestName, guestEmail, guestPhone, paymentType, paymentAmount } = req.body;
 
       // Validate required fields
       if (!serviceIds || !Array.isArray(serviceIds) || serviceIds.length === 0) {
@@ -64,6 +64,8 @@ export class BookingController {
           ...(guestName && { guestName }),
           ...(guestEmail && { guestEmail }),
           ...(guestPhone && { guestPhone }),
+          ...(paymentType && { paymentType }),
+          ...(paymentAmount && { paymentAmount }),
         },
         userId
       );

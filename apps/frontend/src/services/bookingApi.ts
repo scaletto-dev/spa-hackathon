@@ -38,6 +38,8 @@ export interface CreateBookingPayload {
   notes?: string;
   userId?: string; // For authenticated users
   language: string;
+  paymentType?: 'ATM' | 'CLINIC' | 'WALLET' | 'CASH' | 'BANK_TRANSFER';
+  paymentAmount?: number; // Total amount in VND
 }
 
 export interface BookingResponse {
@@ -141,3 +143,79 @@ export const getBookingByReference = async (referenceNumber: string): Promise<an
     throw error;
   }
 };
+
+// ============= Payment API =============
+
+export interface PaymentResponse {
+  id: string;
+  bookingId: string;
+  amount: number;
+  currency: string;
+  paymentType: string;
+  status: string;
+  transactionId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Create payment for a booking
+export const createPayment = async (
+  bookingId: string,
+  amount: number,
+  paymentType: string,
+  notes?: string
+): Promise<PaymentResponse> => {
+  try {
+    const response = await axios.post(`${API_BASE}/payments`, {
+      bookingId,
+      amount,
+      paymentType,
+      notes,
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Failed to create payment:', error);
+    throw error;
+  }
+};
+
+// Get payment by ID
+export const getPaymentById = async (paymentId: string): Promise<PaymentResponse> => {
+  try {
+    const response = await axios.get(`${API_BASE}/payments/${paymentId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Failed to fetch payment:', error);
+    throw error;
+  }
+};
+
+// Get all payments for a booking
+export const getPaymentsByBooking = async (bookingId: string): Promise<PaymentResponse[]> => {
+  try {
+    const response = await axios.get(`${API_BASE}/payments/bookings/${bookingId}`);
+    return response.data.data || [];
+  } catch (error) {
+    console.error('Failed to fetch payments:', error);
+    throw error;
+  }
+};
+
+// Update payment status (for payment gateway callbacks)
+export const updatePaymentStatus = async (
+  paymentId: string,
+  status: string,
+  transactionId?: string
+): Promise<PaymentResponse> => {
+  try {
+    const response = await axios.patch(`${API_BASE}/payments/${paymentId}/status`, {
+      status,
+      transactionId,
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Failed to update payment status:', error);
+    throw error;
+  }
+};
+
