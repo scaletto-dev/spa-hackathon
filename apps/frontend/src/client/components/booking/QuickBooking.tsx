@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { InlinePaymentMethod } from './InlinePaymentMethod';
 import { AvailabilityIndicator } from './AvailabilityIndicator';
 import { QuickBookingConfirmationModal } from './QuickBookingConfirmationModal';
+import { AITimeSlotSelector } from './AITimeSlotSelector';
 import { BookingData } from './types';
 import { createBooking, createVNPayPaymentUrl, getBranchById, getBranches, Branch } from '../../../services/bookingApi';
 import { getServices } from '../../../services/servicesApi';
@@ -490,6 +491,20 @@ export function QuickBooking({ bookingData, updateBookingData, onSwitchToFull }:
                                         className='w-full px-4 py-3 bg-white/80 border-2 border-pink-100 rounded-2xl focus:outline-none focus:border-pink-300 transition-colors disabled:opacity-50'
                                     />
                                 </div>
+
+                                {/* AI Time Slot Selector - Show when date and branch are selected */}
+                                {formData.date && formData.branch && (
+                                    <div className='col-span-full'>
+                                        <AITimeSlotSelector
+                                            date={formData.date}
+                                            branchId={formData.branch.id}
+                                            {...(formData.service && { serviceIds: [formData.service.id] })}
+                                            onTimeSlotSelected={(time: string) => handleChange('time', time)}
+                                            {...(formData.time && { currentTimeSlot: formData.time })}
+                                        />
+                                    </div>
+                                )}
+
                                 <div>
                                     <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
                                         {t('bookings.selectTimeLabel')}
