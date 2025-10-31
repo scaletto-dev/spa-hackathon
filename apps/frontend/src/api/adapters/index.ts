@@ -5,4 +5,5 @@
 
 export * from "./member";
 export * from "./admin";
-export * from "./upload";
+// Note: uploadAPI is exported from both admin.ts and upload.ts
+// Import explicitly where needed to avoid ambiguity

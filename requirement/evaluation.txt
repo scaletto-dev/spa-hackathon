@@ -1,0 +1,45 @@
+Ma trận chấm điểm chi tiết – Vòng loại EES AI Hackathon
+Cuộc thi EES AI Hackathon (vòng loại) sử dụng 3 nhóm tiêu chí để đánh giá các đội thi, với trọng số như sau:
+A. Hoàn thành các chức năng (50 điểm)
+Mỗi chức năng chính của hệ thống được tối đa 5 điểm, tổng cộng 10 chức năng = 50 điểm. Ban giám khảo đánh giá dựa trên mức độ hoàn thiện các yêu cầu của từng chức năng. (Lưu ý: Đội thi cần đảm bảo file setup.md kèm theo có thể chạy được dự án trên máy BTC để các chức năng được kiểm chứng đầy đủ.)
+Chức năng (tiêu chí)	Yêu cầu chính	Điểm tối đa	Hướng dẫn chấm điểm	
+ 
+
+Trang chủ (Homepage)	Banner giới thiệu, Dịch vụ nổi bật, Hình ảnh cơ sở, Nút đặt lịch nhanh	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Menu dịch vụ (Services)	Danh sách dịch vụ dạng lưới, phân loại rõ ràng, trang chi tiết từng dịch vụ	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Đặt lịch khám (Booking)	Form đặt lịch (dịch vụ, chi nhánh, ngày giờ, thông tin), xác nhận email/SMS, hỗ trợ KH vãng lai & thành viên	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Đăng ký/Đăng nhập (Membership)	Đăng ký (tên, email, mật khẩu, OTP), Đăng nhập, Trang cá nhân (hồ sơ, lịch sử, ưu đãi)	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Giới thiệu chi nhánh (Branches)	Danh sách chi nhánh (tên, địa chỉ, ảnh), trang chi tiết (bản đồ, giờ làm, liên hệ)	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Liên hệ (Contact)	Form liên hệ (tên, email, nội dung), thông tin liên hệ (địa chỉ, điện thoại, email), bản đồ Google Maps	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Đa ngôn ngữ (Multilingual)	Nút chuyển đổi ngôn ngữ, nội dung dịch đầy đủ, tự động đổi ngôn ngữ theo trình duyệt	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Blog/Tin tức (Blog/News)	Danh sách bài viết (tiêu đề, hình ảnh, mô tả), trang chi tiết bài viết, phân loại chủ đề	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Đánh giá & phản hồi (Feedback)	Form gửi đánh giá (tên, nội dung, điểm), hiển thị đánh giá, admin duyệt/phản hồi	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+Hỗ trợ trực tuyến (Live chat)	Live chat với nhân viên, Chatbot FAQ tự động, tích hợp booking qua chat	5	Hoàn thành toàn bộ: 5 điểm. Hoàn thành một phần: 2-4 điểm (tùy mức độ). Chưa làm hoặc lỗi nghiêm trọng: 0 điểm.	 
+B. Chất lượng code (20 điểm)
+Đánh giá mức độ chuyên nghiệp và sạch sẽ của code do đội thi cung cấp. Yêu cầu tuân thủ coding convention và best practice theo ngôn ngữ sử dụng. Các tiêu chí cụ thể và thang điểm như sau:
+Tiêu chí (code)	Yêu cầu chi tiết	Điểm tối đa	Hướng dẫn chấm điểm	
+ 
+
+Quy ước & Style	Tuân thủ coding convention, format code thống nhất (tên biến, hàm, cấu trúc thư mục nhất quán). Sử dụng linting/formatting tool nếu có.	5	Hoàn toàn theo chuẩn: 5 điểm. Đa số đúng chuẩn, vài lỗi nhỏ: 3-4 điểm. Nhiều lỗi convention, code khó đọc: 1-2 điểm. Không tuân thủ: 0 điểm.	 
+Cấu trúc & Modular	Code có cấu trúc rõ ràng, tách module/hàm hợp lý, tránh lặp code. Dễ mở rộng và bảo trì.	5	Cấu trúc rất rõ ràng, modular tốt: 5 điểm. Cấu trúc tương đối, còn vài phần rối: 3-4 điểm. Cấu trúc kém, nhiều phần chồng chéo: 1-2 điểm. Không có cấu trúc rõ: 0 điểm.	 
+Độ rõ ràng & Bình luận	Code dễ đọc, đặt tên dễ hiểu; có comment giải thích những đoạn logic phức tạp. Dễ dàng cho người khác tiếp quản.	5	Rất rõ ràng, comment đầy đủ khi cần: 5 điểm. Khá rõ ràng, ít comment: 3-4 điểm. Khó đọc, thiếu comment: 1-2 điểm. Rất khó hiểu, không comment: 0 điểm.	 
+Xử lý lỗi & Tối ưu	Xử lý ngoại lệ, validate input đầy đủ; code tối ưu hiệu năng, không rò rỉ tài nguyên.	5	Xử lý lỗi triệt để, hiệu năng tốt: 5 điểm. Xử lý cơ bản, còn một số trường hợp thiếu: 3-4 điểm. Xử lý lỗi sơ sài, code có thể kém tối ưu: 1-2 điểm. Bỏ qua xử lý lỗi quan trọng: 0 điểm.	 
+C. Chất lượng tài liệu (30 điểm)
+Đánh giá mức độ đầy đủ và rõ ràng của các tài liệu thiết kế mà đội thi nộp. Theo yêu cầu đề bài, vòng loại đòi hỏi 6 tài liệu chính nằm trong thư mục docs. Mỗi tài liệu được chấm tối đa 5 điểm, tổng cộng 30 điểm cho phần này.
+Các tài liệu cần có gồm: Kiến trúc, Cơ sở dữ liệu, API, UI/UX, Testing, Triển khai (Deployment).
+Tài liệu (thiết kế)	Nội dung yêu cầu	Điểm tối đa	Hướng dẫn chấm điểm	
+ 
+
+Kiến trúc tổng thể	Sơ đồ kiến trúc hệ thống và mô tả các thành phần chính, luồng tương tác.	5	Tài liệu đầy đủ, rõ ràng: 5 điểm. Có nhưng thiếu chi tiết hoặc khó hiểu: 2-4 điểm. Không nộp tài liệu này: 0 điểm.	 
+Cơ sở dữ liệu (Database)	Thiết kế cơ sở dữ liệu: sơ đồ ERD, cấu trúc bảng, mô tả quan hệ dữ liệu.	5	Tài liệu đầy đủ, rõ ràng: 5 điểm. Sơ sài hoặc thiếu phần: 2-4 điểm. Không có tài liệu: 0 điểm.	 
+API	Tài liệu API: danh sách endpoints, input/output, phương thức, mô tả chức năng.	5	Tài liệu đầy đủ, rõ ràng: 5 điểm. Thiếu chi tiết hoặc khó hiểu: 2-4 điểm. Không có tài liệu: 0 điểm.	 
+UI/UX	Thiết kế giao diện: wireframe hoặc mockup chính, mô tả trải nghiệm người dùng.	5	Tài liệu đầy đủ, rõ ràng: 5 điểm. Chưa chi tiết hoặc chưa rõ: 2-4 điểm. Không có tài liệu: 0 điểm.	 
+Testing	Kế hoạch kiểm thử: liệt kê các trường hợp test chính, phương pháp UT/IT, kết quả dự kiến.	5	Tài liệu đầy đủ, rõ ràng: 5 điểm. Chưa đầy đủ (thiếu test case hoặc mô tả): 2-4 điểm. Không có tài liệu: 0 điểm.	 
+Triển khai (Deployment)	Hướng dẫn triển khai: môi trường chạy, cách build/cài đặt, cấu hình cần thiết.	5	Tài liệu đầy đủ, rõ ràng: 5 điểm. Thiếu thông tin (VD: còn thiếu bước cài đặt): 2-4 điểm. Không có tài liệu: 0 điểm.	 
+D. Bonus points (Max 10 Points)
+Tùy thuộc vào đánh giá của BGK mà đội có thể được cộng thêm điểm tối đa 10 điểm. Một số tiêu chí có thể được cho vào để đánh giá:
+Trải nghiệm người dùng khi sử dụng sản phẩm
+Giao diện đẹp
+Sự sáng tạo trong cách làm
+Tối ưu chi phí
+Lưu ý chung: Đội thi nộp bài muộn so với deadline sẽ bị trừ 10% tổng điểm đạt được. Ban giám khảo có thể sử dụng hỗ trợ AI trong quá trình chấm để đảm bảo nhanh chóng và khách quan. Với ma trận chấm điểm chi tiết như trên, hy vọng việc chấm điểm sẽ minh bạch, nhất quán và tạo động lực cho các đội hoàn thành tốt cả về chức năng lẫn chất lượng trình bày sản phẩm của mình.

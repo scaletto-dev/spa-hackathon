@@ -18,7 +18,6 @@ export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create
     const [loading, setLoading] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
-    const [featuredImageUrl, setFeaturedImageUrl] = useState<string>('');
     const [showAIModal, setShowAIModal] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -54,7 +53,6 @@ export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create
                 slug: post.slug || '',
             });
             setImagePreview(post.featuredImage || '');
-            setFeaturedImageUrl(post.featuredImage || '');
         } else {
             // Reset form for create mode
             setFormData({
@@ -65,7 +63,6 @@ export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create
                 slug: '',
             });
             setImagePreview('');
-            setFeaturedImageUrl('');
             setImageFile(null);
         }
     }, [post, mode, isOpen]);
@@ -157,7 +154,7 @@ export function BlogPostModal({ isOpen, onClose, onSuccess, post, mode = 'create
                     content: formData.content,
                     categoryId: formData.categoryId,
                     slug: slug,
-                    // authorId will be set automatically by backend from JWT token
+                    authorId: 'admin', // Default admin ID, backend will override from JWT
                     ...(featuredImage && { featuredImage }),
                 });
                 toast.success('Bài viết đã được tạo thành công!');

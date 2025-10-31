@@ -70,7 +70,7 @@ export function QuickBookingConfirmationModal({ bookingData, onClose }: QuickBoo
                 <div className='bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-6 mb-6 space-y-4'>
                     <div>
                         <p className='text-sm text-gray-500 mb-1'>{t('bookings.serviceLabel')}</p>
-                        <p className='font-semibold text-gray-800'>{bookingData.service?.title}</p>
+                        <p className='font-semibold text-gray-800'>{bookingData.service?.name}</p>
                     </div>
                     <div className='flex items-center gap-2'>
                         <MapPinIcon className='w-4 h-4 text-pink-500' />

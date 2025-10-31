@@ -1,327 +1,154 @@
-# Beauty Clinic Care Website
+# Ì≤é Beauty Clinic Care Website
 
-Spa booking platform with React frontend and Node.js backend.
+**Hackathon EES AI 2025** | **Team: Scaletto Dev** | **October 31, 2025**
 
-## Quick Start
+> Spa booking platform with AI-powered features - React + Node.js + PostgreSQL + Gemini AI
+
+---
+
+## Ì∫Ä Quick Start (5 minutes)
 
 ```bash
+# 1. Install dependencies
 npm install
+
+# 2. Run development servers (Frontend + Backend)
 npm run dev
 ```
 
-Frontend: http://localhost:5173
-Backend: http://localhost:3000
+**Access:**
+- Ìºê Frontend: http://localhost:5173
+- Ì¥ß Backend: http://localhost:3000/api/health
 
-## Database Setup (Prisma)
+---
 
-This project uses Prisma ORM with PostgreSQL (via Supabase).
+## Ì≥ö Full Documentation
 
-### Environment Variables
+**Ì±â [docs/](./docs/) - Complete documentation package**
 
-Copy `.env.example` to `.env` and fill in your Supabase credentials:
+### Quick Links:
 
-```bash
-cp .env.example .env
+1. **[00-START-HERE/](./docs/00-START-HERE/)** ‚≠ê **Start Here for Judges**
+   - [Setup Guide](./docs/00-START-HERE/setup.md) - Installation & running
+   - [Feature Overview](./docs/00-START-HERE/FEATURE_OVERVIEW.md) - All implemented features
+   - [Submission Checklist](./docs/00-START-HERE/SUBMISSION_CHECKLIST.md) - Evaluation criteria
+
+2. **[01-FOR-JUDGES/](./docs/01-FOR-JUDGES/)** Ì≥ã **Product & Architecture**
+   - System architecture, PRD, UI/UX design
+   - [KIEN_TRUC_TONG_THE.md](./docs/01-FOR-JUDGES/KIEN_TRUC_TONG_THE.md) - Vietnamese architecture doc
+
+3. **[02-TECHNICAL-SPECS/](./docs/02-TECHNICAL-SPECS/)** Ì¥ß **API & Technical Docs**
+   - Complete API reference (150+ endpoints)
+   - Frontend routes map (40+ routes)
+   - Database schema documentation
+
+4. **[03-DEVELOPMENT-DOCS/](./docs/03-DEVELOPMENT-DOCS/)** Ì±®‚ÄçÌ≤ª **Development**
+   - AI features implementation
+   - Project management & QA docs
+
+---
+
+## ‚ú® Key Features
+
+- ‚úÖ **6-Step Booking Flow** - Intuitive service booking with guest & member support
+- ‚úÖ **AI Chat Assistant** - Gemini-powered chatbot for customer support
+- ‚úÖ **Payment Integration** - VNPay sandbox payment gateway
+- ‚úÖ **Admin Dashboard** - Full CRUD management for services, bookings, staff
+- ‚úÖ **Authentication** - Email/Password + Google OAuth via Supabase
+- ‚úÖ **Email Notifications** - Booking confirmations via Resend API
+- ‚úÖ **Multilingual** - Vietnamese + English i18n support
+- ‚úÖ **Responsive Design** - Mobile-first with Tailwind CSS
+
+---
+
+## Ìª†Ô∏è Tech Stack
+
+**Frontend:**
+- React 18 + TypeScript
+- Vite + React Router v6
+- Tailwind CSS + shadcn/ui
+- i18next (multilingual)
+
+**Backend:**
+- Node.js + Express + TypeScript
+- Prisma ORM + PostgreSQL (Supabase)
+- JWT Authentication
+- Google Gemini AI
+
+**Infrastructure:**
+- Monorepo structure
+- Supabase (Database + Auth)
+- VNPay (Payment)
+- Resend (Email)
+
+---
+
+## Ì≥ä Project Statistics
+
+| Metric | Count |
+|--------|-------|
+| Total API Endpoints | 150+ |
+| Frontend Routes | 40+ |
+| Database Tables | 13 |
+| AI Features | 8 |
+| Pages Implemented | 30+ |
+| Languages Supported | 2 (vi, en) |
+
+---
+
+## Ì±• Demo Accounts
+
+```
+Admin:
+Email: doanhaiduydev@gmail.com
+Password: haiduy10
+
+Member:
+Email: getsdtfree4@gmail.com
+Password: baolol123
 ```
 
-Required environment variables:
-- `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_ANON_KEY` - Supabase anonymous/public key
-- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (keep secret!)
-- `DATABASE_URL` - PostgreSQL connection string from Supabase
+**Ì≤° Tip:** Register a new account with your real email to test full booking flow with email notifications!
 
-Get these values from your Supabase dashboard:
-1. Go to [Supabase Dashboard](https://app.supabase.com)
-2. **API Keys**: Settings ‚Üí API
-3. **Database URL**: Settings ‚Üí Database ‚Üí Connection string (URI mode)
+---
 
-### Prisma Commands
+## Ì∑ÇÔ∏è Project Structure
 
-```bash
-# Validate schema
-npx prisma validate
-
-# Format schema
-npx prisma format
-
-# Generate Prisma Client (run after schema changes)
-npx prisma generate
-
-# Create and apply migrations
-npx prisma migrate dev --name migration_name
-
-# Apply migrations to production
-npx prisma migrate deploy
-
-# Open Prisma Studio (database GUI)
-npx prisma studio
+```
+spa-hackathon/
+‚îú‚îÄ‚îÄ apps/
+‚îÇ   ‚îú‚îÄ‚îÄ frontend/        # React + Vite application
+‚îÇ   ‚îî‚îÄ‚îÄ backend/         # Express + Prisma API
+‚îú‚îÄ‚îÄ docs/                # Ì≥ö Complete documentation
+‚îÇ   ‚îú‚îÄ‚îÄ 00-START-HERE/   # ‚≠ê Start here for judges
+‚îÇ   ‚îú‚îÄ‚îÄ 01-FOR-JUDGES/   # Product & architecture
+‚îÇ   ‚îú‚îÄ‚îÄ 02-TECHNICAL-SPECS/  # API & technical docs
+‚îÇ   ‚îî‚îÄ‚îÄ 03-DEVELOPMENT-DOCS/ # Development docs
+‚îî‚îÄ‚îÄ package.json         # Monorepo root
 ```
 
-### Database Models
+---
 
-The schema includes 9 models:
-- **User** - Members and administrators
-- **ServiceCategory** - Service categorization
-- **Service** - Beauty treatments and procedures
-- **Branch** - Clinic locations
-- **Booking** - Appointment reservations (supports guest and member bookings)
-- **BlogCategory** - Blog post categorization
-- **BlogPost** - Content marketing articles
-- **Review** - Customer ratings and feedback
-- **ContactSubmission** - Contact form inquiries
+## Ì≥û Support
 
-See `prisma/schema.prisma` for complete model definitions.
+**Team:** Scaletto Dev  
+**GitHub:** https://github.com/scaletto-dev/spa-hackathon  
+**Contact:** doanhaiduydev@gmail.com
 
-## Supabase Setup
+---
 
-This project uses Supabase for:
-- **PostgreSQL Database** - Managed database with automatic backups
-- **Authentication** - Email OTP (passwordless) authentication
-- **Storage** - Image hosting for services, branches, and blog posts
+## ÌæØ For Judges
 
-### Initial Setup
+**Evaluation Path (15-20 minutes):**
 
-1. **Create Supabase Project**
-   - Sign up at [https://app.supabase.com](https://app.supabase.com)
-   - Create a new project (choose region closest to your location)
-   - Wait for project provisioning (~2 minutes)
+1. Read [docs/00-START-HERE/FEATURE_OVERVIEW.md](./docs/00-START-HERE/FEATURE_OVERVIEW.md) (3 min)
+2. Follow [docs/00-START-HERE/setup.md](./docs/00-START-HERE/setup.md) to run (5-7 min)
+3. Test booking flow: http://localhost:5173/booking (5 min)
+4. Review architecture: [docs/01-FOR-JUDGES/architecture.md](./docs/01-FOR-JUDGES/architecture.md) (3 min)
+5. Browse API docs: [docs/02-TECHNICAL-SPECS/api/BE_API_OVERVIEW.md](./docs/02-TECHNICAL-SPECS/api/BE_API_OVERVIEW.md) (2 min)
 
-2. **Configure Environment Variables**
-   - Copy credentials from Supabase dashboard to `.env`
-   - See `.env.example` for required variables
+**Full documentation navigation:** [docs/README.md](./docs/README.md)
 
-3. **Run Database Migration**
-   ```bash
-   npx prisma migrate dev --name init
-   ```
+---
 
-4. **Configure Storage Bucket** (via Supabase Dashboard)
-   - Go to Storage ‚Üí Create bucket ‚Üí Name: "images"
-   - Set bucket to **Public**
-   - Create folders: `services/`, `branches/`, `blog/`, `profile/`
-
-5. **Enable Email OTP Authentication** (via Supabase Dashboard)
-   - Go to Authentication ‚Üí Providers
-   - Enable Email provider
-   - Enable "Email OTP" option
-   - Set OTP expiry to 10 minutes
-
-### Test Scripts
-
-Verify your Supabase setup with test scripts:
-
-```bash
-# Test database connection and CRUD operations
-npm run test:db --workspace=@spa-hackathon/backend
-
-# Test authentication flow (requires updating TEST_EMAIL in script)
-npm run test:auth --workspace=@spa-hackathon/backend
-
-# Test storage upload/download (requires storage bucket setup)
-npm run test:storage --workspace=@spa-hackathon/backend
-```
-
-### Supabase Dashboard Links
-
-Quick access to common dashboard pages:
-- **Database**: `https://app.supabase.com/project/[PROJECT_REF]/database/tables`
-- **Auth**: `https://app.supabase.com/project/[PROJECT_REF]/auth/users`
-- **Storage**: `https://app.supabase.com/project/[PROJECT_REF]/storage/buckets`
-- **API Docs**: `https://app.supabase.com/project/[PROJECT_REF]/api`
-
-### Authentication Flow
-
-**Email OTP (Passwordless) Flow:**
-
-1. User enters email ‚Üí Backend calls `signInWithOTP(email)`
-2. Supabase sends 6-digit OTP code to email
-3. User enters code ‚Üí Backend calls `verifyOTP(email, code)`
-4. Backend receives JWT tokens (access + refresh)
-5. Frontend stores tokens and makes authenticated requests
-
-**Helper Functions** (in `apps/backend/src/lib/supabaseAuth.ts`):
-- `signUpWithEmail(email, password, metadata)` - Create new user
-- `signInWithOTP(email)` - Send OTP code via email
-- `verifyOTP(email, token)` - Verify OTP and get tokens
-- `getCurrentUser(accessToken)` - Get user from JWT
-- `signOut(accessToken)` - Invalidate session
-- `getUserByEmail(email)` - Admin: find user by email
-- `updateUserMetadata(userId, metadata)` - Admin: update user
-- `deleteUser(userId)` - Admin: delete user
-
-### Storage Patterns
-
-**Upload Image:**
-```typescript
-import { supabase } from './lib/supabase';
-
-const { data, error } = await supabase.storage
-  .from('images')
-  .upload('services/image.jpg', fileBuffer, {
-    contentType: 'image/jpeg'
-  });
-
-const { data: { publicUrl } } = supabase.storage
-  .from('images')
-  .getPublicUrl('services/image.jpg');
-```
-
-**File Organization:**
-- Services: `images/services/{uuid}_main.jpg`
-- Branches: `images/branches/{uuid}_facility_1.jpg`
-- Blog: `images/blog/{uuid}_featured.jpg`
-- Profile: `images/profile/{userId}_avatar.jpg`
-
-### Troubleshooting
-
-**"Can't reach database server" error:**
-- Verify DATABASE_URL format includes connection pooler
-- Check password has no special characters needing encoding
-- Ensure project is not paused (Supabase free tier pauses after 1 week inactivity)
-
-**"Email not received" for OTP:**
-- Check spam/junk folder
-- Wait 2-3 minutes (email delivery can be delayed)
-- Use Gmail (better deliverability than temporary email services)
-
-**"Storage upload failed" error:**
-- Verify "images" bucket exists and is set to Public
-- Check file size (<5MB for free tier)
-- Ensure file MIME type is allowed (image/jpeg, image/png, image/webp)
-
-## API Server
-
-The backend API is built with Express.js and provides a RESTful interface for the frontend application.
-
-### Starting the Server
-
-```bash
-# Development mode (with auto-reload)
-npm run dev --workspace=@spa-hackathon/backend
-
-# Production build
-npm run build --workspace=@spa-hackathon/backend
-npm run start --workspace=@spa-hackathon/backend
-```
-
-Server will start on `http://localhost:3000` (configurable via `PORT` environment variable).
-
-### API Endpoints
-
-**Health Check:**
-```bash
-GET /api/health
-Response: {
-  "status": "ok",
-  "timestamp": "2025-10-29T10:00:00.000Z",
-  "uptime": 12345
-}
-```
-
-**Available Endpoints (v1):**
-- `GET /api/v1/services` - Get all services (coming in Story 1.6)
-- `GET /api/v1/services/:id` - Get service by ID
-- `GET /api/v1/branches` - Get all branches (coming in Story 2.5)
-- `GET /api/v1/branches/:id` - Get branch by ID
-- `POST /api/v1/auth/signup` - Register new user (coming in Epic 4)
-- `POST /api/v1/auth/signin` - Send OTP for login
-- `POST /api/v1/auth/verify-otp` - Verify OTP code
-- `POST /api/v1/bookings` - Create booking (coming in Epic 3)
-- `GET /api/v1/bookings/:referenceNumber` - Get booking details
-
-Note: Endpoints marked "coming in Story X.X" currently return `501 Not Implemented`.
-
-### Middleware Stack
-
-The API server includes comprehensive middleware:
-
-1. **Security (Helmet)** - HTTP security headers
-2. **CORS** - Cross-origin requests from frontend (localhost:5173)
-3. **Body Parsing** - JSON and URL-encoded
-4. **Request Logging (Winston)** - Logs all HTTP requests with timestamps
-5. **Rate Limiting** - Protects against abuse
-   - Auth endpoints: 5 requests/minute per IP
-   - General endpoints: 100 requests/minute per IP
-6. **Error Handling** - Consistent error responses with proper HTTP status codes
-
-### Error Response Format
-
-All API errors follow a consistent format:
-
-```json
-{
-  "error": "ValidationError",
-  "message": "Invalid email format",
-  "statusCode": 400,
-  "timestamp": "2025-10-29T10:00:00.000Z",
-  "details": {
-    "field": "email",
-    "value": "invalid-email"
-  }
-}
-```
-
-### Testing API Endpoints
-
-Using PowerShell:
-```powershell
-# Health check
-Invoke-WebRequest -Uri "http://localhost:3000/api/health" -Method GET
-
-# Test CORS (from frontend origin)
-Invoke-WebRequest -Uri "http://localhost:3000/api/v1/services" -Method GET `
-  -Headers @{"Origin"="http://localhost:5173"}
-
-# Test rate limiting (send 6 requests quickly)
-1..6 | ForEach-Object {
-  Invoke-WebRequest -Uri "http://localhost:3000/api/v1/auth/signin" -Method POST
-}
-```
-
-Using curl (if available):
-```bash
-# Health check
-curl http://localhost:3000/api/health
-
-# Test endpoint with JSON body
-curl -X POST http://localhost:3000/api/v1/bookings \
-  -H "Content-Type: application/json" \
-  -d '{"serviceId": "123", "branchId": "456"}'
-```
-
-### Environment Variables
-
-Required for API server:
-```env
-# Server Configuration
-PORT=3000
-NODE_ENV=development
-
-# CORS Configuration
-FRONTEND_URL=http://localhost:5173
-
-# Database and Supabase (from previous section)
-DATABASE_URL=...
-SUPABASE_URL=...
-SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-```
-
-### Logging
-
-Winston logger outputs:
-- **Development**: Colorized console logs with timestamps
-- **Production**: JSON logs to `logs/` directory
-
-Log levels: error, warn, info, http, debug
-
-Example log output:
-```
-2025-10-29 10:00:00 [info]: üöÄ Backend server running on http://localhost:3000
-2025-10-29 10:00:05 [http]: GET /api/health 200 - 5ms
-2025-10-29 10:00:10 [warn]: GET /api/invalid 404 - 2ms
-2025-10-29 10:00:15 [error]: POST /api/v1/bookings 500 - 15ms
-```
-
-
-
+**‚≠ê Thank you for evaluating our project!**

@@ -57,7 +57,7 @@ export const userApi = {
 };
 
 // Re-export types for convenience
-export type { UserProfile as MemberProfile, UpdateProfileRequest };
+export type { UserProfile as MemberProfile };
 
 // Export legacy functions for backward compatibility
 export const getMemberProfile = userApi.getProfile;

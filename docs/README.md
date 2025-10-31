@@ -1,154 +1,113 @@
-# ��� Beauty Clinic Care - Documentation
+# ��� Beauty Clinic Care - Documentation
 
-This folder contains comprehensive documentation for the Beauty Clinic Care platform.
-
----
-
-## ��� Quick Access
-
-### For Backend Developers
-
--   **[🚀 AI Implementation Guide](./AI-IMPLEMENTATION-GUIDE.md)** ⭐ **START HERE**
-    -   Gemini vs OpenAI comparison
-    -   Complete Gemini SDK code examples
-    -   Cost analysis (~$5/month)
-    -   Best practices & setup guide
--   **[AI Features Quick Reference](./AI-FEATURES-QUICK-REFERENCE.md)** ⚡
-    -   Quick API overview for 8 AI features
-    -   Code examples and database schemas
-    -   Sprint-by-sprint implementation plan
--   **[AI Smart Scheduling API](./AI-SMART-SCHEDULING-API.md)** 🗓️
-    -   "Let AI choose the best slot" feature
-    -   Integration guide for QuickBooking & Admin modal
-    -   Request/response examples with code
-
-### For Product/Architecture Review
-
--   **[AI Features Full Specification](./architecture/ai-features-specification.md)** ���
-    -   Complete technical specification
-    -   Detailed request/response schemas
-    -   Security, metrics, and success criteria
+**Hackathon EES AI 2025** | **Team: Scaletto Dev** | **Submission Date: October 31, 2025**
 
 ---
 
-## ��� Documentation Structure
+## ��� Quick Start for Judges
+
+### 1️⃣ **[00-START-HERE/](./00-START-HERE/)** ⭐ **BẮT ĐẦU TẠI ĐÂY**
+
+Các tài liệu quan trọng nhất để đánh giá dự án:
+
+- **[README.md](./00-START-HERE/README.md)** - Tổng quan dự án và navigation
+- **[setup.md](./00-START-HERE/setup.md)** - Hướng dẫn cài đặt và chạy (5 phút)
+- **[FEATURE_OVERVIEW.md](./00-START-HERE/FEATURE_OVERVIEW.md)** - Danh sách tính năng đã implement
+
+### 2️⃣ **[01-FOR-JUDGES/](./01-FOR-JUDGES/)** �� **TÀI LIỆU CHO BTC**
+
+Thông tin chi tiết về sản phẩm và kiến trúc:
+
+- **[brief.md](./01-FOR-JUDGES/brief.md)** - Project brief và objectives
+- **[prd.md](./01-FOR-JUDGES/prd.md)** - Product Requirements Document
+- **[architecture.md](./01-FOR-JUDGES/architecture.md)** - System architecture overview
+- **[ui-ux.md](./01-FOR-JUDGES/ui-ux.md)** - UI/UX design principles
+- **[prd/](./01-FOR-JUDGES/prd/)** - Chi tiết các epics và requirements
+- **[architecture/](./01-FOR-JUDGES/architecture/)** - Technical architecture specs
+
+### 3️⃣ **[02-TECHNICAL-SPECS/](./02-TECHNICAL-SPECS/)** ��� **KỸ THUẬT CHI TIẾT**
+
+Tài liệu kỹ thuật cho developers:
+
+- **[api/](./02-TECHNICAL-SPECS/api/)** - Backend API documentation
+  - **[BE_API_OVERVIEW.md](./02-TECHNICAL-SPECS/api/BE_API_OVERVIEW.md)** - Complete API reference (28 modules, 150+ endpoints)
+- **[routes/](./02-TECHNICAL-SPECS/routes/)** - Frontend routing
+  - **[FE_ROUTE_MAP.md](./02-TECHNICAL-SPECS/routes/FE_ROUTE_MAP.md)** - Complete route tree with guards
+- **[api-spec/](./02-TECHNICAL-SPECS/api-spec/)** - API specifications
+  - **[changelog.md](./02-TECHNICAL-SPECS/api-spec/changelog.md)** - API changes and TODOs
+  - **[openapi.yml](./02-TECHNICAL-SPECS/api-spec/openapi.yml)** - OpenAPI 3.1 spec
+- **[FRONTEND_STRUCTURE.md](./02-TECHNICAL-SPECS/FRONTEND_STRUCTURE.md)** - Frontend code structure
+
+### 4️⃣ **[03-DEVELOPMENT-DOCS/](./03-DEVELOPMENT-DOCS/)** ���‍��� **TÀI LIỆU PHÁT TRIỂN**
+
+Internal documentation và AI features:
+
+- **AI-FEATURES-*.md** - AI features implementation plans
+- **[project-management/](./03-DEVELOPMENT-DOCS/project-management/)** - Project management docs
+- **[qa/](./03-DEVELOPMENT-DOCS/qa/)** - QA and testing docs
+- **[stories/](./03-DEVELOPMENT-DOCS/stories/)** - User stories
+- **SUPABASE_ONBOARDING.md** - Supabase setup guide
+
+---
+
+## ��� Evaluation Path (Đề xuất)
+
+**Thời gian: 15-20 phút**
 
 ```
-docs/
-├── README.md (You are here)
-├── AI-FEATURES-QUICK-REFERENCE.md          ��� Quick start for AI APIs
-├── architecture/
-│   ├── index.md                            Architecture overview
-│   ├── ai-features-specification.md        Complete AI features spec
-│   ├── high-level-architecture.md
-│   ├── tech-stack.md
-│   ├── data-models.md
-│   └── ...
-├── api-spec/
-│   ├── openapi.yml                         OpenAPI 3.1 specification
-│   ├── README.md
-│   └── ...
-├── prd/
-│   ├── index.md                            Product requirements
-│   ├── epic-*.md                           Feature epics
-│   └── ...
-└── project-management/
-    ├── README.md
-    └── ...
+1. Đọc 00-START-HERE/README.md (2 min)
+   ↓ Hiểu tổng quan dự án
+
+2. Đọc 00-START-HERE/FEATURE_OVERVIEW.md (3 min)
+   ↓ Xem danh sách tính năng
+
+3. Chạy theo 00-START-HERE/setup.md (5-7 min)
+   ↓ npm install → npm run dev → Test booking
+
+4. Đọc 01-FOR-JUDGES/architecture.md (3 min)
+   ↓ Hiểu kiến trúc hệ thống
+
+5. Browse 02-TECHNICAL-SPECS/api/BE_API_OVERVIEW.md (2 min)
+   ↓ Xem API coverage
+
+6. Test các tính năng chính (5 min)
+   ↓ Booking flow → Payment → Admin panel → AI chat
 ```
 
 ---
 
-## ��� AI Features Overview
+## ��� Project Statistics
 
-The platform includes **8 AI-powered features** ready for backend implementation:
-
-| Priority   | Feature                        | Status       | Docs Link                                                                                                      |
-| ---------- | ------------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------- |
-| ��� HIGH   | **Chat Widget (AI Assistant)** | UI Ready     | [Quick Ref](./AI-FEATURES-QUICK-REFERENCE.md#1-chat-widget-api)                                                |
-| ��� HIGH   | **Skin Analysis Quiz**         | UI Ready     | [Quick Ref](./AI-FEATURES-QUICK-REFERENCE.md#2-skin-analysis-quiz)                                             |
-| ��� HIGH   | **Live Chat with Staff**       | UI Ready     | [Quick Ref](./AI-FEATURES-QUICK-REFERENCE.md#4-live-chat-with-staff-new)                                       |
-| ��� MEDIUM | **Admin AI Insights**          | UI Ready     | [Full Spec](./architecture/ai-features-specification.md#3%EF%B8%8F%E2%83%A3-admin-dashboard-ai-insights)       |
-| ��� MEDIUM | **Blog Content Generator**     | Button Ready | [Full Spec](./architecture/ai-features-specification.md#5%EF%B8%8F%E2%83%A3-ai-blog-content-generator)         |
-| ��� MEDIUM | **Review Sentiment Analysis**  | Placeholder  | [Full Spec](./architecture/ai-features-specification.md#7%EF%B8%8F%E2%83%A3-review-sentiment-analysis)         |
-| ��� LOW    | **Contact Form Smart Reply**   | UI Ready     | [Full Spec](./architecture/ai-features-specification.md#6%EF%B8%8F%E2%83%A3-contact-form-smart-categorization) |
-| ��� LOW    | **Admin Contextual Tips**      | UI Mentions  | [Full Spec](./architecture/ai-features-specification.md#4%EF%B8%8F%E2%83%A3-admin-contextual-ai-tips)          |
+| Metric | Count |
+|--------|-------|
+| **Total API Endpoints** | 150+ |
+| **Frontend Routes** | 40+ |
+| **Database Tables** | 13 |
+| **AI Features** | 8 (Chat, Skin Analysis, Live Chat, Admin Insights, etc.) |
+| **Pages Implemented** | 30+ |
+| **Languages Supported** | 2 (Vietnamese, English) |
 
 ---
 
-## ���️ For Backend Team
+## ��� Key Features
 
-### Getting Started
-
-1. Read **[AI-FEATURES-QUICK-REFERENCE.md](./AI-FEATURES-QUICK-REFERENCE.md)** (5 min)
-2. Check current backend structure: `find apps/backend/src -type f -name "*.ts"`
-3. Review existing API patterns: [api-spec/openapi.yml](./api-spec/openapi.yml)
-4. Start with **Sprint 1** tasks (Chat Widget + Session Management)
-
-### Required Services
-
--   ✅ PostgreSQL (already setup via Prisma)
--   ⚠️ Redis (need to add - for caching & rate limiting)
--   ⚠️ OpenAI API account
--   ⚠️ WebSocket server (Socket.io recommended)
-
-### Estimated Timeline
-
--   **Sprint 1-2** (Weeks 1-4): Foundation + Intelligence
--   **Sprint 3** (Weeks 5-6): Live Chat + Booking Integration
--   **Sprint 4** (Weeks 7-8): Polish + Analytics
-
-**Total**: ~8 weeks for full implementation
+- ✅ **6-Step Booking Flow** - Intuitive service booking
+- ✅ **Payment Integration** - VNPay sandbox
+- ✅ **Admin Dashboard** - Full CRUD management
+- ✅ **AI Chat Widget** - Gemini-powered assistant
+- ✅ **Authentication** - Email/Password + Google OAuth
+- ✅ **Email Notifications** - Booking confirmations via Resend
+- ✅ **Responsive Design** - Mobile-first with Tailwind CSS
+- ✅ **Multilingual** - Vietnamese + English i18n
 
 ---
 
-## ��� Other Documentation
+## ��� Support
 
-### Architecture
-
--   [High Level Architecture](./architecture/high-level-architecture.md)
--   [Tech Stack](./architecture/tech-stack.md)
--   [Data Models](./architecture/data-models.md)
--   [Components](./architecture/components.md)
-
-### API Specifications
-
--   [OpenAPI 3.1 Spec](./api-spec/openapi.yml)
--   [API by Screens](./api-spec/api-by-screens.md)
--   [API Verification](./api-spec/VERIFICATION-SUMMARY.md)
-
-### Product Requirements
-
--   [PRD Index](./prd/index.md)
--   [Goals & Background](./prd/goals-and-background-context.md)
--   [Epic List](./prd/epic-list.md)
-
-### Project Management
-
--   [Git Workflow](./project-management/git-workflow.md)
--   [PR Checklist](./project-management/pr-checklist.md)
--   [Team Allocation](./project-management/team-work-allocation.md)
+**Team:** Scaletto Dev  
+**GitHub:** https://github.com/scaletto-dev/spa-hackathon  
+**Contact:** doanhaiduydev@gmail.com
 
 ---
 
-## ��� Finding Information
-
-### Need to find...
-
--   **API endpoints**: Check [openapi.yml](./api-spec/openapi.yml) or [AI Quick Ref](./AI-FEATURES-QUICK-REFERENCE.md)
--   **Database schemas**: See [data-models.md](./architecture/data-models.md) or AI specs
--   **Feature requirements**: Browse [prd/](./prd/) folder
--   **UI components**: Check `apps/frontend/src/client/components/`
--   **Backend structure**: Run `ls -R apps/backend/src/`
-
----
-
-## ��� Questions?
-
--   Check existing docs first
--   Review code comments in source files
--   Ask in project Slack/Teams channel
-
----
-
-**Last Updated**: October 30, 2025
+**⭐ Chúc BTC đánh giá thuận lợi!**

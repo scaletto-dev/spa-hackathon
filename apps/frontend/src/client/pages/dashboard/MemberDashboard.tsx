@@ -54,7 +54,7 @@ export default function MemberDashboard() {
         );
     }
 
-    const { stats, upcomingBookings, specialOffers } = dashboardData;
+    const { stats, upcomingBookings } = dashboardData;
 
     return (
         <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 px-4 pt-24'>
@@ -283,25 +283,7 @@ function BookingCard({ booking }: { booking: MemberDashboardData['upcomingBookin
     );
 }
 
-// Offer Card Component
-function OfferCard({ offer }: { offer: MemberDashboardData['specialOffers'][0] }) {
-    const { t, i18n } = useTranslation('common');
-    const formatDate = (isoDate: string) => {
-        const date = new Date(isoDate);
-        return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { month: 'short', day: 'numeric' });
-    };
 
-    return (
-        <div className='p-4 border border-pink-200 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50'>
-            <div className='flex items-start justify-between mb-2'>
-                <h4 className='font-semibold text-gray-900 flex-1'>{offer.title}</h4>
-                <span className='text-pink-600 font-bold text-lg'>{offer.discountPercent}%</span>
-            </div>
-            <p className='text-sm text-gray-600 mb-2'>{offer.description}</p>
-            <p className='text-xs text-gray-500'>{t('dashboard.validUntil')} {formatDate(offer.validUntil)}</p>
-        </div>
-    );
-}
 
 
 export interface MemberProfile {
@@ -338,6 +320,7 @@ const MOCK_MEMBER_PROFILE: MemberProfile = {
  * Auth: Required (Bearer token)
  * Response: { data: MemberProfile }
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export async function getMemberProfile(): Promise<MemberProfile> {
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -356,6 +339,7 @@ export async function getMemberProfile(): Promise<MemberProfile> {
  * Body: { fullName, phone, language? }
  * Response: { data: MemberProfile }
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export async function updateMemberProfile(params: UpdateProfileParams): Promise<MemberProfile> {
     const { fullName, phone, language } = params;
 

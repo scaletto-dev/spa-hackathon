@@ -5,7 +5,6 @@ import {
     SparklesIcon,
     BuildingIcon,
     UsersIcon,
-    UserIcon,
     CreditCardIcon,
     MessageSquareIcon,
     FileTextIcon,

@@ -22,7 +22,7 @@ export function LoginPageOTP() {
   const returnUrl = searchParams.get('returnUrl') || '/dashboard';
 
   // Form state
-  const [step, setStep] = useState<LoginStep>('form');
+  const [step] = useState<LoginStep>('form');
   const [formData, setFormData] = useState({
     email: '',
     password: '',

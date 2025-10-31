@@ -15,6 +15,13 @@ interface WriteReviewModalProps {
     onSubmitSuccess?: () => void;
 }
 
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    role: 'admin' | 'client' | 'staff';
+    avatar?: string;
+}
 export function WriteReviewModal({
     isOpen,
     onClose,
@@ -32,25 +39,10 @@ export function WriteReviewModal({
     const [showSuccess, setShowSuccess] = useState(false);
     const [error, setError] = useState('');
     const [hasCompletedBooking, setHasCompletedBooking] = useState<boolean | null>(null);
-    const [isCheckingBooking, setIsCheckingBooking] = useState(false);
     const [services, setServices] = useState<Service[]>([]);
     const [selectedServiceId, setSelectedServiceId] = useState<string>(_serviceId || '');
     const [isLoadingServices, setIsLoadingServices] = useState(false);
 
-    // Check if user has completed booking for this service
-    const checkCompletedBooking = async (_svcId: string) => {
-        try {
-            setIsCheckingBooking(true);
-            // TODO: Implement API call to check if user has completed booking
-            // For now, allow anyone to write review
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            setHasCompletedBooking(true);
-        } catch {
-            setHasCompletedBooking(false);
-        } finally {
-            setIsCheckingBooking(false);
-        }
-    };
 
     // Fetch services when modal opens
     useEffect(() => {
@@ -118,7 +110,7 @@ export function WriteReviewModal({
             // Call API to create review
             await reviewsApi.createReview({
                 serviceId: selectedServiceId,
-                customerName: user.fullName || user.email,
+                customerName: (user as User).name || user.email,
                 email: user.email,
                 rating,
                 reviewText: comment.trim(),
@@ -131,9 +123,12 @@ export function WriteReviewModal({
                 onSubmitSuccess?.();
                 handleClose();
             }, 2000);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Submit review error:', err);
-            setError(err.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+            const errorMessage = err instanceof Error && 'response' in err && typeof err.response === 'object' && err.response !== null && 'data' in err.response && typeof err.response.data === 'object' && err.response.data !== null && 'message' in err.response.data && typeof err.response.data.message === 'string' 
+                ? err.response.data.message 
+                : 'Có lỗi xảy ra. Vui lòng thử lại.';
+            setError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -219,12 +214,6 @@ export function WriteReviewModal({
                                             {t('auth.login')}
                                         </button>
                                     </div>
-                                </div>
-                            ) : isCheckingBooking ? (
-                                // Checking Booking Status
-                                <div className='p-6 text-center py-12'>
-                                    <Loader2 className='w-12 h-12 text-pink-500 animate-spin mx-auto mb-4' />
-                                    <p className='text-gray-600'>{t('reviews.checkingBooking')}</p>
                                 </div>
                             ) : hasCompletedBooking === false ? (
                                 // No Completed Booking State

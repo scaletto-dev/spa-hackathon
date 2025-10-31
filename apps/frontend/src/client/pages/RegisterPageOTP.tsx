@@ -188,7 +188,7 @@ export function RegisterPageOTP() {
 
         setIsSubmitting(true);
         try {
-            const response = await verifyOtp({
+            await verifyOtp({
                 email: formData.email,
                 otp: otpCode,
             });

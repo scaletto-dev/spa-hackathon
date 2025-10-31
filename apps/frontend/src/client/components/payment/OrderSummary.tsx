@@ -32,7 +32,7 @@ export function OrderSummary({ bookingData, subtotal, discount, tax, total, appl
             <div className='space-y-4 mb-6 pb-6 border-b border-gray-200'>
                 <div>
                     <p className='text-sm text-gray-500 mb-1'>{t('bookings.service')}</p>
-                    <p className='font-medium text-gray-800'>{bookingData.service?.title}</p>
+                    <p className='font-medium text-gray-800'>{bookingData.service?.name}</p>
                     <p className='text-sm text-gray-600'>{bookingData.service?.duration}</p>
                 </div>
                 <div className='flex items-center gap-2 text-sm text-gray-600'>

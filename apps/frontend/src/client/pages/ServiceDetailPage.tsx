@@ -14,7 +14,7 @@ import {
     ArrowRight,
     PenSquare,
 } from 'lucide-react';
-import { servicesApi, type ServiceWithCategory, formatPrice, formatDuration } from '../../services/servicesApi';
+import { servicesApi, type Service, formatPrice, formatDuration } from '../../services/servicesApi';
 import { WriteReviewModal } from '../components/reviews/WriteReviewModal';
 
 export default function ServiceDetailPage() {
@@ -23,8 +23,8 @@ export default function ServiceDetailPage() {
     const navigate = useNavigate();
     const [isWriteReviewOpen, setIsWriteReviewOpen] = useState(false);
 
-    const [service, setService] = useState<ServiceWithCategory | null>(null);
-    const [relatedServices, setRelatedServices] = useState<ServiceWithCategory[]>([]);
+    const [service, setService] = useState<Service | null>(null);
+    const [relatedServices, setRelatedServices] = useState<Service[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -69,9 +69,9 @@ export default function ServiceDetailPage() {
                     ? {
                           id: service.id,
                           title: service.name,
-                          category: service.category.name,
+                          category: service.categoryName || 'Service',
                           price: formatPrice(service.price),
-                          duration: formatDuration(service.duration),
+                          duration: formatDuration(typeof service.duration === 'number' ? service.duration : parseInt(service.duration) || 60),
                           image: service.images[0],
                           description: service.description,
                       }
@@ -142,7 +142,7 @@ export default function ServiceDetailPage() {
                                 className='w-full h-full object-cover'
                             />
                             <div className='absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full'>
-                                <span className='text-sm font-semibold text-pink-600'>{service.category.name}</span>
+                                <span className='text-sm font-semibold text-pink-600'>{service.categoryName || 'Service'}</span>
                             </div>
                         </motion.div>
 
@@ -213,7 +213,7 @@ export default function ServiceDetailPage() {
                                 <div>
                                     <p className='text-sm text-gray-500'>{t('bookings.duration')}</p>
                                     <p className='text-xl font-bold text-gray-900'>
-                                        {formatDuration(service.duration)}
+                                        {formatDuration(typeof service.duration === 'number' ? service.duration : parseInt(service.duration) || 60)}
                                     </p>
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ export default function ServiceDetailPage() {
                 <div className='bg-white rounded-2xl shadow-xl p-8 mb-8'>
                     <h2 className='text-2xl font-bold text-gray-900 mb-6'>{t('services.serviceBenefits')}</h2>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                        {service.benefits.map((benefit, index) => (
+                        {(service.benefits || []).map((benefit, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, x: -20 }}
@@ -343,7 +343,7 @@ export default function ServiceDetailPage() {
                                         <p className='text-sm text-gray-600 mb-3 line-clamp-2'>{related.excerpt}</p>
                                         <div className='flex items-center justify-between'>
                                             <span className='text-sm text-gray-500'>
-                                                {formatDuration(related.duration)}
+                                                {formatDuration(typeof related.duration === 'number' ? related.duration : parseInt(related.duration) || 60)}
                                             </span>
                                             <span className='text-lg font-bold text-pink-600'>
                                                 {formatPrice(related.price)}
