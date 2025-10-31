@@ -64,9 +64,12 @@ export function useAdmin<T>(
 
 /**
  * Hook for managing paginated list data
+ * @param asyncFunction - The async list function
+ * @param filters - Optional filter parameters (e.g., status, categoryId)
  */
 export function useAdminList<T>(
-   asyncFunction: (page: number, limit: number, ...args: any[]) => Promise<any>
+   asyncFunction: (page: number, limit: number, ...args: any[]) => Promise<any>,
+   filters: any[] = []
 ) {
    const [page, setPage] = useState(1);
    const [limit, setLimit] = useState(10);
@@ -76,12 +79,17 @@ export function useAdminList<T>(
    const [error, setError] = useState<string | null>(null);
    const [shouldFetch, setShouldFetch] = useState(true);
 
+   // Stringify filters for stable dependency comparison
+   const filtersKey = JSON.stringify(filters);
+
    const fetch = useCallback(
       async (...args: any[]) => {
          try {
             setLoading(true);
             setError(null);
-            const response = await asyncFunction(page, limit, ...args);
+            // Use filters param or fallback to args
+            const filterArgs = filters.length > 0 ? filters : args;
+            const response = await asyncFunction(page, limit, ...filterArgs);
             setData(response.data || []);
             setTotal(response.pagination?.total || 0);
             return response;
@@ -93,7 +101,7 @@ export function useAdminList<T>(
             setLoading(false);
          }
       },
-      [asyncFunction, page, limit]
+      [asyncFunction, page, limit, filtersKey]
    );
 
    const goToPage = useCallback((newPage: number) => {
@@ -111,13 +119,13 @@ export function useAdminList<T>(
 
    const clearError = useCallback(() => setError(null), []);
 
-   // Auto-fetch when page or limit changes
+   // Auto-fetch when page, limit, or filters change
    useEffect(() => {
       if (shouldFetch) {
          fetch();
          setShouldFetch(false);
       }
-   }, [page, limit, shouldFetch, fetch]);
+   }, [page, limit, filtersKey, shouldFetch, fetch]);
 
    return {
       data,

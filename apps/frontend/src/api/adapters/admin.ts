@@ -252,10 +252,25 @@ export const adminBranchesAPI = {
 
 export const adminAppointmentsAPI = {
    // GET /appointments
-   getAll: async (page = 1, limit = 10, status?: string) => {
+   getAll: async (
+      page = 1,
+      limit = 10,
+      status?: string,
+      search?: string
+   ) => {
       let endpoint = `/appointments?page=${page}&limit=${limit}`;
       if (status) endpoint += `&status=${status}`;
-      return apiCall("GET", endpoint);
+      if (search) endpoint += `&search=${encodeURIComponent(search)}`;
+      const response = await apiCall("GET", endpoint);
+      return {
+         data: response.data?.items || [],
+         pagination: {
+            total: response.data?.total || 0,
+            page: response.data?.page || page,
+            limit: response.data?.limit || limit,
+            totalPages: response.data?.totalPages || 0,
+         },
+      };
    },
 
    // GET /appointments/:id
