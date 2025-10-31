@@ -347,6 +347,6 @@ export function NewBookingModal({ isOpen, onClose, onSuccess }: NewBookingModalP
                     )}
                 </div>
             </div>
-        </>
+        </div>
     );
 }
