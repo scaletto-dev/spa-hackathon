@@ -41,9 +41,11 @@ export function validate(schema: ZodSchema, source: ValidationSource = 'body') {
       if (source === 'body') {
         req.body = validated;
       } else if (source === 'query') {
-        req.query = validated as any;
+        // Store validated query in custom property since req.query is read-only
+        (req as any).validatedQuery = validated;
       } else if (source === 'params') {
-        req.params = validated as any;
+        // Store validated params in custom property since req.params is read-only
+        (req as any).validatedParams = validated;
       }
 
       // Continue to next middleware/controller

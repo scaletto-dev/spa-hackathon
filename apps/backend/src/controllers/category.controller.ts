@@ -25,8 +25,8 @@ export class CategoryController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // Middleware validated and transformed req.query
-      const { includeServices } = req.query as unknown as GetCategoriesQuery;
+      // Use validated query from middleware
+      const { includeServices } = (req as any).validatedQuery as GetCategoriesQuery;
 
       const categories = await categoryService.getAllCategories(includeServices);
 
@@ -54,9 +54,9 @@ export class CategoryController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // Middleware validated params and query
-      const { id } = req.params as unknown as GetCategoryParams;
-      const { includeServices } = req.query as unknown as GetCategoriesQuery;
+      // Use validated params and query from middleware
+      const { id } = (req as any).validatedParams as GetCategoryParams;
+      const { includeServices } = (req as any).validatedQuery as GetCategoriesQuery;
 
       const category = await categoryService.getCategoryById(id, includeServices);
 
@@ -85,9 +85,9 @@ export class CategoryController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // Middleware validated and coerced types
-      const { id } = req.params as unknown as GetCategoryParams;
-      const { page, limit } = req.query as unknown as GetCategoryServicesQuery;
+      // Use validated params and query from middleware
+      const { id } = (req as any).validatedParams as GetCategoryParams;
+      const { page, limit } = (req as any).validatedQuery as GetCategoryServicesQuery;
 
       // No need for parseInt() or validation - middleware already handled it
       const result = await categoryService.getCategoryServices(id, page, limit);

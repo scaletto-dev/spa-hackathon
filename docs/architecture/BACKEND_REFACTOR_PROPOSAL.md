@@ -759,6 +759,13 @@ After refactoring, validate these:
 
 ---
 
+## ✅ Completed Examples
+
+See the actual implementation patterns in:
+- **[REFACTOR_COMPLETED_TEMPLATE.md](./REFACTOR_COMPLETED_TEMPLATE.md)** - Shows exact pattern used for Category & Service features, with full code examples and checklist for refactoring new features
+
+---
+
 ## 🔗 Related Docs
 
 - [Coding Convention (BE)](./coding-convention-be.md)

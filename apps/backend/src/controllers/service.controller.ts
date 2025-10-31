@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import serviceService from '../services/service.service';
-import { SuccessResponse } from '../types/api';
-import { ValidationError } from '../utils/errors';
-import { GetServicesQueryParams } from '../types/service';
+import serviceService from '@/services/service.service';
+import { SuccessResponse } from '@/types/api';
+import { GetServicesQuery, GetServiceParams } from '@/validators/service.validator';
 
 /**
  * Service Controller
  *
  * Handles HTTP requests for service endpoints.
- * Validates input, calls service layer, and formats responses.
+ * All request validation is performed by Zod middleware before reaching these handlers.
+ * Controllers can assume valid, typed data from request.
  */
 
 export class ServiceController {
@@ -17,25 +17,20 @@ export class ServiceController {
    * Get all services with pagination and filtering
    */
   async getAllServices(
-    req: Request<{}, {}, {}, GetServicesQueryParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const page = parseInt(req.query.page || '1', 10);
-      const limit = parseInt(req.query.limit || '20', 10);
-      const categoryId = req.query.categoryId;
-      const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined;
+      // Use validated query from middleware
+      const { page = 1, limit = 20, categoryId, featured } = (req as any).validatedQuery as GetServicesQuery;
 
-      // Validation
-      if (page < 1) {
-        throw new ValidationError('Page must be greater than 0');
-      }
-      if (limit < 1 || limit > 100) {
-        throw new ValidationError('Limit must be between 1 and 100');
-      }
-
-      const result = await serviceService.getAllServices(page, limit, categoryId, featured);
+      const result = await serviceService.getAllServices(
+        page,
+        limit,
+        categoryId,
+        featured as boolean | undefined
+      );
 
       const response: SuccessResponse<typeof result.data> = {
         success: true,
@@ -53,20 +48,20 @@ export class ServiceController {
   /**
    * GET /api/v1/services/:id
    * Get a single service by ID or slug
-   * Automatically detects if parameter is UUID (ID) or slug
    */
   async getServiceById(
-    req: Request<{ id: string }>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      // Use validated params from middleware
+      const { id } = (req as any).validatedParams as GetServiceParams;
 
-      // Check if parameter is a UUID (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+      // Check if parameter is a UUID
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-      // Fetch by ID or slug accordingly
+      // Fetch by ID or slug
       const service = isUUID
         ? await serviceService.getServiceById(id)
         : await serviceService.getServiceBySlug(id);
