@@ -1,4 +1,4 @@
-# í² Beauty Clinic Care Website
+# ï¿½ï¿½ï¿½ Beauty Clinic Care Website
 
 **Hackathon EES AI 2025** | **Team: Scaletto Dev** | **October 31, 2025**
 
@@ -6,25 +6,36 @@
 
 ---
 
-## íº€ Quick Start (5 minutes)
+## ï¿½ï¿½ï¿½ Quick Start (5 minutes)
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Run development servers (Frontend + Backend)
+# 2. Pull the current database schema into Prisma
+npx prisma db pull --schema=apps/backend/src/prisma/schema.prisma
+
+# 3. Generate the Prisma Client based on the latest schema
+npx prisma generate --schema=apps/backend/src/prisma/schema.prisma
+
+# 4. Run development servers (Frontend + Backend)
 npm run dev
 ```
 
+**Note!!!!:**
+
+For corporate networks, if you see a â€œdatabase connection failedâ€ message, enable Cloudflare DNS (1.1.1.1).
+
 **Access:**
-- í¼ Frontend: http://localhost:5173
-- í´§ Backend: http://localhost:3000/api/health
+
+- ï¿½ï¿½ï¿½ Frontend: http://localhost:5173
+- ï¿½ï¿½ï¿½ Backend: http://localhost:3000/api/health
 
 ---
 
-## í³š Full Documentation
+## ï¿½ï¿½ï¿½ Full Documentation
 
-**í±‰ [docs/](./docs/) - Complete documentation package**
+**ï¿½ï¿½ï¿½ [docs/](./docs/) - Complete documentation package**
 
 ### Quick Links:
 
@@ -33,16 +44,16 @@ npm run dev
    - [Feature Overview](./docs/00-START-HERE/FEATURE_OVERVIEW.md) - All implemented features
    - [Submission Checklist](./docs/00-START-HERE/SUBMISSION_CHECKLIST.md) - Evaluation criteria
 
-2. **[01-FOR-JUDGES/](./docs/01-FOR-JUDGES/)** í³‹ **Product & Architecture**
+2. **[01-FOR-JUDGES/](./docs/01-FOR-JUDGES/)** ï¿½ï¿½ï¿½ **Product & Architecture**
    - System architecture, PRD, UI/UX design
    - [KIEN_TRUC_TONG_THE.md](./docs/01-FOR-JUDGES/KIEN_TRUC_TONG_THE.md) - Vietnamese architecture doc
 
-3. **[02-TECHNICAL-SPECS/](./docs/02-TECHNICAL-SPECS/)** í´§ **API & Technical Docs**
+3. **[02-TECHNICAL-SPECS/](./docs/02-TECHNICAL-SPECS/)** ï¿½ï¿½ï¿½ **API & Technical Docs**
    - Complete API reference (150+ endpoints)
    - Frontend routes map (40+ routes)
    - Database schema documentation
 
-4. **[03-DEVELOPMENT-DOCS/](./docs/03-DEVELOPMENT-DOCS/)** í±¨â€í²» **Development**
+4. **[03-DEVELOPMENT-DOCS/](./docs/03-DEVELOPMENT-DOCS/)** ï¿½ï¿½ï¿½â€ï¿½ï¿½ï¿½ **Development**
    - AI features implementation
    - Project management & QA docs
 
@@ -61,21 +72,24 @@ npm run dev
 
 ---
 
-## í» ï¸ Tech Stack
+## ï¿½ï¿½ï¿½ï¸ Tech Stack
 
 **Frontend:**
+
 - React 18 + TypeScript
 - Vite + React Router v6
 - Tailwind CSS + shadcn/ui
 - i18next (multilingual)
 
 **Backend:**
+
 - Node.js + Express + TypeScript
 - Prisma ORM + PostgreSQL (Supabase)
 - JWT Authentication
 - Google Gemini AI
 
 **Infrastructure:**
+
 - Monorepo structure
 - Supabase (Database + Auth)
 - VNPay (Payment)
@@ -83,20 +97,20 @@ npm run dev
 
 ---
 
-## í³Š Project Statistics
+## ï¿½ï¿½ï¿½ Project Statistics
 
-| Metric | Count |
-|--------|-------|
-| Total API Endpoints | 150+ |
-| Frontend Routes | 40+ |
-| Database Tables | 13 |
-| AI Features | 8 |
-| Pages Implemented | 30+ |
+| Metric              | Count      |
+| ------------------- | ---------- |
+| Total API Endpoints | 150+       |
+| Frontend Routes     | 40+        |
+| Database Tables     | 13         |
+| AI Features         | 8          |
+| Pages Implemented   | 30+        |
 | Languages Supported | 2 (vi, en) |
 
 ---
 
-## í±¥ Demo Accounts
+## ï¿½ï¿½ï¿½ Demo Accounts
 
 ```
 Admin:
@@ -108,18 +122,18 @@ Email: getsdtfree4@gmail.com
 Password: baolol123
 ```
 
-**í²¡ Tip:** Register a new account with your real email to test full booking flow with email notifications!
+**ï¿½ï¿½ï¿½ Tip:** Register a new account with your real email to test full booking flow with email notifications!
 
 ---
 
-## í·‚ï¸ Project Structure
+## ï¿½ï¿½ï¿½ï¸ Project Structure
 
 ```
 spa-hackathon/
 â”œâ”€â”€ apps/
 â”‚   â”œâ”€â”€ frontend/        # React + Vite application
 â”‚   â””â”€â”€ backend/         # Express + Prisma API
-â”œâ”€â”€ docs/                # í³š Complete documentation
+â”œâ”€â”€ docs/                # ï¿½ï¿½ï¿½ Complete documentation
 â”‚   â”œâ”€â”€ 00-START-HERE/   # â­ Start here for judges
 â”‚   â”œâ”€â”€ 01-FOR-JUDGES/   # Product & architecture
 â”‚   â”œâ”€â”€ 02-TECHNICAL-SPECS/  # API & technical docs
@@ -129,15 +143,15 @@ spa-hackathon/
 
 ---
 
-## í³ Support
+## ï¿½ï¿½ï¿½ Support
 
-**Team:** Scaletto Dev  
-**GitHub:** https://github.com/scaletto-dev/spa-hackathon  
+**Team:** 2003
+**GitHub:** https://github.com/scaletto-dev/spa-hackathon
 **Contact:** doanhaiduydev@gmail.com
 
 ---
 
-## í¾¯ For Judges
+## ï¿½ï¿½ï¿½ For Judges
 
 **Evaluation Path (15-20 minutes):**
 
